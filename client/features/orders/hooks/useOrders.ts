@@ -20,7 +20,6 @@ export const useOrdersState = () => {
   const [activeTab, setActiveTab] = useState("orders")
   const [activeStatus, setActiveStatus] = useState("all")
   const [date, setDate] = useState<Date | undefined>()
-  const [search, setSearch] = useState("")
 
   return {
     activeTab,
@@ -29,8 +28,6 @@ export const useOrdersState = () => {
     setActiveStatus,
     date,
     setDate,
-    search,
-    setSearch,
   }
 }
 

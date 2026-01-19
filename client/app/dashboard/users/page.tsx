@@ -1,5 +1,11 @@
-import CustomerTemplate from "@/features/users/templates/CustomerTemplate";
+import UserTemplate from "@/features/users/templates/UserTemplate";
+import { Suspense } from "react";
+import UniLoading from "@/components/shared/UniLoading";
 
-export default function CustomerPage() {
-  return <CustomerTemplate />
+export default function UserPage() {
+  return (
+    <Suspense fallback={<UniLoading message="Loading search..." />}>
+      <UserTemplate />
+    </Suspense>
+  );
 }

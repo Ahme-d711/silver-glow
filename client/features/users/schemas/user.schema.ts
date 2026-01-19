@@ -1,16 +1,55 @@
 import { z } from "zod";
-import { USER_ROLES } from "../types/user.type.js";
-import {
-  nameSchema,
-  emailSchema,
-  passwordSchema,
-  phoneSchema,
-  pictureSchema,
-  roleSchema,
-} from "./auth-schema.js";
 
 /**
- * Create User Schema
+ * Common validation patterns (mirrored from server)
+ */
+export const USER_ROLES = ["admin", "user"] as const;
+
+export const emailSchema = z
+  .string()
+  .email("Invalid email format")
+  .min(1, "Email is required")
+  .max(500, "Email must be less than 500 characters")
+  .toLowerCase()
+  .trim();
+
+export const passwordSchema = z
+  .string()
+  .min(6, "Password must be at least 6 characters")
+  .max(255, "Password must be less than 255 characters")
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+    "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+  );
+
+export const nameSchema = z
+  .string()
+  .min(1, "Name is required")
+  .max(500, "Name must be less than 500 characters")
+  .trim();
+
+export const phoneSchema = z
+  .string()
+  .min(1, "Phone number is required")
+  .max(20, "Phone number must be less than 20 characters")
+  .regex(
+    /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
+    "Invalid phone number format"
+  );
+
+export const pictureSchema = z
+  .string()
+  .url("Picture must be a valid URL")
+  .max(255, "Picture URL must be less than 255 characters")
+  .optional()
+  .or(z.literal(""));
+
+export const roleSchema = z.enum(USER_ROLES as unknown as [string, ...string[]], {
+  message: `Role must be one of: ${USER_ROLES.join(", ")}`,
+});
+
+/**
+ * Create User Schema (Exactly like server)
  */
 export const createUserSchema = z.object({
   name: nameSchema,
@@ -32,17 +71,15 @@ export const createUserSchema = z.object({
   lastTransactionAt: z.coerce.date().optional(),
 });
 
-export type CreateUserInput = z.infer<typeof createUserSchema>;
-
 /**
- * Update User Schema
+ * Update User Schema (Exactly like server)
  */
 export const updateUserSchema = z.object({
   name: nameSchema.optional(),
   email: emailSchema.optional(),
   password: passwordSchema.optional(),
-  phone: phoneSchema,
-  picture: pictureSchema,
+  phone: phoneSchema.optional(),
+  picture: pictureSchema.optional(),
   role: roleSchema.optional(),
   isActive: z.boolean().optional(),
   isVerified: z.boolean().optional(),
@@ -57,7 +94,10 @@ export const updateUserSchema = z.object({
   lastTransactionAt: z.coerce.date().optional(),
 });
 
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+/**
+ * Type for the form values - derived from the schema
+ */
+export type UserFormValues = z.infer<typeof createUserSchema>;
 
 /**
  * Get Users Query Schema
@@ -70,8 +110,6 @@ export const getUsersQuerySchema = z.object({
   isActive: z.coerce.boolean().optional(),
 });
 
-export type GetUsersQueryInput = z.infer<typeof getUsersQuerySchema>;
-
 /**
  * Update User Block Status Schema
  */
@@ -79,19 +117,8 @@ export const updateUserBlockSchema = z.object({
   isBlocked: z.boolean(),
 });
 
-export type UpdateUserBlockInput = z.infer<typeof updateUserBlockSchema>;
-
 /**
- * Update User Balance Schema
- */
-export const updateUserBalanceSchema = z.object({
-  amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
-});
-
-export type UpdateUserBalanceInput = z.infer<typeof updateUserBalanceSchema>;
-
-/**
- * Validation helper function
+ * Validation helper functions
  */
 export function validateUserData<T extends z.ZodTypeAny>(
   schema: T,
@@ -100,9 +127,6 @@ export function validateUserData<T extends z.ZodTypeAny>(
   return schema.parse(data);
 }
 
-/**
- * Safe validation (returns errors instead of throwing)
- */
 export function safeValidateUserData<T extends z.ZodTypeAny>(
   schema: T,
   data: unknown
@@ -113,4 +137,3 @@ export function safeValidateUserData<T extends z.ZodTypeAny>(
   }
   return { success: false, errors: result.error };
 }
-

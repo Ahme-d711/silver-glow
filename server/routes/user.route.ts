@@ -7,6 +7,8 @@ import {
   deleteUser,
   getCurrentUser,
   updateUserBlockStatus,
+  updateUserBalance,
+  activateUser,
 } from "../controllers/user.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 
@@ -23,6 +25,8 @@ router.get("/", authorize("admin"), getAllUsers);
 router.get("/:id", authorize("admin"), getUserById);
 router.post("/", authorize("admin"), createUser);
 router.patch("/:id/block", authorize("admin"), updateUserBlockStatus);
+router.patch("/:id/balance", authorize("admin"), updateUserBalance);
+router.patch("/:id/activate", authorize("admin"), activateUser);
 router.put("/:id", authorize("admin"), updateUser);
 router.delete("/:id", authorize("admin"), deleteUser);
 

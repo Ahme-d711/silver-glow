@@ -235,3 +235,55 @@ export async function updateUserBlockStatus(
   }
 }
 
+/**
+ * Add balance to user
+ */
+export async function addUserBalance(
+  id: string,
+  amount: number
+): Promise<ServiceResponse<{ user: User }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ user: User }>>(
+      `/users/${id}/balance`,
+      { amount }
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to add balance",
+      error: err.message,
+    };
+  }
+}
+
+/**
+ * Activate user
+ */
+export async function activateUser(id: string): Promise<ServiceResponse<{ user: User }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ user: User }>>(
+      `/users/${id}/activate`
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to activate user",
+      error: err.message,
+    };
+  }
+}
+

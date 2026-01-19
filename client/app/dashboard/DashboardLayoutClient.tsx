@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/sidebar";
 import { usePathname } from "next/navigation";
 import { Slide } from "react-awesome-reveal";
 import { DashboardNavbar } from "@/components/dashboard-navbar";
+import { Suspense } from "react";
 
 export default function DashboardLayoutClient({
   children,
@@ -41,7 +42,9 @@ export default function DashboardLayoutClient({
       <div className="flex flex-1 flex-col bg-background overflow-hidden">
         <div className="flex-1 overflow-y-auto p-6">
             <Slide direction="up" duration={300} triggerOnce fraction={0.1}>
-              <DashboardNavbar />
+              <Suspense>
+                <DashboardNavbar />
+              </Suspense>
             </Slide>
           <Slide direction="up" duration={400} triggerOnce fraction={0.1}>
             <main className="mt-8">{children}</main>

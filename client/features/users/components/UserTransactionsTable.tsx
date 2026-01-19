@@ -4,6 +4,7 @@ import React from "react"
 import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 import { TableFilters } from "@/components/shared/TableFilters"
+import { useSearchParams } from "next/navigation"
 
 interface Transaction {
   id: string
@@ -14,7 +15,7 @@ interface Transaction {
   date: string
 }
 
-interface CustomerTransactionsTableProps {
+interface UserTransactionsTableProps {
   transactions: Transaction[]
 }
 
@@ -25,8 +26,10 @@ const filterOptions = [
   { label: "Cancelled", value: "cancelled" },
 ]
 
-export function CustomerTransactionsTable({ transactions }: CustomerTransactionsTableProps) {
-  const [search, setSearch] = React.useState("")
+export function UserTransactionsTable({ transactions }: UserTransactionsTableProps) {
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search") || ""
+  
   const [date, setDate] = React.useState<Date | undefined>()
   const [filter, setFilter] = React.useState("all")
 
@@ -75,9 +78,6 @@ export function CustomerTransactionsTable({ transactions }: CustomerTransactions
       <div className="p-6 pb-0 flex items-center justify-between">
         <h3 className="text-xl font-semibold text-content-primary">Transaction History</h3>
       <TableFilters
-        search={search}
-        setSearch={setSearch}
-        searchPlaceholder="Search transactions..."
         date={date}
         setDate={setDate}
         filterValue={filter}

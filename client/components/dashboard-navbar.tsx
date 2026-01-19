@@ -15,12 +15,9 @@ import Link from "next/link";
 
 export function DashboardNavbar() {
   const { user } = useAuthStore();
-  console.log(user);
   
   const router = useRouter();
   const { logout, loading: isLoggingOut } = useLogout();
-
-  console.log(user);
   
 
   const userName = user?.name || user?.username || "Ahmed Elgedawy";
@@ -92,7 +89,7 @@ export function DashboardNavbar() {
             </PopoverTrigger>
             <PopoverContent className="w-56 mt-2 border-divider" align="end">
               <div className="flex flex-col gap-2">
-              <Link href={`/users/${userId}`}>
+              <Link href={`/dashboard/users/${userId}`}>
                 <Button
                   onClick={handleEditProfile}
                   variant="outline"

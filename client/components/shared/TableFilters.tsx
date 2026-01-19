@@ -24,8 +24,8 @@ interface TableFiltersProps {
   setActiveTab?: (value: string) => void
   
   // Search (central/right)
-  search: string
-  setSearch: (value: string) => void
+  search?: string
+  setSearch?: (value: string) => void
   searchPlaceholder?: string
   
   // Date Picker (right)
@@ -84,15 +84,17 @@ export function TableFilters({
       {/* Inputs Section */}
       <div className="flex items-center gap-3 flex-1 justify-end max-w-4xl">
         {/* Search */}
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-content-tertiary" />
-          <Input 
-            placeholder={searchPlaceholder} 
-            className="pl-11 rounded-xl border-divider bg-background h-11"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+        {setSearch && search !== undefined && (
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-content-tertiary" />
+            <Input 
+              placeholder={searchPlaceholder} 
+              className="pl-11 rounded-xl border-divider bg-background h-11"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        )}
         
         {/* Select Filter */}
         {onFilterChange && filterValue !== undefined && (

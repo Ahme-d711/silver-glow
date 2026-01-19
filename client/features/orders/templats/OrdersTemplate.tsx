@@ -10,6 +10,7 @@ import { WaselTable } from "../components/WaselTable"
 import { OrderStatus } from "../types"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
+import { useSearchParams } from "next/navigation"
 
 const statusTabs = [
   { label: "All Orders", value: "all" },
@@ -23,6 +24,9 @@ const statusTabs = [
 ]
 
 export default function OrdersTemplate() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
+
   const {
     activeTab,
     setActiveTab,
@@ -30,8 +34,6 @@ export default function OrdersTemplate() {
     setActiveStatus,
     date,
     setDate,
-    search,
-    setSearch,
   } = useOrdersState()
 
   // Fetch orders - use getAllOrders if "all" is selected, otherwise use getOrdersByStatus
@@ -95,11 +97,8 @@ export default function OrdersTemplate() {
           tabs={statusTabs}
           activeTab={activeStatus}
           setActiveTab={setActiveStatus}
-          search={search}
-          setSearch={setSearch}
           date={date}
           setDate={setDate}
-          searchPlaceholder="Search orders. . ."
         />
 
         {activeTab === "orders" ? (

@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Plus, Download, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/shared/PageHeader"
@@ -36,12 +36,14 @@ function convertAdToCardFormat(ad: any): any {
 
 export default function AdsTemplate() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get("search") || ""
+
   const { data: adsData, isLoading, error } = useAds()
   const { mutate: updateAd } = useUpdateAd()
   const { mutate: deleteAd } = useDeleteAd()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [adToDelete, setAdToDelete] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
 
   // Convert data to AdCard format
   const ads = useMemo(() => {

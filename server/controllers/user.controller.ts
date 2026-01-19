@@ -9,6 +9,7 @@ import {
   createUserSchema,
   updateUserSchema,
   updateUserBlockSchema,
+  updateUserBalanceSchema,
   validateUserData,
 } from "../schemas/user.schema.js";
 import ApiFeatures from "../utils/ApiFeatures.js";
@@ -319,4 +320,58 @@ export const updateUserBlockStatus = asyncHandler(async (req: Request, res: Resp
     message: isBlocked ? "User blocked successfully" : "User unblocked successfully",
     data: { user },
     });
+});
+
+/**
+ * Update user balance (add balance)
+ */
+export const updateUserBalance = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { amount } = validateUserData(updateUserBalanceSchema, req.body);
+
+  const user = await UserModel.findById(id);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  // Update totalBalance
+  user.totalBalance = (user.totalBalance || 0) + amount;
+  user.lastTransactionAt = new Date();
+  
+  await user.save();
+
+  // Return updated user without password
+  const { password: _, ...userResponse } = user.toObject();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: `Successfully added ${amount} to user balance`,
+    data: { user: userResponse },
+  });
+});
+
+/**
+ * Activate user (sets isActive to true)
+ */
+export const activateUser = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const user = await UserModel.findById(id);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.isActive = true;
+  await user.save();
+
+  // Return updated user without password
+  const { password: _, ...userResponse } = user.toObject();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "User activated successfully",
+    data: { user: userResponse },
+  });
 });

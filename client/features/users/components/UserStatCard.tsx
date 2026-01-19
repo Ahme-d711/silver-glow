@@ -3,7 +3,7 @@
 import { LucideIcon, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-interface CustomerStatCardProps {
+interface UserStatCardProps {
   title: string
   value: string
   trend: {
@@ -16,14 +16,14 @@ interface CustomerStatCardProps {
   iconColor: string
 }
 
-export function CustomerStatCard({ 
+export function UserStatCard({ 
   title, 
   value, 
   trend, 
   icon: Icon, 
   iconBg, 
   iconColor 
-}: CustomerStatCardProps) {
+}: UserStatCardProps) {
   return (
     <div className="bg-white p-8 rounded-[32px] border border-divider flex justify-between items-start">
       <div className="space-y-2">

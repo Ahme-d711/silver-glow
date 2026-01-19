@@ -9,6 +9,8 @@ import {
   updateUser,
   deleteUser,
   updateUserBlockStatus,
+  addUserBalance,
+  activateUser,
 } from "../services/user.service";
 import type { User } from "@/features/auth/types";
 import type {
@@ -273,6 +275,105 @@ export function useUpdateUserBlockStatus() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to update status");
+    },
+  });
+}
+
+/**
+ * Add balance to user mutation
+ */
+export function useAddUserBalance() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, amount }: { id: string; amount: number }) =>
+      addUserBalance(id, amount),
+    onSuccess: (response, variables) => {
+      if (response.success && response.data) {
+        // Update user detail cache
+        queryClient.setQueryData<User>(
+          usersKeys.detail(variables.id),
+          response.data.user
+        );
+
+        // Update users list cache if it exists
+        queryClient.setQueryData<GetAllUsersResponse>(
+          usersKeys.lists(),
+          (old) => {
+            if (!old) return old;
+            return {
+              ...old,
+              users: old.users.map((user) =>
+                user._id === variables.id || user.id === variables.id
+                  ? response.data!.user
+                  : user
+              ),
+            };
+          }
+        );
+
+        // Invalidate to refetch in background
+        queryClient.invalidateQueries({
+          queryKey: usersKeys.detail(variables.id),
+        });
+        queryClient.invalidateQueries({ queryKey: usersKeys.lists() });
+
+        toast.success(response.message || "Balance added successfully");
+      } else {
+        toast.error(response.message || "Failed to add balance");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to add balance");
+    },
+  });
+}
+
+/**
+ * Activate user mutation
+ */
+export function useActivateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => activateUser(id),
+    onSuccess: (response, userId) => {
+      if (response.success && response.data) {
+        // Update user detail cache
+        queryClient.setQueryData<User>(
+          usersKeys.detail(userId),
+          response.data.user
+        );
+
+        // Update users list cache if it exists
+        queryClient.setQueryData<GetAllUsersResponse>(
+          usersKeys.lists(),
+          (old) => {
+            if (!old) return old;
+            return {
+              ...old,
+              users: old.users.map((user) =>
+                user._id === userId || user.id === userId
+                  ? response.data!.user
+                  : user
+              ),
+            };
+          }
+        );
+
+        // Invalidate to refetch in background
+        queryClient.invalidateQueries({
+          queryKey: usersKeys.detail(userId),
+        });
+        queryClient.invalidateQueries({ queryKey: usersKeys.lists() });
+
+        toast.success(response.message || "User activated successfully");
+      } else {
+        toast.error(response.message || "Failed to activate user");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to activate user");
     },
   });
 }

@@ -1,24 +1,24 @@
 "use client"
 
 import { ShoppingCart, Wallet } from "lucide-react"
-import { CustomerStatCard } from "./CustomerStatCard"
+import { UserStatCard } from "./UserStatCard"
 
-interface CustomerStatsGridProps {
+interface UserStatsGridProps {
   totalOrders: string
   totalBalance: string
   orderTrend: { value: string; isUp: boolean; sub: string }
   balanceTrend: { value: string; isUp: boolean; sub: string }
 }
 
-export function CustomerStatsGrid({
+export function UserStatsGrid({
   totalOrders,
   totalBalance,
   orderTrend,
   balanceTrend,
-}: CustomerStatsGridProps) {
+}: UserStatsGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <CustomerStatCard
+      <UserStatCard
         title="Total Orders"
         value={totalOrders}
         trend={orderTrend}
@@ -26,7 +26,7 @@ export function CustomerStatsGrid({
         iconBg="bg-orange-50"
         iconColor="text-orange-500"
       />
-      <CustomerStatCard
+      <UserStatCard
         title="Total Balance"
         value={totalBalance}
         trend={balanceTrend}

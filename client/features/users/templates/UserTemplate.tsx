@@ -4,11 +4,13 @@ import React, { useState, useMemo } from "react";
 import { Download, Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TableFilters } from "@/components/shared/TableFilters";
-import { CustomerCard } from "../components/CustomerCard";
+import { UserCard } from "../components/UserCard";
 import { useUsers } from "../hooks/useUser";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import type { User } from "@/features/auth/types";
+import { AddUserDialog } from "../components/AddUserDialog";
+import { useSearchParams } from "next/navigation";
 
 const categoryTabs = [
   { label: "All Status", value: "all" },
@@ -16,38 +18,46 @@ const categoryTabs = [
   { label: "Blocked", value: "blocked" },
 ];
 
-// Convert API User to CustomerCard format
-function convertCustomerToCardFormat(customer: User) {
-  const profileImageUrl = customer.profileImage
-    ? (customer.profileImage.startsWith("http") || customer.profileImage.startsWith("/") 
-        ? customer.profileImage 
-        : `/${customer.profileImage}`)
+// Convert API User to UserCard format
+function convertUserToCardFormat(user: User) {
+  const profileImageUrl = user.profileImage
+    ? (user.profileImage.startsWith("http") || user.profileImage.startsWith("/") 
+        ? user.profileImage 
+        : `/${user.profileImage}`)
     : undefined;
 
   const mongoId =
-    typeof (customer as { _id?: unknown })._id === "string"
-      ? (customer as { _id?: string })._id
+    typeof (user as { _id?: unknown })._id === "string"
+      ? (user as { _id?: string })._id
       : "";
-  const id = (customer.id || mongoId) as string;
-  const walletBalance = customer.walletBalance ?? 0;
-  const isActive = customer.active !== false;
+  const id = (user.id || mongoId) as string;
+  const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
+  
+  const status = user.isBlocked === true
+    ? "Blocked"
+    : user.isActive === false
+    ? "Deactivated"
+    : "Active";
 
   return {
     id,
-    name: customer.name ?? "Unknown",
+    name: user.name ?? "Unknown",
     avatar: profileImageUrl,
-    status: isActive ? ("Active" as const) : ("Blocked" as const),
+    status: (status === "Active" ? "Active" : "Blocked") as "Active" | "Blocked",
     orders: "0", // TODO: Get from orders API when available
     balance: `${walletBalance.toFixed(2)}`, // Format wallet balance
   };
 }
 
-export default function CustomerTemplate() {
+export default function UserTemplate() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
+  
   const [activeTab, setActiveTab] = useState("all");
-  const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [addUserOpen, setAddUserOpen] = useState(false);
 
-  const { data: customersData, isLoading, error } = useUsers();
+  const { data: usersData, isLoading, error } = useUsers();
 
   const handleSelect = (id: string, selected: boolean) => {
     if (selected) {
@@ -57,11 +67,11 @@ export default function CustomerTemplate() {
     }
   };
 
-  // Convert and filter customers
-  const filteredCustomers = useMemo(() => {
-    if (!customersData) return [];
+  // Convert and filter users
+  const filteredUsers = useMemo(() => {
+    if (!usersData) return [];
 
-    let converted = customersData.users.map(convertCustomerToCardFormat);
+    let converted = usersData.users.map(convertUserToCardFormat);
 
     // Filter by status
     if (activeTab === "active") {
@@ -81,19 +91,19 @@ export default function CustomerTemplate() {
     }
 
     return converted;
-  }, [customersData, activeTab, search]);
+  }, [usersData, activeTab, search]);
 
   if (isLoading) {
     return (
       <div className="space-y-6 min-h-screen">
         <PageHeader
-          title="Customer"
+          title="User"
           breadcrumbs={[
             { label: "Dashboard", href: "/dashboard" },
-            { label: "Customer List" },
+            { label: "User List" },
           ]}
         />
-        <UniLoading message="Loading customers..." />
+        <UniLoading message="Loading users..." />
       </div>
     );
   }
@@ -102,14 +112,14 @@ export default function CustomerTemplate() {
     return (
       <div className="space-y-6 min-h-screen">
         <PageHeader
-          title="Customer"
+          title="User"
           breadcrumbs={[
             { label: "Dashboard", href: "/dashboard" },
-            { label: "Customer List" },
+            { label: "User List" },
           ]}
         />
         <NoDataMsg
-          title="Failed to load customers"
+          title="Failed to load users"
           description={error instanceof Error ? error.message : "An error occurred"}
           iconBgColor="bg-red-100"
           iconColor="text-red-500"
@@ -121,10 +131,10 @@ export default function CustomerTemplate() {
   return (
     <div className="space-y-6 min-h-screen">
       <PageHeader
-        title="Customer"
+        title="User"
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Customer List" },
+          { label: "User List" },
         ]}
         actionButtons={[
           {
@@ -135,36 +145,35 @@ export default function CustomerTemplate() {
             onClick: () => console.log("Exporting...")
           },
           {
-            label: "Add Customer",
+            label: "Add User",
             icon: Plus,
             className: "bg-primary text-white hover:bg-primary/90",
-            onClick: () => console.log("Adding customer...")
+            onClick: () => setAddUserOpen(true)
           }
         ]}
       />
+
+      <AddUserDialog open={addUserOpen} onOpenChange={setAddUserOpen} />
 
       <div className="bg-white rounded-[24px] border border-divider">
         <TableFilters
           tabs={categoryTabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          search={search}
-          setSearch={setSearch}
-          searchPlaceholder="Search customer. . ."
         />
 
-        {filteredCustomers.length === 0 ? (
+        {filteredUsers.length === 0 ? (
           <NoDataMsg
-            title="No customers found"
-            description={search || activeTab !== "all" ? "Try adjusting your filters" : "No customers available"}
+            title="No users found"
+            description={search || activeTab !== "all" ? "Try adjusting your filters" : "No users available"}
           />
         ) : (
           <div className="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {filteredCustomers.map((customer) => (
-              <CustomerCard
-                key={customer.id}
-                {...customer}
-                selected={selectedIds.includes(customer.id)}
+            {filteredUsers.map((user) => (
+              <UserCard
+                key={user.id}
+                {...user}
+                selected={selectedIds.includes(user.id)}
                 onSelect={handleSelect}
               />
             ))}

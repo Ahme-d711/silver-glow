@@ -1,5 +1,5 @@
-import CustomerDetailsTemplate from "@/features/users/templates/CustomerDetailsTemplate";
+import UserDetailsTemplate from "@/features/users/templates/UserDetailsTemplate";
 
-export default function CustomerDetailsPage() {
-  return <CustomerDetailsTemplate />
+export default function UserDetailsPage() {
+  return <UserDetailsTemplate />
 }

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-interface CustomerCardProps {
+interface UserCardProps {
   id: string
   name: string
   avatar?: string
@@ -18,7 +18,7 @@ interface CustomerCardProps {
   onSelect?: (id: string, selected: boolean) => void
 }
 
-export function CustomerCard({
+export function UserCard({
   id,
   name,
   avatar,
@@ -27,7 +27,7 @@ export function CustomerCard({
   balance,
   selected,
   onSelect,
-}: CustomerCardProps) {
+}: UserCardProps) {
   const router = useRouter()
 
   return (

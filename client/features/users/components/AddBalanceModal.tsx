@@ -11,7 +11,7 @@ interface AddBalanceModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   currentBalance: number
-  customerName: string
+  userName: string
   onConfirm: (amount: number) => void
   isLoading?: boolean
 }
@@ -20,7 +20,7 @@ export function AddBalanceModal({
   open,
   onOpenChange,
   currentBalance,
-  customerName,
+  userName,
   onConfirm,
   isLoading = false,
 }: AddBalanceModalProps) {
@@ -56,7 +56,7 @@ export function AddBalanceModal({
             Add Balance
           </DialogTitle>
           <DialogDescription className="text-center text-sm text-content-secondary mt-2">
-            Add balance to {customerName}&apos;s account
+            Add balance to {userName}&apos;s account
           </DialogDescription>
         </DialogHeader>
 
