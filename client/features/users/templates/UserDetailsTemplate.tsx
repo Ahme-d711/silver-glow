@@ -11,9 +11,10 @@ import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { AddBalanceModal } from "../components/AddBalanceModal";
+import EditUserTemplate from "./EditUserTemplate";
 import { format } from "date-fns";
 import type { User } from "@/features/auth/types";
-import { Wallet } from "lucide-react";
+import { Wallet, Pencil } from "lucide-react";
 
 // Mock transactions - TODO: Replace with real API when available
 const transactions = [
@@ -38,6 +39,7 @@ export default function UserDetailsTemplate() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [activateDialogOpen, setActivateDialogOpen] = useState(false);
   const [balanceModalOpen, setBalanceModalOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -185,6 +187,13 @@ export default function UserDetailsTemplate() {
         ]}
         actionButtons={[
           {
+            label: "Edit Profile",
+            icon: Pencil,
+            variant: "outline",
+            className: "bg-secondary text-primary border-none hover:bg-secondary/80",
+            onClick: () => setEditDialogOpen(true),
+          },
+          {
             label: "Add Balance",
             icon: Wallet,
             className: "bg-primary text-white hover:bg-primary/90",
@@ -266,6 +275,15 @@ export default function UserDetailsTemplate() {
         onConfirm={handleConfirmBalance}
         isLoading={isAddingBalance}
       />
+
+      {/* Edit User Dialog */}
+      {user && (
+        <EditUserTemplate
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          user={user}
+        />
+      )}
     </div>
   );
 }

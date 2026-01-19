@@ -9,13 +9,15 @@ import { useUsers } from "../hooks/useUser";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import type { User } from "@/features/auth/types";
-import { AddUserDialog } from "../components/AddUserDialog";
+import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
 
 const categoryTabs = [
   { label: "All Status", value: "all" },
   { label: "Active", value: "active" },
+  { label: "Not Active", value: "deactivated" },
   { label: "Blocked", value: "blocked" },
+  { label: "Not Blocked", value: "not_blocked" },
 ];
 
 // Convert API User to UserCard format
@@ -43,7 +45,7 @@ function convertUserToCardFormat(user: User) {
     id,
     name: user.name ?? "Unknown",
     avatar: profileImageUrl,
-    status: (status === "Active" ? "Active" : "Blocked") as "Active" | "Blocked",
+    status: (status === "Active" ? "Active" : status === "Blocked" ? "Blocked" : "Blocked") as "Active" | "Blocked",
     orders: "0", // TODO: Get from orders API when available
     balance: `${walletBalance.toFixed(2)}`, // Format wallet balance
   };
@@ -57,7 +59,11 @@ export default function UserTemplate() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [addUserOpen, setAddUserOpen] = useState(false);
 
-  const { data: usersData, isLoading, error } = useUsers();
+  const { data: usersData, isLoading, error } = useUsers({
+    search,
+    isActive: activeTab === "active" ? true : activeTab === "deactivated" ? false : undefined,
+    isBlocked: activeTab === "blocked" ? true : activeTab === "not_blocked" ? false : undefined,
+  });
 
   const handleSelect = (id: string, selected: boolean) => {
     if (selected) {
@@ -67,31 +73,11 @@ export default function UserTemplate() {
     }
   };
 
-  // Convert and filter users
+  // Convert users from API
   const filteredUsers = useMemo(() => {
     if (!usersData) return [];
-
-    let converted = usersData.users.map(convertUserToCardFormat);
-
-    // Filter by status
-    if (activeTab === "active") {
-      converted = converted.filter((c) => c.status === "Active");
-    } else if (activeTab === "blocked") {
-      converted = converted.filter((c) => c.status === "Blocked");
-    }
-
-    // Filter by search
-    if (search.trim()) {
-      const searchLower = search.toLowerCase();
-      converted = converted.filter(
-        (c) =>
-          c.name.toLowerCase().includes(searchLower) ||
-          c.id.toLowerCase().includes(searchLower)
-      );
-    }
-
-    return converted;
-  }, [usersData, activeTab, search]);
+    return usersData.users.map(convertUserToCardFormat);
+  }, [usersData]);
 
   if (isLoading) {
     return (
@@ -153,7 +139,7 @@ export default function UserTemplate() {
         ]}
       />
 
-      <AddUserDialog open={addUserOpen} onOpenChange={setAddUserOpen} />
+      <AddUserTemplate open={addUserOpen} onOpenChange={setAddUserOpen} />
 
       <div className="bg-white rounded-[24px] border border-divider">
         <TableFilters

@@ -40,9 +40,9 @@ export type CreateUserInput = z.infer<typeof createUserSchema>;
 export const updateUserSchema = z.object({
   name: nameSchema.optional(),
   email: emailSchema.optional(),
-  password: passwordSchema.optional(),
-  phone: phoneSchema,
-  picture: pictureSchema,
+  password: passwordSchema.optional().or(z.literal("")),
+  phone: phoneSchema.optional(),
+  picture: pictureSchema.optional(),
   role: roleSchema.optional(),
   isActive: z.boolean().optional(),
   isVerified: z.boolean().optional(),
@@ -67,7 +67,8 @@ export const getUsersQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional().default(10),
   search: z.string().optional(),
   role: z.enum(USER_ROLES as unknown as [string, ...string[]]).optional(),
-  isActive: z.coerce.boolean().optional(),
+  isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
+  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
 });
 
 export type GetUsersQueryInput = z.infer<typeof getUsersQuerySchema>;

@@ -36,6 +36,7 @@ export interface GetAllUsersParams {
   search?: string;
   role?: "admin" | "user";
   isActive?: boolean;
+  isBlocked?: boolean;
 }
 
 /**

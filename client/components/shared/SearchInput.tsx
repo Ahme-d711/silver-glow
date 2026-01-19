@@ -19,19 +19,27 @@ export function SearchInput({ className, ...props }: SearchInputProps) {
   const [query] = useDebounce(text, 500);
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const currentSearch = currentParams.get("search") || "";
+    
+    // فقط قم بالتحديث إذا كانت القيمة مختلفة فعلياً
+    if (currentSearch === query) return;
+
     if (query) {
-      params.set("search", query);
+      currentParams.set("search", query);
     } else {
-      params.delete("search");
+      currentParams.delete("search");
     }
-    router.replace(`${pathname}?${params.toString()}`);
+    
+    const newPath = `${pathname}?${currentParams.toString()}`;
+    router.replace(newPath, { scroll: false });
   }, [query, pathname, router, searchParams]);
 
-  // Sync with URL when navigating back/forward
+  // Sync with URL when navigating back/forward (e.g. back button)
+  const searchFromUrl = searchParams.get("search") || "";
   useEffect(() => {
-    setText(searchParams.get("search") || "");
-  }, [searchParams]);
+    setText(searchFromUrl);
+  }, [searchFromUrl]);
 
   return (
     <div className={cn("relative flex-1", className)}>

@@ -39,8 +39,7 @@ export const phoneSchema = z
 
 export const pictureSchema = z
   .string()
-  .url("Picture must be a valid URL")
-  .max(255, "Picture URL must be less than 255 characters")
+  .max(500, "Picture must be less than 500 characters")
   .optional()
   .or(z.literal(""));
 
@@ -77,7 +76,7 @@ export const createUserSchema = z.object({
 export const updateUserSchema = z.object({
   name: nameSchema.optional(),
   email: emailSchema.optional(),
-  password: passwordSchema.optional(),
+  password: passwordSchema.optional().or(z.literal("")),
   phone: phoneSchema.optional(),
   picture: pictureSchema.optional(),
   role: roleSchema.optional(),
@@ -107,7 +106,8 @@ export const getUsersQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional().default(10),
   search: z.string().optional(),
   role: z.enum(USER_ROLES as unknown as [string, ...string[]]).optional(),
-  isActive: z.coerce.boolean().optional(),
+  isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
+  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
 });
 
 /**

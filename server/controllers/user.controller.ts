@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {
   createUserSchema,
   updateUserSchema,
+  getUsersQuerySchema,
   updateUserBlockSchema,
   updateUserBalanceSchema,
   validateUserData,
@@ -72,10 +73,10 @@ const convertQueryToParams = (query: Request["query"]): Record<string, string | 
  * Get all users with filtering, searching, and pagination
  */
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
+  const validatedQuery = validateUserData(getUsersQuerySchema, req.query);
   const query = UserModel.find().select("-password").sort({ createdAt: -1 });
-  const queryParams = convertQueryToParams(req.query);
 
-  const apiFeatures = new ApiFeatures(query, queryParams)
+  const apiFeatures = new ApiFeatures(query, validatedQuery as any)
     .filter()
     .search(["name", "email"])
     .paginate();

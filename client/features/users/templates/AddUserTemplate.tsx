@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { UserForm } from "../components/UserForm";
 import { useCreateUser } from "../hooks/useUser";
-import { UserForm } from "./UserForm";
 import { UserFormValues } from "../schemas/user.schema";
 
 interface AddUserDialogProps {
@@ -16,10 +16,10 @@ interface AddUserDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
+export default function AddUserTemplate({ open, onOpenChange }: AddUserDialogProps) {
   const { mutate: createUser, isPending } = useCreateUser();
 
-  const handleSubmit = (data: UserFormValues) => {
+  const handleSubmit = (data: UserFormValues, pictureFile?: File) => {
     // Clean values before sending
     const payload = {
       ...data,
@@ -28,14 +28,11 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       address: data.address || undefined,
     };
 
-    createUser(
-      { payload },
-      {
-        onSuccess: () => {
-          onOpenChange(false);
-        },
-      }
-    );
+    createUser({ payload, pictureFile }, {
+      onSuccess: () => {
+        onOpenChange(false);
+      },
+    });
   };
 
   return (
@@ -45,7 +42,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
           <DialogTitle className="text-2xl font-bold text-content-primary">Add New User</DialogTitle>
         </DialogHeader>
 
-        <UserForm 
+        <UserForm
           onSubmit={handleSubmit}
           isLoading={isPending}
           onCancel={() => onOpenChange(false)}
