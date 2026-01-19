@@ -1,0 +1,21 @@
+{
+  "name": "Rahwan",
+  "short_name": "Rahwan",
+  "description": "",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/top-logo.svg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "ar-SA",
+  "dir": "rtl"
+}
+
