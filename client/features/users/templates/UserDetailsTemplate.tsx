@@ -15,6 +15,7 @@ import EditUserTemplate from "./EditUserTemplate";
 import { format } from "date-fns";
 import type { User } from "@/features/auth/types";
 import { Wallet, Pencil } from "lucide-react";
+import { BASE_URL } from "@/utils/constants";
 
 // Mock transactions - TODO: Replace with real API when available
 const transactions = [
@@ -77,10 +78,11 @@ export default function UserDetailsTemplate() {
   }
 
   // Format user data for components
-  const profileImageUrl = user.profileImage
-    ? (user.profileImage.startsWith("http") || user.profileImage.startsWith("/") 
-        ? user.profileImage 
-        : `/${user.profileImage}`)
+  const imagePath = user.picture || user.profileImage || user.photo;
+  const profileImageUrl = imagePath
+    ? (imagePath.startsWith("http") 
+        ? imagePath 
+        : `${BASE_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`)
     : undefined;
 
   const lastTransactionAt = user.lastTransactionAt ?? user.createdAt;

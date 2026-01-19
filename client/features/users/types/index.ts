@@ -51,6 +51,10 @@ export interface CreateUserPayload {
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
+  isBlocked?: boolean;
+  address?: string;
+  totalOrders?: number;
+  totalBalance?: number;
 }
 
 /**
@@ -66,6 +70,9 @@ export interface UpdateUserPayload {
   isActive?: boolean;
   isVerified?: boolean;
   isBlocked?: boolean;
+  address?: string;
+  totalOrders?: number;
+  totalBalance?: number;
 }
 
 /**

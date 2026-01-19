@@ -25,6 +25,7 @@ import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
 import { z } from "zod";
 import React, { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BASE_URL } from "@/utils/constants";
 
 type UserFormValues = z.infer<typeof createUserSchema>;
 
@@ -45,7 +46,13 @@ export function UserForm({
   submitLabel = "Submit",
   isEdit = false,
 }: UserFormProps) {
-  const [preview, setPreview] = useState<string | null>(defaultValues?.picture || null);
+  const initialPreview = defaultValues?.picture 
+    ? (defaultValues.picture.startsWith("http") || defaultValues.picture.startsWith("data:")
+        ? defaultValues.picture 
+        : `${BASE_URL}${defaultValues.picture.startsWith("/") ? "" : "/"}${defaultValues.picture}`)
+    : null;
+
+  const [preview, setPreview] = useState<string | null>(initialPreview);
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

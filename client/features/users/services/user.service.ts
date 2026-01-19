@@ -106,13 +106,17 @@ export async function createUser(
         formData.append("isActive", String(payload.isActive));
       if (payload.isVerified !== undefined)
         formData.append("isVerified", String(payload.isVerified));
+      if (payload.isBlocked !== undefined)
+        formData.append("isBlocked", String(payload.isBlocked));
+      if (payload.address) formData.append("address", payload.address);
+      if (payload.totalOrders !== undefined)
+        formData.append("totalOrders", String(payload.totalOrders));
+      if (payload.totalBalance !== undefined)
+        formData.append("totalBalance", String(payload.totalBalance));
+
       formData.append("picture", pictureFile);
 
-      response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", formData);
     } else {
       // Use JSON for regular data
       response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", payload);
@@ -159,13 +163,17 @@ export async function updateUser(
         formData.append("isActive", String(payload.isActive));
       if (payload.isVerified !== undefined)
         formData.append("isVerified", String(payload.isVerified));
+      if (payload.isBlocked !== undefined)
+        formData.append("isBlocked", String(payload.isBlocked));
+      if (payload.address) formData.append("address", payload.address);
+      if (payload.totalOrders !== undefined)
+        formData.append("totalOrders", String(payload.totalOrders));
+      if (payload.totalBalance !== undefined)
+        formData.append("totalBalance", String(payload.totalBalance));
+
       formData.append("picture", pictureFile);
 
-      response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, formData);
     } else {
       // Use JSON for regular data
       response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, payload);

@@ -7,6 +7,7 @@ export interface User {
   rolesStr?: string[]; // Array of user permissions/roles
   photo?: string | null;
   profileImage?: string | null;
+  picture?: string | null;
   username?: string;
   phone?: string;
   type?: string;

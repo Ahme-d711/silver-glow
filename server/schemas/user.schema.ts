@@ -19,9 +19,9 @@ export const createUserSchema = z.object({
   phone: phoneSchema,
   picture: pictureSchema,
   role: roleSchema.default("user"),
-  isActive: z.boolean().optional().default(true),
-  isVerified: z.boolean().optional().default(false),
-  isBlocked: z.boolean().optional().default(false),
+  isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(true)),
+  isVerified: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(false)),
+  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(false)),
   address: z
     .string()
     .max(500, "Address must be less than 500 characters")
@@ -42,11 +42,17 @@ export const updateUserSchema = z.object({
   email: emailSchema.optional(),
   password: passwordSchema.optional().or(z.literal("")),
   phone: phoneSchema.optional(),
-  picture: pictureSchema.optional(),
+  picture: z.preprocess(
+    (val) => val === undefined || val === "" ? undefined : val,
+    z.union([
+      z.url("Picture must be a valid URL").max(255, "Picture URL must be less than 255 characters"),
+      z.undefined()
+    ])
+  ).optional(),
   role: roleSchema.optional(),
-  isActive: z.boolean().optional(),
-  isVerified: z.boolean().optional(),
-  isBlocked: z.boolean().optional(),
+  isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
+  isVerified: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
+  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
   address: z
     .string()
     .max(500, "Address must be less than 500 characters")

@@ -11,6 +11,7 @@ import NoDataMsg from "@/components/shared/NoDataMsg";
 import type { User } from "@/features/auth/types";
 import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
 
 const categoryTabs = [
   { label: "All Status", value: "all" },
@@ -22,10 +23,11 @@ const categoryTabs = [
 
 // Convert API User to UserCard format
 function convertUserToCardFormat(user: User) {
-  const profileImageUrl = user.profileImage
-    ? (user.profileImage.startsWith("http") || user.profileImage.startsWith("/") 
-        ? user.profileImage 
-        : `/${user.profileImage}`)
+  const imagePath = user.picture || user.profileImage || user.photo;
+  const profileImageUrl = imagePath
+    ? (imagePath.startsWith("http") 
+        ? imagePath 
+        : `${BASE_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`)
     : undefined;
 
   const mongoId =
