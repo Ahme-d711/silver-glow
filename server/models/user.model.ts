@@ -42,6 +42,37 @@ const UserSchema = new Schema<IUser>(
       trim: true,
       maxlength: 20,
     },
+    address: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 500,
+    },
+    totalOrders: {
+      type: Number,
+      required: false,
+      default: 0,
+      min: 0,
+    },
+    totalBalance: {
+      type: Number,
+      required: false,
+      default: 0,
+      min: 0,
+    },
+    lastLoginAt: {
+      type: Date,
+      required: false,
+    },
+    lastTransactionAt: {
+      type: Date,
+      required: false,
+    },
+    isBlocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       required: false,

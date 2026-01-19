@@ -11,18 +11,18 @@ export default function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const loginPaths = ["/login"];
+  const loginPaths = ["/dashboard/login"];
   const isLoginPage = loginPaths.includes(pathname);
 
   // List of valid routes that should show sidebar and navbar
   const validRoutes = [
-    "/",
-    "/packages",
-    "/customers",
-    "/ads",
-    "/services",
-    "/orders",
-    "/settings",
+    "/dashboard",
+    "/dashboard/packages",
+    "/dashboard/users",
+    "/dashboard/ads",
+    "/dashboard/services",
+    "/dashboard/orders",
+    "/dashboard/settings",
   ];
 
   // Check if current pathname is a valid route or starts with a valid route

@@ -1,24 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut, ChevronDown, Bell, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LogOut, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "./ui/card";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { SearchInput } from "./shared/SearchInput";
+import { useLogout } from "@/features/auth/hooks/useLogout";
+import { ConfirmationDialog } from "./shared/ConfirmationDialog";
+import Link from "next/link";
 
 export function DashboardNavbar() {
   const { user } = useAuthStore();
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  console.log(user);
+  
+  const router = useRouter();
+  const { logout, loading: isLoggingOut } = useLogout();
+
+  console.log(user);
+  
 
   const userName = user?.name || user?.username || "Ahmed Elgedawy";
   const userPhoto = user?.photo || user?.profileImage;
   const userInitial = userName?.charAt(0).toUpperCase() || "M";
   const userRole = user?.role === "admin" ? "Admin" : "Admin"; // Simplified for now
   const [imageError, setImageError] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  const userId = (user && (user._id || user.id)) as string | undefined;
+
+  const handleEditProfile = () => {
+    if (!userId) return;
+    router.push(`/users/${userId}`);
+  };
+
+  const handleLogout = () => {
+    setLogoutDialogOpen(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    if (isLoggingOut) return;
+    await logout();
+  };
 
   return (
     <nav className="w-full">
@@ -66,14 +92,16 @@ export function DashboardNavbar() {
             </PopoverTrigger>
             <PopoverContent className="w-56 mt-2 border-divider" align="end">
               <div className="flex flex-col gap-2">
+              <Link href={`/users/${userId}`}>
                 <Button
-                  onClick={() => setIsProfileModalOpen(true)}
+                  onClick={handleEditProfile}
                   variant="outline"
                   className="w-full justify-start"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  Edit Profile
+                  Profile
                 </Button>
+                  </Link>
                 {/* <Button
                   onClick={toggleTheme}
                   variant="outline"
@@ -87,10 +115,12 @@ export function DashboardNavbar() {
                   <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100 mr-2" />
                   <span className="ml-2">Change Theme</span>
                 </Button> */}
+
                 <Button
-                  onClick={() => setIsLogoutModalOpen(true)}
+                  onClick={handleLogout}
                   variant="destructive"
                   className="w-full justify-start"
+                  disabled={isLoggingOut}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                    Logout
@@ -100,6 +130,18 @@ export function DashboardNavbar() {
           </Popover>
         </div>
       </Card>
+
+      {/* Logout Confirmation Dialog */}
+      <ConfirmationDialog
+        open={logoutDialogOpen}
+        onOpenChange={setLogoutDialogOpen}
+        title="Logout"
+        description="Are you sure you want to logout? You will need to login again to access your account."
+        confirmText="Logout"
+        variant="default"
+        onConfirm={handleConfirmLogout}
+        isLoading={isLoggingOut}
+      />
     </nav>
   );
 }

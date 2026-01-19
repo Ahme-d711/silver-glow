@@ -25,9 +25,11 @@ export async function initDefaultAdmin(): Promise<void> {
         const adminUser = new UserModel({
           name: env.defaultAdminName,
           email: env.defaultAdminEmail.toLowerCase(),
-          phone: "201018939831",
+          phone: env.defaultAdminPhone,
+          address: env.defaultAdminAddress,
           isVerified: true,
           isActive: true,
+          isBlocked:false,
           password: hashedPassword,
           role: "admin",
         });

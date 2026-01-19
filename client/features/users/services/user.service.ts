@@ -207,3 +207,31 @@ export async function deleteUser(id: string): Promise<ServiceResponse<null>> {
   }
 }
 
+/**
+ * Update user block status
+ */
+export async function updateUserBlockStatus(
+  id: string,
+  isBlocked: boolean
+): Promise<ServiceResponse<{ user: User }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ user: User }>>(
+      `/users/${id}/block`,
+      { isBlocked }
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to update block status",
+      error: err.message,
+    };
+  }
+}
+

@@ -25,42 +25,42 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     title: "Overview",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Advertisements",
-    href: "/ads",
+    href: "/dashboard/ads",
     icon: Megaphone,
   },
   {
     title: "Users",
-    href: "/users",
+    href: "/dashboard/users",
     icon: Users,
   },
   {
     title: "Products",
-    href: "/products",
+    href: "/dashboard/products",
     icon: Package,
   },
   {
     title: "Categories",
-    href: "/categories",
+    href: "/dashboard/categories",
     icon: Layers,
   },
   {
     title: "SubCategories",
-    href: "/subcategories",
+    href: "/dashboard/subcategories",
     icon: Tag,
   },
   {
     title: "Orders",
-    href: "/orders",
+    href: "/dashboard/orders",
     icon: ShoppingCart,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];

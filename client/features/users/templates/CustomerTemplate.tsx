@@ -24,7 +24,11 @@ function convertCustomerToCardFormat(customer: User) {
         : `/${customer.profileImage}`)
     : undefined;
 
-  const id = (customer.id || (customer as any)._id || "") as string;
+  const mongoId =
+    typeof (customer as { _id?: unknown })._id === "string"
+      ? (customer as { _id?: string })._id
+      : "";
+  const id = (customer.id || mongoId) as string;
   const walletBalance = customer.walletBalance ?? 0;
   const isActive = customer.active !== false;
 
@@ -85,7 +89,7 @@ export default function CustomerTemplate() {
         <PageHeader
           title="Customer"
           breadcrumbs={[
-            { label: "Dashboard", href: "/" },
+            { label: "Dashboard", href: "/dashboard" },
             { label: "Customer List" },
           ]}
         />
@@ -100,13 +104,15 @@ export default function CustomerTemplate() {
         <PageHeader
           title="Customer"
           breadcrumbs={[
-            { label: "Dashboard", href: "/" },
+            { label: "Dashboard", href: "/dashboard" },
             { label: "Customer List" },
           ]}
         />
         <NoDataMsg
           title="Failed to load customers"
           description={error instanceof Error ? error.message : "An error occurred"}
+          iconBgColor="bg-red-100"
+          iconColor="text-red-500"
         />
       </div>
     );
@@ -117,7 +123,7 @@ export default function CustomerTemplate() {
       <PageHeader
         title="Customer"
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
+          { label: "Dashboard", href: "/dashboard" },
           { label: "Customer List" },
         ]}
         actionButtons={[

@@ -10,6 +10,8 @@ export const env = {
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,
   defaultAdminEmail: process.env.DEFAULT_ADMIN_EMAIL || "admin@admin.com",
   defaultAdminPassword: process.env.DEFAULT_ADMIN_PASSWORD || "admin123",
+  defaultAdminPhone: process.env.DEFAULT_ADMIN_PHONE || "201018939831",
+  defaultAdminAddress: process.env.DEFAULT_ADMIN_ADDRESS || "123 Main St, Anytown, USA",
   defaultAdminName: process.env.DEFAULT_ADMIN_NAME || "Super Admin",
   useHttps: process.env.USE_HTTPS === "true",
   cookieHttpOnly: process.env.COOKIE_HTTP_ONLY === "true",

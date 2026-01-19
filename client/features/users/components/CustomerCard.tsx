@@ -32,7 +32,7 @@ export function CustomerCard({
 
   return (
     <div 
-      onClick={() => router.push(`/customers/${id}`)}
+      onClick={() => router.push(`/dashboard/users/${id}`)}
       className="bg-white rounded-[24px] border border-divider p-6 flex flex-col items-center relative group hover:shadow-md transition-shadow cursor-pointer"
     >
       <div 

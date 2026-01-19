@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
-import { CoreProviders } from "./providers";
-import DashboardLayoutClient from "./(dashboard)/DashboardLayoutClient";
+import { CoreProviders, Providers } from "./providers";
+import DashboardLayoutClient from "./dashboard/DashboardLayoutClient";
+import { getProfile } from "@/features/auth/actions/auth.service";
 
 const cairo = Cairo({
   variable: "--font-cairo",
@@ -24,13 +25,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const profileData = await getProfile();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${cairo.variable} font-sans antialiased`}
       >
         <CoreProviders>
+          <Providers data={profileData}>
             <DashboardLayoutClient>{children}</DashboardLayoutClient>
+          </Providers>
         </CoreProviders>
       </body>
     </html>

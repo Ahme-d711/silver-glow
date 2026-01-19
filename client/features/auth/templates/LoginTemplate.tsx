@@ -10,7 +10,7 @@ export function LoginTemplate() {
   return (
     <div className="flex items-center min-h-screen w-full relative">
       {/* Left Side - Form */}
-      <div className="flex w-full flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-1/2 xl:px-50">
+      <div className="flex w-full flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-1/2 lg:px-12">
         <div className="mx-auto w-full">
           <LoginForm login={login} loading={loading} />
         </div>

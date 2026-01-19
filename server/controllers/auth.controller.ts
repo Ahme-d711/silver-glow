@@ -132,6 +132,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Your account has been deactivated", 403);
   }
 
+  // Check if user is blocked
+  if (user.isBlocked === true) {
+    throw new AppError("Your account has been blocked", 403);
+  }
+
   // Check if phone is verified
   if (user.isVerified === false) {
     throw new AppError("Please verify your phone number before logging in", 403);
@@ -143,6 +148,10 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     if (!isMatch) {
       throw new AppError("Invalid login credentials", 401);
     }
+
+  // Update last login timestamp
+  user.lastLoginAt = new Date();
+  await user.save();
 
   // Send authentication response
   sendAuthResponse(user, res, 200, "Login successful");

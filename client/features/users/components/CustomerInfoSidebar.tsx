@@ -16,10 +16,19 @@ interface CustomerInfoSidebarProps {
     lastTransaction: string
     lastOnline: string
     profileImage?: string
+    isBlocked?: boolean
   }
+  onBlockToggle?: () => void
+  onDelete?: () => void
+  disableActions?: boolean
 }
 
-export function CustomerInfoSidebar({ customer }: CustomerInfoSidebarProps) {
+export function CustomerInfoSidebar({
+  customer,
+  onBlockToggle,
+  onDelete,
+  disableActions,
+}: CustomerInfoSidebarProps) {
   return (
     <div className="bg-white rounded-[32px] border border-divider overflow-hidden flex flex-col items-center p-6 pb-8 relative">
       <div className="absolute top-0 left-0 right-0 h-37 w-full">
@@ -47,7 +56,7 @@ export function CustomerInfoSidebar({ customer }: CustomerInfoSidebarProps) {
       </Badge>
 
       <div className="w-full space-y-6 border-t border-divider pt-8">
-        <DetailItem icon={User} label="Customer ID" value={customer.id} />
+        <DetailItem icon={User} label="Customer ID" value={customer.id.slice(0,6)} />
         <DetailItem icon={MapPin} label="Address" value={customer.address} />
         <DetailItem icon={Phone} label="Phone Number" value={customer.phone} />
         <DetailItem icon={ShoppingCart} label="Last Transaction" value={customer.lastTransaction} />
@@ -55,10 +64,20 @@ export function CustomerInfoSidebar({ customer }: CustomerInfoSidebarProps) {
       </div>
 
       <div className="w-full pt-8 space-y-3">
-        <Button variant="destructive" className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none">
-          Block Customer
+        <Button
+          variant="destructive"
+          className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none"
+          onClick={onBlockToggle}
+          disabled={disableActions}
+        >
+          {customer.isBlocked ? "Unblock Customer" : "Block Customer"}
         </Button>
-        <Button variant="destructive" className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none">
+        <Button
+          variant="destructive"
+          className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none"
+          onClick={onDelete}
+          disabled={disableActions}
+        >
           Delete Customer
         </Button>
       </div>

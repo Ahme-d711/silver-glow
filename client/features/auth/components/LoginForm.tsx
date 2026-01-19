@@ -40,7 +40,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
   }
 
   return (
-    <div className="w-full space-y-8 max-w-xl">
+    <div className="w-full space-y-8 max-w-xl mx-auto">
       <div>
         <h2 className="text-[40px] font-bold text-primary">
           Sign In
@@ -79,8 +79,8 @@ export function LoginForm({ login, loading }: LoginFormProps) {
           </div>
 
           <Button type="submit" className="w-full rounded-2xl text-base" disabled={loading}>
-            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
             Log In
+            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
           </Button>
         </form>
       </Form>

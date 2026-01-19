@@ -13,7 +13,7 @@ const serverAxios: AxiosInstance = axios.create({
 });
 
 serverAxios.interceptors.request.use(async (config) => {
-  const accessToken = (await cookies()).get("token")?.value;
+  const accessToken = (await cookies()).get("accessToken")?.value || (await cookies()).get("token")?.value;
   if (accessToken && config.headers) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -29,8 +29,10 @@ serverAxios.interceptors.response.use(
       error.response.data &&
       error.response.data.message &&
       (error.response.data.message.includes("unauthenticated") ||
-        error.response.data.message.includes("Unauthenticated"))
+        error.response.data.message.includes("Unauthenticated") ||
+        error.response.status === 401)
     ) {
+      (await cookies()).delete("accessToken");
       (await cookies()).delete("token");
       delete serverAxios.defaults.headers.common["Authorization"];
     }

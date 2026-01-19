@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {
   createUserSchema,
   updateUserSchema,
+  updateUserBlockSchema,
   validateUserData,
 } from "../schemas/user.schema.js";
 import ApiFeatures from "../utils/ApiFeatures.js";
@@ -140,6 +141,11 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
       role: validatedData.role,
       isActive: validatedData.isActive,
       isVerified: validatedData.isVerified,
+      address: validatedData.address,
+      totalOrders: validatedData.totalOrders,
+      totalBalance: validatedData.totalBalance,
+      lastLoginAt: validatedData.lastLoginAt,
+      lastTransactionAt: validatedData.lastTransactionAt,
     });
 
     // Return user without password (no need for additional query)
@@ -263,7 +269,7 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     sendResponse(res, 200, {
       success: true,
     message: "User deactivated successfully",
-  });
+    });
 });
 
 /**
@@ -288,5 +294,29 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
       success: true,
     message: "User data retrieved successfully",
       data: { user },
+    });
+});
+
+/**
+ * Update user block status (isBlocked: true/false)
+ */
+export const updateUserBlockStatus = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { isBlocked } = validateUserData(updateUserBlockSchema, req.body);
+
+  const user = await UserModel.findByIdAndUpdate(
+    id,
+    { isBlocked },
+    { new: true }
+  ).select("-password");
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+    sendResponse(res, 200, {
+      success: true,
+    message: isBlocked ? "User blocked successfully" : "User unblocked successfully",
+    data: { user },
     });
 });

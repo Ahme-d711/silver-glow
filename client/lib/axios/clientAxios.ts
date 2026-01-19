@@ -6,6 +6,7 @@ import { useAuthStore } from "@/features/auth/stores/authStore";
 
 const clientAxios: AxiosInstance = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -14,9 +15,14 @@ const clientAxios: AxiosInstance = axios.create({
 
 clientAxios.interceptors.request.use(
   (config) => {
+    // Primary auth is via HttpOnly accessToken cookie.
+    // Header is only a fallback for non-browser clients.
     const token = useAuthStore.getState().token;
     if (token) {
-      config.headers.Authorization = token;
+      config.headers = config.headers ?? {};
+      config.headers.Authorization = token.startsWith("Bearer ")
+        ? token
+        : `Bearer ${token}`;
     }
     return config;
   },
@@ -26,7 +32,15 @@ clientAxios.interceptors.request.use(
 clientAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response && error.response.data && error.response.data.message && error.response.data.message.includes('Unauthenticated')) {
+    if (
+      error.response &&
+      error.response.data &&
+      typeof error.response.data.message === "string" &&
+      error.response.data.message.toLowerCase().includes("unauthenticated")
+    ) {
+      // Optional: clear token from store on unauthenticated
+      const { setToken } = useAuthStore.getState();
+      setToken("");
     }
     return Promise.reject(error);
   }

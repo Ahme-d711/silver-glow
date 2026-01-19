@@ -13,6 +13,11 @@ export interface User {
   active?: boolean;
   verifiedPhone?: boolean;
   walletBalance?: number;
+  address?: string;
+  totalOrders?: number;
+  totalBalance?: number;
+  lastLoginAt?: string;
+  lastTransactionAt?: string;
   session_id?: string | null;
   session_expiry?: string | null;
   createdAt?: string;
@@ -63,6 +68,11 @@ export interface AuthActionResponse {
   active?: boolean;
   verifiedPhone?: boolean;
   walletBalance?: number;
+  address?: string;
+  totalOrders?: number;
+  totalBalance?: number;
+  lastLoginAt?: string;
+  lastTransactionAt?: string;
   createdAt?: string;
 }
 

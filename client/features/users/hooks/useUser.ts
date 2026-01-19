@@ -8,6 +8,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  updateUserBlockStatus,
 } from "../services/user.service";
 import type { User } from "@/features/auth/types";
 import type {
@@ -159,8 +160,8 @@ export function useUpdateUser() {
           usersKeys.lists(),
           (old) => {
             if (!old) return old;
-            return {
-              ...old,
+        return {
+          ...old,
               users: old.users.map((user) =>
                 user._id === variables.id || user.id === variables.id
                   ? response.data!.user
@@ -170,7 +171,7 @@ export function useUpdateUser() {
           }
         );
 
-        // Invalidate to refetch in background
+      // Invalidate to refetch in background
         queryClient.invalidateQueries({ queryKey: usersKeys.detail(variables.id) });
         queryClient.invalidateQueries({ queryKey: usersKeys.lists() });
 
@@ -222,6 +223,56 @@ export function useDeleteUser() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete user");
+    },
+  });
+}
+
+/**
+ * Update user block status mutation
+ */
+export function useUpdateUserBlockStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, isBlocked }: { id: string; isBlocked: boolean }) =>
+      updateUserBlockStatus(id, isBlocked),
+    onSuccess: (response, variables) => {
+      if (response.success && response.data) {
+        // Update user detail cache
+        queryClient.setQueryData<User>(
+          usersKeys.detail(variables.id),
+          response.data.user
+        );
+
+        // Update users list cache if it exists
+        queryClient.setQueryData<GetAllUsersResponse>(
+          usersKeys.lists(),
+          (old) => {
+            if (!old) return old;
+            return {
+              ...old,
+              users: old.users.map((user) =>
+                user._id === variables.id || user.id === variables.id
+                  ? response.data!.user
+                  : user
+              ),
+            };
+          }
+        );
+
+        // Invalidate to refetch in background
+        queryClient.invalidateQueries({
+          queryKey: usersKeys.detail(variables.id),
+        });
+        queryClient.invalidateQueries({ queryKey: usersKeys.lists() });
+
+        toast.success(response.message || "Status updated successfully");
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update status");
     },
   });
 }

@@ -64,6 +64,7 @@ export interface UpdateUserPayload {
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
+  isBlocked?: boolean;
 }
 
 /**
