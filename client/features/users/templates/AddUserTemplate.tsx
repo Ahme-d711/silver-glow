@@ -19,16 +19,18 @@ interface AddUserDialogProps {
 export default function AddUserTemplate({ open, onOpenChange }: AddUserDialogProps) {
   const { mutate: createUser, isPending } = useCreateUser();
 
-  const handleSubmit = (data: UserFormValues, pictureFile?: File) => {
-    // Clean values before sending
-    const payload = {
-      ...data,
-      role: data.role as "admin" | "user",
-      password: data.password || undefined,
-      address: data.address || undefined,
-    };
+  const handleSubmit = (payload: UserFormValues | FormData) => {
+    let finalPayload = payload;
 
-    createUser({ payload, pictureFile }, {
+    // If it's not FormData, clean values before sending
+    if (!(payload instanceof FormData)) {
+      const cleanPayload = { ...payload };
+      if (!cleanPayload.password) delete cleanPayload.password;
+      if (!cleanPayload.address) delete cleanPayload.address;
+      finalPayload = cleanPayload;
+    }
+
+    createUser({ payload: finalPayload }, {
       onSuccess: () => {
         onOpenChange(false);
       },

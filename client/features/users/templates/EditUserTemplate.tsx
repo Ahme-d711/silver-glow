@@ -21,20 +21,22 @@ interface EditUserDialogProps {
 export default function EditUserTemplate({ open, onOpenChange, user }: EditUserDialogProps) {
   const { mutate: updateUser, isPending } = useUpdateUser();
 
-  const handleSubmit = (data: UserFormValues, pictureFile?: File) => {
+  const handleSubmit = (payload: UserFormValues | FormData) => {
     const userId = (user._id || user.id) as string;
     if (!userId) return;
 
-    // Clean values before sending
-    const payload = {
-      ...data,
-      role: data.role as "admin" | "user",
-      password: data.password || undefined,
-      address: data.address || undefined,
-    };
+    let finalPayload = payload;
+
+    // If it's not FormData, clean values before sending
+    if (!(payload instanceof FormData)) {
+      const cleanPayload = { ...payload };
+      if (!cleanPayload.password) delete cleanPayload.password;
+      if (!cleanPayload.address) delete cleanPayload.address;
+      finalPayload = cleanPayload;
+    }
 
     updateUser(
-      { id: userId, payload, pictureFile },
+      { id: userId, payload: finalPayload },
       {
         onSuccess: () => {
           onOpenChange(false);

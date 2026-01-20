@@ -25,13 +25,13 @@ import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
 import { z } from "zod";
 import React, { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BASE_URL } from "@/utils/constants";
+import { getImageUrl } from "@/utils/image.utils";
 
 type UserFormValues = z.infer<typeof createUserSchema>;
 
 interface UserFormProps {
   defaultValues?: Partial<UserFormValues>;
-  onSubmit: (values: UserFormValues, pictureFile?: File) => void;
+  onSubmit: (values: UserFormValues | FormData) => void;
   isLoading?: boolean;
   onCancel?: () => void;
   submitLabel?: string;
@@ -46,11 +46,7 @@ export function UserForm({
   submitLabel = "Submit",
   isEdit = false,
 }: UserFormProps) {
-  const initialPreview = defaultValues?.picture 
-    ? (defaultValues.picture.startsWith("http") || defaultValues.picture.startsWith("data:")
-        ? defaultValues.picture 
-        : `${BASE_URL}${defaultValues.picture.startsWith("/") ? "" : "/"}${defaultValues.picture}`)
-    : null;
+  const initialPreview = getImageUrl(defaultValues?.picture);
 
   const [preview, setPreview] = useState<string | null>(initialPreview);
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
@@ -96,7 +92,19 @@ export function UserForm({
   };
 
   const handleSubmit = (values: UserFormValues) => {
-    onSubmit(values, selectedFile);
+    if (selectedFile) {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        // Skip picture field if we have a new file, and skip empty values
+        if (key !== "picture" && value !== undefined && value !== null && value !== "") {
+          formData.append(key, String(value));
+        }
+      });
+      formData.append("picture", selectedFile);
+      onSubmit(formData);
+    } else {
+      onSubmit(values);
+    }
   };
 
   return (

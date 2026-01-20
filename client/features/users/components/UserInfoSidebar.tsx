@@ -30,6 +30,8 @@ export function UserInfoSidebar({
   onDelete,
   disableActions,
 }: UserInfoSidebarProps) {
+  console.log(user.profileImage);
+  
   return (
     <div className="bg-white rounded-[32px] border border-divider overflow-hidden flex flex-col items-center p-6 pb-8 relative">
       <div className="absolute top-0 left-0 right-0 h-37 w-full">

@@ -106,11 +106,9 @@ export function useCreateUser() {
   return useMutation({
     mutationFn: ({
       payload,
-      pictureFile,
     }: {
-      payload: CreateUserPayload;
-      pictureFile?: File;
-    }) => createUser(payload, pictureFile),
+      payload: CreateUserPayload | FormData;
+    }) => createUser(payload),
     onSuccess: (response) => {
       if (response.success && response.data) {
         // Invalidate users list to refetch
@@ -143,12 +141,10 @@ export function useUpdateUser() {
     mutationFn: ({
       id,
       payload,
-      pictureFile,
     }: {
       id: string;
-      payload: UpdateUserPayload;
-      pictureFile?: File;
-    }) => updateUser(id, payload, pictureFile),
+      payload: UpdateUserPayload | FormData;
+    }) => updateUser(id, payload),
     onSuccess: (response, variables) => {
       if (response.success && response.data) {
         // Update user detail cache

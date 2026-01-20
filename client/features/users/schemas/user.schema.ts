@@ -43,7 +43,7 @@ export const pictureSchema = z
   .optional()
   .or(z.literal(""));
 
-export const roleSchema = z.enum(USER_ROLES as unknown as [string, ...string[]], {
+export const roleSchema = z.enum(USER_ROLES, {
   message: `Role must be one of: ${USER_ROLES.join(", ")}`,
 });
 

@@ -1,10 +1,14 @@
+import { BASE_URL } from "./constants";
+
 export function getImageUrl(path: string | null | undefined): string | null {
   if (!path) return null;
 
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (path.startsWith("http") || path.startsWith("data:")) {
+    return path;
+  }
 
-  // return `${BASE_URL}${cleanPath}`;
-  return cleanPath;
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${BASE_URL}${cleanPath}`;
 }
 
 

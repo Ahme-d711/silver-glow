@@ -88,39 +88,10 @@ export async function getCurrentUser(): Promise<ServiceResponse<{ user: User }>>
  * @param pictureFile - Optional picture file to upload
  */
 export async function createUser(
-  payload: CreateUserPayload,
-  pictureFile?: File
+  payload: CreateUserPayload | FormData
 ): Promise<ServiceResponse<{ user: User }>> {
   try {
-    let response;
-
-    if (pictureFile) {
-      // Use FormData for file upload
-      const formData = new FormData();
-      formData.append("name", payload.name);
-      formData.append("email", payload.email);
-      formData.append("phone", payload.phone);
-      if (payload.password) formData.append("password", payload.password);
-      if (payload.role) formData.append("role", payload.role);
-      if (payload.isActive !== undefined)
-        formData.append("isActive", String(payload.isActive));
-      if (payload.isVerified !== undefined)
-        formData.append("isVerified", String(payload.isVerified));
-      if (payload.isBlocked !== undefined)
-        formData.append("isBlocked", String(payload.isBlocked));
-      if (payload.address) formData.append("address", payload.address);
-      if (payload.totalOrders !== undefined)
-        formData.append("totalOrders", String(payload.totalOrders));
-      if (payload.totalBalance !== undefined)
-        formData.append("totalBalance", String(payload.totalBalance));
-
-      formData.append("picture", pictureFile);
-
-      response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", formData);
-    } else {
-      // Use JSON for regular data
-      response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", payload);
-    }
+    const response = await clientAxios.post<ApiResponse<{ user: User }>>("/users", payload);
 
     return {
       success: true,
@@ -145,39 +116,10 @@ export async function createUser(
  */
 export async function updateUser(
   id: string,
-  payload: UpdateUserPayload,
-  pictureFile?: File
+  payload: UpdateUserPayload | FormData
 ): Promise<ServiceResponse<{ user: User }>> {
   try {
-    let response;
-
-    if (pictureFile) {
-      // Use FormData for file upload
-      const formData = new FormData();
-      if (payload.name) formData.append("name", payload.name);
-      if (payload.email) formData.append("email", payload.email);
-      if (payload.phone) formData.append("phone", payload.phone);
-      if (payload.password) formData.append("password", payload.password);
-      if (payload.role) formData.append("role", payload.role);
-      if (payload.isActive !== undefined)
-        formData.append("isActive", String(payload.isActive));
-      if (payload.isVerified !== undefined)
-        formData.append("isVerified", String(payload.isVerified));
-      if (payload.isBlocked !== undefined)
-        formData.append("isBlocked", String(payload.isBlocked));
-      if (payload.address) formData.append("address", payload.address);
-      if (payload.totalOrders !== undefined)
-        formData.append("totalOrders", String(payload.totalOrders));
-      if (payload.totalBalance !== undefined)
-        formData.append("totalBalance", String(payload.totalBalance));
-
-      formData.append("picture", pictureFile);
-
-      response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, formData);
-    } else {
-      // Use JSON for regular data
-      response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, payload);
-    }
+    const response = await clientAxios.put<ApiResponse<{ user: User }>>(`/users/${id}`, payload);
 
     return {
       success: true,
