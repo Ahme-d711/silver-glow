@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, Link } from "@/i18n/routing";
 import { LogOut, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "./ui/card";
@@ -11,10 +11,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { SearchInput } from "./shared/SearchInput";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { ConfirmationDialog } from "./shared/ConfirmationDialog";
-import Link from "next/link";
+import LanguageSelector from "./shared/LanguageSelector";
+import { useTranslations } from "next-intl";
 
 export function DashboardNavbar() {
   const { user } = useAuthStore();
+  const t = useTranslations("Navigation");
+  const tAuth = useTranslations("Auth");
+  const tCommon = useTranslations("Common");
   
   const router = useRouter();
   const { logout, loading: isLoggingOut } = useLogout();
@@ -28,11 +32,6 @@ export function DashboardNavbar() {
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const userId = (user && (user._id || user.id)) as string | undefined;
-
-  const handleEditProfile = () => {
-    if (!userId) return;
-    router.push(`/users/${userId}`);
-  };
 
   const handleLogout = () => {
     setLogoutDialogOpen(true);
@@ -51,6 +50,7 @@ export function DashboardNavbar() {
 
         {/* Right Side: Notifications & Profile */}
         <div className="flex items-center gap-4">
+          <LanguageSelector />
           <div className="h-8 w-px bg-divider mx-2" />
           {/* User Profile */}
           <Popover>
@@ -91,27 +91,13 @@ export function DashboardNavbar() {
               <div className="flex flex-col gap-2">
               <Link href={`/dashboard/users/${userId}`}>
                 <Button
-                  onClick={handleEditProfile}
                   variant="outline"
                   className="w-full justify-start"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  Profile
+                  {tAuth("name")}
                 </Button>
                   </Link>
-                {/* <Button
-                  onClick={toggleTheme}
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start relative transition-all duration-200 hover:scale-[1.02] active:scale-95"
-                  )}
-                  aria-label="Toggle theme"
-                  suppressHydrationWarning
-                >
-                  <Sun className="h-4 w-4 rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0 mr-2" />
-                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100 mr-2" />
-                  <span className="ml-2">Change Theme</span>
-                </Button> */}
 
                 <Button
                   onClick={handleLogout}
@@ -120,7 +106,7 @@ export function DashboardNavbar() {
                   disabled={isLoggingOut}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                   Logout
+                   {t("logout")}
                 </Button>
               </div>
             </PopoverContent>
@@ -132,9 +118,9 @@ export function DashboardNavbar() {
       <ConfirmationDialog
         open={logoutDialogOpen}
         onOpenChange={setLogoutDialogOpen}
-        title="Logout"
-        description="Are you sure you want to logout? You will need to login again to access your account."
-        confirmText="Logout"
+        title={t("logout")}
+        description={tAuth("sign_in_text")}
+        confirmText={t("logout")}
         variant="default"
         onConfirm={handleConfirmLogout}
         isLoading={isLoggingOut}
@@ -142,3 +128,4 @@ export function DashboardNavbar() {
     </nav>
   );
 }
+

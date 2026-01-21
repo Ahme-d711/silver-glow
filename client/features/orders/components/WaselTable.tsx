@@ -13,7 +13,7 @@ import UniTable, {
   SelectionCell
 } from "@/components/shared/UniTable"
 import { cn } from "@/lib/utils"
-import { EditOrderTemplate } from "../templats/EditOrderTemplate"
+// import { EditOrderTemplate } from "../templats/EditOrderTemplate"
 import React from "react"
 
 // Mock data for Wasel Elkhaer
@@ -166,11 +166,11 @@ export function WaselTable() {
         pageSize={10}
         itemLabel="Orders"
       />
-      <EditOrderTemplate 
+      {/* <EditOrderTemplate 
         isOpen={isEditOpen} 
         onClose={() => setIsEditOpen(false)} 
         orderData={editingOrder} 
-      />
+      /> */}
     </>
   )
 }

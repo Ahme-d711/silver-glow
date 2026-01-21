@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -15,51 +14,52 @@ import {
   Layers,
   Tag,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface NavItem {
-  title: string;
+  titleKey: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const navItems: NavItem[] = [
   {
-    title: "Overview",
+    titleKey: "overview",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Advertisements",
+    titleKey: "advertisements",
     href: "/dashboard/ads",
     icon: Megaphone,
   },
   {
-    title: "Users",
+    titleKey: "users",
     href: "/dashboard/users",
     icon: Users,
   },
   {
-    title: "Products",
+    titleKey: "products",
     href: "/dashboard/products",
     icon: Package,
   },
   {
-    title: "Categories",
+    titleKey: "categories",
     href: "/dashboard/categories",
     icon: Layers,
   },
   {
-    title: "SubCategories",
+    titleKey: "subcategories",
     href: "/dashboard/subcategories",
     icon: Tag,
   },
   {
-    title: "Orders",
+    titleKey: "orders",
     href: "/dashboard/orders",
     icon: ShoppingCart,
   },
   {
-    title: "Settings",
+    titleKey: "settings",
     href: "/dashboard/settings",
     icon: Settings,
   },
@@ -67,6 +67,7 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const t = useTranslations("Sidebar");
 
   const isItemActive = (href: string) => {
     if (href === "/dashboard") {
@@ -76,8 +77,8 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-divider bg-white sticky top-0">
-    <h1 className="text-lg font-bold text-primary px-6 py-4">Dashboard</h1>
+    <aside className="flex h-screen w-64 flex-col border-x border-divider bg-white sticky top-0">
+    <h1 className="text-lg font-bold text-primary px-6 py-4">{t("title")}</h1>
       {/* Navigation Items */}
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
@@ -90,22 +91,17 @@ export function Sidebar() {
               className={cn(
                 "group flex items-center gap-3 px-6 py-4 text-sm font-medium transition-all duration-200 relative",
                 isActive
-                  ? "bg-secondary text-primary"
+                  ? "bg-secondary text-primary border-l-4 border-primary rtl:border-l-0 rtl:border-r-4"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
-              {/* Active indicator bar */}
-              {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
-              )}
-              
               <Icon
                 className={cn(
                   "h-5 w-5 shrink-0",
                   isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-600"
                 )}
               />
-              <span className="text-base">{item.title}</span>
+              <span className="text-base">{t(item.titleKey)}</span>
             </Link>
           );
         })}
@@ -135,4 +131,5 @@ export function Sidebar() {
     </aside>
   );
 }
+
 

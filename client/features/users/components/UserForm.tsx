@@ -26,6 +26,7 @@ import { z } from "zod";
 import React, { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageUrl } from "@/utils/image.utils";
+import { useTranslations } from "next-intl";
 
 type UserFormValues = z.infer<typeof createUserSchema>;
 
@@ -46,6 +47,9 @@ export function UserForm({
   submitLabel = "Submit",
   isEdit = false,
 }: UserFormProps) {
+  const t = useTranslations("Users");
+  const tCommon = useTranslations("Common");
+  
   const initialPreview = getImageUrl(defaultValues?.picture);
 
   const [preview, setPreview] = useState<string | null>(initialPreview);
@@ -158,8 +162,8 @@ export function UserForm({
           <FormInputField
             control={form.control as unknown as Control<FieldValues>}
             name="name"
-            label="Full Name"
-            placeholder="John Doe"
+            label={t("name")}
+            placeholder={t("name")}
             required
           />
           
@@ -168,15 +172,15 @@ export function UserForm({
               <FormInputField
                 control={form.control as unknown as Control<FieldValues>}
                 name="email"
-                label="Email Address"
-                placeholder="john@example.com"
+                label={t("email")}
+                placeholder={t("email")}
                 type="email"
                 required
               />
               <FormInputField
                 control={form.control as unknown as Control<FieldValues>}
                 name="password"
-                label="Password"
+                label={t("password")}
                 placeholder="••••••"
                 type="password"
                 required
@@ -184,10 +188,20 @@ export function UserForm({
             </>
           )}
 
+          {isEdit && (
+            <FormInputField
+              control={form.control as unknown as Control<FieldValues>}
+              name="password"
+              label={t("password")}
+              placeholder="••••••"
+              type="password"
+            />
+          )}
+
           <FormInputField
             control={form.control as unknown as Control<FieldValues>}
             name="phone"
-            label="Phone Number"
+            label={t("phone")}
             placeholder="+20..."
             type="tel"
             required
@@ -198,16 +212,17 @@ export function UserForm({
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">User Role <span className="text-destructive ml-1">*</span></FormLabel>
+                <FormLabel className="text-primary">{t("role")} <span className="text-destructive ml-1">*</span></FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-white border-divider rounded-xl h-11 w-full">
-                      <SelectValue placeholder="Select a role" />
+                      <SelectValue placeholder={t("select_role")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-white border-divider rounded-xl" position="popper">
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">{t("user")}</SelectItem>
+                    <SelectItem value="admin">{t("admin")}</SelectItem>
+                    <SelectItem value="employee">{t("employee")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -218,8 +233,8 @@ export function UserForm({
           <FormInputField
             control={form.control as unknown as Control<FieldValues>}
             name="address"
-            label="Address (Optional)"
-            placeholder="Street name, City..."
+            label={t("address")}
+            placeholder={t("address")}
           />
 
           <FormField
@@ -227,7 +242,7 @@ export function UserForm({
             name="isActive"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between gap-4 space-y-0">
-                <FormLabel className="text-base text-primary font-semibold">Active Status</FormLabel>
+                <FormLabel className="text-base text-primary font-semibold">{t("is_active")}</FormLabel>
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -244,7 +259,7 @@ export function UserForm({
             name="isVerified"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between gap-4 space-y-0">
-                <FormLabel className="text-base text-primary font-semibold">Verified Phone</FormLabel>
+                <FormLabel className="text-base text-primary font-semibold">{t("is_verified")}</FormLabel>
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -265,7 +280,7 @@ export function UserForm({
               disabled={isLoading}
               className="rounded-xl h-11 px-6 cursor-pointer"
             >
-              Cancel
+              {tCommon("cancel")}
             </Button>
           )}
           <Button
@@ -282,3 +297,4 @@ export function UserForm({
     </Form>
   );
 }
+

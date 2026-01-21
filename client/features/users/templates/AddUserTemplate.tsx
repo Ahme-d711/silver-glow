@@ -10,6 +10,7 @@ import {
 import { UserForm } from "../components/UserForm";
 import { useCreateUser } from "../hooks/useUser";
 import { UserFormValues } from "../schemas/user.schema";
+import { useTranslations } from "next-intl";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -17,6 +18,8 @@ interface AddUserDialogProps {
 }
 
 export default function AddUserTemplate({ open, onOpenChange }: AddUserDialogProps) {
+  const t = useTranslations("Users");
+  const tCommon = useTranslations("Common");
   const { mutate: createUser, isPending } = useCreateUser();
 
   const handleSubmit = (payload: UserFormValues | FormData) => {
@@ -41,16 +44,19 @@ export default function AddUserTemplate({ open, onOpenChange }: AddUserDialogPro
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white rounded-[24px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-content-primary">Add New User</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-content-primary">
+            {t("add_user")}
+          </DialogTitle>
         </DialogHeader>
 
         <UserForm
           onSubmit={handleSubmit}
           isLoading={isPending}
           onCancel={() => onOpenChange(false)}
-          submitLabel="Create User"
+          submitLabel={tCommon("create")}
         />
       </DialogContent>
     </Dialog>
   );
 }
+

@@ -11,6 +11,7 @@ import { UserForm } from "../components/UserForm";
 import { useUpdateUser } from "../hooks/useUser";
 import { UserFormValues } from "../schemas/user.schema";
 import type { User } from "@/features/auth/types";
+import { useTranslations } from "next-intl";
 
 interface EditUserDialogProps {
   open: boolean;
@@ -19,6 +20,8 @@ interface EditUserDialogProps {
 }
 
 export default function EditUserTemplate({ open, onOpenChange, user }: EditUserDialogProps) {
+  const t = useTranslations("Users");
+  const tCommon = useTranslations("Common");
   const { mutate: updateUser, isPending } = useUpdateUser();
 
   const handleSubmit = (payload: UserFormValues | FormData) => {
@@ -63,7 +66,9 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white rounded-[24px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-content-primary">Edit User Profile</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-content-primary">
+            {t("edit_user")}
+          </DialogTitle>
         </DialogHeader>
 
         <UserForm
@@ -71,10 +76,11 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
           onSubmit={handleSubmit}
           isLoading={isPending}
           onCancel={() => onOpenChange(false)}
-          submitLabel="Save Changes"
+          submitLabel={tCommon("save")}
           isEdit={true}
         />
       </DialogContent>
     </Dialog>
   );
 }
+

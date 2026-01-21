@@ -1,10 +1,11 @@
 "use client";
 
 import { Sidebar } from "@/components/sidebar";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
 import { Slide } from "react-awesome-reveal";
 import { DashboardNavbar } from "@/components/dashboard-navbar";
 import { Suspense } from "react";
+import { useLocale } from "next-intl";
 
 export default function DashboardLayoutClient({
   children,
@@ -12,10 +13,13 @@ export default function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const locale = useLocale();
+  
   const loginPaths = ["/dashboard/login"];
   const isLoginPage = loginPaths.includes(pathname);
 
   // List of valid routes that should show sidebar and navbar
+  // next-intl usePathname returns path without locale prefix
   const validRoutes = [
     "/dashboard",
     "/dashboard/packages",
@@ -36,10 +40,12 @@ export default function DashboardLayoutClient({
     return <>{children}</>;
   }
 
+  const isRtl = locale === 'ar';
+
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-white" dir={isRtl ? 'rtl' : 'ltr'}>
       <Sidebar />
-      <div className="flex flex-1 flex-col bg-background overflow-hidden">
+      <div className="flex flex-1 flex-col bg-background overflow-hidden font-sans">
         <div className="flex-1 overflow-y-auto p-6">
             <Slide direction="up" duration={300} triggerOnce fraction={0.1}>
               <Suspense>
@@ -54,4 +60,5 @@ export default function DashboardLayoutClient({
     </div>
   );
 }
+
 
