@@ -102,7 +102,7 @@ export default function AdsTemplate() {
   }
 
   const handleEdit = (id: string) => {
-    router.push(`/ads/edit/${id}`)
+    router.push(`/dashboard/ads/edit/${id}`)
   }
 
   if (isLoading) return <UniLoading />
@@ -113,7 +113,7 @@ export default function AdsTemplate() {
       <PageHeader
         title="Advertisements"
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
+          { label: "Dashboard", href: "/dashboard" },
           { label: "Advertisements" },
         ]}
         actionButtons={[
@@ -126,7 +126,7 @@ export default function AdsTemplate() {
           {
             label: "Add ADS",
             icon: Plus,
-            href: "/ads/add",
+            href: "/dashboard/ads/add",
           }
         ]}
       />

@@ -95,7 +95,11 @@
     "upload": "Upload",
     "select": "Select",
     "all": "All",
-    "none": "None"
+    "none": "None",
+    "drag_drop_image": "Drag and drop image here, or click add image",
+    "add_image": "Add Image",
+    "general_info": "General Information",
+    "category_image": "Category Image"
   },
   "Users": {
     "title": "Users",
@@ -121,6 +125,42 @@
     "admin": "Admin",
     "user": "User",
     "employee": "Employee"
+  },
+  "Categories": {
+    "title": "Categories List",
+    "add_category": "Add New Category",
+    "edit_category": "Edit Category",
+    "delete_category": "Delete Category",
+    "category_id": "Category ID",
+    "image": "Image",
+    "name": "Category Name",
+    "status": "Status",
+    "action": "Action",
+    "view": "View",
+    "not_view": "Not View",
+    "category_details": "Category Details",
+    "category_name_ar": "Category Name (Arabic)",
+    "category_name_en": "Category Name (English)",
+    "select_status": "Select Status"
+  },
+  "SubCategories": {
+    "title": "Subcategories List",
+    "add_subcategory": "Add Subcategory",
+    "edit_subcategory": "Edit Subcategory",
+    "delete_subcategory": "Delete Subcategory",
+    "subcategory_id": "Subcategory ID",
+    "image": "Image",
+    "name": "Subcategory Name",
+    "category": "Parent Category",
+    "status": "Status",
+    "action": "Action",
+    "view": "View",
+    "not_view": "Not View",
+    "subcategory_details": "Subcategory Details",
+    "subcategory_name_ar": "Name (Arabic)",
+    "subcategory_name_en": "Name (English)",
+    "select_category": "Select Parent Category",
+    "subcategory_image": "Subcategory Image"
   },
   "Products": {
     "title": "Products",

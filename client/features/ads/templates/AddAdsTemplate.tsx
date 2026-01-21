@@ -23,8 +23,8 @@ export default function AddAdsTemplate() {
       <PageHeader
         title="Ads"
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
-          { label: "Ads", href: "/ads" },
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Ads", href: "/dashboard/ads" },
           { label: "Add Ad" },
         ]}
       />

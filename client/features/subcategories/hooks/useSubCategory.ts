@@ -1,0 +1,105 @@
+"use client";
+
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import {
+  getAllSubcategories,
+  getSubcategoryById,
+  createSubcategory,
+  updateSubcategory,
+  deleteSubcategory,
+  Subcategory,
+} from "../services/subcategory.service";
+import { toast } from "sonner";
+
+export const subcategoryKeys = {
+  all: ["subcategories"] as const,
+  lists: () => [...subcategoryKeys.all, "list"] as const,
+  details: () => [...subcategoryKeys.all, "detail"] as const,
+  detail: (id: string) => [...subcategoryKeys.details(), id] as const,
+};
+
+export function useSubcategories() {
+  return useQuery({
+    queryKey: subcategoryKeys.lists(),
+    queryFn: async () => {
+      const response = await getAllSubcategories();
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to fetch subcategories");
+      }
+      return response.data.subcategories;
+    },
+  });
+}
+
+export function useSubcategory(id: string) {
+  return useQuery({
+    queryKey: subcategoryKeys.detail(id),
+    queryFn: async () => {
+      const response = await getSubcategoryById(id);
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to fetch subcategory");
+      }
+      return response.data.subcategory;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useCreateSubcategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: any | FormData) => createSubcategory(payload),
+    onSuccess: (response) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
+        toast.success(response.message || "Subcategory created successfully");
+      } else {
+        toast.error(response.message || "Failed to create subcategory");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to create subcategory");
+    },
+  });
+}
+
+export function useUpdateSubcategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: any | FormData }) =>
+      updateSubcategory(id, payload),
+    onSuccess: (response, variables) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
+        queryClient.invalidateQueries({ queryKey: subcategoryKeys.detail(variables.id) });
+        toast.success(response.message || "Subcategory updated successfully");
+      } else {
+        toast.error(response.message || "Failed to update subcategory");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update subcategory");
+    },
+  });
+}
+
+export function useDeleteSubcategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteSubcategory(id) as Promise<any>,
+    onSuccess: (response) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
+        toast.success(response.message || "Subcategory deleted successfully");
+      } else {
+        toast.error(response.message || "Failed to delete subcategory");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete subcategory");
+    },
+  });
+}

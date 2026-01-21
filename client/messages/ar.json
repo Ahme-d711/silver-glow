@@ -95,7 +95,11 @@
     "upload": "رفع",
     "select": "اختر",
     "all": "الكل",
-    "none": "لا شيء"
+    "none": "لا شيء",
+    "drag_drop_image": "قم بسحب وإفلات الصورة هنا، أو اضغط لإضافة صورة",
+    "add_image": "إضافة صورة",
+    "general_info": "معلومات عامة",
+    "category_image": "صورة الفئة"
   },
   "Users": {
     "title": "المستخدمين",
@@ -121,6 +125,42 @@
     "admin": "مدير",
     "user": "مستخدم",
     "employee": "موظف"
+  },
+  "Categories": {
+    "title": "قائمة الفئات",
+    "add_category": "إضافة فئة جديدة",
+    "edit_category": "تعديل الفئة",
+    "delete_category": "حذف الفئة",
+    "category_id": "معرف الفئة",
+    "image": "الصورة",
+    "name": "اسم الفئة",
+    "status": "الحالة",
+    "action": "العمليات",
+    "view": "عرض",
+    "not_view": "عدم عرض",
+    "category_details": "تفاصيل الفئة",
+    "category_name_ar": "اسم الفئة (بالعربية)",
+    "category_name_en": "اسم الفئة (بالإنجليزية)",
+    "select_status": "اختر الحالة"
+  },
+  "SubCategories": {
+    "title": "قائمة الفئات الفرعية",
+    "add_subcategory": "إضافة فئة فرعية",
+    "edit_subcategory": "تعديل الفئة الفرعية",
+    "delete_subcategory": "حذف الفئة الفرعية",
+    "subcategory_id": "معرف الفئة الفرعية",
+    "image": "الصورة",
+    "name": "اسم الفئة الفرعية",
+    "category": "الفئة الأساسية",
+    "status": "الحالة",
+    "action": "العمليات",
+    "view": "عرض",
+    "not_view": "عدم عرض",
+    "subcategory_details": "تفاصيل الفئة الفرعية",
+    "subcategory_name_ar": "الاسم (بالعربية)",
+    "subcategory_name_en": "الاسم (بالإنجليزية)",
+    "select_category": "اختر الفئة الأساسية",
+    "subcategory_image": "صورة الفئة الفرعية"
   },
   "Products": {
     "title": "المنتجات",
