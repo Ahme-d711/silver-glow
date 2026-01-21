@@ -12,9 +12,12 @@ import UniTable, {
   UniTableColumn
 } from "@/components/shared/UniTable";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Subcategory } from "../services/subcategory.service";
+import { useToggleSubcategoryStatus } from "../hooks/useSubCategory";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 interface SubCategoriesTableProps {
   subcategories: Subcategory[];
@@ -31,6 +34,7 @@ export default function SubCategoriesTable({
 }: SubCategoriesTableProps) {
   const t = useTranslations("SubCategories");
   const locale = useLocale();
+  const { mutate: toggleStatus, isPending: isToggling } = useToggleSubcategoryStatus();
 
   const columns: UniTableColumn<Subcategory>[] = [
     {
@@ -67,19 +71,30 @@ export default function SubCategoriesTable({
       ),
     },
     {
+      id: "slug",
+      header: t("slug"),
+      accessorKey: "slug",
+      className: "text-content-tertiary",
+    },
+    {
+      id: "priority",
+      header: t("priority"),
+      accessorKey: "priority",
+      className: "text-content-tertiary text-center",
+    },
+    {
       id: "status",
       header: t("status"),
       cell: (value, row) => (
-        <Badge 
-          className={cn(
-            "rounded-lg px-3 py-1 font-medium",
-            row.isShow 
-              ? "bg-blue-50 text-blue-600 hover:bg-blue-100 border-none" 
-              : "bg-red-50 text-red-600 hover:bg-red-100 border-none"
-          )}
-        >
-          {row.isShow ? t("view") : t("not_view")}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Switch 
+            checked={row.isShow}
+            onCheckedChange={() => toggleStatus(row._id)}
+            disabled={isToggling}
+            className="data-[state=checked]:bg-primary"
+          />
+          {isToggling && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+        </div>
       ),
     },
     {

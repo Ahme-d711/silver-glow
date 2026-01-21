@@ -4,6 +4,12 @@ export const createSubcategorySchema = z.object({
   nameAr: z.string().min(1, "Arabic name is required").max(100),
   nameEn: z.string().min(1, "English name is required").max(100),
   categoryId: z.string().min(1, "Category ID is required"),
+  descriptionAr: z.string().optional(),
+  descriptionEn: z.string().optional(),
+  priority: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number().int().optional().default(0)
+  ),
   image: z.string().optional(),
   isShow: z.preprocess(
     (val) => val === "true" || val === true,
@@ -22,7 +28,11 @@ export const getSubcategoriesQuerySchema = z.object({
   search: z.string().optional(),
   categoryId: z.string().optional(),
   isShow: z.preprocess(
-    (val) => val === "true" ? true : val === "false" ? false : val,
+    (val) => (val === "true" ? true : val === "false" ? false : val),
     z.boolean().optional()
+  ),
+  isDeleted: z.preprocess(
+    (val) => (val === "true" ? true : val === "false" ? false : val),
+    z.boolean().optional().default(false)
   ),
 });

@@ -21,8 +21,14 @@ export interface Category {
   id?: string;
   nameAr: string;
   nameEn: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  priority: number;
+  slug: string;
+  subcategoriesCount?: number;
   image: string;
   isShow: boolean;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -136,6 +142,27 @@ export async function deleteCategory(id: string): Promise<ServiceResponse<null>>
     return {
       success: false,
       message: err.response?.data?.message || "Failed to delete category",
+      error: err.message,
+    };
+  }
+}
+/**
+ * Toggle category status
+ */
+export async function toggleCategoryStatus(id: string): Promise<ServiceResponse<{ category: Category }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ category: Category }>>(`/categories/${id}/toggle-status`);
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to toggle category status",
       error: err.message,
     };
   }

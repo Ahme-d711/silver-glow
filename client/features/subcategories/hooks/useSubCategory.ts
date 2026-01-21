@@ -7,6 +7,7 @@ import {
   createSubcategory,
   updateSubcategory,
   deleteSubcategory,
+  toggleSubcategoryStatus,
   Subcategory,
 } from "../services/subcategory.service";
 import { toast } from "sonner";
@@ -102,6 +103,27 @@ export function useDeleteSubcategory() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete subcategory");
+    },
+  });
+}
+export function useToggleSubcategoryStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => toggleSubcategoryStatus(id),
+    onSuccess: async (response, id) => {
+      if (response.success) {
+        await Promise.all([
+          queryClient.resetQueries({ queryKey: subcategoryKeys.lists() }),
+          queryClient.resetQueries({ queryKey: subcategoryKeys.detail(id) })
+        ]);
+        toast.success(response.message || "Status updated successfully");
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update status");
     },
   });
 }

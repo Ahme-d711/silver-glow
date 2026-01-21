@@ -21,11 +21,16 @@ export interface Subcategory {
   id?: string;
   nameAr: string;
   nameEn: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  priority: number;
+  slug: string;
   categoryId: string;
   categoryNameAr?: string;
   categoryNameEn?: string;
   image: string;
   isShow: boolean;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -139,6 +144,27 @@ export async function deleteSubcategory(id: string): Promise<ServiceResponse<nul
     return {
       success: false,
       message: err.response?.data?.message || "Failed to delete subcategory",
+      error: err.message,
+    };
+  }
+}
+/**
+ * Toggle subcategory status
+ */
+export async function toggleSubcategoryStatus(id: string): Promise<ServiceResponse<{ subcategory: Subcategory }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ subcategory: Subcategory }>>(`/subcategories/${id}/toggle-status`);
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to toggle subcategory status",
       error: err.message,
     };
   }

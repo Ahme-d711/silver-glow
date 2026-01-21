@@ -7,6 +7,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  toggleCategoryStatus,
   Category,
 } from "../services/category.service";
 import { toast } from "sonner";
@@ -102,6 +103,27 @@ export function useDeleteCategory() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete category");
+    },
+  });
+}
+export function useToggleCategoryStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => toggleCategoryStatus(id),
+    onSuccess: async (response, id) => {
+      if (response.success) {
+        await Promise.all([
+          queryClient.resetQueries({ queryKey: categoryKeys.lists() }),
+          queryClient.resetQueries({ queryKey: categoryKeys.detail(id) })
+        ]);
+        toast.success(response.message || "Status updated successfully");
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update status");
     },
   });
 }

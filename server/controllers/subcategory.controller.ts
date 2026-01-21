@@ -20,13 +20,13 @@ export const getAllSubcategories = asyncHandler(async (req: Request, res: Respon
   const validatedQuery = validateUserData(getSubcategoriesQuerySchema, req.query);
   
   // We want to populate the category information
-  const query = SubcategoryModel.find()
+  const query = SubcategoryModel.find({ isDeleted: false })
     .populate("categoryId", "nameAr nameEn")
-    .sort({ createdAt: -1 });
+    .sort({ priority: -1, createdAt: -1 });
 
   const apiFeatures = new ApiFeatures(query, validatedQuery as any)
     .filter()
-    .search(["nameAr", "nameEn"])
+    .search(["nameAr", "nameEn", "slug"])
     .paginate();
 
   const { results: rawSubcategories, pagination } = await apiFeatures.execute();
@@ -160,7 +160,7 @@ export const updateSubcategory = asyncHandler(async (req: Request, res: Response
 });
 
 /**
- * Delete subcategory
+ * Delete subcategory (Soft Delete)
  */
 export const deleteSubcategory = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -170,14 +170,32 @@ export const deleteSubcategory = asyncHandler(async (req: Request, res: Response
     throw new AppError("Subcategory not found", 404);
   }
 
-  if (subcategory.image) {
-    await deleteFile(subcategory.image).catch(console.error);
-  }
-
-  await subcategory.deleteOne();
+  subcategory.isDeleted = true;
+  await subcategory.save();
 
   sendResponse(res, 200, {
     success: true,
     message: "Subcategory deleted successfully",
+  });
+});
+
+/**
+ * Toggle subcategory visibility status
+ */
+export const toggleSubcategoryStatus = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const subcategory = await SubcategoryModel.findById(id);
+
+  if (!subcategory) {
+    throw new AppError("Subcategory not found", 404);
+  }
+
+  subcategory.isShow = !subcategory.isShow;
+  await subcategory.save();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: `Subcategory ${subcategory.isShow ? "shown" : "hidden"} successfully`,
+    data: { subcategory },
   });
 });

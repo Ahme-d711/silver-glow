@@ -17,11 +17,13 @@ import { validateUserData } from "../schemas/user.schema.js"; // Reuse validatio
  */
 export const getAllCategories = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getCategoriesQuerySchema, req.query);
-  const query = CategoryModel.find().sort({ createdAt: -1 });
+  const query = CategoryModel.find({ isDeleted: false })
+    .populate("subcategoriesCount")
+    .sort({ priority: -1, createdAt: -1 });
 
   const apiFeatures = new ApiFeatures(query, validatedQuery as any)
     .filter()
-    .search(["nameAr", "nameEn"])
+    .search(["nameAr", "nameEn", "slug"])
     .paginate();
 
   const { results: categories, pagination } = await apiFeatures.execute();
@@ -119,7 +121,7 @@ export const updateCategory = asyncHandler(async (req: Request, res: Response) =
 });
 
 /**
- * Delete category
+ * Delete category (Soft Delete)
  */
 export const deleteCategory = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -129,14 +131,32 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
     throw new AppError("Category not found", 404);
   }
 
-  if (category.image) {
-    await deleteFile(category.image).catch(console.error);
-  }
-
-  await category.deleteOne();
+  category.isDeleted = true;
+  await category.save();
 
   sendResponse(res, 200, {
     success: true,
     message: "Category deleted successfully",
+  });
+});
+
+/**
+ * Toggle category visibility status
+ */
+export const toggleCategoryStatus = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const category = await CategoryModel.findById(id);
+
+  if (!category) {
+    throw new AppError("Category not found", 404);
+  }
+
+  category.isShow = !category.isShow;
+  await category.save();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: `Category ${category.isShow ? "shown" : "hidden"} successfully`,
+    data: { category },
   });
 });

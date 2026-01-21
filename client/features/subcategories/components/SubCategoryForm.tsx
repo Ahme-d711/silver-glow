@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, Image as ImageIcon, X } from "lucide-react";
 import { subcategorySchema, SubcategoryFormValues } from "../schemas/subcategory.schema";
@@ -62,6 +63,9 @@ export function SubCategoryForm({
     defaultValues: {
       nameAr: defaultValues?.nameAr || "",
       nameEn: defaultValues?.nameEn || "",
+      descriptionAr: defaultValues?.descriptionAr || "",
+      descriptionEn: defaultValues?.descriptionEn || "",
+      priority: defaultValues?.priority || 0,
       categoryId: defaultValues?.categoryId || "",
       image: defaultValues?.image || "",
       isShow: defaultValues?.isShow ?? true,
@@ -193,6 +197,52 @@ export function SubCategoryForm({
                 label={t("subcategory_name_en")}
                 placeholder={t("subcategory_name_en")}
                 required
+                className="space-y-1"
+                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
+              />
+
+              <FormField
+                control={form.control}
+                name="descriptionAr"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base text-content-secondary">{t("subcategory_description_ar")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder={t("subcategory_description_ar")}
+                        className="min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="descriptionEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base text-content-secondary">{t("subcategory_description_en")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder={t("subcategory_description_en")}
+                        className="min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormInputField
+                control={form.control as unknown as Control<FieldValues>}
+                name="priority"
+                label={t("priority")}
+                type="number"
+                placeholder="0"
                 className="space-y-1"
                 inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />

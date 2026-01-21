@@ -73,6 +73,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
+    "create": "Create",
     "search": "Search",
     "filter": "Filter",
     "export": "Export",
@@ -142,7 +143,12 @@
     "category_details": "Category Details",
     "category_name_ar": "Category Name (Arabic)",
     "category_name_en": "Category Name (English)",
-    "select_status": "Select Status"
+    "category_description_ar": "Description (Arabic)",
+    "category_description_en": "Description (English)",
+    "priority": "Priority",
+    "slug": "Slug",
+    "select_status": "Select Status",
+    "subcategories_count": "Subcategories"
   },
   "SubCategories": {
     "title": "Subcategories List",
@@ -160,6 +166,10 @@
     "subcategory_details": "Subcategory Details",
     "subcategory_name_ar": "Name (Arabic)",
     "subcategory_name_en": "Name (English)",
+    "subcategory_description_ar": "Description (Arabic)",
+    "subcategory_description_en": "Description (English)",
+    "priority": "Priority",
+    "slug": "Slug",
     "select_category": "Select Parent Category",
     "subcategory_image": "Subcategory Image"
   },

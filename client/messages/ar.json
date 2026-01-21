@@ -73,6 +73,7 @@
     "delete": "حذف",
     "edit": "تعديل",
     "add": "إضافة",
+    "create": "إضافة",
     "search": "بحث",
     "filter": "تصفية",
     "export": "تصدير",
@@ -142,7 +143,12 @@
     "category_details": "تفاصيل الفئة",
     "category_name_ar": "اسم الفئة (بالعربية)",
     "category_name_en": "اسم الفئة (بالإنجليزية)",
-    "select_status": "اختر الحالة"
+    "category_description_ar": "الوصف (بالعربية)",
+    "category_description_en": "الوصف (بالإنجليزية)",
+    "priority": "الترتيب",
+    "slug": "الرابط (Slug)",
+    "select_status": "اختر الحالة",
+    "subcategories_count": "عدد الأقسام الفرعية"
   },
   "SubCategories": {
     "title": "قائمة الفئات الفرعية",
@@ -160,6 +166,10 @@
     "subcategory_details": "تفاصيل الفئة الفرعية",
     "subcategory_name_ar": "الاسم (بالعربية)",
     "subcategory_name_en": "الاسم (بالإنجليزية)",
+    "subcategory_description_ar": "الوصف (بالعربية)",
+    "subcategory_description_en": "الوصف (بالإنجليزية)",
+    "priority": "الترتيب",
+    "slug": "الرابط (Slug)",
     "select_category": "اختر الفئة الأساسية",
     "subcategory_image": "صورة الفئة الفرعية"
   },
