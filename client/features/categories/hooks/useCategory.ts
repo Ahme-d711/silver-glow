@@ -50,9 +50,9 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: (payload: any | FormData) => createCategory(payload),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+        await queryClient.resetQueries({ queryKey: categoryKeys.lists() });
         toast.success(response.message || "Category created successfully");
       } else {
         toast.error(response.message || "Failed to create category");
@@ -70,10 +70,12 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any | FormData }) =>
       updateCategory(id, payload),
-    onSuccess: (response, variables) => {
+    onSuccess: async (response, variables) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-        queryClient.invalidateQueries({ queryKey: categoryKeys.detail(variables.id) });
+        await Promise.all([
+          queryClient.resetQueries({ queryKey: categoryKeys.lists() }),
+          queryClient.resetQueries({ queryKey: categoryKeys.detail(variables.id) })
+        ]);
         toast.success(response.message || "Category updated successfully");
       } else {
         toast.error(response.message || "Failed to update category");
@@ -90,9 +92,9 @@ export function useDeleteCategory() {
 
   return useMutation({
     mutationFn: (id: string) => deleteCategory(id) as Promise<any>,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+        await queryClient.resetQueries({ queryKey: categoryKeys.lists() });
         toast.success(response.message || "Category deleted successfully");
       } else {
         toast.error(response.message || "Failed to delete category");

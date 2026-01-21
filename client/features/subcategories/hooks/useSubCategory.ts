@@ -50,9 +50,9 @@ export function useCreateSubcategory() {
 
   return useMutation({
     mutationFn: (payload: any | FormData) => createSubcategory(payload),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
+        await queryClient.resetQueries({ queryKey: subcategoryKeys.lists() });
         toast.success(response.message || "Subcategory created successfully");
       } else {
         toast.error(response.message || "Failed to create subcategory");
@@ -70,10 +70,12 @@ export function useUpdateSubcategory() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any | FormData }) =>
       updateSubcategory(id, payload),
-    onSuccess: (response, variables) => {
+    onSuccess: async (response, variables) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
-        queryClient.invalidateQueries({ queryKey: subcategoryKeys.detail(variables.id) });
+        await Promise.all([
+          queryClient.resetQueries({ queryKey: subcategoryKeys.lists() }),
+          queryClient.resetQueries({ queryKey: subcategoryKeys.detail(variables.id) })
+        ]);
         toast.success(response.message || "Subcategory updated successfully");
       } else {
         toast.error(response.message || "Failed to update subcategory");
@@ -90,9 +92,9 @@ export function useDeleteSubcategory() {
 
   return useMutation({
     mutationFn: (id: string) => deleteSubcategory(id) as Promise<any>,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: subcategoryKeys.lists() });
+        await queryClient.resetQueries({ queryKey: subcategoryKeys.lists() });
         toast.success(response.message || "Subcategory deleted successfully");
       } else {
         toast.error(response.message || "Failed to delete subcategory");

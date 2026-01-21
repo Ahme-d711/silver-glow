@@ -21,8 +21,8 @@ export default function EditSubCategoryTemplate() {
   const { data: subcategory, isLoading, error } = useSubcategory(id);
   const { mutate: updateSubcategory, isPending } = useUpdateSubcategory();
 
-  const handleSubmit = (payload: SubcategoryFormValues | FormData) => {
-    updateSubcategory(
+  const handleSubmit = async (payload: SubcategoryFormValues | FormData) => {
+    await updateSubcategory(
       { id, payload },
       {
         onSuccess: () => {

@@ -21,8 +21,8 @@ export default function EditCategoryTemplate() {
   const { data: category, isLoading, error } = useCategory(id);
   const { mutate: updateCategory, isPending } = useUpdateCategory();
 
-  const handleSubmit = (payload: CategoryFormValues | FormData) => {
-    updateCategory(
+  const handleSubmit = async (payload: CategoryFormValues | FormData) => {
+    await updateCategory(
       { id, payload },
       {
         onSuccess: () => {

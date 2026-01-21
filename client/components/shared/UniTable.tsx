@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import { useReactTable, getCoreRowModel, getPaginationRowModel, flexRender, type ColumnDef } from "@tanstack/react-table"
 import { Check, Minus, Trash2, Pencil, Eye, ImageOff } from "lucide-react"
 export { Check, Minus, Trash2, Pencil, Eye }
@@ -11,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "./Pagination"
 import { getImageUrl } from "@/utils/image.utils"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 // Types for flexible cell rendering
 export type CellRenderer<TData> = (value: unknown, row: TData) => React.ReactNode
@@ -60,20 +60,12 @@ export function ProductCell({
 
   return (
     <div className="flex items-center gap-3">
-      {imageUrl ? (
-        <div className={cn("relative overflow-hidden rounded-xl bg-divider shrink-0", imageSize)}>
-          <Image 
-            src={imageUrl} 
-            alt={title} 
-            fill
-            className="object-cover" 
-          />
-        </div>
-      ) : (
-        <div className={cn("rounded-xl bg-divider shrink-0 flex items-center justify-center", imageSize)}>
-          <ImageOff className="h-5 w-5 text-content-tertiary" />
-        </div>
-      )}
+      <Avatar className={cn("rounded-xl bg-divider shrink-0", imageSize)}>
+        <AvatarImage src={imageUrl || undefined} alt={title} className="object-cover" />
+        <AvatarFallback className="rounded-xl bg-divider text-content-tertiary">
+          <ImageOff className="h-5 w-5" />
+        </AvatarFallback>
+      </Avatar>
       <div className="flex flex-col">
         <span className="font-semibold text-sm text-content-primary leading-tight">{title}</span>
         {subtitle && <span className="text-xs text-content-secondary mt-0.5">{subtitle}</span>}
