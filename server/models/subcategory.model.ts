@@ -64,7 +64,7 @@ const SubcategorySchema = new Schema<ISubcategory>(
   }
 );
 
-SubcategorySchema.pre("save", async function () {
+SubcategorySchema.pre("validate", async function () {
   if (this.isModified("nameEn")) {
     this.slug = slugify(this.nameEn);
   }
@@ -72,7 +72,6 @@ SubcategorySchema.pre("save", async function () {
 
 SubcategorySchema.index({ nameAr: 1 });
 SubcategorySchema.index({ nameEn: 1 });
-SubcategorySchema.index({ slug: 1 }, { unique: true });
 SubcategorySchema.index({ categoryId: 1 });
 SubcategorySchema.index({ isShow: 1 });
 SubcategorySchema.index({ isDeleted: 1 });

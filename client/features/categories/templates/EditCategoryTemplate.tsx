@@ -41,6 +41,9 @@ export default function EditCategoryTemplate() {
     return {
       nameAr: category.nameAr,
       nameEn: category.nameEn,
+      descriptionAr: category.descriptionAr || "",
+      descriptionEn: category.descriptionEn || "",
+      priority: category.priority || 0,
       image: category.image,
       isShow: category.isShow,
     };

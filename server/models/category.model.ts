@@ -69,7 +69,7 @@ CategorySchema.virtual("subcategoriesCount", {
   match: { isDeleted: false },
 });
 
-CategorySchema.pre("save", async function () {
+CategorySchema.pre("validate", async function () {
   if (this.isModified("nameEn")) {
     this.slug = slugify(this.nameEn);
   }
@@ -77,7 +77,6 @@ CategorySchema.pre("save", async function () {
 
 CategorySchema.index({ nameAr: 1 });
 CategorySchema.index({ nameEn: 1 });
-CategorySchema.index({ slug: 1 }, { unique: true });
 CategorySchema.index({ isShow: 1 });
 CategorySchema.index({ isDeleted: 1 });
 CategorySchema.index({ priority: -1 });

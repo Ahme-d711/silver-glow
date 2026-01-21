@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, Image as ImageIcon, X } from "lucide-react";
 import { categorySchema, CategoryFormValues } from "../schemas/category.schema";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
@@ -59,6 +59,21 @@ export function CategoryForm({
       isShow: defaultValues?.isShow ?? true,
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset({
+        nameAr: defaultValues.nameAr || "",
+        nameEn: defaultValues.nameEn || "",
+        descriptionAr: defaultValues.descriptionAr || "",
+        descriptionEn: defaultValues.descriptionEn || "",
+        priority: defaultValues.priority || 0,
+        image: defaultValues.image || "",
+        isShow: defaultValues.isShow ?? true,
+      });
+      setPreview(getImageUrl(defaultValues.image));
+    }
+  }, [defaultValues, form]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

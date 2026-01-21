@@ -6,7 +6,7 @@ export const subcategorySchema = z.object({
   categoryId: z.string().min(1, "Parent category is required"),
   descriptionAr: z.string().optional().or(z.literal("")),
   descriptionEn: z.string().optional().or(z.literal("")),
-  priority: z.number().int().optional().default(0),
+  priority: z.coerce.number().int().optional().default(0),
   image: z.string().optional().or(z.literal("")),
   isShow: z.boolean().default(true),
 });

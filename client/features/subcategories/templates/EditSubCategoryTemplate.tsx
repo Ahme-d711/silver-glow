@@ -41,6 +41,9 @@ export default function EditSubCategoryTemplate() {
     return {
       nameAr: subcategory.nameAr,
       nameEn: subcategory.nameEn,
+      descriptionAr: subcategory.descriptionAr || "",
+      descriptionEn: subcategory.descriptionEn || "",
+      priority: subcategory.priority || 0,
       categoryId: subcategory.categoryId,
       image: subcategory.image,
       isShow: subcategory.isShow,

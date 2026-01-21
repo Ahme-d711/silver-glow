@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, Image as ImageIcon, X } from "lucide-react";
 import { subcategorySchema, SubcategoryFormValues } from "../schemas/subcategory.schema";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useCategories } from "@/features/categories/hooks/useCategory";
@@ -71,6 +71,22 @@ export function SubCategoryForm({
       isShow: defaultValues?.isShow ?? true,
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset({
+        nameAr: defaultValues.nameAr || "",
+        nameEn: defaultValues.nameEn || "",
+        descriptionAr: defaultValues.descriptionAr || "",
+        descriptionEn: defaultValues.descriptionEn || "",
+        priority: defaultValues.priority || 0,
+        categoryId: defaultValues.categoryId || "",
+        image: defaultValues.image || "",
+        isShow: defaultValues.isShow ?? true,
+      });
+      setPreview(getImageUrl(defaultValues.image));
+    }
+  }, [defaultValues, form]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
