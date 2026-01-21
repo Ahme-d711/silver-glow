@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 export default function AddCategoryTemplate() {
   const router = useRouter();
   const t = useTranslations("Categories");
+  const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   const { mutate: createCategory, isPending } = useCreateCategory();
 
@@ -30,20 +31,18 @@ export default function AddCategoryTemplate() {
       <PageHeader
         title={t("add_category")}
         breadcrumbs={[
-          { label: tCommon("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/" },
           { label: t("title"), href: "/dashboard/categories" },
           { label: t("add_category") },
         ]}
       />
 
-      <div className="bg-white rounded-3xl p-6 border border-divider max-w-2xl mx-auto shadow-sm">
-        <CategoryForm
-          onSubmit={handleSubmit}
-          isLoading={isPending}
-          onCancel={handleCancel}
-          submitLabel={tCommon("create")}
-        />
-      </div>
+      <CategoryForm
+        onSubmit={handleSubmit}
+        isLoading={isPending}
+        onCancel={handleCancel}
+        submitLabel={tCommon("create")}
+      />
     </div>
   );
 }

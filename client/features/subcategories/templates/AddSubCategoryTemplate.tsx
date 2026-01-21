@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 export default function AddSubCategoryTemplate() {
   const router = useRouter();
   const t = useTranslations("SubCategories");
+  const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   const { mutate: createSubcategory, isPending } = useCreateSubcategory();
 
@@ -31,20 +32,18 @@ export default function AddSubCategoryTemplate() {
       <PageHeader
         title={t("add_subcategory")}
         breadcrumbs={[
-          { label: tCommon("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/" },
           { label: t("title"), href: "/dashboard/subcategories" },
           { label: t("add_subcategory") },
         ]}
       />
 
-      <div className="bg-white rounded-3xl p-6 border border-divider max-w-2xl mx-auto shadow-sm">
-        <SubCategoryForm
-          onSubmit={handleSubmit}
-          isLoading={isPending}
-          onCancel={handleCancel}
-          submitLabel={tCommon("create")}
-        />
-      </div>
+      <SubCategoryForm
+        onSubmit={handleSubmit}
+        isLoading={isPending}
+        onCancel={handleCancel}
+        submitLabel={tCommon("create")}
+      />
     </div>
   );
 }

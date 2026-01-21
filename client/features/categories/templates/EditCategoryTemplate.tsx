@@ -15,6 +15,7 @@ export default function EditCategoryTemplate() {
   const params = useParams();
   const id = params.id as string;
   const t = useTranslations("Categories");
+  const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
 
   const { data: category, isLoading, error } = useCategory(id);
@@ -51,7 +52,7 @@ export default function EditCategoryTemplate() {
         <PageHeader
           title={t("edit_category")}
           breadcrumbs={[
-            { label: tCommon("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/" },
             { label: t("title"), href: "/dashboard/categories" },
             { label: t("edit_category") },
           ]}
@@ -67,7 +68,7 @@ export default function EditCategoryTemplate() {
         <PageHeader
           title={t("edit_category")}
           breadcrumbs={[
-            { label: tCommon("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/" },
             { label: t("title"), href: "/dashboard/categories" },
             { label: t("edit_category") },
           ]}
@@ -85,22 +86,20 @@ export default function EditCategoryTemplate() {
       <PageHeader
         title={t("edit_category")}
         breadcrumbs={[
-          { label: tCommon("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/" },
           { label: t("title"), href: "/dashboard/categories" },
           { label: t("edit_category") },
         ]}
       />
 
-      <div className="bg-white rounded-3xl p-6 border border-divider max-w-2xl mx-auto shadow-sm">
-        <CategoryForm
-          defaultValues={defaultValues}
-          onSubmit={handleSubmit}
-          isLoading={isPending}
-          onCancel={handleCancel}
-          submitLabel={tCommon("save")}
-          isEdit={true}
-        />
-      </div>
+      <CategoryForm
+        defaultValues={defaultValues}
+        onSubmit={handleSubmit}
+        isLoading={isPending}
+        onCancel={handleCancel}
+        submitLabel={tCommon("save")}
+        isEdit={true}
+      />
     </div>
   );
 }

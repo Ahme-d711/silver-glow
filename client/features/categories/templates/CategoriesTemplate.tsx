@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Download } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import CategoriesTable from "../components/CategoriesTable";
+import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useCategories, useDeleteCategory } from "../hooks/useCategory";
 import { Category } from "../services/category.service";
 import { useTranslations } from "next-intl";
@@ -11,34 +12,13 @@ import { useTranslations } from "next-intl";
 export default function CategoriesTemplate() {
   const router = useRouter();
   const t = useTranslations("Categories");
+  const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   
   const { data: categoriesData = [], isLoading } = useCategories();
   const { mutate: deleteCategory } = useDeleteCategory();
 
-  // Mock data to match the design image if no data is returned from API
-  const mockCategories: Category[] = [
-    {
-      _id: "302012linda",
-      nameAr: "ليندا بلير",
-      nameEn: "Linda Blair",
-      image: "",
-      isShow: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      _id: "302012tahado",
-      nameAr: "تحدو",
-      nameEn: "Tahado",
-      image: "",
-      isShow: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-  ];
-
-  const categories = categoriesData.length > 0 ? categoriesData : mockCategories;
+  const categories = categoriesData;
 
   const handleEdit = (category: Category) => {
     router.push(`/dashboard/categories/edit/${category._id}`);
@@ -65,19 +45,27 @@ export default function CategoriesTemplate() {
       <PageHeader
         title={t("title")}
         breadcrumbs={[
-          { label: tCommon("dashboard"), href: "/" }, 
+          { label: tNav("dashboard"), href: "/" }, 
           { label: t("title") }
         ]}
         actionButtons={actionButtons}
       />
 
       <div className="bg-white rounded-[24px] border border-divider overflow-hidden">
-        <CategoriesTable
-          categories={categories}
-          isLoading={isLoading}
-          onEdit={handleEdit}
-          onDelete={(id) => deleteCategory(id)}
-        />
+        {!isLoading && categories.length === 0 ? (
+           <NoDataMsg 
+             title={t("title")}
+             description={tCommon("no_data_desc")}
+             additionalMessage=""
+           />
+        ) : (
+          <CategoriesTable
+            categories={categories}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            onDelete={(id) => deleteCategory(id)}
+          />
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import UniTable, {
 import { Badge } from "@/components/ui/badge";
 import { Category } from "../services/category.service";
 import { useTranslations, useLocale } from "next-intl";
+import { cn } from "@/lib/utils";
 
 interface CategoriesTableProps {
   categories: Category[];
@@ -102,5 +103,3 @@ export default function CategoriesTable({
   );
 }
 
-// Helper function since cn is not imported correctly in the above block
-import { cn } from "@/lib/utils";

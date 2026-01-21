@@ -15,6 +15,7 @@ export default function EditSubCategoryTemplate() {
   const params = useParams();
   const id = params.id as string;
   const t = useTranslations("SubCategories");
+  const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
 
   const { data: subcategory, isLoading, error } = useSubcategory(id);
@@ -52,7 +53,7 @@ export default function EditSubCategoryTemplate() {
         <PageHeader
           title={t("edit_subcategory")}
           breadcrumbs={[
-            { label: tCommon("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/" },
             { label: t("title"), href: "/dashboard/subcategories" },
             { label: t("edit_subcategory") },
           ]}
@@ -68,7 +69,7 @@ export default function EditSubCategoryTemplate() {
         <PageHeader
           title={t("edit_subcategory")}
           breadcrumbs={[
-            { label: tCommon("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/" },
             { label: t("title"), href: "/dashboard/subcategories" },
             { label: t("edit_subcategory") },
           ]}
@@ -86,22 +87,20 @@ export default function EditSubCategoryTemplate() {
       <PageHeader
         title={t("edit_subcategory")}
         breadcrumbs={[
-          { label: tCommon("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/" },
           { label: t("title"), href: "/dashboard/subcategories" },
           { label: t("edit_subcategory") },
         ]}
       />
 
-      <div className="bg-white rounded-3xl p-6 border border-divider max-w-2xl mx-auto shadow-sm">
-        <SubCategoryForm
-          defaultValues={defaultValues}
-          onSubmit={handleSubmit}
-          isLoading={isPending}
-          onCancel={handleCancel}
-          submitLabel={tCommon("save")}
-          isEdit={true}
-        />
-      </div>
+      <SubCategoryForm
+        defaultValues={defaultValues}
+        onSubmit={handleSubmit}
+        isLoading={isPending}
+        onCancel={handleCancel}
+        submitLabel={tCommon("save")}
+        isEdit={true}
+      />
     </div>
   );
 }

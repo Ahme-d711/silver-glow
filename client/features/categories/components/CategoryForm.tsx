@@ -99,10 +99,10 @@ export function CategoryForm({
         {/* Left Sidebar - Photo */}
         <div className="lg:col-span-4 space-y-6">
           <Card className="p-6 rounded-[24px] border border-divider shadow-none">
-            <h3 className="text-lg font-semibold text-content-primary mb-4">{t("category_image")}</h3>
+            <h3 className="text-lg font-semibold text-content-primary mb-4">{tCommon("category_image")}</h3>
             
             <FormItem className="space-y-1">
-              <FormLabel className="text-content-secondary text-base">{t("category_image")}</FormLabel>
+              <FormLabel className="text-content-secondary text-base">{tCommon("category_image")}</FormLabel>
               <div className="relative">
                 <input
                   type="file"
@@ -172,7 +172,8 @@ export function CategoryForm({
                 label={t("category_name_ar")}
                 placeholder={t("category_name_ar")}
                 required
-                className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
+                className="space-y-1"
+                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
               
               <FormInputField
@@ -181,7 +182,8 @@ export function CategoryForm({
                 label={t("category_name_en")}
                 placeholder={t("category_name_en")}
                 required
-                className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
+                className="space-y-1"
+                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
 
               <FormField

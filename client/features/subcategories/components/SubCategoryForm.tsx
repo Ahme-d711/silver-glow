@@ -183,7 +183,8 @@ export function SubCategoryForm({
                 label={t("subcategory_name_ar")}
                 placeholder={t("subcategory_name_ar")}
                 required
-                className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
+                className="space-y-1"
+                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
               
               <FormInputField
@@ -192,7 +193,8 @@ export function SubCategoryForm({
                 label={t("subcategory_name_en")}
                 placeholder={t("subcategory_name_en")}
                 required
-                className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
+                className="space-y-1"
+                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
 
               <FormField

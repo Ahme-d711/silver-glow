@@ -99,7 +99,8 @@
     "drag_drop_image": "Drag and drop image here, or click add image",
     "add_image": "Add Image",
     "general_info": "General Information",
-    "category_image": "Category Image"
+    "category_image": "Category Image",
+    "no_data_desc": "There is no data to display at this time"
   },
   "Users": {
     "title": "Users",
