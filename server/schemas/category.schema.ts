@@ -31,6 +31,6 @@ export const getCategoriesQuerySchema = z.object({
   ),
   isDeleted: z.preprocess(
     (val) => (val === "true" ? true : val === "false" ? false : val),
-    z.boolean().optional().default(false)
+    z.boolean().optional()
   ),
 });

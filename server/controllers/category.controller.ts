@@ -19,12 +19,8 @@ import { validateUserData } from "../schemas/user.schema.js"; // Reuse validatio
 export const getAllCategories = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getCategoriesQuerySchema, req.query);
   
-  // Default to isDeleted: false if not specified in search/filters
-  const baseFilter = validatedQuery.isDeleted !== undefined 
-    ? { isDeleted: validatedQuery.isDeleted } 
-    : { isDeleted: false };
-
-  const query = CategoryModel.find(baseFilter)
+  // No default isDeleted filter here. ApiFeatures.filter() will handle it if provided.
+  const query = CategoryModel.find()
     .populate("subcategoriesCount")
     .sort({ priority: -1, createdAt: -1 });
 

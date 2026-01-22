@@ -56,7 +56,7 @@ export function useCreateCategory() {
     mutationFn: (payload: any | FormData) => createCategory(payload),
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.resetQueries({ queryKey: categoryKeys.lists() });
+        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
         toast.success(response.message || "Category created successfully");
       } else {
         toast.error(response.message || "Failed to create category");
@@ -77,8 +77,8 @@ export function useUpdateCategory() {
     onSuccess: async (response, variables) => {
       if (response.success) {
         await Promise.all([
-          queryClient.resetQueries({ queryKey: categoryKeys.lists() }),
-          queryClient.resetQueries({ queryKey: categoryKeys.detail(variables.id) })
+          queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
+          queryClient.invalidateQueries({ queryKey: categoryKeys.detail(variables.id) })
         ]);
         toast.success(response.message || "Category updated successfully");
       } else {
@@ -98,7 +98,7 @@ export function useDeleteCategory() {
     mutationFn: (id: string) => deleteCategory(id) as Promise<any>,
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.resetQueries({ queryKey: categoryKeys.lists() });
+        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
         toast.success(response.message || "Category deleted successfully");
       } else {
         toast.error(response.message || "Failed to delete category");
@@ -117,8 +117,8 @@ export function useToggleCategoryStatus() {
     onSuccess: async (response, id) => {
       if (response.success) {
         await Promise.all([
-          queryClient.resetQueries({ queryKey: categoryKeys.lists() }),
-          queryClient.resetQueries({ queryKey: categoryKeys.detail(id) })
+          queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
+          queryClient.invalidateQueries({ queryKey: categoryKeys.detail(id) })
         ]);
         toast.success(response.message || "Status updated successfully");
       } else {
@@ -151,7 +151,7 @@ export function useRestoreCategory() {
     mutationFn: (id: string) => restoreCategory(id),
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.resetQueries({ queryKey: categoryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
         toast.success(response.message || "Category restored successfully");
       } else {
         toast.error(response.message || "Failed to restore category");

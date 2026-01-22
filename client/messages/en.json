@@ -96,6 +96,8 @@
     "upload": "Upload",
     "select": "Select",
     "all": "All",
+    "active": "Active",
+    "deleted": "Deleted",
     "none": "None",
     "drag_drop_image": "Drag and drop image here, or click add image",
     "add_image": "Add Image",

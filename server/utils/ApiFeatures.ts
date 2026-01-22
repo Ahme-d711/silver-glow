@@ -120,9 +120,9 @@ class ApiFeatures<T extends Document> {
       // Execute the main query
     const results = await this.query;
 
-      // Calculate total count using the original query with filters
-    const filter = this.originalQuery.getFilter();
-    const total = await this.originalQuery.model.countDocuments(filter);
+      // Calculate total count using the current query with all filters applied
+      const filter = this.query.getFilter();
+      const total = await this.query.model.countDocuments(filter);
 
       const pages = Math.ceil(total / this.limit);
 

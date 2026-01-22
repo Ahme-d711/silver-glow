@@ -20,12 +20,8 @@ import { validateUserData } from "../schemas/user.schema.js";
 export const getAllSubcategories = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getSubcategoriesQuerySchema, req.query);
   
-  const baseFilter = validatedQuery.isDeleted !== undefined 
-    ? { isDeleted: validatedQuery.isDeleted } 
-    : { isDeleted: false };
-
-  // We want to populate the category information
-  const query = SubcategoryModel.find(baseFilter)
+  // No default isDeleted filter here. ApiFeatures.filter() will handle it if provided.
+  const query = SubcategoryModel.find()
     .populate("categoryId", "nameAr nameEn")
     .sort({ priority: -1, createdAt: -1 });
 
