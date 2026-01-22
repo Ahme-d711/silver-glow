@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {  FilterQuery } from "mongoose";
+import {  QueryFilter } from "mongoose";
 import { ProductModel } from "../models/product.model.js";
 import { IProduct } from "../types/product.type.js";
 import { createProductSchema, updateProductSchema, queryProductSchema } from "../schemas/product.schema.js";
@@ -14,7 +14,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
   const validatedQuery = queryProductSchema.parse(req.query);
   const { search, categoryId, subCategoryId, brandId, sectionId, isDeleted, isShow, page, limit } = validatedQuery;
 
-  const query: FilterQuery<IProduct> = { isDeleted: isDeleted || false };
+  const query: QueryFilter<IProduct> = { isDeleted: isDeleted || false };
 
   if (search) {
     query.$or = [

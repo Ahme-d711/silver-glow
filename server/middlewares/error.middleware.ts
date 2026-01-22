@@ -18,7 +18,7 @@ export const globalErrorHandler = (
   }
 
   if (err instanceof ZodError) {
-    const message = err.errors.map(e => `${e.path.join(".")}: ${e.message}`).join(", ");
+    const message = err.issues.map(e => `${e.path.join(".")}: ${e.message}`).join(", ");
     return res.status(400).json({
       success: false,
       message: `Validation Error: ${message}`,

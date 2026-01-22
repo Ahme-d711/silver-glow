@@ -1,4 +1,4 @@
-import { type Document, Schema } from "mongoose";
+import { type Document, Schema, Types } from "mongoose";
 
 export interface IProduct extends Document {
   nameAr: string;
@@ -13,10 +13,10 @@ export interface IProduct extends Document {
   slug: string;
   mainImage: string;
   images: string[];
-  categoryId: Schema.Types.ObjectId;
-  subCategoryId?: Schema.Types.ObjectId;
-  brandId?: Schema.Types.ObjectId;
-  sectionId?: Schema.Types.ObjectId;
+  categoryId: Types.ObjectId;
+  subCategoryId?: Types.ObjectId;
+  brandId?: Types.ObjectId;
+  sectionId?: Types.ObjectId;
   priority: number;
   isShow: boolean;
   isDeleted: boolean;

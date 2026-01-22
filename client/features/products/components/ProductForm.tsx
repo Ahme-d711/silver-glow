@@ -22,7 +22,7 @@ import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { useCategories } from "../../categories/hooks/useCategory";
-import { useSubcategories } from "../../subcategories/hooks/useSubcategory";
+import { useSubcategories } from "../../subcategories/hooks/useSubCategory";
 import { useBrands } from "../../brands/hooks/useBrand";
 import { useSections } from "../../sections/hooks/useSection";
 
