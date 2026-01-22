@@ -48,10 +48,20 @@ export function ProductForm({
   const locale = useLocale();
   
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(
-    defaultValues?.mainImage ? getImageUrl(defaultValues.mainImage as string) : null
+    defaultValues?.mainImage 
+      ? (defaultValues.mainImage instanceof File 
+          ? URL.createObjectURL(defaultValues.mainImage) 
+          : getImageUrl(defaultValues.mainImage as string)) 
+      : null
   );
   const [imagesPreviews, setImagesPreviews] = useState<string[]>(
-    defaultValues?.images ? (defaultValues.images as any[]).map(img => getImageUrl(img)) : []
+    defaultValues?.images
+      ? (defaultValues.images as (string | File)[])
+          .map((img) =>
+            img instanceof File ? URL.createObjectURL(img) : getImageUrl(img)
+          )
+          .filter((url): url is string => url !== null)
+      : []
   );
 
   const mainImageRef = useRef<HTMLInputElement>(null);
@@ -79,10 +89,17 @@ export function ProductForm({
   const selectedCategoryId = form.watch("categoryId");
 
   // Fetch data for selections
-  const { data: categories = [] } = useCategories();
-  const { data: subcategories = [] } = useSubcategories({ categoryId: selectedCategoryId });
-  const { data: brands = [] } = useBrands();
-  const { data: sections = [] } = useSections();
+  const { data: categoriesData } = useCategories();
+  const categories = categoriesData || [];
+  
+  const { data: subcategoriesData } = useSubcategories({ categoryId: selectedCategoryId });
+  const subcategories = subcategoriesData || [];
+  
+  const { data: brandsData } = useBrands();
+  const brands = brandsData || [];
+  
+  const { data: sectionsData } = useSections();
+  const sections = sectionsData || [];
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -119,37 +136,36 @@ export function ProductForm({
   };
 
   const onFormSubmit = (values: ProductFormData) => {
-    if (isEdit) {
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "images" && Array.isArray(value)) {
-          value.forEach(img => {
-            if (img instanceof File) formData.append("images", img);
-          });
-        } else if (key === "mainImage" && value instanceof File) {
-            formData.append("mainImage", value);
-        } else if (value !== undefined) {
-          formData.append(key, String(value));
-        }
-      });
-      onSubmit(formData);
-    } else {
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "images" && Array.isArray(value)) {
-           value.forEach(img => {
-             if (img instanceof File) formData.append("images", img);
-           });
-        } else if (value !== undefined) {
-          if (value instanceof File) {
-            formData.append(key, value);
-          } else {
-            formData.append(key, String(value));
+    const formData = new FormData();
+    
+    // Iterate over all keys in values
+    (Object.keys(values) as Array<keyof ProductFormData>).forEach((key) => {
+      const value = values[key];
+      
+      if (value === undefined || value === null) return;
+
+      if (key === "images" && Array.isArray(value)) {
+        value.forEach((img) => {
+          if (img instanceof File) {
+            formData.append("images", img);
+          } else if (typeof img === "string") {
+            // If it's an existing image URL/path, we might store it as a hidden field or handle it differently
+            // Usually for multiple images, if you send back existing ones it depends on backend logic
+            formData.append("existingImages", img);
           }
+        });
+      } else if (key === "mainImage") {
+        if (value instanceof File) {
+          formData.append("mainImage", value);
+        } else if (typeof value === "string") {
+          formData.append("mainImage", value);
         }
-      });
-      onSubmit(formData);
-    }
+      } else {
+        formData.append(key, String(value));
+      }
+    });
+
+    onSubmit(formData);
   };
 
   return (

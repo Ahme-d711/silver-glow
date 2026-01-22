@@ -1,19 +1,21 @@
 "use client";
 
-import {
-  UniTable,
-  Column,
-  Action,
-  UniTableFilters,
+import UniTable, {
+  SelectionCell,
+  SelectionHeader,
+  ProductCell,
+  ActionCell,
+  ActionButton,
+  UniTableColumn,
 } from "@/components/shared/UniTable";
+import UniLoading from "@/components/shared/UniLoading";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Product } from "../types";
 import { useToggleProductStatus, useRestoreProduct } from "../hooks/useProduct";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { getImageUrl } from "@/utils/image.utils";
+import { Pencil, Trash2, RotateCcw } from "lucide-react";
 
 interface ProductsTableProps {
   products: Product[];
@@ -34,103 +36,127 @@ export default function ProductsTable({
   const { mutate: toggleStatus } = useToggleProductStatus();
   const { mutate: restoreProduct } = useRestoreProduct();
 
-  const columns: Column<Product>[] = [
+  const columns: UniTableColumn<Product>[] = [
     {
-      header: t("image"),
-      accessor: "mainImage",
-      render: (value, product) => (
-        <div className="relative h-12 w-12 rounded-lg overflow-hidden border border-divider">
-          <Image
-            src={getImageUrl(value as string)}
-            alt={locale === "ar" ? product.nameAr : product.nameEn}
-            fill
-            className="object-cover"
-          />
-        </div>
+      id: "selection",
+      header: <SelectionHeader label={t("product_id")} />,
+      cell: (_, row) => (
+        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase()} />
       ),
     },
     {
-      header: t("name"),
-      accessor: "nameEn",
-      render: (_, product) => (
-        <div className="flex flex-col">
-          <span className="font-medium text-content-primary">
-            {locale === "ar" ? product.nameAr : product.nameEn}
-          </span>
-          <span className="text-xs text-content-tertiary">{product.sku || "No SKU"}</span>
-        </div>
+      id: "product",
+      header: t("product"),
+      cell: (_, row) => (
+        <ProductCell
+          image={row.mainImage}
+          title={locale === "ar" ? row.nameAr : row.nameEn}
+          subtitle={row.sku || "No SKU"}
+          className={cn(row.isDeleted && "opacity-50 grayscale")}
+        />
       ),
     },
     {
+      id: "category",
       header: tCommon("category"),
-      accessor: "categoryId",
-      render: (value: any) => (
-        <span className="text-sm">
-          {value ? (locale === "ar" ? value.nameAr : value.nameEn) : "-"}
-        </span>
-      ),
+      cell: (_, row) => {
+        const category = row.categoryId;
+        return (
+          <span className="text-sm text-content-secondary">
+            {category
+              ? locale === "ar"
+                ? category.nameAr
+                : category.nameEn
+              : "-"}
+          </span>
+        );
+      },
     },
     {
+      id: "price",
       header: tCommon("price"),
-      accessor: "price",
-      render: (value) => (
+      cell: (_, row) => (
         <span className="font-bold text-primary">
-          {value as number} {tCommon("currency")}
+          {row.price} {tCommon("currency")}
         </span>
       ),
     },
     {
+      id: "stock",
       header: tCommon("stock"),
-      accessor: "stock",
-      render: (value) => (
-        <Badge variant={ (value as number) > 0 ? "secondary" : "destructive" } className="rounded-md">
-          {value as number}
+      cell: (_, row) => (
+        <Badge
+          variant={row.stock > 0 ? "secondary" : "destructive"}
+          className="rounded-md"
+        >
+          {row.stock}
         </Badge>
       ),
     },
     {
+      id: "status",
       header: tCommon("status"),
-      accessor: "isShow",
-      render: (value, product) => (
+      cell: (_, row) => (
         <div className="flex items-center gap-2">
           <Switch
-            checked={value as boolean}
-            onCheckedChange={() => toggleStatus(product._id)}
-            disabled={product.isDeleted}
+            checked={row.isShow}
+            onCheckedChange={() => toggleStatus(row._id)}
+            disabled={row.isDeleted}
+            className="data-[state=checked]:bg-primary"
           />
           <Badge
-            variant={value ? "success" : "secondary"}
+            variant={row.isShow ? "secondary" : "outline"}
             className={cn(
-              "rounded-md",
-              value ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+              "rounded-md border-transparent",
+              row.isShow
+                ? "bg-green-100 text-green-700 hover:bg-green-100"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-100"
             )}
           >
-            {value ? tCommon("active") : tCommon("inactive")}
+            {row.isShow ? tCommon("active") : tCommon("inactive")}
           </Badge>
         </div>
       ),
     },
+    {
+      id: "actions",
+      header: tCommon("action"),
+      cell: (_, row) => (
+        <ActionCell>
+          {row.isDeleted ? (
+            <ActionButton
+              icon={RotateCcw}
+              onClick={() => restoreProduct(row._id)}
+            />
+          ) : (
+            <>
+              <ActionButton
+                icon={Trash2}
+                variant="danger"
+                onClick={() => onDelete(row._id)}
+              />
+              <ActionButton
+                icon={Pencil}
+                onClick={() => onEdit(row)}
+              />
+            </>
+          )}
+        </ActionCell>
+      ),
+    },
   ];
 
-  const actions: Action<Product>[] = [
-    {
-      label: tCommon("edit"),
-      onClick: onEdit,
-      show: (product) => !product.isDeleted,
-    },
-    {
-      label: product => product.isDeleted ? tCommon("restore") : tCommon("delete"),
-      onClick: (product) => product.isDeleted ? restoreProduct(product._id) : onDelete(product._id),
-      variant: product => product.isDeleted ? "default" : "destructive",
-    },
-  ];
+  if (isLoading) {
+    return <UniLoading message={tCommon("loading")} />;
+  }
 
   return (
     <UniTable
       data={products}
       columns={columns}
-      actions={actions}
-      isLoading={isLoading}
+      enablePagination={true}
+      pageSize={10}
+      itemLabel={t("title")}
     />
   );
 }
