@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { BrandForm } from "../components/BrandForm";
 import { useCreateBrand } from "../hooks/useBrand";
 import { useTranslations } from "next-intl";
-import { BrandFormData } from "../schemas/brands.schema";
+import { BrandFormData } from "../types";
 
 export default function AddBrandTemplate() {
   const router = useRouter();

@@ -31,16 +31,6 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    titleKey: "advertisements",
-    href: "/dashboard/ads",
-    icon: Megaphone,
-  },
-  {
-    titleKey: "users",
-    href: "/dashboard/users",
-    icon: Users,
-  },
-  {
     titleKey: "products",
     href: "/dashboard/products",
     icon: Package,
@@ -66,9 +56,19 @@ const navItems: NavItem[] = [
     icon: LayoutGrid,
   },
   {
+    titleKey: "advertisements",
+    href: "/dashboard/ads",
+    icon: Megaphone,
+  },
+  {
     titleKey: "orders",
     href: "/dashboard/orders",
     icon: ShoppingCart,
+  },
+  {
+    titleKey: "users",
+    href: "/dashboard/users",
+    icon: Users,
   },
   {
     titleKey: "settings",

@@ -1,24 +1,27 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { BrandForm } from "../components/BrandForm";
 import { useUpdateBrand, useBrandBySlug } from "../hooks/useBrand";
 import { useTranslations } from "next-intl";
-import { BrandFormData } from "../schemas/brands.schema";
+import { BrandFormData } from "../types";
 import { Loader2 } from "lucide-react";
 
-interface EditBrandTemplateProps {
-  slug: string;
-}
-
-export default function EditBrandTemplate({ slug }: EditBrandTemplateProps) {
+export default function EditBrandTemplate() {
   const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
   const t = useTranslations("Brands");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
+
+  console.log(slug);
+  
   
   const { data: brand, isLoading: isFetching } = useBrandBySlug(slug);
+  console.log(brand);
+  
   const { mutate: updateBrand, isPending } = useUpdateBrand();
 
   const handleSubmit = (values: BrandFormData | FormData) => {

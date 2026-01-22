@@ -10,12 +10,14 @@ import {
   toggleSectionStatus,
   getSectionBySlug,
   restoreSection,
-  CreateSectionPayload,
-  UpdateSectionPayload,
-  GetSectionsParams,
-  Section,
-  ServiceResponse,
 } from "../services/section.service";
+import {
+  Section,
+  CreateSectionPayload,
+  GetSectionsParams,
+  ServiceResponse,
+  UpdateSectionPayload,
+} from "../types";
 import { toast } from "sonner";
 
 export const sectionKeys = {

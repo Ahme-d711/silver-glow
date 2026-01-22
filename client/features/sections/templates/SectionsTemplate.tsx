@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import SectionsTable from "../components/SectionsTable";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useSections, useDeleteSection } from "../hooks/useSection";
-import { Section } from "../services/section.service";
+import { Section } from "../types";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { useState } from "react";

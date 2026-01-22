@@ -1,19 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionForm } from "../components/SectionForm";
 import { useUpdateSection, useSectionBySlug } from "../hooks/useSection";
 import { useTranslations } from "next-intl";
-import { SectionFormData } from "../schemas/sections.schema";
+import { SectionFormData } from "../types";
 import { Loader2 } from "lucide-react";
 
-interface EditSectionTemplateProps {
-  slug: string;
-}
-
-export default function EditSectionTemplate({ slug }: EditSectionTemplateProps) {
+export default function EditSectionTemplate() {
   const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
   const t = useTranslations("Sections");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");

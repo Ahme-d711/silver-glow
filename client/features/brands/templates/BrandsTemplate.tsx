@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import BrandsTable from "../components/BrandsTable";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useBrands, useDeleteBrand } from "../hooks/useBrand";
-import { Brand } from "../services/brand.service";
+import { Brand } from "../types";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { useState } from "react";

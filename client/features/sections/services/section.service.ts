@@ -2,45 +2,13 @@
 
 import  clientAxios from "@/lib/axios/clientAxios";
 import { ApiResponse } from "@/types";
-
-export interface ServiceResponse<T> {
-  success: boolean;
-  message: string;
-  data?: T;
-  error?: unknown;
-}
-
-export interface Section {
-  _id: string;
-  nameAr: string;
-  nameEn: string;
-  descriptionAr?: string;
-  descriptionEn?: string;
-  priority: number;
-  slug: string;
-  image?: string;
-  isShow: boolean;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateSectionPayload {
-  nameAr: string;
-  nameEn: string;
-  descriptionAr?: string;
-  descriptionEn?: string;
-  priority?: number;
-  image?: string;
-  isShow?: boolean;
-}
-
-export interface UpdateSectionPayload extends Partial<CreateSectionPayload> {}
-
-export interface GetSectionsParams {
-  search?: string;
-  isDeleted?: boolean;
-}
+import {
+  Section,
+  CreateSectionPayload,
+  GetSectionsParams,
+  ServiceResponse,
+  UpdateSectionPayload,
+} from "../types";
 
 /**
  * Get all sections

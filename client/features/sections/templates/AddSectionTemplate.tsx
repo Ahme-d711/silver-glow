@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionForm } from "../components/SectionForm";
 import { useCreateSection } from "../hooks/useSection";
 import { useTranslations } from "next-intl";
-import { SectionFormData } from "../schemas/sections.schema";
+import { SectionFormData } from "../types";
 
 export default function AddSectionTemplate() {
   const router = useRouter();

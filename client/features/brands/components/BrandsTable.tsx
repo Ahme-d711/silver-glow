@@ -11,7 +11,7 @@ import UniTable, {
 } from "@/components/shared/UniTable";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Brand } from "../services/brand.service";
+import { Brand } from "../types";
 import { useToggleBrandStatus, useRestoreBrand } from "../hooks/useBrand";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";

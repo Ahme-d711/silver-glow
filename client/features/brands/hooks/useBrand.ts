@@ -10,12 +10,14 @@ import {
   toggleBrandStatus,
   getBrandBySlug,
   restoreBrand,
-  CreateBrandPayload,
-  UpdateBrandPayload,
-  GetBrandsParams,
-  Brand,
-  ServiceResponse,
 } from "../services/brand.service";
+import {
+  Brand,
+  CreateBrandPayload,
+  GetBrandsParams,
+  ServiceResponse,
+  UpdateBrandPayload,
+} from "../types";
 import { toast } from "sonner";
 
 export const brandKeys = {

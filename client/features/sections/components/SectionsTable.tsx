@@ -11,7 +11,7 @@ import UniTable, {
 } from "@/components/shared/UniTable";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Section } from "../services/section.service";
+import { Section } from "../types";
 import { useToggleSectionStatus, useRestoreSection } from "../hooks/useSection";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
