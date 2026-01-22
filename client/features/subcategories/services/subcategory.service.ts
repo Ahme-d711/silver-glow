@@ -169,3 +169,29 @@ export async function toggleSubcategoryStatus(id: string): Promise<ServiceRespon
     };
   }
 }
+
+/**
+ * Get single subcategory by Slug
+ */
+export async function getSubcategoryBySlug(
+  slug: string
+): Promise<ServiceResponse<{ subcategory: Subcategory }>> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ subcategory: Subcategory }>>(
+      `/subcategories/slug/${slug}`
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to fetch subcategory",
+      error: err.message,
+    };
+  }
+}

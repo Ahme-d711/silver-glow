@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { SubCategoryForm } from "../components/SubCategoryForm";
-import { useSubcategory, useUpdateSubcategory } from "../hooks/useSubCategory";
+import { useSubcategoryBySlug, useUpdateSubcategory } from "../hooks/useSubCategory";
 import { SubcategoryFormValues } from "../schemas/subcategory.schema";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -13,17 +13,18 @@ import NoDataMsg from "@/components/shared/NoDataMsg";
 export default function EditSubCategoryTemplate() {
   const router = useRouter();
   const params = useParams();
-  const id = params.id as string;
+  const slug = params.slug as string;
   const t = useTranslations("SubCategories");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
 
-  const { data: subcategory, isLoading, error } = useSubcategory(id);
+  const { data: subcategory, isLoading, error } = useSubcategoryBySlug(slug);
   const { mutate: updateSubcategory, isPending } = useUpdateSubcategory();
 
   const handleSubmit = async (payload: SubcategoryFormValues | FormData) => {
+    if (!subcategory?._id) return;
     await updateSubcategory(
-      { id, payload },
+      { id: subcategory._id, payload },
       {
         onSuccess: () => {
           router.push("/dashboard/subcategories");

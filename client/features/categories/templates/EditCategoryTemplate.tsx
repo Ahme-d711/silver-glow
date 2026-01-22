@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { CategoryForm } from "../components/CategoryForm";
-import { useCategory, useUpdateCategory } from "../hooks/useCategory";
+import { useCategoryBySlug, useUpdateCategory } from "../hooks/useCategory";
 import { CategoryFormValues } from "../schemas/category.schema";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -13,17 +13,18 @@ import NoDataMsg from "@/components/shared/NoDataMsg";
 export default function EditCategoryTemplate() {
   const router = useRouter();
   const params = useParams();
-  const id = params.id as string;
+  const slug = params.slug as string;
   const t = useTranslations("Categories");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
 
-  const { data: category, isLoading, error } = useCategory(id);
+  const { data: category, isLoading, error } = useCategoryBySlug(slug);
   const { mutate: updateCategory, isPending } = useUpdateCategory();
 
   const handleSubmit = async (payload: CategoryFormValues | FormData) => {
+    if (!category?._id) return;
     await updateCategory(
-      { id, payload },
+      { id: category._id, payload },
       {
         onSuccess: () => {
           router.push("/dashboard/categories");

@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { CategoryModel } from "../models/category.model.js";
+import mongoose from "mongoose";
 import { sendResponse } from "../utils/sendResponse.js";
 import AppError from "../errors/AppError.js";
 import { deleteFile } from "../utils/upload.js";
@@ -43,7 +44,30 @@ export const getAllCategories = asyncHandler(async (req: Request, res: Response)
  */
 export const getCategoryById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+  
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Category ID format", 400);
+  }
+  
   const category = await CategoryModel.findById(id);
+
+  if (!category) {
+    throw new AppError("Category not found", 404);
+  }
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Category retrieved successfully",
+    data: { category },
+  });
+});
+
+/**
+ * Get single category by Slug
+ */
+export const getCategoryBySlug = asyncHandler(async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const category = await CategoryModel.findOne({ slug, isDeleted: false });
 
   if (!category) {
     throw new AppError("Category not found", 404);
@@ -92,6 +116,11 @@ export const updateCategory = asyncHandler(async (req: Request, res: Response) =
   const validatedData = validateUserData(updateCategorySchema, req.body);
   const file = req.file;
 
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    if (file) await deleteFile(`/uploads/categories/${file.filename}`).catch(console.error);
+    throw new AppError("Invalid Category ID format", 400);
+  }
+
   const category = await CategoryModel.findById(id);
   if (!category) {
     if (file) await deleteFile(`/uploads/categories/${file.filename}`).catch(console.error);
@@ -125,6 +154,11 @@ export const updateCategory = asyncHandler(async (req: Request, res: Response) =
  */
 export const deleteCategory = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Category ID format", 400);
+  }
+
   const category = await CategoryModel.findById(id);
 
   if (!category) {
@@ -145,6 +179,11 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
  */
 export const toggleCategoryStatus = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Category ID format", 400);
+  }
+
   const category = await CategoryModel.findById(id);
 
   if (!category) {

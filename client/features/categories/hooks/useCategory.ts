@@ -8,6 +8,7 @@ import {
   updateCategory,
   deleteCategory,
   toggleCategoryStatus,
+  getCategoryBySlug,
   Category,
 } from "../services/category.service";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ export const categoryKeys = {
   lists: () => [...categoryKeys.all, "list"] as const,
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: string) => [...categoryKeys.details(), id] as const,
+  slug: (slug: string) => [...categoryKeys.details(), "slug", slug] as const,
 };
 
 export function useCategories() {
@@ -125,5 +127,19 @@ export function useToggleCategoryStatus() {
     onError: (error: Error) => {
       toast.error(error.message || "Failed to update status");
     },
+  });
+}
+
+export function useCategoryBySlug(slug: string) {
+  return useQuery({
+    queryKey: categoryKeys.slug(slug),
+    queryFn: async () => {
+      const response = await getCategoryBySlug(slug);
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to fetch category");
+      }
+      return response.data.category;
+    },
+    enabled: !!slug,
   });
 }

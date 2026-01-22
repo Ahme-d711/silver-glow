@@ -21,7 +21,7 @@ export default function SubCategoriesTemplate() {
   const subcategories = subcategoriesData;
 
   const handleEdit = (subcategory: Subcategory) => {
-    router.push(`/dashboard/subcategories/edit/${subcategory._id}`);
+    router.push(`/dashboard/subcategories/edit/${subcategory.slug}`);
   };
 
   const actionButtons = [

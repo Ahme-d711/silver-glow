@@ -6,6 +6,7 @@ import {
   updateSubcategory,
   deleteSubcategory,
   toggleSubcategoryStatus,
+  getSubcategoryBySlug,
 } from "../controllers/subcategory.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { uploadSubcategory } from "../utils/upload.js";
@@ -15,6 +16,7 @@ export const router = Router();
 // Public/Authenticated routes
 router.get("/", getAllSubcategories);
 router.get("/:id", getSubcategoryById);
+router.get("/slug/:slug", getSubcategoryBySlug);
 
 // Admin only routes
 router.post(

@@ -167,3 +167,29 @@ export async function toggleCategoryStatus(id: string): Promise<ServiceResponse<
     };
   }
 }
+
+/**
+ * Get single category by Slug
+ */
+export async function getCategoryBySlug(
+  slug: string
+): Promise<ServiceResponse<{ category: Category }>> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ category: Category }>>(
+      `/categories/slug/${slug}`
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to fetch category",
+      error: err.message,
+    };
+  }
+}

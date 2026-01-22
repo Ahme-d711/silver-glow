@@ -6,6 +6,7 @@ import {
   updateCategory,
   deleteCategory,
   toggleCategoryStatus,
+  getCategoryBySlug,
 } from "../controllers/category.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { uploadCategory } from "../utils/upload.js";
@@ -15,6 +16,7 @@ export const router = Router();
 // Public/Authenticated routes
 router.get("/", getAllCategories);
 router.get("/:id", getCategoryById);
+router.get("/slug/:slug", getCategoryBySlug);
 
 // Admin only routes
 router.post(

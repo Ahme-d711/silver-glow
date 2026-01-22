@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { SubcategoryModel } from "../models/subcategory.model.js";
 import { CategoryModel } from "../models/category.model.js";
+import mongoose from "mongoose";
 import { sendResponse } from "../utils/sendResponse.js";
 import AppError from "../errors/AppError.js";
 import { deleteFile } from "../utils/upload.js";
@@ -54,7 +55,37 @@ export const getAllSubcategories = asyncHandler(async (req: Request, res: Respon
  */
 export const getSubcategoryById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+  
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Subcategory ID format", 400);
+  }
+  
   const subcategory = await SubcategoryModel.findById(id).populate("categoryId", "nameAr nameEn");
+
+  if (!subcategory) {
+    throw new AppError("Subcategory not found", 404);
+  }
+
+  const subcategoryData = {
+    ...subcategory.toObject(),
+    categoryNameAr: (subcategory.categoryId as any)?.nameAr,
+    categoryNameEn: (subcategory.categoryId as any)?.nameEn,
+    categoryId: (subcategory.categoryId as any)?._id || subcategory.categoryId,
+  };
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Subcategory retrieved successfully",
+    data: { subcategory: subcategoryData },
+  });
+});
+
+/**
+ * Get single subcategory by Slug
+ */
+export const getSubcategoryBySlug = asyncHandler(async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const subcategory = await SubcategoryModel.findOne({ slug, isDeleted: false }).populate("categoryId", "nameAr nameEn");
 
   if (!subcategory) {
     throw new AppError("Subcategory not found", 404);
@@ -119,6 +150,11 @@ export const updateSubcategory = asyncHandler(async (req: Request, res: Response
   const validatedData = validateUserData(updateSubcategorySchema, req.body);
   const file = req.file;
 
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    if (file) await deleteFile(`/uploads/subcategories/${file.filename}`).catch(console.error);
+    throw new AppError("Invalid Subcategory ID format", 400);
+  }
+
   const subcategory = await SubcategoryModel.findById(id);
   if (!subcategory) {
     if (file) await deleteFile(`/uploads/subcategories/${file.filename}`).catch(console.error);
@@ -164,6 +200,11 @@ export const updateSubcategory = asyncHandler(async (req: Request, res: Response
  */
 export const deleteSubcategory = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Subcategory ID format", 400);
+  }
+
   const subcategory = await SubcategoryModel.findById(id);
 
   if (!subcategory) {
@@ -184,6 +225,11 @@ export const deleteSubcategory = asyncHandler(async (req: Request, res: Response
  */
 export const toggleSubcategoryStatus = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Subcategory ID format", 400);
+  }
+
   const subcategory = await SubcategoryModel.findById(id);
 
   if (!subcategory) {

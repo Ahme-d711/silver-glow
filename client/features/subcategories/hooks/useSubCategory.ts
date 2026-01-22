@@ -8,6 +8,7 @@ import {
   updateSubcategory,
   deleteSubcategory,
   toggleSubcategoryStatus,
+  getSubcategoryBySlug,
   Subcategory,
 } from "../services/subcategory.service";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ export const subcategoryKeys = {
   lists: () => [...subcategoryKeys.all, "list"] as const,
   details: () => [...subcategoryKeys.all, "detail"] as const,
   detail: (id: string) => [...subcategoryKeys.details(), id] as const,
+  slug: (slug: string) => [...subcategoryKeys.details(), "slug", slug] as const,
 };
 
 export function useSubcategories() {
@@ -125,5 +127,19 @@ export function useToggleSubcategoryStatus() {
     onError: (error: Error) => {
       toast.error(error.message || "Failed to update status");
     },
+  });
+}
+
+export function useSubcategoryBySlug(slug: string) {
+  return useQuery({
+    queryKey: subcategoryKeys.slug(slug),
+    queryFn: async () => {
+      const response = await getSubcategoryBySlug(slug);
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to fetch subcategory");
+      }
+      return response.data.subcategory;
+    },
+    enabled: !!slug,
   });
 }

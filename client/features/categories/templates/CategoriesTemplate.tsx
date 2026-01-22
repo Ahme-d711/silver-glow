@@ -21,7 +21,7 @@ export default function CategoriesTemplate() {
   const categories = categoriesData;
 
   const handleEdit = (category: Category) => {
-    router.push(`/dashboard/categories/edit/${category._id}`);
+    router.push(`/dashboard/categories/edit/${category.slug}`);
   };
 
   const actionButtons = [

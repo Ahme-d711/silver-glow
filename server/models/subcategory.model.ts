@@ -66,7 +66,17 @@ const SubcategorySchema = new Schema<ISubcategory>(
 
 SubcategorySchema.pre("validate", async function () {
   if (this.isModified("nameEn")) {
-    this.slug = slugify(this.nameEn);
+    const baseSlug = slugify(this.nameEn);
+    let slug = baseSlug;
+    let count = 0;
+    
+    // Check if slug already exists (excluding the current document)
+    while (await model("subcategories").findOne({ slug, _id: { $ne: this._id } })) {
+      count++;
+      slug = `${baseSlug}-${count}`;
+    }
+    
+    this.slug = slug;
   }
 });
 
