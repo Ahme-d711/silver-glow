@@ -13,6 +13,8 @@ import {
   Package,
   Layers,
   Tag,
+  Award,
+  LayoutGrid,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -52,6 +54,16 @@ const navItems: NavItem[] = [
     titleKey: "subcategories",
     href: "/dashboard/subcategories",
     icon: Tag,
+  },
+  {
+    titleKey: "brands",
+    href: "/dashboard/brands",
+    icon: Award,
+  },
+  {
+    titleKey: "sections",
+    href: "/dashboard/sections",
+    icon: LayoutGrid,
   },
   {
     titleKey: "orders",

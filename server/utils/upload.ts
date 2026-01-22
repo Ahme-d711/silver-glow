@@ -76,6 +76,18 @@ export const uploadSubcategory = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
+export const uploadBrand = multer({
+  storage: createStorage("brands", "brand"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+export const uploadSection = multer({
+  storage: createStorage("sections", "section"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
 export const uploadImage = multer({
   storage: createStorage("images", "image"),
   fileFilter: imageFilter,
