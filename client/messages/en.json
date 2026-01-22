@@ -110,7 +110,24 @@
     "add_image": "Add Image",
     "general_info": "General Information",
     "category_image": "Category Image",
-    "no_data_desc": "There is no data to display at this time"
+    "no_data_desc": "There is no data to display at this time",
+    "action": "Action",
+    "category": "Category",
+    "price": "Price",
+    "stock": "Stock",
+    "status": "Status",
+    "currency": "AED",
+    "inactive": "Inactive",
+    "subcategory": "Subcategory",
+    "brand": "Brand",
+    "section": "Section",
+    "priority": "Priority",
+    "show_on_store": "Show on Store",
+    "select_category": "Select Category",
+    "select_subcategory": "Select Subcategory",
+    "select_brand": "Select Brand",
+    "select_section": "Select Section",
+    "upload_image": "Upload Image"
   },
   "Users": {
     "title": "Users",
@@ -243,6 +260,8 @@
     "images": "Images",
     "media": "Media & Images",
     "basic_info": "Basic Information",
-    "relationships": "Relationships & Categorization"
+    "relationships": "Relationships & Categorization",
+    "product_id": "Product ID",
+    "product": "Product"
   }
 }

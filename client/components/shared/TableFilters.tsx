@@ -64,7 +64,12 @@ export function TableFilters({
     <div className={cn("p-6 flex flex-wrap items-center justify-between gap-4", className)}>
       {/* Tabs Section */}
       {tabs && activeTab !== undefined && setActiveTab && (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-fit">
+        <Tabs 
+          value={activeTab} 
+          onValueChange={setActiveTab} 
+          className="w-fit"
+          suppressHydrationWarning
+        >
           <TabsList className="bg-background p-1.5 rounded-2xl border border-divider h-auto gap-1">
             {tabs.map((tab) => (
               <TabsTrigger

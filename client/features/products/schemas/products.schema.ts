@@ -16,8 +16,8 @@ export const productFormSchema = z.object({
   sectionId: z.string().optional(),
   priority: z.number().int().min(0),
   isShow: z.boolean(),
-  mainImage: z.union([z.custom<File>((val) => val instanceof File), z.string()]).optional(),
-  images: z.array(z.union([z.custom<File>((val) => val instanceof File), z.string()])).optional(),
+  mainImage: z.union([z.instanceof(File), z.string()]).optional(),
+  images: z.array(z.union([z.instanceof(File), z.string()])).optional(),
 });
 
 export type ProductFormData = z.infer<typeof productFormSchema>;

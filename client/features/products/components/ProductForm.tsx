@@ -212,7 +212,12 @@ export function ProductForm({
                   <FormItem>
                     <FormLabel>{t("price")}</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl h-12" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl h-12" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +230,12 @@ export function ProductForm({
                   <FormItem>
                     <FormLabel>{t("old_price")}</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl h-12" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl h-12" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -241,7 +251,12 @@ export function ProductForm({
                   <FormItem>
                     <FormLabel>{t("cost_price")}</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl h-12" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl h-12" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -254,7 +269,12 @@ export function ProductForm({
                   <FormItem>
                     <FormLabel>{t("stock")}</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl h-12" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl h-12" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -390,7 +410,12 @@ export function ProductForm({
                   <FormItem>
                     <FormLabel>{tCommon("priority")}</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl h-12" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl h-12" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

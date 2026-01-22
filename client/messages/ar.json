@@ -110,7 +110,24 @@
     "add_image": "إضافة صورة",
     "general_info": "معلومات عامة",
     "category_image": "صورة الفئة",
-    "no_data_desc": "لا تتوفر بيانات لعرضها في الوقت الحالي"
+    "no_data_desc": "لا تتوفر بيانات لعرضها في الوقت الحالي",
+    "action": "العمليات",
+    "category": "الفئة",
+    "price": "السعر",
+    "stock": "المخزون",
+    "status": "الحالة",
+    "currency": "درهم",
+    "inactive": "غير نشط",
+    "subcategory": "القسم الفرعي",
+    "brand": "العلامة التجارية",
+    "section": "القسم",
+    "priority": "الأولوية",
+    "show_on_store": "عرض في المتجر",
+    "select_category": "اختر القسم",
+    "select_subcategory": "اختر القسم الفرعي",
+    "select_brand": "اختر العلامة التجارية",
+    "select_section": "اختر القسم",
+    "upload_image": "رفع صورة"
   },
   "Users": {
     "title": "المستخدمين",
@@ -243,6 +260,8 @@
     "images": "الصور",
     "media": "الوسائط والصور",
     "basic_info": "المعلومات الأساسية",
-    "relationships": "الروابط والتصنيفات"
+    "relationships": "الروابط والتصنيفات",
+    "product_id": "معرف المنتج",
+    "product": "المنتج"
   }
 }
