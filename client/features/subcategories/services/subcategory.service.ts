@@ -13,7 +13,7 @@ export interface ServiceResponse<T> {
   success: boolean;
   message: string;
   data?: T;
-  error?: any;
+  error?: unknown;
 }
 
 export interface Subcategory {
@@ -35,10 +35,29 @@ export interface Subcategory {
   updatedAt: string;
 }
 
+export interface CreateSubcategoryPayload {
+  nameAr: string;
+  nameEn: string;
+  categoryId: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  priority?: number;
+  image?: string;
+  isShow?: boolean;
+}
+
+export interface UpdateSubcategoryPayload extends Partial<CreateSubcategoryPayload> {}
+
+export interface GetSubcategoriesParams {
+  search?: string;
+  isDeleted?: boolean;
+  categoryId?: string;
+}
+
 /**
  * Get all subcategories
  */
-export async function getAllSubcategories(params?: { search?: string; isDeleted?: boolean }): Promise<ServiceResponse<{ subcategories: Subcategory[] }>> {
+export async function getAllSubcategories(params?: GetSubcategoriesParams): Promise<ServiceResponse<{ subcategories: Subcategory[] }>> {
   try {
     const response = await clientAxios.get<ApiResponse<{ subcategories: Subcategory[] }>>("/subcategories", { params });
 
@@ -83,7 +102,7 @@ export async function getSubcategoryById(id: string): Promise<ServiceResponse<{ 
  * Create new subcategory
  */
 export async function createSubcategory(
-  payload: any | FormData
+  payload: CreateSubcategoryPayload | FormData
 ): Promise<ServiceResponse<{ subcategory: Subcategory }>> {
   try {
     const response = await clientAxios.post<ApiResponse<{ subcategory: Subcategory }>>("/subcategories", payload);
@@ -108,7 +127,7 @@ export async function createSubcategory(
  */
 export async function updateSubcategory(
   id: string,
-  payload: any | FormData
+  payload: UpdateSubcategoryPayload | FormData
 ): Promise<ServiceResponse<{ subcategory: Subcategory }>> {
   try {
     const response = await clientAxios.put<ApiResponse<{ subcategory: Subcategory }>>(`/subcategories/${id}`, payload);

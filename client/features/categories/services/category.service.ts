@@ -13,7 +13,7 @@ export interface ServiceResponse<T> {
   success: boolean;
   message: string;
   data?: T;
-  error?: any;
+  error?: unknown;
 }
 
 export interface Category {
@@ -33,10 +33,27 @@ export interface Category {
   updatedAt: string;
 }
 
+export interface CreateCategoryPayload {
+  nameAr: string;
+  nameEn: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  priority?: number;
+  image?: string;
+  isShow?: boolean;
+}
+
+export interface UpdateCategoryPayload extends Partial<CreateCategoryPayload> {}
+
+export interface GetCategoriesParams {
+  search?: string;
+  isDeleted?: boolean;
+}
+
 /**
  * Get all categories
  */
-export async function getAllCategories(params?: { search?: string; isDeleted?: boolean }): Promise<ServiceResponse<{ categories: Category[] }>> {
+export async function getAllCategories(params?: GetCategoriesParams): Promise<ServiceResponse<{ categories: Category[] }>> {
   try {
     const response = await clientAxios.get<ApiResponse<{ categories: Category[] }>>("/categories", { params });
 
@@ -81,7 +98,7 @@ export async function getCategoryById(id: string): Promise<ServiceResponse<{ cat
  * Create new category
  */
 export async function createCategory(
-  payload: any | FormData
+  payload: CreateCategoryPayload | FormData
 ): Promise<ServiceResponse<{ category: Category }>> {
   try {
     const response = await clientAxios.post<ApiResponse<{ category: Category }>>("/categories", payload);
@@ -106,7 +123,7 @@ export async function createCategory(
  */
 export async function updateCategory(
   id: string,
-  payload: any | FormData
+  payload: UpdateCategoryPayload | FormData
 ): Promise<ServiceResponse<{ category: Category }>> {
   try {
     const response = await clientAxios.put<ApiResponse<{ category: Category }>>(`/categories/${id}`, payload);

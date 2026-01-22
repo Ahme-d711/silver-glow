@@ -10,21 +10,26 @@ import {
   toggleCategoryStatus,
   getCategoryBySlug,
   restoreCategory,
+  CreateCategoryPayload,
+  UpdateCategoryPayload,
+  GetCategoriesParams,
   Category,
+  ServiceResponse,
 } from "../services/category.service";
 import { toast } from "sonner";
 
 export const categoryKeys = {
   all: ["categories"] as const,
-  lists: (params?: any) => [...categoryKeys.all, "list", params || "all"] as const,
+  lists: () => [...categoryKeys.all, "list"] as const,
+  list: (params: GetCategoriesParams = {}) => [...categoryKeys.lists(), params] as const,
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: string) => [...categoryKeys.details(), id] as const,
   slug: (slug: string) => [...categoryKeys.details(), "slug", slug] as const,
 };
 
-export function useCategories(params?: { isDeleted?: boolean; search?: string }) {
+export function useCategories(params: GetCategoriesParams = {}) {
   return useQuery({
-    queryKey: categoryKeys.lists(params),
+    queryKey: categoryKeys.list(params),
     queryFn: async () => {
       const response = await getAllCategories(params);
       if (!response.success || !response.data) {
@@ -53,10 +58,14 @@ export function useCreateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: any | FormData) => createCategory(payload),
+    mutationFn: (payload: CreateCategoryPayload | FormData) => createCategory(payload),
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+        await queryClient.invalidateQueries({
+          queryKey: categoryKeys.all,
+          exact: false,
+          refetchType: 'all'
+        });
         toast.success(response.message || "Category created successfully");
       } else {
         toast.error(response.message || "Failed to create category");
@@ -72,14 +81,15 @@ export function useUpdateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: any | FormData }) =>
+    mutationFn: ({ id, payload }: { id: string; payload: UpdateCategoryPayload | FormData }) =>
       updateCategory(id, payload),
-    onSuccess: async (response, variables) => {
+    onSuccess: async (response) => {
       if (response.success) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
-          queryClient.invalidateQueries({ queryKey: categoryKeys.detail(variables.id) })
-        ]);
+        await queryClient.invalidateQueries({
+          queryKey: categoryKeys.all,
+          exact: false,
+          refetchType: 'all'
+        });
         toast.success(response.message || "Category updated successfully");
       } else {
         toast.error(response.message || "Failed to update category");
@@ -95,10 +105,14 @@ export function useDeleteCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteCategory(id) as Promise<any>,
+    mutationFn: (id: string) => deleteCategory(id) as Promise<ServiceResponse<null>>,
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+        await queryClient.invalidateQueries({
+          queryKey: categoryKeys.all,
+          exact: false,
+          refetchType: 'all'
+        });
         toast.success(response.message || "Category deleted successfully");
       } else {
         toast.error(response.message || "Failed to delete category");
@@ -113,13 +127,14 @@ export function useToggleCategoryStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => toggleCategoryStatus(id),
-    onSuccess: async (response, id) => {
+    mutationFn: (id: string) => toggleCategoryStatus(id) as Promise<ServiceResponse<{ category: Category }>>,
+    onSuccess: async (response) => {
       if (response.success) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
-          queryClient.invalidateQueries({ queryKey: categoryKeys.detail(id) })
-        ]);
+        await queryClient.invalidateQueries({
+          queryKey: categoryKeys.all,
+          exact: false,
+          refetchType: 'all'
+        });
         toast.success(response.message || "Status updated successfully");
       } else {
         toast.error(response.message || "Failed to update status");
@@ -148,10 +163,14 @@ export function useRestoreCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => restoreCategory(id),
+    mutationFn: (id: string) => restoreCategory(id) as Promise<ServiceResponse<{ category: Category }>>,
     onSuccess: async (response) => {
       if (response.success) {
-        await queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+        await queryClient.invalidateQueries({
+          queryKey: categoryKeys.all,
+          exact: false,
+          refetchType: 'all'
+        });
         toast.success(response.message || "Category restored successfully");
       } else {
         toast.error(response.message || "Failed to restore category");

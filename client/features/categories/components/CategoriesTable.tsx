@@ -16,6 +16,8 @@ import { useToggleCategoryStatus, useRestoreCategory } from "../hooks/useCategor
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Loader2, Pencil, Trash2, RotateCcw } from "lucide-react";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { useState } from "react";
 
 interface CategoriesTableProps {
   categories: Category[];
@@ -34,7 +36,49 @@ export default function CategoriesTable({
   const tCommon = useTranslations("Common");
   const locale = useLocale();
   const { mutate: toggleStatus, isPending: isToggling } = useToggleCategoryStatus();
-  const { mutate: restoreCategory, isPending: isRestoring } = useRestoreCategory();
+  const { mutateAsync: restoreCategory, isPending: isRestoring } = useRestoreCategory();
+  
+  const [modalConfig, setModalConfig] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+    action: () => Promise<void>;
+    itemName: string;
+    variant: "default" | "destructive";
+  }>({
+    open: false,
+    title: "",
+    description: "",
+    action: async () => {},
+    itemName: "",
+    variant: "default",
+  });
+
+  const handleDeleteClick = (category: Category) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_delete_title"),
+      description: tCommon("confirm_delete_desc", { name: locale === "ar" ? category.nameAr : category.nameEn }),
+      itemName: locale === "ar" ? category.nameAr : category.nameEn,
+      variant: "destructive",
+      action: async () => {
+        onDelete(category._id);
+      },
+    });
+  };
+
+  const handleRestoreClick = (category: Category) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_restore_title"),
+      description: tCommon("confirm_restore_desc", { name: locale === "ar" ? category.nameAr : category.nameEn }),
+      itemName: locale === "ar" ? category.nameAr : category.nameEn,
+      variant: "default",
+      action: async () => {
+        await restoreCategory(category._id);
+      },
+    });
+  };
 
   const columns: UniTableColumn<Category>[] = [
     {
@@ -117,7 +161,7 @@ export default function CategoriesTable({
             <div className={cn(isRestoring && "opacity-50 pointer-events-none")}>
               <ActionButton 
                 icon={RotateCcw} 
-                onClick={() => restoreCategory(row._id)} 
+                onClick={() => handleRestoreClick(row)} 
               />
             </div>
           ) : (
@@ -125,7 +169,7 @@ export default function CategoriesTable({
               <ActionButton 
                 icon={Trash2} 
                 variant="danger" 
-                onClick={() => onDelete(row._id)} 
+                onClick={() => handleDeleteClick(row)} 
               />
               <ActionButton 
                 icon={Pencil} 
@@ -139,12 +183,26 @@ export default function CategoriesTable({
   ];
 
   return (
-    <UniTable 
-      data={categories} 
-      columns={columns} 
-      enablePagination={true}
-      pageSize={10}
-      itemLabel={t("title")}
-    />
+    <>
+      <UniTable 
+        data={categories} 
+        columns={columns} 
+        enablePagination={true}
+        pageSize={10}
+        itemLabel={t("title")}
+      />
+      
+      <ConfirmationModal
+        open={modalConfig.open}
+        onOpenChange={(open) => setModalConfig(prev => ({ ...prev, open }))}
+        title={modalConfig.title}
+        description={modalConfig.description}
+        itemName={modalConfig.itemName}
+        onConfirm={modalConfig.action}
+        variant={modalConfig.variant}
+        confirmText={modalConfig.variant === "destructive" ? tCommon("delete") : tCommon("restore")}
+        cancelText={tCommon("cancel")}
+      />
+    </>
   );
 }

@@ -16,6 +16,8 @@ import { useToggleSubcategoryStatus, useRestoreSubcategory } from "../hooks/useS
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Loader2, Pencil, Trash2, RotateCcw } from "lucide-react";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { useState } from "react";
 
 interface SubCategoriesTableProps {
   subcategories: Subcategory[];
@@ -34,7 +36,49 @@ export default function SubCategoriesTable({
   const tCommon = useTranslations("Common");
   const locale = useLocale();
   const { mutate: toggleStatus, isPending: isToggling } = useToggleSubcategoryStatus();
-  const { mutate: restoreSubcategory, isPending: isRestoring } = useRestoreSubcategory();
+  const { mutateAsync: restoreSubcategory, isPending: isRestoring } = useRestoreSubcategory();
+
+  const [modalConfig, setModalConfig] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+    action: () => Promise<void>;
+    itemName: string;
+    variant: "default" | "destructive";
+  }>({
+    open: false,
+    title: "",
+    description: "",
+    action: async () => {},
+    itemName: "",
+    variant: "default",
+  });
+
+  const handleDeleteClick = (subcategory: Subcategory) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_delete_title"),
+      description: tCommon("confirm_delete_desc", { name: locale === "ar" ? subcategory.nameAr : subcategory.nameEn }),
+      itemName: locale === "ar" ? subcategory.nameAr : subcategory.nameEn,
+      variant: "destructive",
+      action: async () => {
+        onDelete(subcategory._id);
+      },
+    });
+  };
+
+  const handleRestoreClick = (subcategory: Subcategory) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_restore_title"),
+      description: tCommon("confirm_restore_desc", { name: locale === "ar" ? subcategory.nameAr : subcategory.nameEn }),
+      itemName: locale === "ar" ? subcategory.nameAr : subcategory.nameEn,
+      variant: "default",
+      action: async () => {
+        await restoreSubcategory(subcategory._id);
+      },
+    });
+  };
 
   const columns: UniTableColumn<Subcategory>[] = [
     {
@@ -117,7 +161,7 @@ export default function SubCategoriesTable({
             <div className={cn(isRestoring && "opacity-50 pointer-events-none")}>
               <ActionButton 
                 icon={RotateCcw} 
-                onClick={() => restoreSubcategory(row._id)} 
+                onClick={() => handleRestoreClick(row)} 
               />
             </div>
           ) : (
@@ -125,7 +169,7 @@ export default function SubCategoriesTable({
               <ActionButton 
                 icon={Trash2} 
                 variant="danger" 
-                onClick={() => onDelete(row._id)} 
+                onClick={() => handleDeleteClick(row)} 
               />
               <ActionButton 
                 icon={Pencil} 
@@ -139,12 +183,26 @@ export default function SubCategoriesTable({
   ];
 
   return (
-    <UniTable 
-      data={subcategories} 
-      columns={columns} 
-      enablePagination={true}
-      pageSize={10}
-      itemLabel={t("title")}
-    />
+    <>
+      <UniTable 
+        data={subcategories} 
+        columns={columns} 
+        enablePagination={true}
+        pageSize={10}
+        itemLabel={t("title")}
+      />
+      
+      <ConfirmationModal
+        open={modalConfig.open}
+        onOpenChange={(open) => setModalConfig(prev => ({ ...prev, open }))}
+        title={modalConfig.title}
+        description={modalConfig.description}
+        itemName={modalConfig.itemName}
+        onConfirm={modalConfig.action}
+        variant={modalConfig.variant}
+        confirmText={modalConfig.variant === "destructive" ? tCommon("delete") : tCommon("restore")}
+        cancelText={tCommon("cancel")}
+      />
+    </>
   );
 }
