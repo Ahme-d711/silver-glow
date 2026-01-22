@@ -7,17 +7,15 @@ import UniTable, {
   ProductCell, 
   ActionCell, 
   ActionButton,
-  Pencil,
-  Trash2,
   UniTableColumn
 } from "@/components/shared/UniTable";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Category } from "../services/category.service";
-import { useToggleCategoryStatus } from "../hooks/useCategory";
+import { useToggleCategoryStatus, useRestoreCategory } from "../hooks/useCategory";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil, Trash2, RotateCcw } from "lucide-react";
 
 interface CategoriesTableProps {
   categories: Category[];
@@ -33,8 +31,10 @@ export default function CategoriesTable({
   isLoading 
 }: CategoriesTableProps) {
   const t = useTranslations("Categories");
+  const tCommon = useTranslations("Common");
   const locale = useLocale();
   const { mutate: toggleStatus, isPending: isToggling } = useToggleCategoryStatus();
+  const { mutate: restoreCategory, isPending: isRestoring } = useRestoreCategory();
 
   const columns: UniTableColumn<Category>[] = [
     {
@@ -52,14 +52,25 @@ export default function CategoriesTable({
           image={row.image} 
           title={locale === "ar" ? row.nameAr : row.nameEn} 
           imageSize="h-10 w-10"
+          className={cn(row.isDeleted && "opacity-50 grayscale")}
         />
       ),
     },
     {
       id: "name",
       header: t("name"),
-      accessorKey: locale === "ar" ? "nameAr" : "nameEn",
-      className: "text-content-secondary font-medium",
+      cell: (value, row) => (
+        <div className="flex items-center gap-2">
+          <span className="text-content-secondary font-medium">
+            {locale === "ar" ? row.nameAr : row.nameEn}
+          </span>
+          {row.isDeleted && (
+            <Badge variant="destructive" className="text-[10px] h-4 px-1">
+              {tCommon("deleted")}
+            </Badge>
+          )}
+        </div>
+      ),
     },
     {
       id: "slug",
@@ -90,7 +101,7 @@ export default function CategoriesTable({
           <Switch 
             checked={row.isShow}
             onCheckedChange={() => toggleStatus(row._id)}
-            disabled={isToggling}
+            disabled={isToggling || row.isDeleted}
             className="data-[state=checked]:bg-primary"
           />
           {isToggling && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
@@ -102,15 +113,26 @@ export default function CategoriesTable({
       header: t("action"),
       cell: (value, row) => (
         <ActionCell>
-          <ActionButton 
-            icon={Trash2} 
-            variant="danger" 
-            onClick={() => onDelete(row._id)} 
-          />
-          <ActionButton 
-            icon={Pencil} 
-            onClick={() => onEdit(row)} 
-          />
+          {row.isDeleted ? (
+            <div className={cn(isRestoring && "opacity-50 pointer-events-none")}>
+              <ActionButton 
+                icon={RotateCcw} 
+                onClick={() => restoreCategory(row._id)} 
+              />
+            </div>
+          ) : (
+            <>
+              <ActionButton 
+                icon={Trash2} 
+                variant="danger" 
+                onClick={() => onDelete(row._id)} 
+              />
+              <ActionButton 
+                icon={Pencil} 
+                onClick={() => onEdit(row)} 
+              />
+            </>
+          )}
         </ActionCell>
       ),
     },
@@ -126,4 +148,3 @@ export default function CategoriesTable({
     />
   );
 }
-

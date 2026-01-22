@@ -7,6 +7,7 @@ import {
   deleteCategory,
   toggleCategoryStatus,
   getCategoryBySlug,
+  restoreCategory,
 } from "../controllers/category.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { uploadCategory } from "../utils/upload.js";
@@ -36,6 +37,13 @@ router.put(
 );
 
 router.delete("/:id", authenticate, authorize("admin"), deleteCategory);
+
+router.patch(
+  "/:id/restore",
+  authenticate,
+  authorize("admin"),
+  restoreCategory
+);
 
 router.patch(
   "/:id/toggle-status",

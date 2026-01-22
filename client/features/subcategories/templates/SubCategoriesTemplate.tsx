@@ -8,6 +8,8 @@ import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useSubcategories, useDeleteSubcategory } from "../hooks/useSubCategory";
 import { Subcategory } from "../services/subcategory.service";
 import { useTranslations } from "next-intl";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 
 export default function SubCategoriesTemplate() {
   const router = useRouter();
@@ -15,7 +17,11 @@ export default function SubCategoriesTemplate() {
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   
-  const { data: subcategoriesData = [], isLoading } = useSubcategories();
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "deleted">("all");
+  
+  const { data: subcategoriesData = [], isLoading } = useSubcategories({
+    isDeleted: statusFilter === "all" ? undefined : statusFilter === "deleted"
+  });
   const { mutate: deleteSubcategory } = useDeleteSubcategory();
 
   const subcategories = subcategoriesData;
@@ -51,12 +57,27 @@ export default function SubCategoriesTemplate() {
         actionButtons={actionButtons}
       />
 
+      <div className="flex items-center justify-between">
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)} className="w-fit">
+          <TabsList className="bg-white border border-divider h-11 p-1 rounded-xl">
+            <TabsTrigger value="all" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("all")}
+            </TabsTrigger>
+            <TabsTrigger value="active" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("active")}
+            </TabsTrigger>
+            <TabsTrigger value="deleted" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("deleted")}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <div className="bg-white rounded-[24px] border border-divider overflow-hidden">
         {!isLoading && subcategories.length === 0 ? (
           <NoDataMsg 
             title={t("title")}
             description={tCommon("no_data_desc")}
-
             additionalMessage=""
           />
         ) : (

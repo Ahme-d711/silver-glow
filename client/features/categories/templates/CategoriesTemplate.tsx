@@ -8,6 +8,8 @@ import NoDataMsg from "@/components/shared/NoDataMsg";
 import { useCategories, useDeleteCategory } from "../hooks/useCategory";
 import { Category } from "../services/category.service";
 import { useTranslations } from "next-intl";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 
 export default function CategoriesTemplate() {
   const router = useRouter();
@@ -15,7 +17,11 @@ export default function CategoriesTemplate() {
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
   
-  const { data: categoriesData = [], isLoading } = useCategories();
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "deleted">("all");
+  
+  const { data: categoriesData = [], isLoading } = useCategories({
+    isDeleted: statusFilter === "all" ? undefined : statusFilter === "deleted"
+  });
   const { mutate: deleteCategory } = useDeleteCategory();
 
   const categories = categoriesData;
@@ -50,6 +56,22 @@ export default function CategoriesTemplate() {
         ]}
         actionButtons={actionButtons}
       />
+      
+      <div className="flex items-center justify-between">
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)} className="w-fit">
+          <TabsList className="bg-white border border-divider h-11 p-1 rounded-xl">
+            <TabsTrigger value="all" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("all")}
+            </TabsTrigger>
+            <TabsTrigger value="active" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("active")}
+            </TabsTrigger>
+            <TabsTrigger value="deleted" className="rounded-lg px-6 data-[state=active]:bg-secondary/10 data-[state=active]:text-primary font-medium transition-all h-9">
+              {tCommon("deleted")}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
       <div className="bg-white rounded-[24px] border border-divider overflow-hidden">
         {!isLoading && categories.length === 0 ? (

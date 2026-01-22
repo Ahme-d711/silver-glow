@@ -38,9 +38,9 @@ export interface Subcategory {
 /**
  * Get all subcategories
  */
-export async function getAllSubcategories(): Promise<ServiceResponse<{ subcategories: Subcategory[] }>> {
+export async function getAllSubcategories(params?: { search?: string; isDeleted?: boolean }): Promise<ServiceResponse<{ subcategories: Subcategory[] }>> {
   try {
-    const response = await clientAxios.get<ApiResponse<{ subcategories: Subcategory[] }>>("/subcategories");
+    const response = await clientAxios.get<ApiResponse<{ subcategories: Subcategory[] }>>("/subcategories", { params });
 
     return {
       success: true,
@@ -195,3 +195,26 @@ export async function getSubcategoryBySlug(
     };
   }
 }
+
+/**
+ * Restore a deleted subcategory
+ */
+export async function restoreSubcategory(id: string): Promise<ServiceResponse<{ subcategory: Subcategory }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ subcategory: Subcategory }>>(`/subcategories/${id}/restore`);
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to restore subcategory",
+      error: err.message,
+    };
+  }
+}
+

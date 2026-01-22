@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useReactTable, getCoreRowModel, getPaginationRowModel, flexRender, type ColumnDef } from "@tanstack/react-table"
-import { Check, Minus, Trash2, Pencil, Eye, ImageOff } from "lucide-react"
-export { Check, Minus, Trash2, Pencil, Eye }
+import { Check, Minus, Trash2, Pencil, Eye, ImageOff, RotateCcw } from "lucide-react"
+export { Check, Minus, Trash2, Pencil, Eye, RotateCcw }
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -49,17 +49,19 @@ export function ProductCell({
   image, 
   title, 
   subtitle,
-  imageSize = "h-12 w-12" 
+  imageSize = "h-12 w-12",
+  className
 }: { 
   image?: string; 
   title: string; 
   subtitle?: string;
   imageSize?: string;
+  className?: string;
 }) {
   const imageUrl = getImageUrl(image)
 
   return (
-    <div className="flex items-center gap-3">
+    <div className={cn("flex items-center gap-3", className)}>
       <Avatar className={cn("rounded-xl bg-divider shrink-0", imageSize)}>
         <AvatarImage src={imageUrl || undefined} alt={title} className="object-cover" />
         <AvatarFallback className="rounded-xl bg-divider text-content-tertiary">

@@ -18,7 +18,13 @@ import { validateUserData } from "../schemas/user.schema.js"; // Reuse validatio
  */
 export const getAllCategories = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getCategoriesQuerySchema, req.query);
-  const query = CategoryModel.find({ isDeleted: false })
+  
+  // Default to isDeleted: false if not specified in search/filters
+  const baseFilter = validatedQuery.isDeleted !== undefined 
+    ? { isDeleted: validatedQuery.isDeleted } 
+    : { isDeleted: false };
+
+  const query = CategoryModel.find(baseFilter)
     .populate("subcategoriesCount")
     .sort({ priority: -1, createdAt: -1 });
 
@@ -168,9 +174,47 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
   category.isDeleted = true;
   await category.save();
 
+  // Cascade delete subcategories
+  await mongoose.model("subcategories").updateMany(
+    { categoryId: category._id },
+    { isDeleted: true }
+  );
+
   sendResponse(res, 200, {
     success: true,
-    message: "Category deleted successfully",
+    message: "Category and its subcategories deleted successfully",
+  });
+});
+
+/**
+ * Restore deleted category
+ */
+export const restoreCategory = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Category ID format", 400);
+  }
+
+  const category = await CategoryModel.findById(id);
+
+  if (!category) {
+    throw new AppError("Category not found", 404);
+  }
+
+  category.isDeleted = false;
+  await category.save();
+
+  // Cascade restore subcategories
+  await mongoose.model("subcategories").updateMany(
+    { categoryId: category._id },
+    { isDeleted: false }
+  );
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Category and its subcategories restored successfully",
+    data: { category },
   });
 });
 

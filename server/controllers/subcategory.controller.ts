@@ -20,8 +20,12 @@ import { validateUserData } from "../schemas/user.schema.js";
 export const getAllSubcategories = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getSubcategoriesQuerySchema, req.query);
   
+  const baseFilter = validatedQuery.isDeleted !== undefined 
+    ? { isDeleted: validatedQuery.isDeleted } 
+    : { isDeleted: false };
+
   // We want to populate the category information
-  const query = SubcategoryModel.find({ isDeleted: false })
+  const query = SubcategoryModel.find(baseFilter)
     .populate("categoryId", "nameAr nameEn")
     .sort({ priority: -1, createdAt: -1 });
 
@@ -242,6 +246,32 @@ export const toggleSubcategoryStatus = asyncHandler(async (req: Request, res: Re
   sendResponse(res, 200, {
     success: true,
     message: `Subcategory ${subcategory.isShow ? "shown" : "hidden"} successfully`,
+    data: { subcategory },
+  });
+});
+
+/**
+ * Restore deleted subcategory
+ */
+export const restoreSubcategory = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    throw new AppError("Invalid Subcategory ID format", 400);
+  }
+
+  const subcategory = await SubcategoryModel.findById(id);
+
+  if (!subcategory) {
+    throw new AppError("Subcategory not found", 404);
+  }
+
+  subcategory.isDeleted = false;
+  await subcategory.save();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Subcategory restored successfully",
     data: { subcategory },
   });
 });

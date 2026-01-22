@@ -9,23 +9,24 @@ import {
   deleteSubcategory,
   toggleSubcategoryStatus,
   getSubcategoryBySlug,
+  restoreSubcategory,
   Subcategory,
 } from "../services/subcategory.service";
 import { toast } from "sonner";
 
 export const subcategoryKeys = {
   all: ["subcategories"] as const,
-  lists: () => [...subcategoryKeys.all, "list"] as const,
+  lists: (params?: any) => [...subcategoryKeys.all, "list", params || "all"] as const,
   details: () => [...subcategoryKeys.all, "detail"] as const,
   detail: (id: string) => [...subcategoryKeys.details(), id] as const,
   slug: (slug: string) => [...subcategoryKeys.details(), "slug", slug] as const,
 };
 
-export function useSubcategories() {
+export function useSubcategories(params?: { isDeleted?: boolean; search?: string }) {
   return useQuery({
-    queryKey: subcategoryKeys.lists(),
+    queryKey: subcategoryKeys.lists(params),
     queryFn: async () => {
-      const response = await getAllSubcategories();
+      const response = await getAllSubcategories(params);
       if (!response.success || !response.data) {
         throw new Error(response.message || "Failed to fetch subcategories");
       }
@@ -141,5 +142,23 @@ export function useSubcategoryBySlug(slug: string) {
       return response.data.subcategory;
     },
     enabled: !!slug,
+  });
+}
+export function useRestoreSubcategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => restoreSubcategory(id),
+    onSuccess: async (response) => {
+      if (response.success) {
+        await queryClient.resetQueries({ queryKey: subcategoryKeys.all });
+        toast.success(response.message || "Subcategory restored successfully");
+      } else {
+        toast.error(response.message || "Failed to restore subcategory");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to restore subcategory");
+    },
   });
 }

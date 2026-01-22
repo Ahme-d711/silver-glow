@@ -7,6 +7,7 @@ import {
   deleteSubcategory,
   toggleSubcategoryStatus,
   getSubcategoryBySlug,
+  restoreSubcategory,
 } from "../controllers/subcategory.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { uploadSubcategory } from "../utils/upload.js";
@@ -36,6 +37,13 @@ router.put(
 );
 
 router.delete("/:id", authenticate, authorize("admin"), deleteSubcategory);
+
+router.patch(
+  "/:id/restore",
+  authenticate,
+  authorize("admin"),
+  restoreSubcategory
+);
 
 router.patch(
   "/:id/toggle-status",

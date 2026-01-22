@@ -36,9 +36,9 @@ export interface Category {
 /**
  * Get all categories
  */
-export async function getAllCategories(): Promise<ServiceResponse<{ categories: Category[] }>> {
+export async function getAllCategories(params?: { search?: string; isDeleted?: boolean }): Promise<ServiceResponse<{ categories: Category[] }>> {
   try {
-    const response = await clientAxios.get<ApiResponse<{ categories: Category[] }>>("/categories");
+    const response = await clientAxios.get<ApiResponse<{ categories: Category[] }>>("/categories", { params });
 
     return {
       success: true,
@@ -193,3 +193,26 @@ export async function getCategoryBySlug(
     };
   }
 }
+
+/**
+ * Restore a deleted category
+ */
+export async function restoreCategory(id: string): Promise<ServiceResponse<{ category: Category }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ category: Category }>>(`/categories/${id}/restore`);
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to restore category",
+      error: err.message,
+    };
+  }
+}
+

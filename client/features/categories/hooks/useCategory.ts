@@ -9,23 +9,24 @@ import {
   deleteCategory,
   toggleCategoryStatus,
   getCategoryBySlug,
+  restoreCategory,
   Category,
 } from "../services/category.service";
 import { toast } from "sonner";
 
 export const categoryKeys = {
   all: ["categories"] as const,
-  lists: () => [...categoryKeys.all, "list"] as const,
+  lists: (params?: any) => [...categoryKeys.all, "list", params || "all"] as const,
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: string) => [...categoryKeys.details(), id] as const,
   slug: (slug: string) => [...categoryKeys.details(), "slug", slug] as const,
 };
 
-export function useCategories() {
+export function useCategories(params?: { isDeleted?: boolean; search?: string }) {
   return useQuery({
-    queryKey: categoryKeys.lists(),
+    queryKey: categoryKeys.lists(params),
     queryFn: async () => {
-      const response = await getAllCategories();
+      const response = await getAllCategories(params);
       if (!response.success || !response.data) {
         throw new Error(response.message || "Failed to fetch categories");
       }
@@ -141,5 +142,23 @@ export function useCategoryBySlug(slug: string) {
       return response.data.category;
     },
     enabled: !!slug,
+  });
+}
+export function useRestoreCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => restoreCategory(id),
+    onSuccess: async (response) => {
+      if (response.success) {
+        await queryClient.resetQueries({ queryKey: categoryKeys.all });
+        toast.success(response.message || "Category restored successfully");
+      } else {
+        toast.error(response.message || "Failed to restore category");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to restore category");
+    },
   });
 }
