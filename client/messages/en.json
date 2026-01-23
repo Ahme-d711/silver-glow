@@ -263,5 +263,28 @@
     "relationships": "Relationships & Categorization",
     "product_id": "Product ID",
     "product": "Product"
+  },
+  "Orders": {
+    "title": "Orders List",
+    "order_id": "Order ID",
+    "customer": "Customer",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "action": "Action",
+    "payment": "Payment",
+    "product": "Product",
+    "tracking_number": "Tracking Number",
+    "details": "Order Details",
+    "edit": "Edit Order",
+    "export": "Export Orders",
+    "all_orders": "All Orders",
+    "created": "Created",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "in_progress": "In Progress",
+    "in_the_way": "In The Way",
+    "return": "Return",
+    "delivered": "Delivered"
   }
 }

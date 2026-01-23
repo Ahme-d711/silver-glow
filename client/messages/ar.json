@@ -263,5 +263,28 @@
     "relationships": "الروابط والتصنيفات",
     "product_id": "معرف المنتج",
     "product": "المنتج"
+  },
+  "Orders": {
+    "title": "قائمة الطلبات",
+    "order_id": "معرف الطلب",
+    "customer": "العميل",
+    "date": "التاريخ",
+    "total": "الإجمالي",
+    "status": "الحالة",
+    "action": "العمليات",
+    "payment": "الدفع",
+    "product": "المنتج",
+    "tracking_number": "رقم التتبع",
+    "details": "تفاصيل الطلب",
+    "edit": "تعديل الطلب",
+    "export": "تصدير الطلبات",
+    "all_orders": "كل الطلبات",
+    "created": "تم الإنشاء",
+    "pending": "قيد الانتظار",
+    "accepted": "تم القبول",
+    "in_progress": "قيد التنفيذ",
+    "in_the_way": "في الطريق",
+    "return": "مرتجع",
+    "delivered": "تم التوصيل"
   }
 }

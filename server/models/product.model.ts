@@ -125,6 +125,24 @@ ProductSchema.pre("validate", async function () {
     
     this.slug = slug;
   }
+
+  if (!this.sku) {
+    const characters = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"; // Removed O and 0 to avoid confusion
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    this.sku = `SG-${result}`;
+    
+    // Check if SKU exists and regenerate if it does
+    while (await model("products").findOne({ sku: this.sku, _id: { $ne: this._id } })) {
+      let retry = "";
+      for (let i = 0; i < 6; i++) {
+        retry += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      this.sku = `SG-${retry}`;
+    }
+  }
 });
 
 ProductSchema.index({ nameAr: "text", nameEn: "text" });

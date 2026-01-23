@@ -9,7 +9,6 @@ export const productFormSchema = z.object({
   oldPrice: z.number().min(0).optional(),
   costPrice: z.number().min(0).optional(),
   stock: z.number().int().min(0),
-  sku: z.string().optional(),
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),

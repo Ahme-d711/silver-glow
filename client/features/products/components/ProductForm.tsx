@@ -47,22 +47,31 @@ export function ProductForm({
   const tCommon = useTranslations("Common");
   const locale = useLocale();
   
-  const [mainImagePreview, setMainImagePreview] = useState<string | null>(
-    defaultValues?.mainImage 
-      ? (defaultValues.mainImage instanceof File 
-          ? URL.createObjectURL(defaultValues.mainImage) 
-          : getImageUrl(defaultValues.mainImage as string)) 
-      : null
-  );
-  const [imagesPreviews, setImagesPreviews] = useState<string[]>(
-    defaultValues?.images
-      ? (defaultValues.images as (string | File)[])
-          .map((img) =>
-            img instanceof File ? URL.createObjectURL(img) : getImageUrl(img)
-          )
-          .filter((url): url is string => url !== null)
-      : []
-  );
+  const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
+  const [imagesPreviews, setImagesPreviews] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (defaultValues?.mainImage) {
+      if (defaultValues.mainImage instanceof File) {
+        setMainImagePreview(URL.createObjectURL(defaultValues.mainImage));
+      } else {
+        setMainImagePreview(getImageUrl(defaultValues.mainImage as string));
+      }
+    } else {
+      setMainImagePreview(null);
+    }
+
+    if (defaultValues?.images) {
+      const urls = (defaultValues.images as (string | File)[])
+        .map((img) =>
+          img instanceof File ? URL.createObjectURL(img) : getImageUrl(img)
+        )
+        .filter((url): url is string => url !== null);
+      setImagesPreviews(urls);
+    } else {
+      setImagesPreviews([]);
+    }
+  }, [defaultValues?.mainImage, defaultValues?.images]);
 
   const mainImageRef = useRef<HTMLInputElement>(null);
   const imagesRef = useRef<HTMLInputElement>(null);
@@ -78,7 +87,6 @@ export function ProductForm({
       oldPrice: 0,
       costPrice: 0,
       stock: 0,
-      sku: "",
       priority: 0,
       isShow: true,
       categoryId: "",
@@ -282,19 +290,7 @@ export function ProductForm({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="sku"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("sku")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="E.g. PRD-001" {...field} className="rounded-xl h-12" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
           </div>
 
           {/* Relationships & Status */}

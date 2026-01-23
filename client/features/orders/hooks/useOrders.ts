@@ -35,7 +35,10 @@ export const useOrdersState = () => {
 export function useOrders() {
   return useQuery({
     queryKey: ordersKeys.lists(),
-    queryFn: () => getOrders(),
+    queryFn: async () => {
+      const response = await getOrders();
+      return response.data?.orders || [];
+    },
   })
 }
 

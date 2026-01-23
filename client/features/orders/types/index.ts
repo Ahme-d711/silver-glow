@@ -17,8 +17,8 @@ export type OrderType =
   | string // Allow other types from API
 
 export interface Order {
-  id: number
-  userId: string
+  _id: string
+  userId: any // To handle populated user object or ID string
   driverId: string | null
   userName: string
   driverName: string | null

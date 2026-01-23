@@ -11,20 +11,24 @@ import { OrderStatus } from "../types"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { useSearchParams } from "next/navigation"
-
-const statusTabs = [
-  { label: "All Orders", value: "all" },
-  { label: "Created", value: "CREATED" },
-  { label: "Pending", value: "PENDING" },
-  { label: "Accepted", value: "ACCEPTED" },
-  { label: "In Progress", value: "IN_PROGRESS" },
-  { label: "In The Way", value: "IN_THE_WAY" },
-  { label: "Return", value: "RETURN" },
-  { label: "Delivered", value: "DELIVERED" },
-]
+import { useTranslations } from "next-intl";
 
 export default function OrdersTemplate() {
   const searchParams = useSearchParams();
+  const t = useTranslations("Orders");
+  const tNav = useTranslations("Navigation");
+  const tCommon = useTranslations("Common");
+
+  const statusTabs = [
+    { label: t("all_orders"), value: "all" },
+    { label: t("created"), value: "CREATED" },
+    { label: t("pending"), value: "PENDING" },
+    { label: t("accepted"), value: "ACCEPTED" },
+    { label: t("in_progress"), value: "IN_PROGRESS" },
+    { label: t("in_the_way"), value: "IN_THE_WAY" },
+    { label: t("return"), value: "RETURN" },
+    { label: t("delivered"), value: "DELIVERED" },
+  ];
   const search = searchParams.get("search") || "";
 
   const {
@@ -70,17 +74,17 @@ export default function OrdersTemplate() {
   return (
     <div className="space-y-6 min-h-[90vh]">
       <PageHeader
-        title="Order"
+        title={t("title")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
-          { label: "Order List" },
+          { label: tNav("dashboard"), href: "/" },
+          { label: t("title") },
         ]}
         actionButtons={[
           {
-            label: "Export",
+            label: t("export"),
             icon: Download,
             variant: "outline",
-            className: "bg-secondary text-primary border-divider rounded-xl h-10 px-6 gap-2 font-semibold",
+            className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
             onClick: () => console.log("Exporting...")
           }
         ]}
@@ -108,7 +112,10 @@ export default function OrdersTemplate() {
             </div>
           ) : error ? (
             <div className="p-8">
-              <NoDataMsg description={error.message || "Failed to load orders"} />
+              <NoDataMsg 
+                title={t("title")}
+                description={error?.message || tCommon("no_data_desc")} 
+              />
             </div>
           ) : (
             <OrdersTable orders={filteredOrders} />

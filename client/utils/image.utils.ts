@@ -8,7 +8,8 @@ export function getImageUrl(path: string | null | undefined): string | null {
   }
 
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${BASE_URL}${cleanPath}`;
+  const finalPath = cleanPath.startsWith("/uploads") ? cleanPath : `/uploads${cleanPath}`;
+  return `${BASE_URL}${finalPath}`;
 }
 
 

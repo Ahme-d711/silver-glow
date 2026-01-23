@@ -68,7 +68,6 @@ export default function EditProductTemplate() {
           oldPrice: product.oldPrice,
           costPrice: product.costPrice,
           stock: product.stock,
-          sku: product.sku,
           priority: product.priority,
           isShow: product.isShow,
           categoryId: product.categoryId?._id || product.categoryId,

@@ -16,6 +16,8 @@ import { useToggleProductStatus, useRestoreProduct } from "../hooks/useProduct";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Pencil, Trash2, RotateCcw } from "lucide-react";
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { useState } from "react";
 
 interface ProductsTableProps {
   products: Product[];
@@ -34,7 +36,53 @@ export default function ProductsTable({
   const tCommon = useTranslations("Common");
   const locale = useLocale();
   const { mutate: toggleStatus } = useToggleProductStatus();
-  const { mutate: restoreProduct } = useRestoreProduct();
+  const { mutateAsync: restoreProduct } = useRestoreProduct();
+
+  const [modalConfig, setModalConfig] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+    action: () => Promise<void>;
+    itemName: string;
+    variant: "default" | "destructive";
+  }>({
+    open: false,
+    title: "",
+    description: "",
+    action: async () => {},
+    itemName: "",
+    variant: "default",
+  });
+
+  const handleDeleteClick = (product: Product) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_delete_title"),
+      description: tCommon("confirm_delete_desc", {
+        name: locale === "ar" ? product.nameAr : product.nameEn,
+      }),
+      itemName: locale === "ar" ? product.nameAr : product.nameEn,
+      variant: "destructive",
+      action: async () => {
+        onDelete(product._id);
+      },
+    });
+  };
+
+  const handleRestoreClick = (product: Product) => {
+    setModalConfig({
+      open: true,
+      title: tCommon("confirm_restore_title"),
+      description: tCommon("confirm_restore_desc", {
+        name: locale === "ar" ? product.nameAr : product.nameEn,
+      }),
+      itemName: locale === "ar" ? product.nameAr : product.nameEn,
+      variant: "default",
+      action: async () => {
+        await restoreProduct(product._id);
+      },
+    });
+  };
 
   const columns: UniTableColumn<Product>[] = [
     {
@@ -126,14 +174,14 @@ export default function ProductsTable({
           {row.isDeleted ? (
             <ActionButton
               icon={RotateCcw}
-              onClick={() => restoreProduct(row._id)}
+              onClick={() => handleRestoreClick(row)}
             />
           ) : (
             <>
               <ActionButton
                 icon={Trash2}
                 variant="danger"
-                onClick={() => onDelete(row._id)}
+                onClick={() => handleDeleteClick(row)}
               />
               <ActionButton
                 icon={Pencil}
@@ -151,12 +199,30 @@ export default function ProductsTable({
   }
 
   return (
-    <UniTable
-      data={products}
-      columns={columns}
-      enablePagination={true}
-      pageSize={10}
-      itemLabel={t("title")}
-    />
+    <>
+      <UniTable
+        data={products}
+        columns={columns}
+        enablePagination={true}
+        pageSize={10}
+        itemLabel={t("title")}
+      />
+
+      <ConfirmationModal
+        open={modalConfig.open}
+        onOpenChange={(open) => setModalConfig((prev) => ({ ...prev, open }))}
+        title={modalConfig.title}
+        description={modalConfig.description}
+        itemName={modalConfig.itemName}
+        onConfirm={modalConfig.action}
+        variant={modalConfig.variant}
+        confirmText={
+          modalConfig.variant === "destructive"
+            ? tCommon("delete")
+            : tCommon("restore")
+        }
+        cancelText={tCommon("cancel")}
+      />
+    </>
   );
 }
