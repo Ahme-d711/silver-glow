@@ -3,10 +3,10 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { navItems } from "@/constants/navigation";
 
@@ -24,8 +24,10 @@ export function SearchInput({ className, ...props }: SearchInputProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Filter sidebar items for quick navigation
-  const filteredNavItems = text.trim() 
+  const isHome = pathname === "/dashboard";
+
+  // Filter sidebar items for quick navigation - Only on Home page
+  const filteredNavItems = (text.trim() && isHome) 
     ? navItems.filter(item => 
         tSidebar(item.titleKey).toLowerCase().includes(text.toLowerCase())
       )

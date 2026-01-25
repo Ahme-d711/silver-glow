@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, Loader2, Search } from "lucide-react";
+import { Check, ChevronsUpDown, Loader, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -101,7 +101,7 @@ export function AsyncCombobox({
         <div className="max-h-[300px] overflow-y-auto p-1 scrollbar-thin">
           {loading ? (
             <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              <Loader className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : items.length === 0 ? (
             <div className="py-6 text-center text-sm text-content-tertiary">

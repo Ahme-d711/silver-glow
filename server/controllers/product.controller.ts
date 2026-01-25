@@ -47,6 +47,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limit)
       .populate("categoryId", "nameAr nameEn")
+      .populate("subCategoryId", "nameAr nameEn")
       .populate("brandId", "nameAr nameEn")
       .populate("sectionId", "nameAr nameEn"),
     ProductModel.countDocuments(query),
