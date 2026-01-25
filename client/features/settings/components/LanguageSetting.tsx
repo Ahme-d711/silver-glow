@@ -26,17 +26,17 @@ export function LanguageSetting() {
   }
 
   return (
-    <Card className="p-8 rounded-[32px] border border-divider shadow-none">
-      <div className="space-y-4">
-        <label className="text-lg font-semibold text-content-primary">
+    <Card className="px-10 py-6 rounded-[32px] border bg-background border-divider shadow-none">
+      <div className="">
+        <label className="text-lg font-medium text-content-primary">
           {t("language")}
         </label>
         
         <Select value={locale} onValueChange={handleLanguageChange}>
-          <SelectTrigger className="h-14 rounded-2xl border-divider/50 focus:ring-primary shadow-none px-6 w-full">
+          <SelectTrigger className="h-14 rounded-2xl border-divider/50 mt-4 bg-white focus:ring-primary shadow-none px-6 w-full">
             <SelectValue placeholder={t("language")} />
           </SelectTrigger>
-          <SelectContent className="rounded-2xl border-divider" position="popper">
+          <SelectContent className="rounded-2xl border-divider bg-white" position="popper">
             <SelectItem value="en" className="py-3 cursor-pointer">
               <div className="flex items-center gap-3">
                 <span className="text-xl">🇺🇸</span>

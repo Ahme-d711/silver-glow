@@ -1,34 +1,43 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { StatsCard } from "./StatsCard";
 
-export function StatsGrid() {
+interface StatsGridProps {
+  stats: any;
+  isLoading?: boolean;
+}
+
+export function StatsGrid({ stats, isLoading }: StatsGridProps) {
+  const t = useTranslations("Dashboard");
+  const tCommon = useTranslations("Common");
+
   const statistics = [
     {
-      title: "Views",
-      value: "2,318",
-      trend: "+11.01%",
+      title: "Total Users",
+      value: stats?.summary?.totalUsers?.toLocaleString() || "0",
+      trend: stats?.summary?.newUsersLast30Days ? `+${stats.summary.newUsersLast30Days} new` : "0 new",
       isUp: true,
       variant: "light" as const,
     },
     {
-      title: "Visits",
-      value: "2,318",
-      trend: "-0.03%",
-      isUp: false,
+      title: "Total Products",
+      value: stats?.summary?.totalProducts?.toLocaleString() || "0",
+      trend: "Available",
+      isUp: true,
       variant: "dark" as const,
     },
     {
-      title: "Active Users",
-      value: "2,318",
-      trend: "+6.08%",
+      title: "Total Orders",
+      value: stats?.summary?.totalOrders?.toLocaleString() || "0",
+      trend: "Cumulative",
       isUp: true,
       variant: "light" as const,
     },
     {
-      title: "New Users",
-      value: "2,318",
-      trend: "+15.03%",
+      title: "Total Revenue",
+      value: `${stats?.summary?.totalRevenue?.toLocaleString() || "0"} ${tCommon("currency")}`,
+      trend: "Delivered",
       isUp: true,
       variant: "dark" as const,
     },
@@ -37,39 +46,46 @@ export function StatsGrid() {
   const orders = [
     {
       title: "Pending",
-      value: "2,318",
-      trend: "+11.01%",
+      value: stats?.ordersByStatus?.PENDING?.toLocaleString() || "0",
+      trend: "Awaiting",
       isUp: true,
       variant: "dark" as const,
     },
     {
-      title: "Waiting",
-      value: "2,318",
-      trend: "+6.08%",
+      title: "Processing",
+      value: (
+        (stats?.ordersByStatus?.CONFIRMED || 0) + 
+        (stats?.ordersByStatus?.PROCESSING || 0)
+      ).toLocaleString(),
+      trend: "In progress",
       isUp: true,
       variant: "light" as const,
     },
     {
       title: "Cancelled",
-      value: "2,318",
-      trend: "-0.03%",
+      value: stats?.ordersByStatus?.CANCELLED?.toLocaleString() || "0",
+      trend: "Failed",
       isUp: false,
       variant: "dark" as const,
     },
     {
       title: "Completed",
-      value: "2,318",
-      trend: "+15.03%",
+      value: stats?.ordersByStatus?.DELIVERED?.toLocaleString() || "0",
+      trend: "Delivered",
       isUp: true,
       variant: "light" as const,
     },
   ];
 
+  if (isLoading) {
+    return <div className="h-40 flex items-center justify-center">Loading stats...</div>
+  }
+
   return (
     <div className="space-y-8">
       {/* Statistics Section */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-primary">Statistics</h2>
+        <h2 className="text-lg font-bold text-primary">{t("statistics")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statistics.map((stat, index) => (
             <StatsCard 
@@ -86,7 +102,7 @@ export function StatsGrid() {
 
       {/* Orders Section */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-primary">Orders</h2>
+        <h2 className="text-lg font-bold text-primary">{t("orders")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {orders.map((stat, index) => (
             <StatsCard 
@@ -103,3 +119,4 @@ export function StatsGrid() {
     </div>
   );
 }
+

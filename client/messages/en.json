@@ -66,7 +66,11 @@
     "advertisements": "Advertisements",
     "support": "Support",
     "settings": "Settings",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "order_statistics": "Order statistics",
+    "traffic_by_gov": "Traffic by Government",
+    "revenue_overview": "Revenue Overview",
+    "profits": "Profits"
   },
   "Common": {
     "loading": "Loading...",

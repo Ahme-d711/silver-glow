@@ -18,9 +18,7 @@ export function DashboardNavbar() {
   const { user } = useAuthStore();
   const t = useTranslations("Navigation");
   const tAuth = useTranslations("Auth");
-  const tCommon = useTranslations("Common");
   
-  const router = useRouter();
   const { logout, loading: isLoggingOut } = useLogout();
   
 

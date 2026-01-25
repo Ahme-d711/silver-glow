@@ -9,29 +9,23 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useTranslations, useLocale } from "next-intl";
 
-// Mock data based on the Weekly Activity image
-const weeklyData = [
-  { day: "Sat", profits: 480, orders: 240 },
-  { day: "Sun", profits: 350, orders: 120 },
-  { day: "Mon", profits: 330, orders: 260 },
-  { day: "Tue", profits: 480, orders: 370 },
-  { day: "Wed", profits: 150, orders: 240 },
-  { day: "Thu", profits: 390, orders: 240 },
-  { day: "Fri", profits: 390, orders: 340 },
-];
+export function RevenueOverall({ stats }: { stats: any }) {
+  const t = useTranslations("Dashboard");
 
-export function RevenueOverall() {
+  const chartData = Array.isArray(stats) ? stats : [];
+
   return (
     <div>
       <h2 className="text-xl font-bold text-primary mb-6">
-        Weekly Activity
+        {t("revenue_overview")}
       </h2>
       <div className="bg-white p-6 rounded-[24px] shadow-sm border border-divider">
         <div className="w-full">
           <ResponsiveContainer width="100%" height={400}>
             <BarChart
-              data={weeklyData}
+              data={chartData.length > 0 ? chartData : weeklyData}
               margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               barGap={8}
             >
@@ -46,10 +40,10 @@ export function RevenueOverall() {
                 height={50}
                 iconType="circle"
                 iconSize={10}
-                formatter={(value) => <span className="text-sm font-medium text-primary ml-2">{value}</span>}
+                formatter={(value) => <span className="text-sm font-medium text-primary ml-2">{t(value.toLowerCase())}</span>}
               />
               <XAxis
-                dataKey="day"
+                dataKey="name"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: "#6B7280", fontSize: 14, fontWeight: 400 }}
@@ -60,8 +54,7 @@ export function RevenueOverall() {
                 tickLine={false}
                 tick={{ fill: "#6B7280", fontSize: 14, fontWeight: 400 }}
                 dx={-10}
-                domain={[0, 500]}
-                ticks={[0, 100, 200, 300, 400, 500]}
+                domain={[0, 'auto']}
               />
               
               <Bar
@@ -85,3 +78,13 @@ export function RevenueOverall() {
     </div>
   );
 }
+
+const weeklyData = [
+  { name: "Sat", profits: 0, orders: 0 },
+  { name: "Sun", profits: 0, orders: 0 },
+  { name: "Mon", profits: 0, orders: 0 },
+  { name: "Tue", profits: 0, orders: 0 },
+  { name: "Wed", profits: 0, orders: 0 },
+  { name: "Thu", profits: 0, orders: 0 },
+  { name: "Fri", profits: 0, orders: 0 },
+];

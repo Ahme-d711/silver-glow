@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model.js";
+import { UserModel } from "../models/user.model.js";
 import { IOrder } from "../types/order.type.js";
 import { createOrderSchema, updateOrderSchema, queryOrderSchema } from "../schemas/order.schema.js";
 import AppError from "../errors/AppError.js";
@@ -78,17 +79,31 @@ export const getOrderById = async (req: Request, res: Response) => {
 export const createOrder = async (req: Request, res: Response) => {
   const validatedBody = createOrderSchema.parse(req.body);
   
-  // In a real app, userId would come from req.user
   const userId = (req as any).user?._id;
   if (!userId) {
      throw new AppError("Authentication required", 401);
   }
 
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
   // Calculate pricing
   const subtotal = validatedBody.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shippingCost = 50; // You can implement dynamic calculation
-  const discountAmount = 0; // Implement discount logic if needed
+  const shippingCost = 50; 
+  const discountAmount = 0; 
   const totalAmount = subtotal + shippingCost - discountAmount;
+
+  // Balance deduction logic
+  if (user.role !== "admin") {
+    if ((user.totalBalance || 0) < totalAmount) {
+      throw new AppError(`Insufficient balance. Current balance: ${user.totalBalance}`, 400);
+    }
+    
+    user.totalBalance = (user.totalBalance || 0) - totalAmount;
+    await user.save();
+  }
 
   // Generate tracking number
   const trackingNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;

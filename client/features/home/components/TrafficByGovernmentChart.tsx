@@ -11,10 +11,13 @@ const data = [
   { name: "Sohag", value: 26000, color: "#A0AEC0" },
 ];
 
-export function TrafficByGovernmentChart() {
+import { useTranslations } from "next-intl";
+
+export function TrafficByGovernmentChart({ stats }: { stats: any }) {
+  const t = useTranslations("Dashboard");
   return (
     <div className="bg-white p-6 rounded-[24px] shadow-sm border border-divider h-full">
-      <h3 className="text-lg font-bold text-black mb-8">Traffic by Government</h3>
+      <h3 className="text-lg font-bold text-primary mb-8">{t("traffic_by_gov")}</h3>
       <div className="w-full h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

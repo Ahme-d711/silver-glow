@@ -1,16 +1,10 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-const data = [
-  { name: "Tahado", value: 30, color: "#192C56" },
-  { name: "For Him", value: 35, color: "#3B4758" },
-  { name: "For Her", value: 20, color: "#6F7895" },
-  { name: "For You", value: 15, color: "#A0AEC0" },
-];
+import { useTranslations } from "next-intl";
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: any) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -23,26 +17,39 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export function OrderStatisticsChart() {
+export function OrderStatisticsChart({ stats }: { stats: any }) {
+  const t = useTranslations("Dashboard");
+  const tOrders = useTranslations("Orders");
+
+  const data = [
+    { name: tOrders("processing"), value: stats?.ordersByStatus?.PROCESSING || 0, color: "#192C56" },
+    { name: tOrders("delivered"), value: stats?.ordersByStatus?.DELIVERED || 0, color: "#3B4758" },
+    { name: tOrders("cancelled"), value: stats?.ordersByStatus?.CANCELLED || 0, color: "#6F7895" },
+    { name: tOrders("pending"), value: stats?.ordersByStatus?.PENDING || 0, color: "#A0AEC0" },
+  ].filter(item => item.value > 0);
+
+  // Fallback if no data
+  const chartData = data.length > 0 ? data : [{ name: "No Data", value: 1, color: "#E5E7EB" }];
+
   return (
-    <div className="flex flex-col h-full">
-      <h3 className="text-lg font-bold text-primary mb-6">Order statistics</h3>
+    <div className="flex flex-col h-full bg-white p-6 rounded-[24px] shadow-sm border border-divider">
+      <h3 className="text-lg font-bold text-primary mb-6">{t("order_statistics")}</h3>
       <div className="flex-1 flex items-center justify-center min-h-[300px]">
          <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={data}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
                 label={renderCustomizedLabel}
-                outerRadius={130}
+                outerRadius={110}
                 fill="#8884d8"
                 dataKey="value"
                 stroke="#fff"
                 strokeWidth={5}
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
             </Pie>
