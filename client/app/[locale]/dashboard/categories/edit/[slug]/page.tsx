@@ -1,4 +1,4 @@
-import EditCategoryTemplate from "@/features/categories/templates/EditCategoryTemplate";
+import EditCategoryTemplate from "@/features/dashboard/categories/templates/EditCategoryTemplate";
 
 export default function EditCategoryPage() {
   return <EditCategoryTemplate />;

@@ -1,4 +1,4 @@
-import UserDetailsTemplate from "@/features/users/templates/UserDetailsTemplate";
+import UserDetailsTemplate from "@/features/dashboard/users/templates/UserDetailsTemplate";
 
 export default function UserDetailsPage() {
   return <UserDetailsTemplate />

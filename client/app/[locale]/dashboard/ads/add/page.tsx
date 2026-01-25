@@ -1,4 +1,4 @@
-import AddAdsTemplate from "@/features/ads/templates/AddAdsTemplate";
+import AddAdsTemplate from "@/features/dashboard/ads/templates/AddAdsTemplate";
 
 export default function AddAds() {
   return <AddAdsTemplate />

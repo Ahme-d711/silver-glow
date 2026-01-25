@@ -1,4 +1,4 @@
-import EditAdsTemplate from "@/features/ads/templates/EditAdsTemplate";
+import EditAdsTemplate from "@/features/dashboard/ads/templates/EditAdsTemplate";
 
 export default function EditAdsPage() {
   return <EditAdsTemplate />

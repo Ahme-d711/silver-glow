@@ -1,4 +1,4 @@
-import ProductsTemplate from "@/features/products/templates/ProductsTemplate";
+import ProductsTemplate from "@/features/dashboard/products/templates/ProductsTemplate";
 import { Suspense } from "react";
 import UniLoading from "@/components/shared/UniLoading";
 

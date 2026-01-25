@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model.js";
 import { UserModel } from "../models/user.model.js";
-import { IOrder } from "../types/order.type.js";
 import { createOrderSchema, updateOrderSchema, queryOrderSchema } from "../schemas/order.schema.js";
 import AppError from "../errors/AppError.js";
 

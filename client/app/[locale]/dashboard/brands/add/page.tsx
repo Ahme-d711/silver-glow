@@ -1,4 +1,4 @@
-import AddBrandTemplate from "@/features/brands/templates/AddBrandTemplate";
+import AddBrandTemplate from "@/features/dashboard/brands/templates/AddBrandTemplate";
 
 export default function AddBrandPage() {
   return <AddBrandTemplate />;

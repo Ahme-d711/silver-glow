@@ -1,4 +1,4 @@
-import EditProductTemplate from "@/features/products/templates/EditProductTemplate";
+import EditProductTemplate from "@/features/dashboard/products/templates/EditProductTemplate";
 
 export default function EditProductPage() {
   return <EditProductTemplate />;

@@ -1,4 +1,4 @@
-import AddSectionTemplate from "@/features/sections/templates/AddSectionTemplate";
+import AddSectionTemplate from "@/features/dashboard/sections/templates/AddSectionTemplate";
 
 export default function AddSectionPage() {
   return <AddSectionTemplate />;

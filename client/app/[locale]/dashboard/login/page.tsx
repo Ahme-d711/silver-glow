@@ -1,4 +1,4 @@
-import { LoginTemplate } from "@/features/auth/templates/LoginTemplate";
+import { LoginTemplate } from "@/features/dashboard/auth/templates/LoginTemplate";
 
 export default function LoginPage() {
   return <LoginTemplate />;

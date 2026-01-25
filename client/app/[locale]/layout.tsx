@@ -3,7 +3,7 @@ import { Cairo } from "next/font/google";
 import "../globals.css";
 import { CoreProviders, Providers } from "../providers";
 import DashboardLayoutClient from "./dashboard/DashboardLayoutClient";
-import { getProfile } from "@/features/auth/actions/auth.service";
+import { getProfile } from "@/features/dashboard/auth/actions/auth.service";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';

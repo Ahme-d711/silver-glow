@@ -1,4 +1,4 @@
-import SubCategoriesTemplate from "@/features/subcategories/templates/SubCategoriesTemplate";
+import SubCategoriesTemplate from "@/features/dashboard/subcategories/templates/SubCategoriesTemplate";
 
 export const metadata = {
   title: "Subcategories | Dashboard",

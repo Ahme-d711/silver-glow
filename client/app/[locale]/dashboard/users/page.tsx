@@ -1,4 +1,4 @@
-import UserTemplate from "@/features/users/templates/UserTemplate";
+import UserTemplate from "@/features/dashboard/users/templates/UserTemplate";
 import { Suspense } from "react";
 import UniLoading from "@/components/shared/UniLoading";
 
