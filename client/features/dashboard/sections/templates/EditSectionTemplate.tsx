@@ -6,7 +6,7 @@ import { SectionForm } from "../components/SectionForm";
 import { useUpdateSection, useSectionBySlug } from "../hooks/useSection";
 import { useTranslations } from "next-intl";
 import { SectionFormData } from "../types";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function EditSectionTemplate() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function EditSectionTemplate() {
   if (isFetching) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }

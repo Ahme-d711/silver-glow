@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Image as ImageIcon, X, Plus } from "lucide-react";
+import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
 import { productFormSchema, ProductFormData } from "../schemas/products.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
@@ -555,7 +555,7 @@ export function ProductForm({
             disabled={isLoading}
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Loader className="h-4 w-4 animate-spin mr-2" />
             ) : null}
             {submitLabel || tCommon("save")}
           </Button>

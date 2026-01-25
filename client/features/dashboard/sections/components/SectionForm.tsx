@@ -14,7 +14,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, Image as ImageIcon, X } from "lucide-react";
+import { Loader, Image as ImageIcon, X } from "lucide-react";
 import { sectionFormSchema } from "../schemas/sections.schema";
 import { SectionFormData } from "../types";
 import React, { useState, useRef, useEffect } from "react";
@@ -287,7 +287,7 @@ export function SectionForm({
               disabled={isLoading}
               className="h-12 px-12 rounded-xl bg-primary text-white font-bold cursor-pointer disabled:opacity-50"
             >
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
               {submitLabel}
             </Button>
           </div>

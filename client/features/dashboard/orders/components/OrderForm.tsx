@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader, Plus, Trash2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Order } from "../types";
@@ -512,7 +512,7 @@ export function OrderForm({
             </Button>
           )}
           <Button type="submit" disabled={isLoading} className="px-8 rounded-xl h-11">
-            {isLoading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+            {isLoading && <Loader className="me-2 h-4 w-4 animate-spin" />}
             {submitLabel || tCommon("submit")}
           </Button>
         </div>

@@ -6,7 +6,7 @@ import { BrandForm } from "../components/BrandForm";
 import { useUpdateBrand, useBrandBySlug } from "../hooks/useBrand";
 import { useTranslations } from "next-intl";
 import { BrandFormData } from "../types";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function EditBrandTemplate() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function EditBrandTemplate() {
   if (isFetching) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }

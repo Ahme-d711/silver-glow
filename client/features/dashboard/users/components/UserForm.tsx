@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Loader2, Camera, X } from "lucide-react";
+import { Loader, Camera, X } from "lucide-react";
 import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
 import { z } from "zod";
 import React, { useState, useRef } from "react";
@@ -288,7 +288,7 @@ export function UserForm({
             disabled={isLoading}
             className="bg-primary text-white hover:bg-primary/90 rounded-xl h-11 px-8 cursor-pointer"
           >
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
             {submitLabel}
           </Button>
         </div>

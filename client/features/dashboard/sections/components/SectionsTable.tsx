@@ -15,7 +15,7 @@ import { Section } from "../types";
 import { useToggleSectionStatus, useRestoreSection } from "../hooks/useSection";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Loader2, Pencil, Trash2, RotateCcw } from "lucide-react";
+import { Loader, Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 interface SectionsTableProps {
@@ -138,7 +138,7 @@ export default function SectionsTable({
             disabled={isToggling || row.isDeleted}
             className="data-[state=checked]:bg-primary"
           />
-          {isToggling && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+          {isToggling && <Loader className="h-3 w-3 animate-spin text-primary" />}
         </div>
       ),
     },
