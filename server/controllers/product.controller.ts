@@ -21,6 +21,15 @@ export const getAllProducts = async (req: Request, res: Response) => {
       { nameAr: { $regex: search, $options: "i" } },
       { nameEn: { $regex: search, $options: "i" } },
       { sku: { $regex: search, $options: "i" } },
+      {
+        $expr: {
+          $regexMatch: {
+            input: { $toString: "$_id" },
+            regex: search,
+            options: "i"
+          }
+        }
+      }
     ];
   }
 

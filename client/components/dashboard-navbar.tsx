@@ -41,8 +41,8 @@ export function DashboardNavbar() {
   };
 
   return (
-    <nav className="w-full">
-      <Card className="flex items-center justify-between border-none bg-transparent py-0 flex-row p-0 shadow-none">
+    <nav className="w-full relative z-50 overflow-visible!">
+      <Card className="flex items-center justify-between border-none bg-transparent py-0 flex-row p-0 shadow-none overflow-visible!">
         {/* Left Side: Search */}
         <SearchInput className="w-full" />
 

@@ -53,7 +53,9 @@
     "brands": "العلامات التجارية",
     "sections": "أقسام العرض",
     "orders": "الطلبات",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "search": "بحث عن منتجات، أقسام...",
+    "quick_navigation": "الوصول السريع"
   },
   "Dashboard": {
     "welcome": "مرحبًا بك",

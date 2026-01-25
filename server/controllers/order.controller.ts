@@ -22,6 +22,15 @@ export const getAllOrders = async (req: Request, res: Response) => {
       { trackingNumber: { $regex: search, $options: "i" } },
       { recipientName: { $regex: search, $options: "i" } },
       { recipientPhone: { $regex: search, $options: "i" } },
+      {
+        $expr: {
+          $regexMatch: {
+            input: { $toString: "$_id" },
+            regex: search,
+            options: "i"
+          }
+        }
+      }
     ];
   }
 

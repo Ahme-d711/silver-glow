@@ -2,80 +2,9 @@
 
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  Megaphone,
-  Users,
-  ShoppingCart,
-  Settings,
-  Sun,
-  Moon,
-  Package,
-  Layers,
-  Tag,
-  Award,
-  LayoutGrid,
-} from "lucide-react";
+import { navItems } from "@/constants/navigation";
+import { Sun, Moon } from "lucide-react";
 import { useTranslations } from "next-intl";
-
-interface NavItem {
-  titleKey: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const navItems: NavItem[] = [
-  {
-    titleKey: "overview",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    titleKey: "products",
-    href: "/dashboard/products",
-    icon: Package,
-  },
-  {
-    titleKey: "categories",
-    href: "/dashboard/categories",
-    icon: Layers,
-  },
-  {
-    titleKey: "subcategories",
-    href: "/dashboard/subcategories",
-    icon: Tag,
-  },
-  {
-    titleKey: "brands",
-    href: "/dashboard/brands",
-    icon: Award,
-  },
-  {
-    titleKey: "sections",
-    href: "/dashboard/sections",
-    icon: LayoutGrid,
-  },
-  {
-    titleKey: "advertisements",
-    href: "/dashboard/ads",
-    icon: Megaphone,
-  },
-  {
-    titleKey: "orders",
-    href: "/dashboard/orders",
-    icon: ShoppingCart,
-  },
-  {
-    titleKey: "users",
-    href: "/dashboard/users",
-    icon: Users,
-  },
-  {
-    titleKey: "settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
-];
 
 export function Sidebar() {
   const pathname = usePathname();

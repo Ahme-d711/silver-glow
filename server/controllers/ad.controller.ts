@@ -20,6 +20,15 @@ export const getAllAds = async (req: Request, res: Response) => {
     query.$or = [
       { nameAr: { $regex: search, $options: "i" } },
       { nameEn: { $regex: search, $options: "i" } },
+      {
+        $expr: {
+          $regexMatch: {
+            input: { $toString: "$_id" },
+            regex: search,
+            options: "i"
+          }
+        }
+      }
     ];
   }
 

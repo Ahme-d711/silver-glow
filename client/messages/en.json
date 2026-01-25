@@ -53,7 +53,9 @@
     "brands": "Brands",
     "sections": "Sections",
     "orders": "Orders",
-    "settings": "Settings"
+    "settings": "Settings",
+    "search": "Search products, categories...",
+    "quick_navigation": "Quick Navigation"
   },
   "Dashboard": {
     "welcome": "Welcome",

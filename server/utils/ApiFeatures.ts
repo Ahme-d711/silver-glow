@@ -90,12 +90,23 @@ class ApiFeatures<T extends Document> {
 
       if (searchTerm) {
         const searchRegex = new RegExp(searchTerm, 'i');
-        const orConditions: Array<Record<string, RegExp>> = fields.map(
+        const orConditions: any[] = fields.map(
           (field) => ({ [field as string]: searchRegex })
-      );
+        );
+
+        // Add partial ID search
+        orConditions.push({
+          $expr: {
+            $regexMatch: {
+              input: { $toString: "$_id" },
+              regex: searchTerm,
+              options: "i"
+            }
+          }
+        });
 
         this.query = this.query.find({ $or: orConditions });
-    }
+      }
     }
     return this;
   }

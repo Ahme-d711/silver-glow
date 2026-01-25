@@ -46,15 +46,19 @@ export default function DashboardLayoutClient({
     <div className="flex h-screen bg-white" dir={isRtl ? 'rtl' : 'ltr'}>
       <Sidebar />
       <div className="flex flex-1 flex-col bg-background overflow-hidden font-sans">
-        <div className="flex-1 overflow-y-auto p-6">
-            <Slide direction="up" duration={300} triggerOnce fraction={0.1}>
-              <Suspense>
-                <DashboardNavbar />
-              </Suspense>
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col">
+            <div className="relative z-40 overflow-visible!">
+              <Slide direction="up" duration={300} triggerOnce fraction={0.1} className="overflow-visible!">
+                <Suspense>
+                  <DashboardNavbar />
+                </Suspense>
+              </Slide>
+            </div>
+          <div className="relative z-0">
+            <Slide direction="up" duration={400} triggerOnce fraction={0.1}>
+              <main className="mt-8">{children}</main>
             </Slide>
-          <Slide direction="up" duration={400} triggerOnce fraction={0.1}>
-            <main className="mt-8">{children}</main>
-          </Slide>
+          </div>
         </div>
       </div>
     </div>
