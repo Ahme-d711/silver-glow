@@ -116,14 +116,11 @@ export async function updateOrder(
 }
 
 /**
- * Assign driver to order
+ * Create new order
  */
-export async function assignDriver(
-  id: string,
-  driverId: string
-): Promise<ServiceResponse<{ order: Order }>> {
+export async function createOrder(payload: any): Promise<ServiceResponse<{ order: Order }>> {
   try {
-    const response = await clientAxios.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/assign-driver`, { driverId });
+    const response = await clientAxios.post<ApiResponse<{ order: Order }>>("/orders", payload);
 
     return {
       success: true,
@@ -134,7 +131,29 @@ export async function assignDriver(
     const err = error as AxiosError<ApiResponse<null>>;
     return {
       success: false,
-      message: err.response?.data?.message || "Failed to assign driver",
+      message: err.response?.data?.message || "Failed to create order",
+      error: err.message,
+    };
+  }
+}
+
+/**
+ * Cancel order
+ */
+export async function cancelOrder(id: string): Promise<ServiceResponse<{ order: Order }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/cancel`);
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to cancel order",
       error: err.message,
     };
   }

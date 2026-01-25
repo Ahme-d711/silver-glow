@@ -1,437 +1,436 @@
-// "use client"
+"use client";
 
-// import React from "react"
-// import { useForm } from "react-hook-form"
-// import { zodResolver } from "@hookform/resolvers/zod"
-// import * as z from "zod"
-// import { MapPin, Navigation, Calendar as CalendarIcon, Clock, Info, BookmarkPlus, CheckCircle2 } from "lucide-react"
-// import { format } from "date-fns"
-// import { toast } from "sonner"
-// import { useAddressStore } from "../../packages/store/useAddressStore"
-// import { ChooseAddressModal } from "../../packages/components/ChooseAddressModal"
-// import { SaveAddressModal } from "../../packages/components/SaveAddressModal"
-// import dynamic from "next/dynamic"
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader2, Plus, Trash2 } from "lucide-react";
+import React from "react";
+import { useTranslations } from "next-intl";
+import { Order } from "../types";
 
-// import { Button } from "@/components/ui/button"
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form"
-// import { Input } from "@/components/ui/input"
-// import { Textarea } from "@/components/ui/textarea"
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select"
-// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-// import { Calendar } from "@/components/ui/calendar"
-// import { cn } from "@/lib/utils"
+// Form Schema
+const orderFormSchema = z.object({
+  items: z.array(z.object({
+    productId: z.string().min(1, "Product is required"),
+    name: z.string().min(1, "Product name is required"),
+    price: z.coerce.number(),
+    quantity: z.coerce.number().int().min(1),
+    image: z.string().optional(),
+  })).min(1),
+  recipientName: z.string().min(1),
+  recipientPhone: z.string().min(1),
+  shippingAddress: z.string().min(1),
+  city: z.string().min(1),
+  country: z.string().min(1),
+  postalCode: z.string().optional(),
+  paymentMethod: z.string(),
+  customerNotes: z.string().optional(),
+  adminNotes: z.string().optional(),
+  status: z.string().optional(),
+  paymentStatus: z.string().optional(),
+});
 
-// // Dynamically import LocationPickerModal to avoid Leaflet SSR issues
-// const LocationPickerModal = dynamic(() => import("../../packages/components/LocationPickerModal"), { 
-//   ssr: false 
-// })
+export type OrderFormData = z.infer<typeof orderFormSchema>;
 
-// const formSchema = z.object({
-//   pickup_address: z.string().min(1, "Required"),
-//   recipient_address: z.string().min(1, "Required"),
-//   recipient_name: z.string().min(1, "Required"),
-//   recipient_phone: z.string().min(1, "Required"),
-//   order_type: z.string().min(1, "Required"),
-//   notes: z.string().optional(),
-//   collection_date: z.date({
-//     message: "Required",
-//   }),
-//   collection_time: z.string().min(1, "Required"),
-// })
+interface OrderFormProps {
+  defaultValues?: Partial<Order>;
+  onSubmit: (values: OrderFormData) => void;
+  isLoading?: boolean;
+  onCancel?: () => void;
+  submitLabel?: string;
+  isEdit?: boolean;
+}
 
-// export function OrderForm({ initialData, onSubmit }: { initialData?: any; onSubmit: (data: any) => void }) {
-//   const { addAddress } = useAddressStore()
+export function OrderForm({
+  defaultValues,
+  onSubmit,
+  isLoading,
+  onCancel,
+  submitLabel,
+  isEdit,
+}: OrderFormProps) {
+  const t = useTranslations("Orders");
+  const tCommon = useTranslations("Common");
 
-//   const [mapConfig, setMapConfig] = React.useState<{
-//     isOpen: boolean;
-//     activeField: "pickup_address" | "recipient_address" | null;
-//     title: string;
-//   }>({
-//     isOpen: false,
-//     activeField: null,
-//     title: "Pick Location",
-//   });
+  const form = useForm<any>({
+    resolver: zodResolver(orderFormSchema),
+    defaultValues: {
+      items: defaultValues?.items?.map(item => ({
+        productId: item.productId || "",
+        name: item.name || "",
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+        image: item.image || "",
+      })) || [{ productId: "", name: "", price: 0, quantity: 1, image: "" }],
+      recipientName: defaultValues?.recipientName || "",
+      recipientPhone: defaultValues?.recipientPhone || "",
+      shippingAddress: defaultValues?.shippingAddress || "",
+      city: defaultValues?.city || "",
+      country: defaultValues?.country || "",
+      postalCode: defaultValues?.postalCode || "",
+      paymentMethod: defaultValues?.paymentMethod || "COD",
+      customerNotes: defaultValues?.customerNotes || "",
+      adminNotes: defaultValues?.adminNotes || "",
+      status: defaultValues?.status || "PENDING",
+      paymentStatus: defaultValues?.paymentStatus || "PENDING",
+    },
+  });
 
-//   const [chooseAddressConfig, setChooseAddressConfig] = React.useState<{
-//     isOpen: boolean;
-//     activeField: "pickup_address" | "recipient_address" | null;
-//   }>({
-//     isOpen: false,
-//     activeField: null,
-//   });
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "items",
+  });
 
-//   const [saveAddressConfig, setSaveAddressConfig] = React.useState<{
-//     isOpen: boolean;
-//     activeField: "pickup_address" | "recipient_address" | null;
-//     value: string;
-//   }>({
-//     isOpen: false,
-//     activeField: null,
-//     value: "",
-//   });
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Order Items Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">{t("order_items")}</h3>
+            {!isEdit && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "" })}
+              >
+                <Plus className="h-4 w-4 me-2" />
+                {t("add_item")}
+              </Button>
+            )}
+          </div>
 
-//   const getInitialValues = (data: any) => {
-//     if (!data) return {
-//       pickup_address: "",
-//       recipient_address: "",
-//       recipient_name: "",
-//       recipient_phone: "",
-//       order_type: "Clothes",
-//       notes: "",
-//       collection_date: new Date(),
-//       collection_time: "11:00",
-//     }
+          <div className="space-y-4">
+            {fields.map((field, index) => (
+              <div key={field.id} className="p-4 border rounded-xl space-y-4 bg-gray-50/50">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">{t("item")} {index + 1}</h4>
+                  {fields.length > 1 && !isEdit && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => remove(index)}
+                      className="text-error hover:text-error/80 hover:bg-error/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
 
-//     return {
-//       pickup_address: data.pickup_address || "",
-//       recipient_address: data.recipient_address || "",
-//       recipient_name: data.customer || data.recipient_name || "",
-//       recipient_phone: data.recipient_phone || "",
-//       order_type: data.order_type || "Clothes",
-//       notes: data.notes || "",
-//       collection_date: data.date ? new Date(data.date) : new Date(),
-//       collection_time: data.collection_time || "11:00",
-//     }
-//   }
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("product_name")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder={t("enter_product_name")} readOnly={isEdit} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: getInitialValues(initialData),
-//   })
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.price`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("price")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            placeholder="0.00"
+                            readOnly={isEdit}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-//   // Reset form when initialData changes
-//   React.useEffect(() => {
-//     if (initialData) {
-//       form.reset(getInitialValues(initialData))
-//     }
-//   }, [initialData, form])
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.quantity`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("quantity")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            {...field}
+                            placeholder="1"
+                            readOnly={isEdit}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-//   const openMapPicker = (field: "pickup_address" | "recipient_address", title: string) => {
-//     setMapConfig({
-//       isOpen: true,
-//       activeField: field,
-//       title,
-//     });
-//   };
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.productId`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("product_id")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder={t("enter_product_id")} readOnly={isEdit} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-//   const openChooseAddress = (field: "pickup_address" | "recipient_address") => {
-//     setChooseAddressConfig({
-//       isOpen: true,
-//       activeField: field,
-//     });
-//   };
+        {/* Shipping Information Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">{t("shipping_info")}</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="recipientName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("recipient_name")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder={t("enter_recipient_name")} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//   const handleLocationSelect = (location: string) => {
-//     if (mapConfig.activeField) {
-//       form.setValue(mapConfig.activeField, location);
-//     }
-//   };
+            <FormField
+              control={form.control}
+              name="recipientPhone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("recipient_phone")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="+1234567890" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//   const handleSavedAddressSelect = (address: string) => {
-//     if (chooseAddressConfig.activeField) {
-//       form.setValue(chooseAddressConfig.activeField, address);
-//     }
-//   };
+            <FormField
+              control={form.control}
+              name="shippingAddress"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel>{t("shipping_address")}</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder={t("enter_full_address")} rows={3} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//   const handleSaveAddressClick = (field: "pickup_address" | "recipient_address") => {
-//     const value = form.getValues(field);
-//     if (!value || value.length < 5) {
-//       toast.error("Please enter a valid address first");
-//       return;
-//     }
-//     setSaveAddressConfig({
-//       isOpen: true,
-//       activeField: field,
-//       value: value,
-//     });
-//   };
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("city")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder={t("enter_city")} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//   const handleConfirmSaveAddress = (label: string) => {
-//     if (saveAddressConfig.value) {
-//       addAddress(saveAddressConfig.value, label);
-//       toast.success(`"${label}" saved to your addresses!`, {
-//         icon: <CheckCircle2 className="h-4 w-4 text-success" />,
-//       });
-//     }
-//   };
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("country")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder={t("enter_country")} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//   return (
-//     <>
-//       <Form {...form}>
-//         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-//           {/* Pickup Location */}
-//           <div className="space-y-3">
-//             <FormLabel className="text-content-primary font-bold text-sm">Pickup Location</FormLabel>
-//             <div className="flex gap-4">
-//               <Button 
-//                 type="button" 
-//                 variant="outline" 
-//                 onClick={() => openChooseAddress("pickup_address")}
-//                 className="flex-1 h-12 rounded-xl gap-2 border-divider shadow-none"
-//               >
-//                 <Navigation className="h-4 w-4 text-primary" />
-//                 <span className="text-xs font-bold text-content-secondary">Choose the Address</span>
-//               </Button>
-//               <Button 
-//                 type="button" 
-//                 variant="outline" 
-//                 onClick={() => openMapPicker("pickup_address", "Pickup Location")}
-//                 className="flex-1 h-12 rounded-xl gap-2 border-divider shadow-none"
-//               >
-//                 <MapPin className="h-4 w-4 text-primary" />
-//                 <span className="text-xs font-bold text-content-secondary">Open Map</span>
-//               </Button>
-//             </div>
-//             <FormField
-//               control={form.control}
-//               name="pickup_address"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormControl>
-//                     <div className="relative">
-//                       <Input {...field} placeholder="Your Address Here" className="h-12 rounded-xl border-divider shadow-none text-sm font-medium pr-12" />
-//                       <Button
-//                         type="button"
-//                         variant="ghost"
-//                         size="icon"
-//                         onClick={() => handleSaveAddressClick("pickup_address")}
-//                         className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-primary hover:bg-primary/10 rounded-lg"
-//                         title="Save to my addresses"
-//                       >
-//                         <BookmarkPlus className="h-5 w-5" />
-//                       </Button>
-//                     </div>
-//                   </FormControl>
-//                   <FormMessage />
-//                 </FormItem>
-//               )}
-//             />
-//           </div>
+            <FormField
+              control={form.control}
+              name="postalCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("postal_code")} ({tCommon("optional")})</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="12345" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-//           {/* Recipients Location */}
-//           <div className="space-y-3">
-//             <FormLabel className="text-content-primary font-bold text-sm">Recipients Location</FormLabel>
-//             <div className="flex gap-4">
-//               <Button 
-//                 type="button" 
-//                 variant="outline" 
-//                 onClick={() => openChooseAddress("recipient_address")}
-//                 className="flex-1 h-12 rounded-xl gap-2 border-divider shadow-none"
-//               >
-//                 <Navigation className="h-4 w-4 text-primary" />
-//                 <span className="text-xs font-bold text-content-secondary">Choose the Address</span>
-//               </Button>
-//               <Button 
-//                 type="button" 
-//                 variant="outline" 
-//                 onClick={() => openMapPicker("recipient_address", "Recipients Location")}
-//                 className="flex-1 h-12 rounded-xl gap-2 border-divider shadow-none"
-//               >
-//                 <MapPin className="h-4 w-4 text-primary" />
-//                 <span className="text-xs font-bold text-content-secondary">Open Map</span>
-//               </Button>
-//             </div>
-//             <FormField
-//               control={form.control}
-//               name="recipient_address"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormControl>
-//                     <div className="relative">
-//                       <Input {...field} placeholder="Your Address Here" className="h-12 rounded-xl border-divider shadow-none text-sm font-medium pr-12" />
-//                       <Button
-//                         type="button"
-//                         variant="ghost"
-//                         size="icon"
-//                         onClick={() => handleSaveAddressClick("recipient_address")}
-//                         className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-primary hover:bg-primary/10 rounded-lg"
-//                         title="Save to my addresses"
-//                       >
-//                         <BookmarkPlus className="h-5 w-5" />
-//                       </Button>
-//                     </div>
-//                   </FormControl>
-//                   <FormMessage />
-//                 </FormItem>
-//               )}
-//             />
-//           </div>
+            <FormField
+              control={form.control}
+              name="paymentMethod"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("payment_method")}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("select_payment_method")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="COD">{t("payment_cod")}</SelectItem>
+                      <SelectItem value="CARD">{t("payment_card")}</SelectItem>
+                      <SelectItem value="PAYPAL">{t("payment_paypal")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
-//           <FormField
-//             control={form.control}
-//             name="recipient_name"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="font-bold text-sm">Recipients Name</FormLabel>
-//                 <FormControl>
-//                   <Input {...field} className="h-12 rounded-xl border-divider shadow-none" placeholder="Mahmoud Elboray" />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
+        {/* Order Status (For Edit Only) */}
+        {isEdit && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">{t("admin_status")}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("order_status")}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PENDING">{t("pending")}</SelectItem>
+                        <SelectItem value="CONFIRMED">{t("confirmed")}</SelectItem>
+                        <SelectItem value="PROCESSING">{t("processing")}</SelectItem>
+                        <SelectItem value="SHIPPED">{t("shipped")}</SelectItem>
+                        <SelectItem value="DELIVERED">{t("delivered")}</SelectItem>
+                        <SelectItem value="CANCELLED">{t("cancelled")}</SelectItem>
+                        <SelectItem value="RETURNED">{t("returned")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-//           <FormField
-//             control={form.control}
-//             name="recipient_phone"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="font-bold text-sm">Phone Number</FormLabel>
-//                 <FormControl>
-//                   <Input {...field} className="h-12 rounded-xl border-divider shadow-none" placeholder="01152136068" />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
+              <FormField
+                control={form.control}
+                name="paymentStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("payment_status")}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PENDING">{t("pending")}</SelectItem>
+                        <SelectItem value="PAID">{t("paid")}</SelectItem>
+                        <SelectItem value="FAILED">{t("failed")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        )}
 
-//           <FormField
-//             control={form.control}
-//             name="order_type"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="font-bold text-sm">Order Type</FormLabel>
-//                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-//                   <FormControl>
-//                     <SelectTrigger className="h-12 rounded-xl w-full border-divider shadow-none text-content-tertiary">
-//                       <SelectValue placeholder="Select type" />
-//                     </SelectTrigger>
-//                   </FormControl>
-//                   <SelectContent className="rounded-xl" position="popper">
-//                     <SelectItem value="Clothes">Clothes</SelectItem>
-//                     <SelectItem value="Electronics">Electronics</SelectItem>
-//                     <SelectItem value="Food">Food</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
+        {/* Notes Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">{t("notes")}</h3>
+          
+          <FormField
+            control={form.control}
+            name="customerNotes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("customer_notes")} ({tCommon("optional")})</FormLabel>
+                <FormControl>
+                  <Textarea {...field} placeholder={t("enter_customer_notes")} rows={3} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-//           <FormField
-//             control={form.control}
-//             name="notes"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="font-bold text-sm">Additional Notes</FormLabel>
-//                 <FormControl>
-//                   <Textarea {...field} className="min-h-[100px] rounded-xl border-divider resize-none shadow-none" />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
+          {isEdit && (
+            <FormField
+              control={form.control}
+              name="adminNotes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("admin_notes")} ({tCommon("optional")})</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder={t("enter_admin_notes")} rows={3} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
 
-//           {/* Collection Time Section */}
-//           <div className="space-y-4">
-//             <div className="flex items-center justify-between">
-//               <FormLabel className="font-bold text-sm">Collection Time</FormLabel>
-//               <Info className="h-4 w-4 text-content-tertiary" />
-//             </div>
-//             <div className="bg-gray-50/50 border border-divider rounded-2xl p-6 flex gap-8 justify-center">
-//               <FormField
-//                 control={form.control}
-//                 name="collection_date"
-//                 render={({ field }) => (
-//                   <FormItem className="flex flex-col items-center gap-2">
-//                     <Popover>
-//                       <PopoverTrigger asChild>
-//                         <FormControl>
-//                           <Button
-//                             variant={"outline"}
-//                             className={cn(
-//                               "h-12 w-12 rounded-full p-0 bg-[#F3E8FF] border-none hover:bg-[#F3E8FF]/80 shrink-0",
-//                               !field.value && "text-muted-foreground"
-//                             )}
-//                           >
-//                             <CalendarIcon className="h-5 w-5 text-primary" />
-//                           </Button>
-//                         </FormControl>
-//                       </PopoverTrigger>
-//                       <PopoverContent className="w-auto p-0" align="start">
-//                         <Calendar
-//                           mode="single"
-//                           selected={field.value}
-//                           onSelect={field.onChange}
-//                           disabled={(date) =>
-//                             date < new Date(new Date().setHours(0, 0, 0, 0))
-//                           }
-//                           initialFocus
-//                         />
-//                       </PopoverContent>
-//                     </Popover>
-//                     <div className="flex flex-col items-center">
-//                       <span className="text-sm font-bold text-primary">
-//                         {field.value ? format(field.value, "dd , MMMM , yyyy") : "Pick a date"}
-//                       </span>
-//                       <span className="text-[10px] text-content-tertiary font-medium">Date</span>
-//                     </div>
-//                   </FormItem>
-//                 )}
-//               />
-
-//               <FormField
-//                 control={form.control}
-//                 name="collection_time"
-//                 render={({ field }) => (
-//                   <FormItem className="flex flex-col items-center gap-2">
-//                     <div className="h-12 w-12 rounded-full p-0 bg-[#F3E8FF] flex items-center justify-center shrink-0">
-//                       <Clock className="h-5 w-5 text-primary" />
-//                     </div>
-//                     <div className="flex flex-col items-center">
-//                       <FormControl>
-//                         <Input 
-//                           {...field} 
-//                           type="time" 
-//                           className="h-7 w-[80px] border-none shadow-none bg-transparent text-sm font-bold text-primary text-center p-0" 
-//                         />
-//                       </FormControl>
-//                       <span className="text-[10px] text-content-tertiary font-medium">Time</span>
-//                     </div>
-//                   </FormItem>
-//                 )}
-//               />
-//             </div>
-//           </div>
-
-//           <Button type="submit" className="w-full h-12 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 shadow-none">
-//             Submit
-//           </Button>
-//         </form>
-//       </Form>
-
-//       <LocationPickerModal
-//         isOpen={mapConfig.isOpen}
-//         onClose={() => setMapConfig(prev => ({ ...prev, isOpen: false }))}
-//         onSelect={handleLocationSelect}
-//         title={mapConfig.title}
-//       />
-
-//       <ChooseAddressModal
-//         isOpen={chooseAddressConfig.isOpen}
-//         onClose={() => setChooseAddressConfig(prev => ({ ...prev, isOpen: false }))}
-//         onSelect={handleSavedAddressSelect}
-//       />
-
-//       <SaveAddressModal
-//         isOpen={saveAddressConfig.isOpen}
-//         onClose={() => setSaveAddressConfig(prev => ({ ...prev, isOpen: false }))}
-//         onSave={handleConfirmSaveAddress}
-//         addressValue={saveAddressConfig.value}
-//       />
-//     </>
-//   )
-// }
+        {/* Form Actions */}
+        <div className="flex gap-4 justify-end pt-6 border-t">
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isLoading}
+              className="px-8 rounded-xl"
+            >
+              {tCommon("cancel")}
+            </Button>
+          )}
+          <Button type="submit" disabled={isLoading} className="px-8 rounded-xl">
+            {isLoading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+            {submitLabel || tCommon("submit")}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+}

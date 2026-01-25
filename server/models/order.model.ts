@@ -8,38 +8,32 @@ const OrderSchema = new Schema<IOrder>(
       ref: "users",
       required: true,
     },
-    driverId: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
-      required: false,
-      default: null,
-    },
-    pickupLatitude: {
-      type: Number,
-      required: true,
-    },
-    pickupLongitude: {
-      type: Number,
-      required: true,
-    },
-    pickupAddress: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    recipientLatitude: {
-      type: Number,
-      required: true,
-    },
-    recipientLongitude: {
-      type: Number,
-      required: true,
-    },
-    recipientAddress: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "products",
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+        image: {
+          type: String,
+          required: false,
+        },
+      },
+    ],
     recipientName: {
       type: String,
       required: true,
@@ -50,91 +44,93 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       trim: true,
     },
-    orderType: {
+    shippingAddress: {
       type: String,
-      enum: ["CLOTHES", "ELECTRONICS", "DOCUMENTS", "FOOD", "FRAGILE", "OTHER"],
       required: true,
+      trim: true,
     },
-    insuranceValue: {
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    country: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    postalCode: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    subtotal: {
       type: Number,
       required: true,
       default: 0,
     },
-    deliveryCost: {
+    shippingCost: {
       type: Number,
       required: true,
       default: 0,
     },
-    pictureUrl: {
+    discountAmount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    totalAmount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "CARD", "PAYPAL"],
+      required: true,
+      default: "COD",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["PENDING", "PAID", "FAILED"],
+      default: "PENDING",
+      required: true,
+    },
+    transactionId: {
       type: String,
       required: false,
-      default: null,
-    },
-    additionalNotes: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    collectionDate: {
-      type: String,
-      required: true,
-    },
-    collectionTime: {
-      type: String,
-      required: true,
-    },
-    anyTime: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    allowInspection: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
-    receiverPaysShipping: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    status: {
-      type: String,
-      enum: ["CREATED", "PENDING", "ACCEPTED", "IN_PROGRESS", "IN_THE_WAY", "RETURN", "DELIVERED"],
-      default: "CREATED",
-      required: true,
     },
     trackingNumber: {
       type: String,
       required: false,
       unique: true,
       sparse: true,
-      default: null,
     },
-    distanceKm: {
-      type: Number,
-      required: true,
-      default: 0,
+    shippingCompany: {
+      type: String,
+      required: false,
     },
-    pickupConfirmed: {
-      type: Boolean,
-      default: false,
-    },
-    deliveryConfirmed: {
-      type: Boolean,
-      default: false,
-    },
-    confirmedAt: {
-      type: Date,
-      default: null,
-    },
-    pickedUpAt: {
+    shippedAt: {
       type: Date,
       default: null,
     },
     deliveredAt: {
       type: Date,
       default: null,
+    },
+    status: {
+      type: String,
+      enum: ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"],
+      default: "PENDING",
+      required: true,
+    },
+    customerNotes: {
+      type: String,
+      required: false,
+    },
+    adminNotes: {
+      type: String,
+      required: false,
     },
   },
   {
@@ -145,8 +141,8 @@ const OrderSchema = new Schema<IOrder>(
 );
 
 OrderSchema.index({ userId: 1 });
-OrderSchema.index({ driverId: 1 });
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ createdAt: -1 });
+OrderSchema.index({ paymentStatus: 1 });
 
 export const OrderModel = model<IOrder>("orders", OrderSchema);

@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 // import { EditOrderTemplate } from "../templats/EditOrderTemplate"
 import { Order } from "../types"
 import { format } from "date-fns"
+import { useCancelOrder } from "../hooks/useOrders"
 import React from "react"
 
 interface OrdersTableProps {
@@ -44,31 +45,42 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
   const router = useRouter()
   const [editingOrder, setEditingOrder] = React.useState<Order | null>(null)
   const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder()
 
-  const handleEdit = (order: Order) => {
-    setEditingOrder(order)
-    setIsEditOpen(true)
+  const handleEdit = (orderId: string) => {
+    router.push(`/dashboard/orders/${orderId}/edit`)
   }
 
   const handleView = (orderId: string) => {
-    router.push(`/orders/${orderId}`)
+    router.push(`/dashboard/orders/${orderId}`)
+  }
+
+  const handleCancelClick = (orderId: string) => {
+    if (window.confirm("Are you sure you want to cancel this order?")) {
+      cancelOrder(orderId)
+    }
   }
 
   // Transform orders data for table display
   const tableData = React.useMemo<TableRowData[]>(() => {
-    return orders.map((order) => ({
-      id: order._id,
-      productName: order.orderType || t("product"),
-      otherProducts: order.trackingNumber ? `${t("tracking_number")}: ${order.trackingNumber}` : tCommon("none"),
-      productImage: order.pictureUrl || "",
-      date: order.createdAt ? format(new Date(order.createdAt), "dd MMM yyyy") : "-",
-      customer: order.recipientName || order.userName || "-",
-      total: `${order.deliveryCost?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
-      payment: order.receiverPaysShipping ? "Receiver" : "Sender",
-      status: order.status,
-      selected: false,
-      originalOrder: order,
-    }))
+    return orders.map((order) => {
+      const firstItem = order.items?.[0];
+      const itemsCount = order.items?.length || 0;
+      
+      return {
+        id: order._id,
+        productName: firstItem?.name || t("product"),
+        otherProducts: itemsCount > 1 ? `+${itemsCount - 1} ${tCommon("products")}` : "",
+        productImage: firstItem?.image || "",
+        date: order.createdAt ? format(new Date(order.createdAt), "dd MMM yyyy") : "-",
+        customer: order.recipientName || "-",
+        total: `${order.totalAmount?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
+        payment: t(`payment_${order.paymentMethod?.toLowerCase()}` as any) || order.paymentMethod,
+        status: order.status,
+        selected: false,
+        originalOrder: order,
+      }
+    })
   }, [orders, t, tCommon])
 
   const columns = [
@@ -119,13 +131,13 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
       header: t("status"),
       cell: (_: unknown, row: TableRowData) => {
         const statusColors: Record<string, string> = {
-          CREATED: "bg-blue-100/50 text-blue-600",
           PENDING: "bg-yellow-100/50 text-yellow-600",
-          ACCEPTED: "bg-primary/10 text-primary",
-          IN_PROGRESS: "bg-purple-100/50 text-purple-600",
-          IN_THE_WAY: "bg-indigo-100/50 text-indigo-600",
-          RETURN: "bg-error/10 text-error",
+          CONFIRMED: "bg-blue-100/50 text-blue-600",
+          PROCESSING: "bg-purple-100/50 text-purple-600",
+          SHIPPED: "bg-indigo-100/50 text-indigo-600",
           DELIVERED: "bg-success/10 text-success",
+          CANCELLED: "bg-gray-100/50 text-gray-600",
+          RETURNED: "bg-error/10 text-error",
         }
         return (
           <Badge className={cn(
@@ -151,12 +163,12 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
             />
             <ActionButton 
               icon={Pencil} 
-              onClick={() => handleEdit(row.originalOrder)} 
+              onClick={() => handleEdit(row.id)} 
             />
             <ActionButton 
               icon={Trash2} 
               variant="danger" 
-              onClick={() => console.log("Delete", row.id)} 
+              onClick={() => handleCancelClick(row.id)} 
             />
           </ActionCell>
         )

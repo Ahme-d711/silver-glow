@@ -1,12 +1,10 @@
 "use client"
 
-import { Download } from "lucide-react"
+import { Download, Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/PageHeader"
-import { useOrdersState, useOrders, useOrdersByStatus } from "../hooks/useOrders"
-import { OrdersSubTabs } from "../components/OrdersSubTabs"
+import { useOrdersState, useOrders, useOrdersByStatus, useCancelOrder } from "../hooks/useOrders"
 import { TableFilters } from "@/components/shared/TableFilters"
 import { OrdersTable } from "../components/OrdersTable"
-import { WaselTable } from "../components/WaselTable"
 import { OrderStatus } from "../types"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
@@ -21,19 +19,17 @@ export default function OrdersTemplate() {
 
   const statusTabs = [
     { label: t("all_orders"), value: "all" },
-    { label: t("created"), value: "CREATED" },
     { label: t("pending"), value: "PENDING" },
-    { label: t("accepted"), value: "ACCEPTED" },
-    { label: t("in_progress"), value: "IN_PROGRESS" },
-    { label: t("in_the_way"), value: "IN_THE_WAY" },
-    { label: t("return"), value: "RETURN" },
+    { label: t("confirmed"), value: "CONFIRMED" },
+    { label: t("processing"), value: "PROCESSING" },
+    { label: t("shipped"), value: "SHIPPED" },
     { label: t("delivered"), value: "DELIVERED" },
+    { label: t("cancelled"), value: "CANCELLED" },
+    { label: t("returned"), value: "RETURNED" },
   ];
   const search = searchParams.get("search") || "";
 
   const {
-    activeTab,
-    setActiveTab,
     activeStatus,
     setActiveStatus,
     date,
@@ -66,8 +62,8 @@ export default function OrdersTemplate() {
       order.trackingNumber?.toLowerCase().includes(searchLower) ||
       order.recipientName.toLowerCase().includes(searchLower) ||
       order.recipientPhone.toLowerCase().includes(searchLower) ||
-      order.pickupAddress.toLowerCase().includes(searchLower) ||
-      order.recipientAddress.toLowerCase().includes(searchLower)
+      order.shippingAddress.toLowerCase().includes(searchLower) ||
+      order.city?.toLowerCase().includes(searchLower)
     )
   }) || []
 
@@ -86,17 +82,18 @@ export default function OrdersTemplate() {
             variant: "outline",
             className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
             onClick: () => console.log("Exporting...")
+          },
+          {
+            label: t("add_order"),
+            icon: Plus,
+            href: "/dashboard/orders/add",
+            className: "bg-primary text-white hover:bg-primary/90 font-bold h-11 px-6 rounded-xl",
           }
         ]}
       />
 
       {/* Main Container */}
       <div className="bg-white rounded-[24px] border border-divider overflow-hidden">
-        <OrdersSubTabs 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-        />
-
         <TableFilters 
           tabs={statusTabs}
           activeTab={activeStatus}
@@ -105,23 +102,19 @@ export default function OrdersTemplate() {
           setDate={setDate}
         />
 
-        {activeTab === "orders" ? (
-          isLoading ? (
-            <div className="p-8">
-              <UniLoading />
-            </div>
-          ) : error ? (
-            <div className="p-8">
-              <NoDataMsg 
-                title={t("title")}
-                description={error?.message || tCommon("no_data_desc")} 
-              />
-            </div>
-          ) : (
-            <OrdersTable orders={filteredOrders} />
-          )
+        {isLoading ? (
+          <div className="p-8">
+            <UniLoading />
+          </div>
+        ) : error ? (
+          <div className="p-8">
+            <NoDataMsg 
+              title={t("title")}
+              description={error?.message || tCommon("no_data_desc")} 
+            />
+          </div>
         ) : (
-          <WaselTable />
+          <OrdersTable orders={filteredOrders} />
         )}
       </div>
     </div>

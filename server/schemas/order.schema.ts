@@ -1,55 +1,53 @@
 import { z } from "zod";
 
 export const orderStatusSchema = z.enum([
-  "CREATED",
   "PENDING",
-  "ACCEPTED",
-  "IN_PROGRESS",
-  "IN_THE_WAY",
-  "RETURN",
+  "CONFIRMED",
+  "PROCESSING",
+  "SHIPPED",
   "DELIVERED",
+  "CANCELLED",
+  "RETURNED",
 ]);
 
-export const orderTypeSchema = z.enum([
-  "CLOTHES",
-  "ELECTRONICS",
-  "DOCUMENTS",
-  "FOOD",
-  "FRAGILE",
-  "OTHER",
-]);
+export const paymentMethodSchema = z.enum(["COD", "CARD", "PAYPAL"]);
+export const paymentStatusSchema = z.enum(["PENDING", "PAID", "FAILED"]);
 
-export const createOrderSchema = z.object({
-  pickupLatitude: z.number(),
-  pickupLongitude: z.number(),
-  pickupAddress: z.string().min(1),
-  recipientLatitude: z.number(),
-  recipientLongitude: z.number(),
-  recipientAddress: z.string().min(1),
-  recipientName: z.string().min(1),
-  recipientPhone: z.string().min(1),
-  orderType: orderTypeSchema,
-  insuranceValue: z.number().min(0).default(0),
-  deliveryCost: z.number().min(0).default(0),
-  additionalNotes: z.string().optional(),
-  collectionDate: z.string(),
-  collectionTime: z.string(),
-  anyTime: z.boolean().default(false),
-  allowInspection: z.boolean().default(true),
-  receiverPaysShipping: z.boolean().default(false),
+export const orderItemSchema = z.object({
+  productId: z.string(),
+  name: z.string().min(1),
+  price: z.number().min(0),
+  quantity: z.number().int().min(1),
+  image: z.string().optional(),
 });
 
-export const updateOrderSchema = createOrderSchema.partial().extend({
+export const createOrderSchema = z.object({
+  items: z.array(orderItemSchema).min(1),
+  recipientName: z.string().min(1),
+  recipientPhone: z.string().min(1),
+  shippingAddress: z.string().min(1),
+  city: z.string().min(1),
+  country: z.string().min(1),
+  postalCode: z.string().optional(),
+  customerNotes: z.string().optional(),
+  paymentMethod: paymentMethodSchema.default("COD"),
+});
+
+export const updateOrderSchema = z.object({
   status: orderStatusSchema.optional(),
-  driverId: z.string().optional(),
-  pickupConfirmed: z.boolean().optional(),
-  deliveryConfirmed: z.boolean().optional(),
+  paymentStatus: paymentStatusSchema.optional(),
+  transactionId: z.string().optional(),
+  trackingNumber: z.string().optional(),
+  shippingCompany: z.string().optional(),
+  shippedAt: z.string().optional(),
+  deliveredAt: z.string().optional(),
+  adminNotes: z.string().optional(),
 });
 
 export const queryOrderSchema = z.object({
   status: orderStatusSchema.optional(),
+  paymentStatus: paymentStatusSchema.optional(),
   userId: z.string().optional(),
-  driverId: z.string().optional(),
   search: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().default(10),

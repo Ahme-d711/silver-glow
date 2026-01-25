@@ -1,53 +1,64 @@
 export type OrderStatus = 
-  | "CREATED" 
-  | "PENDING" 
-  | "ACCEPTED" 
-  | "IN_PROGRESS" 
-  | "IN_THE_WAY" 
-  | "RETURN" 
+  | "PENDING"
+  | "CONFIRMED"
+  | "PROCESSING"
+  | "SHIPPED"
   | "DELIVERED"
+  | "CANCELLED"
+  | "RETURNED"
 
-export type OrderType = 
-  | "CLOTHES" 
-  | "ELECTRONICS" 
-  | "DOCUMENTS"
-  | "FOOD"
-  | "FRAGILE"
-  | "OTHER"
-  | string // Allow other types from API
+export type PaymentMethod = "COD" | "CARD" | "PAYPAL"
+export type PaymentStatus = "PENDING" | "PAID" | "FAILED"
+
+export interface OrderItem {
+  productId: string
+  name: string
+  price: number
+  quantity: number
+  image?: string
+}
 
 export interface Order {
   _id: string
   userId: any // To handle populated user object or ID string
-  driverId: string | null
-  userName: string
-  driverName: string | null
-  pickupLatitude: number
-  pickupLongitude: number
-  pickupAddress: string
-  recipientLatitude: number
-  recipientLongitude: number
-  recipientAddress: string
+  
+  // المنتجات داخل الطلب
+  items: OrderItem[]
+  
+  // بيانات الشحن
   recipientName: string
   recipientPhone: string
-  orderType: OrderType
-  insuranceValue: number
-  deliveryCost: number
-  pictureUrl: string | null
-  additionalNotes: string | null
-  collectionDate: string
-  collectionTime: string
-  anyTime: boolean
-  allowInspection: boolean
-  receiverPaysShipping: boolean
+  shippingAddress: string
+  city: string
+  country: string
+  postalCode?: string
+  
+  // التسعير
+  subtotal: number
+  shippingCost: number
+  discountAmount: number
+  totalAmount: number
+  
+  // الدفع
+  paymentMethod: PaymentMethod
+  paymentStatus: PaymentStatus
+  transactionId?: string
+  
+  // التتبع والشحن
+  trackingNumber?: string
+  shippingCompany?: string
+  shippedAt?: string
+  deliveredAt?: string
+  
+  // حالة الطلب
   status: OrderStatus
-  trackingNumber: string | null
-  distanceKm: number
-  pickupConfirmed: boolean
-  deliveryConfirmed: boolean
+  
+  // ملاحظات
+  customerNotes?: string
+  adminNotes?: string
+  
+  // التواريخ
   createdAt: string
-  confirmedAt: string | null
-  pickedUpAt: string | null
-  deliveredAt: string | null
+  updatedAt: string
 }
 

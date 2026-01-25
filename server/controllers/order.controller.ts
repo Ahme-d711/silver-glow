@@ -9,13 +9,13 @@ import AppError from "../errors/AppError.js";
  */
 export const getAllOrders = async (req: Request, res: Response) => {
   const validatedQuery = queryOrderSchema.parse(req.query);
-  const { status, userId, driverId, search, page, limit } = validatedQuery;
+  const { status, paymentStatus, userId, search, page, limit } = validatedQuery;
 
   const query: any = {};
 
   if (status) query.status = status;
+  if (paymentStatus) query.paymentStatus = paymentStatus;
   if (userId) query.userId = userId;
-  if (driverId) query.driverId = driverId;
 
   if (search) {
     query.$or = [
@@ -33,7 +33,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
       .skip(skip)
       .limit(limit)
       .populate("userId", "name phone email")
-      .populate("driverId", "name phone"),
+      .populate("items.productId", "nameAr nameEn mainImage"),
     OrderModel.countDocuments(query),
   ]);
 
@@ -59,7 +59,7 @@ export const getOrderById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const order = await OrderModel.findById(id)
     .populate("userId", "name phone email")
-    .populate("driverId", "name phone");
+    .populate("items.productId", "nameAr nameEn mainImage");
 
   if (!order) {
     throw new AppError("Order not found", 404);
@@ -84,12 +84,22 @@ export const createOrder = async (req: Request, res: Response) => {
      throw new AppError("Authentication required", 401);
   }
 
+  // Calculate pricing
+  const subtotal = validatedBody.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shippingCost = 50; // You can implement dynamic calculation
+  const discountAmount = 0; // Implement discount logic if needed
+  const totalAmount = subtotal + shippingCost - discountAmount;
+
   // Generate tracking number
-  const trackingNumber = `TRK-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const trackingNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
   const order = await OrderModel.create({
     ...validatedBody,
     userId,
+    subtotal,
+    shippingCost,
+    discountAmount,
+    totalAmount,
     trackingNumber,
   });
 
@@ -112,21 +122,19 @@ export const updateOrder = async (req: Request, res: Response) => {
     throw new AppError("Order not found", 404);
   }
 
-  // Update logic
+  // Update logic with automatic timestamp updates
   const updateData: any = { ...validatedBody };
   
   // Set timestamps for status changes
-  if (validatedBody.status === "ACCEPTED" && order.status !== "ACCEPTED") {
-    updateData.confirmedAt = new Date();
-  } else if (validatedBody.status === "IN_PROGRESS" && order.status !== "IN_PROGRESS") {
-    updateData.pickedUpAt = new Date();
+  if (validatedBody.status === "SHIPPED" && order.status !== "SHIPPED") {
+    updateData.shippedAt = new Date();
   } else if (validatedBody.status === "DELIVERED" && order.status !== "DELIVERED") {
     updateData.deliveredAt = new Date();
   }
 
   const updatedOrder = await OrderModel.findByIdAndUpdate(id, updateData, { new: true })
     .populate("userId", "name phone email")
-    .populate("driverId", "name phone");
+    .populate("items.productId", "nameAr nameEn mainImage");
 
   res.status(200).json({
     success: true,
@@ -136,21 +144,16 @@ export const updateOrder = async (req: Request, res: Response) => {
 };
 
 /**
- * Assign driver to order
+ * Cancel order
  */
-export const assignDriver = async (req: Request, res: Response) => {
+export const cancelOrder = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { driverId } = req.body;
-
-  if (!driverId) {
-    throw new AppError("Driver ID is required", 400);
-  }
 
   const order = await OrderModel.findByIdAndUpdate(
     id,
-    { driverId, status: "ACCEPTED", confirmedAt: new Date() },
+    { status: "CANCELLED" },
     { new: true }
-  ).populate("driverId", "name phone");
+  );
 
   if (!order) {
     throw new AppError("Order not found", 404);
@@ -158,7 +161,7 @@ export const assignDriver = async (req: Request, res: Response) => {
 
   res.status(200).json({
     success: true,
-    message: "Driver assigned successfully",
+    message: "Order cancelled successfully",
     data: { order },
   });
 };
