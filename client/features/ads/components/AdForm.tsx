@@ -14,32 +14,42 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card } from "@/components/ui/card"
 import { adSchema, type AdFormValues } from "../schemas/adSchemas"
+import { useTranslations } from "next-intl"
+
+import { AsyncCombobox } from "@/components/shared/AsyncCombobox"
+import { getAllProducts } from "@/features/products/services/product.service"
 
 interface AdFormProps {
-  initialData?: Partial<AdFormValues>
-  onSubmit: (data: AdFormValues) => void
+  initialData?: any
+  onSubmit: (data: FormData) => void
   onCancel?: () => void
   isLoading?: boolean
 }
 
 export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: AdFormProps) {
+  const t = useTranslations("Common")
+  const tAds = useTranslations("Ads")
+  const tOrders = useTranslations("Orders")
+  
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.photo instanceof File 
-      ? URL.createObjectURL(initialData.photo) 
-      : (typeof initialData?.photo === 'string' ? initialData.photo : null)
+    initialData?.photo ? (initialData.photo.startsWith('http') || initialData.photo.startsWith('/') ? initialData.photo : `/${initialData.photo}`) : null
   )
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const form = useForm<AdFormValues>({
+  const form = useForm<any>({
     resolver: zodResolver(adSchema),
     defaultValues: {
-      name: initialData?.name || "",
+      nameAr: initialData?.nameAr || "",
+      nameEn: initialData?.nameEn || "",
+      descriptionAr: initialData?.descriptionAr || "",
+      descriptionEn: initialData?.descriptionEn || "",
       isShown: initialData?.isShown ?? true,
-      note: initialData?.note || "",
+      priority: initialData?.priority ?? 0,
+      link: initialData?.link || "",
+      productId: initialData?.productId?._id || initialData?.productId || "",
       photo: initialData?.photo,
     },
   })
@@ -62,20 +72,43 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     if (fileInputRef.current) fileInputRef.current.value = ""
   }
 
+  const handleFormSubmit = (values: AdFormValues) => {
+    const formData = new FormData()
+    formData.append("nameAr", values.nameAr)
+    formData.append("nameEn", values.nameEn)
+    if (values.descriptionAr) formData.append("descriptionAr", values.descriptionAr)
+    if (values.descriptionEn) formData.append("descriptionEn", values.descriptionEn)
+    formData.append("isShown", String(values.isShown))
+    formData.append("priority", String(values.priority))
+    if (values.link) formData.append("link", values.link)
+    if (values.productId) formData.append("productId", values.productId)
+    
+    if (values.photo instanceof File) {
+      formData.append("photo", values.photo)
+    }
+
+    onSubmit(formData)
+  }
+
+  const fetchProducts = async (search: string) => {
+    const response = await getAllProducts({ search, limit: 10 });
+    return Array.isArray(response) ? response : [];
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Sidebar - Photo */}
         <div className="lg:col-span-4 space-y-6">
           <Card className="p-6 rounded-[24px] border border-divider shadow-none">
-            <h3 className="text-lg font-semibold text-content-primary mb-4">Photo</h3>
+            <h3 className="text-lg font-semibold text-content-primary mb-4">{t("photo")}</h3>
             
             <FormField
               control={form.control}
               name="photo"
               render={() => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="text-content-secondary text-base">Photo</FormLabel>
+                  <FormLabel className="text-content-secondary text-base">{t("photo")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <input
@@ -95,7 +128,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                             <ImageIcon className="h-8 w-8 text-primary" />
                           </div>
                           <p className="text-sm text-content-tertiary text-center mb-4 px-4">
-                            Drag and drop image here, or click add image
+                            {t("drag_drop_image")}
                           </p>
                           <Button 
                             type="button"
@@ -105,7 +138,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                               fileInputRef.current?.click()
                             }}
                           >
-                            Add Image
+                            {t("add_image")}
                           </Button>
                         </div>
                       ) : (
@@ -141,26 +174,145 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
         {/* Right Section - General Information */}
         <div className="lg:col-span-8">
           <Card className="p-8 rounded-[32px] border border-divider shadow-none">
-            <h3 className="text-xl font-semibold text-content-primary mb-6">General Information</h3>
+            <h3 className="text-xl font-semibold text-content-primary mb-6">{t("general_info")}</h3>
             
             <div className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="text-base text-content-secondary">Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                        placeholder="Enter ad name..." 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="nameAr"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("name_ar")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                          placeholder={t("enter_name_ar")} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="nameEn"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("name_en")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                          placeholder={t("enter_name_en")} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="descriptionAr"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("description_ar")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                          placeholder={t("description_ar")} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="descriptionEn"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("description_en")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                          placeholder={t("description_en")} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormField
+                  control={form.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("priority")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          type="number"
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-base text-content-secondary">{t("link")} ({t("optional")})</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
+                          placeholder="https://..." 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="productId"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1 flex flex-col">
+                      <FormLabel className="text-base text-content-secondary">{tOrders("product")} ({t("optional")})</FormLabel>
+                      <FormControl>
+                        <AsyncCombobox
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          fetchData={fetchProducts}
+                          placeholder={tOrders("select_product")}
+                          searchPlaceholder={t("search")}
+                          emptyMessage={t("no_data")}
+                          getItemLabel={(product) => product.nameAr || product.nameEn}
+                          className="h-12 border-divider/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
@@ -175,26 +327,8 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                       />
                     </FormControl>
                     <FormLabel className="text-base font-semibold text-content-primary cursor-pointer">
-                      Is Shown
+                      {t("is_show")}
                     </FormLabel>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="note"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="text-base text-content-secondary">Note</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        {...field} 
-                        className="min-h-[200px] rounded-xl border-divider/50 focus:border-primary px-4 py-3 resize-none shadow-none" 
-                        placeholder="Enter note here..." 
-                      />
-                    </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -207,7 +341,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
               disabled={isLoading}
               className="h-12 px-12 rounded-xl bg-primary text-white font-bold cursor-pointer disabled:opacity-50"
             >
-              {isLoading ? "Saving..." : "Save Ad"}
+              {isLoading ? t("saving") : t("save")}
             </Button>
             {onCancel && (
               <Button 
@@ -217,7 +351,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 disabled={isLoading}
                 className="h-12 px-8 rounded-xl border-divider font-bold text-content-secondary cursor-pointer disabled:opacity-50"
               >
-                Cancel
+                {t("cancel")}
               </Button>
             )}
           </div>
@@ -226,4 +360,3 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     </Form>
   )
 }
-

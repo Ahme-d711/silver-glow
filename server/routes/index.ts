@@ -7,6 +7,7 @@ import { router as brandRouter } from "./brand.route.js";
 import { router as sectionRouter } from "./section.route.js";
 import { router as productRouter } from "./product.route.js";
 import { orderRouter } from "./order.route.js";
+import { router as adRouter } from "./ad.route.js";
 
 export const router = Router();
 
@@ -18,3 +19,4 @@ router.use("/brands", brandRouter);
 router.use("/sections", sectionRouter);
 router.use("/products", productRouter);
 router.use("/orders", orderRouter);
+router.use("/ads", adRouter);

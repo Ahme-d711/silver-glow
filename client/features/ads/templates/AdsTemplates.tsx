@@ -11,26 +11,21 @@ import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
 import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
+import { useTranslations, useLocale } from "next-intl"
 
-// Convert Ad to AdCard format
-function convertAdToCardFormat(ad: any): any {
-  // Construct full image URL
-  let imageUrl = "/ads-1.svg" // Default fallback image
+// Convert Ad to AdCard format (for mockup)
+function convertAdToCardFormat(ad: any, locale: string): any {
+  let imageUrl = "/ads-1.svg" 
   if (ad.photo) {
-    if (ad.photo.startsWith('http') || ad.photo.startsWith('/')) {
-      imageUrl = ad.photo
-    } else {
-      // Use photo as is for local paths
-      imageUrl = ad.photo
-    }
+    imageUrl = ad.photo.startsWith('http') || ad.photo.startsWith('/') ? ad.photo : `/${ad.photo}`
   }
 
   return {
-    id: ad.id,
-    title: ad.name,
+    id: ad._id || ad.id,
+    title: locale === 'ar' ? ad.nameAr : ad.nameEn,
     image: imageUrl,
     isActive: ad.isShown,
-    showOnHome: ad.isShown, // Map isShown to showOnHome
+    showOnHome: ad.isShown,
   }
 }
 
@@ -38,6 +33,10 @@ export default function AdsTemplate() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get("search") || ""
+  const locale = useLocale()
+  const t = useTranslations("Ads")
+  const tCommon = useTranslations("Common")
+  const tNav = useTranslations("Navigation")
 
   const { data: adsData, isLoading, error } = useAds()
   const { mutate: updateAd } = useUpdateAd()
@@ -45,47 +44,39 @@ export default function AdsTemplate() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [adToDelete, setAdToDelete] = useState<string | null>(null)
 
-  // Convert data to AdCard format
-  const ads = useMemo(() => {
-    if (!adsData) return []
-    return adsData.map(convertAdToCardFormat)
-  }, [adsData])
-
   // Filter ads based on search
   const filteredAds = useMemo(() => {
-    return ads.filter(ad => 
-        ad.title.toLowerCase().includes(searchQuery.toLowerCase())
+    if (!adsData) return []
+    return adsData.filter(ad => 
+        ad.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ad.nameEn.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [ads, searchQuery])
+  }, [adsData, searchQuery])
 
   // Get active ads for preview
   const previewAds = useMemo(() => {
-    // In the mockup logic, user might want to see specific ads, but let's show all active ones or just top ones
-    // The previous logic was "showOnHome". We can keep that for the mobile mockup
-    const active = ads.filter(ad => ad.showOnHome)
-    // If no active ads, show some from list for preview purposes
-    return active.length > 0 ? active : ads.slice(0, 5)
-  }, [ads])
+    const cards = (adsData || []).map(ad => convertAdToCardFormat(ad, locale))
+    const active = cards.filter(ad => ad.showOnHome)
+    return active.length > 0 ? active : cards.slice(0, 5)
+  }, [adsData, locale])
 
   const handleToggleSelect = (id: string) => {
-    const targetAd = ads.find((a) => a.id === id)
-    if (!targetAd) return
+    const originalAd = adsData?.find((a) => (a._id || a.id) === id)
+    if (!originalAd) return
 
-    // Limit check kept from previous logic
-    if (!targetAd.showOnHome && previewAds.filter(a => a.showOnHome).length >= 3) {
-      toast.error("Maximum 3 ads allowed on home screen")
+    // Limit check for home screen
+    const currentlyShownCount = adsData?.filter(a => a.isShown).length || 0
+    if (!originalAd.isShown && currentlyShownCount >= 3) {
+      toast.error(tCommon("max_3_ads") || "Maximum 3 ads allowed on home screen")
       return
     }
 
-    const originalAd = adsData?.find((a) => a.id === id)
-    if (!originalAd) return
-
+    const formData = new FormData()
+    formData.append("isShown", String(!originalAd.isShown))
+    
     updateAd({
-      id: originalAd.id,
-      data: {
-        ...originalAd,
-        isShown: !originalAd.isShown,
-      },
+      id: originalAd._id || originalAd.id,
+      data: formData,
     })
   }
 
@@ -106,25 +97,25 @@ export default function AdsTemplate() {
   }
 
   if (isLoading) return <UniLoading />
-  if (error) return <NoDataMsg title="Error loading ads" />
+  if (error) return <NoDataMsg title={tCommon("error_loading_ads") || "Error loading ads"} />
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Advertisements"
+        title={t("title")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "Advertisements" },
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title") },
         ]}
         actionButtons={[
           {
-            label: "Export",
+            label: tCommon("export"),
             icon: Download,
             onClick: () => console.log("Exporting"),
             variant: "secondary",
           },
           {
-            label: "Add ADS",
+            label: t("add_ad"),
             icon: Plus,
             href: "/dashboard/ads/add",
           }
@@ -136,14 +127,11 @@ export default function AdsTemplate() {
             <div className="flex-1 w-full">
                 <AdsTable 
                     ads={filteredAds}
-                    selectedIds={ads.filter((a) => a.showOnHome).map((a) => a.id)}
+                    selectedIds={filteredAds.filter((a) => a.isShown).map((a) => a._id || a.id)}
                     onToggleSelect={handleToggleSelect}
                     onDelete={handleDeleteClick}
                     onEdit={handleEdit}
                 />
-                <div className="mt-4 text-sm text-gray-500">
-                    Showing {filteredAds.length > 0 ? 1 : 0}-{Math.min(10, filteredAds.length)} from {filteredAds.length}
-                </div>
             </div>
 
             {/* Right: Mobile Preview */}
@@ -156,20 +144,19 @@ export default function AdsTemplate() {
       <ConfirmationModal
         open={deleteModalOpen}
         onOpenChange={setDeleteModalOpen}
-        title="Delete Advertisement"
-        description="Are you sure you want to delete this ad? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("delete_ad")}
+        description={tCommon("confirm_delete_desc")?.replace("{name}", "") || "Are you sure you want to delete this ad?"}
+        confirmText={tCommon("delete")}
+        cancelText={tCommon("cancel")}
         variant="destructive"
         itemType="delete"
-        itemName="advertisement"
+        itemName={t("title").toLowerCase()}
         icon={<Trash2 className="h-8 w-8" />}
         onConfirm={handleConfirmDelete}
         onSuccess={() => {
-          toast.success("Ad deleted successfully")
+          toast.success(tCommon("success_delete") || "Ad deleted successfully")
         }}
       />
     </div>
   )
 }
-

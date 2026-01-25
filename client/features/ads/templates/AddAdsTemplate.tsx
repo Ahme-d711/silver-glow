@@ -10,8 +10,14 @@ export default function AddAdsTemplate() {
   const router = useRouter()
   const { mutate: createAd, isPending } = useCreateAd()
 
-  const handleSubmit = (data: import("../schemas/adSchemas").AdFormValues) => {
-    createAd(data)
+  const handleSubmit = (data: FormData) => {
+    createAd(data, {
+        onSuccess: (response) => {
+            if (response.success) {
+                router.push("/dashboard/ads")
+            }
+        }
+    })
   }
 
   const handleCancel = () => {
@@ -33,4 +39,3 @@ export default function AddAdsTemplate() {
     </div>
   )
 }
-

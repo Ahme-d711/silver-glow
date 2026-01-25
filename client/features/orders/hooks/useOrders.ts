@@ -35,6 +35,9 @@ export function useOrders() {
     queryKey: ordersKeys.lists(),
     queryFn: async () => {
       const response = await getOrders();
+      if (!response.success) {
+        throw new Error(response.message || "Failed to fetch orders");
+      }
       return response.data?.orders || [];
     },
   })
@@ -58,18 +61,13 @@ export function useOrdersByStatus(
   status: OrderStatus | null,
   userId?: string
 ) {
-  const { user } = useAuthStore()
-  
-  // Use provided userId or get from auth store
-  const orderUserId = userId || user?.id || user?._id || ""
-  
   return useQuery({
-    queryKey: status ? ordersKeys.byStatus(status, orderUserId) : ["orders", "byStatus", "disabled"],
+    queryKey: status ? ["orders", "status", status, userId || "all"] : ["orders", "status", "disabled"],
     queryFn: () => {
       if (!status) throw new Error("Status is required")
-      return getOrdersByStatus(status, orderUserId)
+      return getOrdersByStatus(status, userId)
     },
-    enabled: !!orderUserId && !!status,
+    enabled: !!status,
   })
 }
 

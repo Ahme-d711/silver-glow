@@ -19,6 +19,7 @@ export default function AddOrderTemplate() {
     createOrder(values, {
       onSuccess: (response) => {
         if (response.success) {
+          router.refresh();
           router.push("/dashboard/orders");
         }
       },

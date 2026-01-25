@@ -127,7 +127,32 @@
     "select_subcategory": "Select Subcategory",
     "select_brand": "Select Brand",
     "select_section": "Select Section",
-    "upload_image": "Upload Image"
+    "upload_image": "Upload Image",
+    "photo": "Photo",
+    "name_ar": "Name (Arabic)",
+    "name_en": "Name (English)",
+    "description_ar": "Description (Arabic)",
+    "description_en": "Description (English)",
+    "photo_required": "Ad photo is required",
+    "enter_name_ar": "Enter name in Arabic",
+    "enter_name_en": "Enter name in English",
+    "optional": "Optional",
+    "is_show": "Show",
+    "link": "Link",
+    "saving": "Saving...",
+    "no_data": "No data found",
+    "enter_full_address": "Enter full address",
+    "city": "City",
+    "country": "Country",
+    "enter_city": "Enter city",
+    "enter_country": "Enter country",
+    "image": "Image",
+    "title": "Title",
+    "description": "Description",
+    "date": "Date",
+    "max_3_ads": "Maximum 3 ads allowed on home screen",
+    "error_loading_ads": "Error loading ads",
+    "success_delete": "Deleted successfully"
   },
   "Users": {
     "title": "Users",
@@ -323,6 +348,26 @@
     "customer_notes": "Customer Notes",
     "enter_customer_notes": "Enter customer notes",
     "admin_notes": "Admin Notes",
-    "enter_admin_notes": "Enter admin notes"
+    "enter_admin_notes": "Enter admin notes",
+    "select_customer": "Select Customer",
+    "select_product": "Select Product",
+    "total_items": "Items Summary",
+    "total_amount": "Total Amount"
+  },
+  "Ads": {
+    "title": "Advertisements",
+    "add_ad": "Add Advertisement",
+    "edit_ad": "Edit Advertisement",
+    "delete_ad": "Delete Advertisement",
+    "ad_details": "Advertisement Details"
+  },
+  "Settings": {
+    "title": "Setting",
+    "theme": "Theme",
+    "language": "Language",
+    "light": "Light",
+    "dark": "Dark",
+    "english": "English",
+    "arabic": "Arabic"
   }
 }

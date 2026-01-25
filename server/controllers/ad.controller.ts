@@ -1,0 +1,153 @@
+import { Request, Response } from "express";
+import {  QueryFilter } from "mongoose";
+import { AdModel } from "../models/ad.model.js";
+import { IAd } from "../types/ad.type.js";
+import { createAdSchema, updateAdSchema, getAdsQuerySchema } from "../schemas/ad.schema.js";
+import AppError from "../errors/AppError.js";
+import fs from "fs";
+import path from "path";
+
+/**
+ * Get all ads
+ */
+export const getAllAds = async (req: Request, res: Response) => {
+  const validatedQuery = getAdsQuerySchema.parse(req.query);
+  const { search, isShown, page, limit } = validatedQuery;
+
+  const query: QueryFilter<IAd> = {};
+
+  if (search) {
+    query.$or = [
+      { nameAr: { $regex: search, $options: "i" } },
+      { nameEn: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (isShown !== undefined) query.isShown = isShown;
+
+  const skip = (page - 1) * limit;
+
+  const [ads, total] = await Promise.all([
+    AdModel.find(query)
+      .sort({ priority: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("productId", "nameAr nameEn"),
+    AdModel.countDocuments(query),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: "Ads fetched successfully",
+    data: {
+      ads,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    },
+  });
+};
+
+/**
+ * Get ad by ID
+ */
+export const getAdById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ad = await AdModel.findById(id).populate("productId");
+
+  if (!ad) {
+    throw new AppError("Ad not found", 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Ad fetched successfully",
+    data: { ad },
+  });
+};
+
+/**
+ * Create new ad
+ */
+export const createAd = async (req: Request, res: Response) => {
+  const validatedBody = createAdSchema.parse(req.body);
+  
+  if (!req.file) {
+    throw new AppError("Ad photo is required", 400);
+  }
+
+  const photo = `/uploads/ads/${req.file.filename}`;
+
+  const ad = await AdModel.create({
+    ...validatedBody,
+    photo,
+  } as unknown as IAd);
+
+  res.status(201).json({
+    success: true,
+    message: "Ad created successfully",
+    data: { ad },
+  });
+};
+
+/**
+ * Update ad
+ */
+export const updateAd = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const validatedBody = updateAdSchema.parse(req.body);
+  
+  const ad = await AdModel.findById(id);
+  if (!ad) {
+    throw new AppError("Ad not found", 404);
+  }
+
+  const updateData: Partial<IAd> = { ...validatedBody } as unknown as Partial<IAd>;
+
+  if (req.file) {
+    // Delete old photo if exists
+    if (ad.photo) {
+      const oldPhotoPath = path.join(process.cwd(), ad.photo);
+      if (fs.existsSync(oldPhotoPath)) fs.unlinkSync(oldPhotoPath);
+    }
+    updateData.photo = `/uploads/ads/${req.file.filename}`;
+  }
+
+  const updatedAd = await AdModel.findByIdAndUpdate(id, updateData, { new: true })
+    .populate("productId");
+
+  res.status(200).json({
+    success: true,
+    message: "Ad updated successfully",
+    data: { ad: updatedAd },
+  });
+};
+
+/**
+ * Delete ad
+ */
+export const deleteAd = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ad = await AdModel.findById(id);
+
+  if (!ad) {
+    throw new AppError("Ad not found", 404);
+  }
+
+  // Delete photo file
+  if (ad.photo) {
+    const photoPath = path.join(process.cwd(), ad.photo);
+    if (fs.existsSync(photoPath)) fs.unlinkSync(photoPath);
+  }
+
+  await AdModel.findByIdAndDelete(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Ad deleted successfully",
+    data: null,
+  });
+};

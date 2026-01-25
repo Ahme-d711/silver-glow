@@ -16,12 +16,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Trash2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Order } from "../types";
+import { useProducts } from "@/features/products/hooks/useProduct";
+import { useUsers } from "@/features/users/hooks/useUser";
+
+import { AsyncCombobox } from "@/components/shared/AsyncCombobox";
+import { getAllProducts } from "@/features/products/services/product.service";
+import { getAllUsers } from "@/features/users/services/user.service";
 
 // Form Schema
 const orderFormSchema = z.object({
+  userId: z.string().min(1, "Customer is required"),
   items: z.array(z.object({
     productId: z.string().min(1, "Product is required"),
     name: z.string().min(1, "Product name is required"),
@@ -63,10 +70,12 @@ export function OrderForm({
 }: OrderFormProps) {
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
+  const tAuth = useTranslations("Auth");
 
   const form = useForm<any>({
     resolver: zodResolver(orderFormSchema),
     defaultValues: {
+      userId: defaultValues?.userId?._id || defaultValues?.userId || "",
       items: defaultValues?.items?.map(item => ({
         productId: item.productId || "",
         name: item.name || "",
@@ -93,9 +102,65 @@ export function OrderForm({
     name: "items",
   });
 
+  // Automatically fill product details when productId is selected
+  const handleProductSelect = (index: number, product: any) => {
+    if (product) {
+      form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
+      form.setValue(`items.${index}.price`, product.price);
+      form.setValue(`items.${index}.image`, product.mainImage);
+    }
+  };
+
+  // Automatically fill recipient details when user is selected
+  const handleUserSelect = (user: any) => {
+    if (user) {
+      form.setValue("recipientName", user.name || "");
+      form.setValue("recipientPhone", user.phone || "");
+    }
+  };
+
+  const fetchUsers = async (search: string) => {
+    const response = await getAllUsers({ search, limit: 10 });
+    return response.success ? response.data?.users || [] : [];
+  };
+
+  const fetchProducts = async (search: string) => {
+    const response = await getAllProducts({ search, limit: 10 });
+    // Service returns the array directly now after my previous fix if successful
+    return Array.isArray(response) ? response : [];
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Customer Selection Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">{t("customer")}</h3>
+          <FormField
+            control={form.control}
+            name="userId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>{t("customer")}</FormLabel>
+                <FormControl>
+                  <AsyncCombobox
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    onSelect={handleUserSelect}
+                    fetchData={fetchUsers}
+                    placeholder={t("select_customer")}
+                    searchPlaceholder={tCommon("search")}
+                    emptyMessage={tCommon("no_data")}
+                    getItemLabel={(user) => `${user.name} (${user.phone})`}
+                    disabled={isEdit}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         {/* Order Items Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -106,6 +171,7 @@ export function OrderForm({
                 variant="outline"
                 size="sm"
                 onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "" })}
+                className="rounded-xl"
               >
                 <Plus className="h-4 w-4 me-2" />
                 {t("add_item")}
@@ -115,16 +181,16 @@ export function OrderForm({
 
           <div className="space-y-4">
             {fields.map((field, index) => (
-              <div key={field.id} className="p-4 border rounded-xl space-y-4 bg-gray-50/50">
+              <div key={field.id} className="p-4 border rounded-2xl space-y-4 bg-gray-50/50">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium">{t("item")} {index + 1}</h4>
+                  <h4 className="font-medium text-primary">{t("item")} {index + 1}</h4>
                   {fields.length > 1 && !isEdit && (
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => remove(index)}
-                      className="text-error hover:text-error/80 hover:bg-error/10"
+                      className="text-error hover:text-error/80 hover:bg-error/10 rounded-xl"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -134,12 +200,36 @@ export function OrderForm({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
+                    name={`items.${index}.productId`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>{t("product")}</FormLabel>
+                        <FormControl>
+                          <AsyncCombobox
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onSelect={(product) => handleProductSelect(index, product)}
+                            fetchData={fetchProducts}
+                            placeholder={t("select_product")}
+                            searchPlaceholder={tCommon("search")}
+                            emptyMessage={tCommon("no_data")}
+                            getItemLabel={(product) => product.nameAr || product.nameEn}
+                            disabled={isEdit}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name={`items.${index}.name`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t("product_name")}</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder={t("enter_product_name")} readOnly={isEdit} />
+                          <Input {...field} placeholder={t("enter_product_name")} readOnly />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -158,7 +248,7 @@ export function OrderForm({
                             step="0.01"
                             {...field}
                             placeholder="0.00"
-                            readOnly={isEdit}
+                            readOnly
                           />
                         </FormControl>
                         <FormMessage />
@@ -180,20 +270,6 @@ export function OrderForm({
                             placeholder="1"
                             readOnly={isEdit}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`items.${index}.productId`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("product_id")}</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder={t("enter_product_id")} readOnly={isEdit} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -245,7 +321,7 @@ export function OrderForm({
                 <FormItem className="md:col-span-2">
                   <FormLabel>{t("shipping_address")}</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder={t("enter_full_address")} rows={3} />
+                    <Textarea {...field} placeholder={t("enter_full_address")} rows={3} className="rounded-xl resize-none" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -302,11 +378,11 @@ export function OrderForm({
                   <FormLabel>{t("payment_method")}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="rounded-xl">
                         <SelectValue placeholder={t("select_payment_method")} />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="rounded-xl">
                       <SelectItem value="COD">{t("payment_cod")}</SelectItem>
                       <SelectItem value="CARD">{t("payment_card")}</SelectItem>
                       <SelectItem value="PAYPAL">{t("payment_paypal")}</SelectItem>
@@ -332,11 +408,11 @@ export function OrderForm({
                     <FormLabel>{t("order_status")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="rounded-xl">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-xl">
                         <SelectItem value="PENDING">{t("pending")}</SelectItem>
                         <SelectItem value="CONFIRMED">{t("confirmed")}</SelectItem>
                         <SelectItem value="PROCESSING">{t("processing")}</SelectItem>
@@ -359,11 +435,11 @@ export function OrderForm({
                     <FormLabel>{t("payment_status")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="rounded-xl">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-xl">
                         <SelectItem value="PENDING">{t("pending")}</SelectItem>
                         <SelectItem value="PAID">{t("paid")}</SelectItem>
                         <SelectItem value="FAILED">{t("failed")}</SelectItem>
@@ -388,7 +464,7 @@ export function OrderForm({
               <FormItem>
                 <FormLabel>{t("customer_notes")} ({tCommon("optional")})</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder={t("enter_customer_notes")} rows={3} />
+                  <Textarea {...field} placeholder={t("enter_customer_notes")} rows={3} className="rounded-xl resize-none" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -403,13 +479,23 @@ export function OrderForm({
                 <FormItem>
                   <FormLabel>{t("admin_notes")} ({tCommon("optional")})</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder={t("enter_admin_notes")} rows={3} />
+                    <Textarea {...field} placeholder={t("enter_admin_notes")} rows={3} className="rounded-xl resize-none" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           )}
+        </div>
+
+        {/* Summary Section */}
+        <div className="p-6 bg-primary/5 border border-primary/10 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-content-secondary font-medium">
+            {t("total_items")}: <span className="text-primary font-bold">{fields.length}</span>
+          </div>
+          <div className="text-xl font-bold text-primary">
+            {t("total_amount")}: {(form.watch("items") || []).reduce((acc: number, item: any) => acc + (Number(item.price) * Number(item.quantity) || 0), 0).toFixed(2)} {tCommon("currency")}
+          </div>
         </div>
 
         {/* Form Actions */}
@@ -425,7 +511,7 @@ export function OrderForm({
               {tCommon("cancel")}
             </Button>
           )}
-          <Button type="submit" disabled={isLoading} className="px-8 rounded-xl">
+          <Button type="submit" disabled={isLoading} className="px-8 rounded-xl h-11">
             {isLoading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
             {submitLabel || tCommon("submit")}
           </Button>

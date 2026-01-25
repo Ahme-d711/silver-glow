@@ -94,6 +94,12 @@ export const uploadProduct = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
+export const uploadAd = multer({
+  storage: createStorage("ads", "ad"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
 export const uploadImage = multer({
   storage: createStorage("images", "image"),
   fileFilter: imageFilter,
