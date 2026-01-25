@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
 import { productFormSchema, ProductFormData } from "../schemas/products.schema";
@@ -21,10 +20,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { useCategories } from "../../categories/hooks/useCategory";
-import { useSubcategories } from "../../subcategories/hooks/useSubCategory";
-import { useBrands } from "../../brands/hooks/useBrand";
-import { useSections } from "../../sections/hooks/useSection";
+import { AsyncCombobox } from "@/components/shared/AsyncCombobox";
+import { getAllCategories as getAllCategoriesApi } from "../../categories/services/category.service";
+import { getAllSubcategories as getAllSubcategoriesApi } from "../../subcategories/services/subcategory.service";
+import { getAllBrands as getAllBrandsApi } from "../../brands/services/brand.service";
+import { getAllSections as getAllSectionsApi } from "../../sections/services/section.service";
 
 interface ProductFormProps {
   defaultValues?: Partial<ProductFormData>;
@@ -95,19 +95,6 @@ export function ProductForm({
   });
 
   const selectedCategoryId = form.watch("categoryId");
-
-  // Fetch data for selections
-  const { data: categoriesData } = useCategories();
-  const categories = categoriesData || [];
-  
-  const { data: subcategoriesData } = useSubcategories({ categoryId: selectedCategoryId });
-  const subcategories = subcategoriesData || [];
-  
-  const { data: brandsData } = useBrands();
-  const brands = brandsData || [];
-  
-  const { data: sectionsData } = useSections();
-  const sections = sectionsData || [];
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -303,20 +290,21 @@ export function ProductForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tCommon("category")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-xl h-12">
-                        <SelectValue placeholder={tCommon("select_category")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat._id} value={cat._id}>
-                          {locale === "ar" ? cat.nameAr : cat.nameEn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <AsyncCombobox
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      fetchData={async (search) => {
+                        const res = await getAllCategoriesApi({ search });
+                        return res.data?.categories || [];
+                      }}
+                      placeholder={tCommon("select_category")}
+                      searchPlaceholder={tCommon("search")}
+                      getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                      getItemValue={(item) => item._id}
+                      className="h-12"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -328,20 +316,22 @@ export function ProductForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tCommon("subcategory")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-xl h-12">
-                        <SelectValue placeholder={tCommon("select_subcategory")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {subcategories.map((sub) => (
-                        <SelectItem key={sub._id} value={sub._id}>
-                          {locale === "ar" ? sub.nameAr : sub.nameEn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <AsyncCombobox
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      fetchData={async (search) => {
+                        const res = await getAllSubcategoriesApi({ search, categoryId: selectedCategoryId });
+                        return res.data?.subcategories || [];
+                      }}
+                      placeholder={tCommon("select_subcategory")}
+                      searchPlaceholder={tCommon("search")}
+                      getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                      getItemValue={(item) => item._id}
+                      className="h-12"
+                      disabled={!selectedCategoryId}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -354,20 +344,21 @@ export function ProductForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{tCommon("brand")}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl h-12">
-                          <SelectValue placeholder={tCommon("select_brand")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {brands.map((brand) => (
-                          <SelectItem key={brand._id} value={brand._id}>
-                            {locale === "ar" ? brand.nameAr : brand.nameEn}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <AsyncCombobox
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        fetchData={async (search) => {
+                          const res = await getAllBrandsApi({ search });
+                          return res.data?.brands || [];
+                        }}
+                        placeholder={tCommon("select_brand")}
+                        searchPlaceholder={tCommon("search")}
+                        getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                        getItemValue={(item) => item._id}
+                        className="h-12"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -378,20 +369,21 @@ export function ProductForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{tCommon("section")}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl h-12">
-                          <SelectValue placeholder={tCommon("select_section")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {sections.map((section) => (
-                          <SelectItem key={section._id} value={section._id}>
-                            {locale === "ar" ? section.nameAr : section.nameEn}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <AsyncCombobox
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        fetchData={async (search) => {
+                          const res = await getAllSectionsApi({ search });
+                          return res.data?.sections || [];
+                        }}
+                        placeholder={tCommon("select_section")}
+                        searchPlaceholder={tCommon("search")}
+                        getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                        getItemValue={(item) => item._id}
+                        className="h-12"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

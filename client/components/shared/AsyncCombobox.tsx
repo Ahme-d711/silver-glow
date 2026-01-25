@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Check, ChevronsUpDown, Loader, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,22 +12,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "use-debounce";
 
-interface AsyncComboboxProps {
+interface AsyncComboboxProps<TItem = object> {
   value?: string;
   onValueChange: (value: string) => void;
-  onSelect?: (item: any) => void;
-  fetchData: (search: string) => Promise<any[]>;
+  onSelect?: (item: TItem) => void;
+  fetchData: (search: string) => Promise<TItem[]>;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
-  renderItem?: (item: any) => React.ReactNode;
-  getItemLabel?: (item: any) => string;
-  getItemValue?: (item: any) => string;
+  renderItem?: (item: TItem) => React.ReactNode;
+  getItemLabel?: (item: TItem) => string;
+  getItemValue?: (item: TItem) => string;
   className?: string;
   disabled?: boolean;
 }
 
-export function AsyncCombobox({
+export function AsyncCombobox<TItem = object>({
   value,
   onValueChange,
   onSelect,
@@ -36,23 +36,23 @@ export function AsyncCombobox({
   searchPlaceholder = "Search...",
   emptyMessage = "No items found.",
   renderItem,
-  getItemLabel = (item) => item.name || item.title || "",
-  getItemValue = (item) => item._id || item.id || "",
+  getItemLabel = (item) => (item as { name?: string; title?: string }).name || (item as { name?: string; title?: string }).title || "",
+  getItemValue = (item) => (item as { _id?: string; id?: string })._id || (item as { _id?: string; id?: string }).id || "",
   className,
   disabled,
-}: AsyncComboboxProps) {
-  const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
+}: AsyncComboboxProps<TItem>) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500);
-  const [items, setItems] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState(false);
+  const [items, setItems] = useState<TItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const selectedItem = React.useMemo(
+  const selectedItem = useMemo(
     () => items.find((item) => getItemValue(item) === value),
     [items, value, getItemValue]
   );
 
-  const loadData = React.useCallback(async (query: string) => {
+  const loadData = useCallback(async (query: string) => {
     setLoading(true);
     try {
       const data = await fetchData(query);
@@ -66,7 +66,7 @@ export function AsyncCombobox({
   }, [fetchData]);
 
   // Initial load or when debounced search changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       loadData(debouncedSearch);
     }
