@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useRef, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Image as ImageIcon, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -46,7 +46,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     : (productIdValue as string) || "";
 
   const form = useForm<AdFormValues>({
-    resolver: zodResolver(adSchema) as unknown as any,
+    resolver: zodResolver(adSchema) as Resolver<AdFormValues>,
     defaultValues: {
       nameAr: initialData?.nameAr || "",
       nameEn: initialData?.nameEn || "",

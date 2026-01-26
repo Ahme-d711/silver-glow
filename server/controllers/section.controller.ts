@@ -22,7 +22,7 @@ export const getAllSections = asyncHandler(async (req: Request, res: Response) =
   const query = SectionModel.find()
     .sort({ priority: -1, createdAt: -1 });
 
-  const apiFeatures = new ApiFeatures(query, validatedQuery as any)
+  const apiFeatures = new ApiFeatures(query, validatedQuery as Record<string, unknown>)
     .filter()
     .search(["nameAr", "nameEn", "slug"])
     .paginate();

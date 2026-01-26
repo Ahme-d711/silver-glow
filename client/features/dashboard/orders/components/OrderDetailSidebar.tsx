@@ -19,7 +19,8 @@ interface MockOrder {
 export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
   if (!data) return null;
 
-  const d = data as any;
+  const billingAddress = 'billing_address' in data ? data.billing_address : data.shippingAddress;
+  const shippingAddress = 'shipping_address' in data ? data.shipping_address : data.shippingAddress;
 
   return (
     <div className="space-y-6">
@@ -36,7 +37,7 @@ export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
             <div className="flex flex-col gap-1">
               <span className="text-sm text-content-tertiary">Billing Address</span>
               <p className="text-sm font-medium text-content-primary">
-                {d.billing_address || d.shippingAddress}
+                {billingAddress}
               </p>
             </div>
           </div>
@@ -47,7 +48,7 @@ export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
             <div className="flex flex-col gap-1">
               <span className="text-sm text-content-tertiary">Shipping Address</span>
               <p className="text-sm font-medium text-content-primary">
-                {d.shipping_address || d.shippingAddress}
+                {shippingAddress}
               </p>
             </div>
           </div>

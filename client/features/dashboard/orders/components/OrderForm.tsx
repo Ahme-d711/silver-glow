@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -21,6 +21,9 @@ import { useTranslations } from "next-intl";
 import { Order } from "../types";
 import { useProducts } from "@/features/dashboard/products/hooks/useProduct";
 import { useUsers } from "@/features/dashboard/users/hooks/useUser";
+import { Product } from "@/features/dashboard/products/types";
+import { User } from "@/features/dashboard/auth/types";
+import { UserReference } from "@/types";
 
 import { AsyncCombobox } from "@/components/shared/AsyncCombobox";
 import { getAllProducts } from "@/features/dashboard/products/services/product.service";
@@ -73,22 +76,22 @@ export function OrderForm({
   const tAuth = useTranslations("Auth");
 
   const initialUserId = typeof defaultValues?.userId === 'object' && defaultValues?.userId !== null 
-    ? (defaultValues.userId as any)._id 
-    : defaultValues?.userId || "";
+    ? (defaultValues.userId as UserReference)._id 
+    : (defaultValues?.userId as string) || "";
 
   const form = useForm<OrderFormData>({
     // We cast the resolver to any to satisfy the complex generic requirements of React Hook Form + Zod
     // while keeping the internal form values strictly typed as OrderFormData.
-    resolver: zodResolver(orderFormSchema) as any,
+    resolver: zodResolver(orderFormSchema) as Resolver<OrderFormData>,
     defaultValues: {
       userId: initialUserId,
-      items: (defaultValues?.items || []).map(item => ({
+      items: (defaultValues?.items || []).map((item) => ({
         productId: item.productId || "",
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
-      })).length > 0 ? (defaultValues?.items || []).map(item => ({
+      })).length > 0 ? (defaultValues?.items || []).map((item) => ({
         productId: item.productId || "",
         name: item.name || "",
         price: item.price || 0,
@@ -115,7 +118,7 @@ export function OrderForm({
   });
 
   // Automatically fill product details when productId is selected
-  const handleProductSelect = (index: number, product: any) => {
+  const handleProductSelect = (index: number, product: Product) => {
     if (product) {
       form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
       form.setValue(`items.${index}.price`, product.price);
@@ -124,7 +127,7 @@ export function OrderForm({
   };
 
   // Automatically fill recipient details when user is selected
-  const handleUserSelect = (user: any) => {
+  const handleUserSelect = (user: User) => {
     if (user) {
       form.setValue("recipientName", user.name || "");
       form.setValue("recipientPhone", user.phone || "");
@@ -506,7 +509,7 @@ export function OrderForm({
             {t("total_items")}: <span className="text-primary font-bold">{fields.length}</span>
           </div>
           <div className="text-xl font-bold text-primary">
-            {t("total_amount")}: {(form.watch("items") || []).reduce((acc: number, item: any) => acc + (Number(item.price) * Number(item.quantity) || 0), 0).toFixed(2)} {tCommon("currency")}
+            {t("total_amount")}: {(form.watch("items") || []).reduce((acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0), 0).toFixed(2)} {tCommon("currency")}
           </div>
         </div>
 

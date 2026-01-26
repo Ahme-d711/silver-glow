@@ -1,0 +1,38 @@
+import { Order } from "@/features/dashboard/orders/types";
+
+export interface DashboardSummary {
+  totalUsers: number;
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  newUsersLast30Days: number;
+}
+
+export interface OrdersByStatus {
+  PENDING: number;
+  CONFIRMED: number;
+  PROCESSING: number;
+  SHIPPED: number;
+  DELIVERED: number;
+  CANCELLED: number;
+  RETURNED: number;
+  [key: string]: number;
+}
+
+export interface MonthlyRevenueData {
+  _id: {
+    year: number;
+    month: number;
+  };
+  revenue: number;
+  orders: number;
+}
+
+export interface DashboardStats {
+  summary: DashboardSummary;
+  ordersByStatus: OrdersByStatus;
+  charts: {
+    monthlyRevenue: MonthlyRevenueData[];
+  };
+  recentOrders: Order[];
+}

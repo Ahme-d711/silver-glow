@@ -2,9 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { StatsCard } from "./StatsCard";
+import { DashboardStats } from "../types/dashboard.types";
 
 interface StatsGridProps {
-  stats: any;
+  stats: DashboardStats | undefined;
   isLoading?: boolean;
 }
 
@@ -18,28 +19,28 @@ export function StatsGrid({ stats, isLoading }: StatsGridProps) {
       value: stats?.summary?.totalUsers?.toLocaleString() || "0",
       trend: stats?.summary?.newUsersLast30Days ? `+${stats.summary.newUsersLast30Days} new` : "0 new",
       isUp: true,
-      variant: "light" as const,
+      variant: "secondary" as const,
     },
     {
       title: "Total Products",
       value: stats?.summary?.totalProducts?.toLocaleString() || "0",
       trend: "Available",
       isUp: true,
-      variant: "dark" as const,
+      variant: "primary" as const,
     },
     {
       title: "Total Orders",
       value: stats?.summary?.totalOrders?.toLocaleString() || "0",
       trend: "Cumulative",
       isUp: true,
-      variant: "light" as const,
+      variant: "secondary" as const,
     },
     {
       title: "Total Revenue",
       value: `${stats?.summary?.totalRevenue?.toLocaleString() || "0"} ${tCommon("currency")}`,
       trend: "Delivered",
       isUp: true,
-      variant: "dark" as const,
+      variant: "primary" as const,
     },
   ];
 
@@ -49,7 +50,7 @@ export function StatsGrid({ stats, isLoading }: StatsGridProps) {
       value: stats?.ordersByStatus?.PENDING?.toLocaleString() || "0",
       trend: "Awaiting",
       isUp: true,
-      variant: "dark" as const,
+      variant: "primary" as const,
     },
     {
       title: "Processing",
@@ -59,21 +60,21 @@ export function StatsGrid({ stats, isLoading }: StatsGridProps) {
       ).toLocaleString(),
       trend: "In progress",
       isUp: true,
-      variant: "light" as const,
+      variant: "secondary" as const,
     },
     {
       title: "Cancelled",
       value: stats?.ordersByStatus?.CANCELLED?.toLocaleString() || "0",
       trend: "Failed",
       isUp: false,
-      variant: "dark" as const,
+      variant: "primary" as const,
     },
     {
       title: "Completed",
       value: stats?.ordersByStatus?.DELIVERED?.toLocaleString() || "0",
       trend: "Delivered",
       isUp: true,
-      variant: "light" as const,
+      variant: "secondary" as const,
     },
   ];
 

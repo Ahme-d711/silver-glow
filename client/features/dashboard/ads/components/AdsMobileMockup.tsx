@@ -12,9 +12,9 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { Ad } from "../types"
+import { AdCard } from "../types"
 
-export function AdsMobileMockup({ ads }: { ads: Ad[] }) {
+export function AdsMobileMockup({ ads }: { ads: AdCard[] }) {
   
   return (
     <div className="relative w-[360px] h-[700px] bg-white rounded-[40px] border-2 border-gray-900 shadow-xl overflow-hidden flex flex-col mx-auto">
@@ -73,13 +73,13 @@ export function AdsMobileMockup({ ads }: { ads: Ad[] }) {
                     {ads.map((currentAd) => (
                       <SwiperSlide key={currentAd.id} className="relative h-full w-full">
                         <Image 
-                            src={currentAd.photo.startsWith('http') || currentAd.photo.startsWith('/') ? currentAd.photo : `/${currentAd.photo}`} 
-                            alt={currentAd.nameEn} 
+                            src={currentAd.image} 
+                            alt={currentAd.title} 
                             fill
                             className="object-cover"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent p-4 flex flex-col justify-end text-white">
-                             <h3 className="font-bold text-sm mb-1 line-clamp-1">{currentAd.nameEn}</h3>
+                             <h3 className="font-bold text-sm mb-1 line-clamp-1">{currentAd.title}</h3>
                              <p className="text-[10px] opacity-90 line-clamp-2 mb-2">Own a timeless, elegant ring at a special price.</p>
                              <button className="absolute -bottom-3 -right-3 bg-[#1A2F5A] text-white text-[11px] font-bold py-2 px-5 rounded-full border-[3px] border-white shadow-sm z-20">Shop Now</button>
                         </div>

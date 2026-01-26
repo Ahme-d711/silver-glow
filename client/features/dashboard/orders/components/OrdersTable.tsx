@@ -75,7 +75,7 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
         date: order.createdAt ? format(new Date(order.createdAt), "dd MMM yyyy") : "-",
         customer: order.recipientName || "-",
         total: `${order.totalAmount?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
-        payment: t(`payment_${order.paymentMethod?.toLowerCase()}` as any) || order.paymentMethod,
+        payment: t(`payment_${order.paymentMethod?.toLowerCase()}` as Parameters<typeof t>[0]) || order.paymentMethod,
         status: order.status,
         selected: false,
         originalOrder: order,
@@ -144,7 +144,7 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
             "border-none px-3 py-1 rounded-lg font-medium shadow-none",
             statusColors[row.status] || "bg-gray-100 text-gray-600"
           )}>
-            {t(row.status.toLowerCase() as any)}
+            {t(row.status.toLowerCase() as Parameters<typeof t>[0])}
           </Badge>
         )
       },

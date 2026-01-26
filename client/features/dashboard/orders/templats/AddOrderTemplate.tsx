@@ -6,6 +6,7 @@ import { OrderForm, OrderFormData } from "../components/OrderForm";
 import { useCreateOrder } from "../hooks/useOrders";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { CreateOrderPayload, PaymentMethod, PaymentStatus } from "../types";
 
 export default function AddOrderTemplate() {
   const router = useRouter();
@@ -22,12 +23,22 @@ export default function AddOrderTemplate() {
     const discountAmount = 0;
     const totalAmount = subtotal + shippingCost - discountAmount;
 
-    const payload: any = { // Temporary any for complex union till we fix service
-      ...values,
+    const payload: CreateOrderPayload = {
+      userId: values.userId,
+      items: values.items,
+      recipientName: values.recipientName,
+      recipientPhone: values.recipientPhone,
+      shippingAddress: values.shippingAddress,
+      city: values.city,
+      country: values.country,
+      postalCode: values.postalCode,
       subtotal,
       shippingCost,
       discountAmount,
       totalAmount,
+      paymentMethod: values.paymentMethod as PaymentMethod,
+      paymentStatus: values.paymentStatus as PaymentStatus,
+      customerNotes: values.customerNotes,
     };
 
     createOrder(payload, {

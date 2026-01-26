@@ -1,6 +1,7 @@
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
+import { DashboardStats } from "../types/dashboard.types";
 
 const data = [
   { name: "Fayoum", value: 17000, color: "#45516B" },
@@ -13,7 +14,7 @@ const data = [
 
 import { useTranslations } from "next-intl";
 
-export function TrafficByGovernmentChart({ stats }: { stats: any }) {
+export function TrafficByGovernmentChart({ stats }: { stats: DashboardStats | undefined }) {
   const t = useTranslations("Dashboard");
   return (
     <div className="bg-white p-6 rounded-[24px] shadow-sm border border-divider h-full">

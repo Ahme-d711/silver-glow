@@ -2,9 +2,20 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useTranslations } from "next-intl";
+import { DashboardStats } from "../types/dashboard.types";
+
+interface LabelProps {
+  cx?: number;
+  cy?: number;
+  midAngle?: number;
+  innerRadius?: number;
+  outerRadius?: number;
+  percent?: number;
+  name?: string;
+}
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: any) => {
+const renderCustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0, name = "" }: LabelProps) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -17,7 +28,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export function OrderStatisticsChart({ stats }: { stats: any }) {
+export function OrderStatisticsChart({ stats }: { stats: DashboardStats | undefined }) {
   const t = useTranslations("Dashboard");
   const tOrders = useTranslations("Orders");
 

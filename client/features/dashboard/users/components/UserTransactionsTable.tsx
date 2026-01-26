@@ -37,12 +37,12 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
     {
       id: "orderId",
       header: "Order ID",
-      cell: (_: any, row: any) => <span className="text-primary font-semibold">{row.id}</span>
+      cell: (_: unknown, row: Transaction) => <span className="text-primary font-semibold">{row.id}</span>
     },
     {
       id: "product",
       header: "Product",
-      cell: (_: any, row: any) => (
+      cell: (_: unknown, row: Transaction) => (
         <ProductCell 
           title={row.product}
           subtitle={row.sub}
@@ -59,7 +59,7 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
     {
       id: "status",
       header: "Status",
-      cell: (_: any, row: any) => (
+      cell: (_: unknown, row: Transaction) => (
         <Badge className="bg-purple-100/50 text-primary border-none px-4 py-1.5 rounded-xl font-semibold shadow-none hover:bg-purple-100/50">
           {row.status}
         </Badge>

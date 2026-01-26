@@ -16,6 +16,17 @@ import { cn } from "@/lib/utils"
 // import { EditOrderTemplate } from "../templats/EditOrderTemplate"
 import React from "react"
 
+interface WaselOrder {
+  id: string;
+  productName: string;
+  otherProducts: string;
+  productImage: string;
+  date: string;
+  recipientsLocation: string;
+  status: string;
+  selected: boolean;
+}
+
 // Mock data for Wasel Elkhaer
 const waselData = [
   {
@@ -71,10 +82,10 @@ const waselData = [
 ]
 
 export function WaselTable() {
-  const [editingOrder, setEditingOrder] = React.useState<any>(null)
+  const [editingOrder, setEditingOrder] = React.useState<WaselOrder | null>(null)
   const [isEditOpen, setIsEditOpen] = React.useState(false)
 
-  const handleEdit = (order: any) => {
+  const handleEdit = (order: WaselOrder) => {
     setEditingOrder(order)
     setIsEditOpen(true)
   }
@@ -83,14 +94,14 @@ export function WaselTable() {
     {
       id: "id",
       header: <SelectionHeader label="Order ID" />,
-      cell: (_: any, row: any) => (
+      cell: (_: unknown, row: WaselOrder) => (
         <SelectionCell isSelected={row.selected} id={row.id} />
       ),
     },
     {
       id: "product",
       header: "Product",
-      cell: (_: any, row: any) => (
+      cell: (_: unknown, row: WaselOrder) => (
         <ProductCell
           title={row.productName}
           subtitle={row.otherProducts}
@@ -113,7 +124,7 @@ export function WaselTable() {
     {
       id: "status",
       header: "Status",
-      cell: (_: any, row: any) => {
+      cell: (_: unknown, row: WaselOrder) => {
         const statusColors: Record<string, string> = {
           Processing: "bg-purple-100 text-purple-600",
           Delivered: "bg-green-100 text-green-600",
@@ -134,7 +145,7 @@ export function WaselTable() {
       header: "Action",
       className: "flex justify-center gap-2",
       headerClassName: "flex justify-center",
-      cell: (_: any, row: any) => {
+      cell: (_: unknown, row: WaselOrder) => {
         const router = useRouter()
         return (
           <ActionCell>

@@ -34,7 +34,7 @@ export function PageHeader({
   className 
 }: PageHeaderProps) {
   return (
-    <div className={cn("flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8", className)}>
+    <div className={cn("flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between", className)}>
       <div className="space-y-1.5">
         <h1 className="text-xl font-semibold text-content-primary tracking-tight">
           {title}

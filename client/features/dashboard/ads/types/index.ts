@@ -21,3 +21,11 @@ export interface AdResponse {
     ad: Ad;
   };
 }
+
+export interface AdCard {
+  id: string;
+  title: string;
+  image: string;
+  isActive: boolean;
+  showOnHome: boolean;
+}

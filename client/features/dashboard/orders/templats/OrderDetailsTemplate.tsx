@@ -8,17 +8,30 @@ import { OrderDetailSidebar } from "../components/OrderDetailSidebar"
 import  EditOrderTemplate  from "./EditOrderTemplate"
 import React from "react"
 import { useParams } from "next/navigation"
+import { OrderStatus } from "../types"
+
+interface MockOrder {
+  id: string;
+  customer: string;
+  date: string;
+  status: OrderStatus;
+  order_type: string;
+  recipient_phone: string;
+  payment_method: string;
+  billing_address: string;
+  shipping_address: string;
+}
 
 export default function OrderDetailsTemplate() {
   const params = useParams()
   const orderId = params.orderId as string
   const [isEditOpen, setIsEditOpen] = React.useState(false)
 
-  const orderData = {
+  const orderData: MockOrder = {
     id: orderId || "302011",
     customer: "Josh Adam",
     date: "12 Dec 2022",
-    status: "Processing",
+    status: "PROCESSING" as OrderStatus,
     order_type: "Clothes",
     recipient_phone: "909 427 2910",
     payment_method: "Visa",
@@ -62,14 +75,14 @@ export default function OrderDetailsTemplate() {
           </div>
 
           {/* Sidebar: Address & Status */}
-          <OrderDetailSidebar data={orderData as any} />
+          <OrderDetailSidebar data={orderData} />
         </div>
       </div>
 
       <EditOrderTemplate 
         isOpen={isEditOpen} 
         onClose={() => setIsEditOpen(false)} 
-        orderData={orderData as any} 
+        orderData={orderData} 
       />
     </div>
   )

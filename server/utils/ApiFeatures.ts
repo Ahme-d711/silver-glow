@@ -4,14 +4,7 @@ interface QueryParams {
   page?: string | number;
   limit?: string | number;
   search?: string;
-  [key: string]: string | number | boolean | string[] | number[] | boolean[] | {
-        $in?: (string | number | boolean)[];
-        $gte?: string | number;
-        $gt?: string | number;
-        $lte?: string | number;
-        $lt?: string | number;
-        $ne?: string | number;
-  } | undefined;
+  [key: string]: unknown;
 }
 
 interface PaginationResult {

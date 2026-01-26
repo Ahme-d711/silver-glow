@@ -8,7 +8,7 @@ interface StatsCardProps {
   value: string;
   trend: string;
   isUp: boolean;
-  variant: "light" | "dark";
+  variant: "secondary" | "primary";
 }
 
 export function StatsCard({
@@ -18,7 +18,7 @@ export function StatsCard({
   isUp,
   variant,
 }: StatsCardProps) {
-  const isDark = variant === "dark";
+  const isDark = variant === "primary";
 
   return (
     <div

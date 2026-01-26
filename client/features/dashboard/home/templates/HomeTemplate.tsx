@@ -7,7 +7,6 @@ import { StatsGrid } from '../components/StatsGrid'
 import { OrderStatisticsChart } from '../components/OrderStatisticsChart'
 import { TrafficByGovernmentChart } from '../components/TrafficByGovernmentChart'
 import { ChartsSection } from '../components/ChartsSection'
-import { HomeBottomSection } from '../components/HomeBottomSection'
 
 import { useTranslations } from 'next-intl'
 import UniLoading from '@/components/shared/UniLoading'

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, Link } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { LogOut, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "./ui/card";
@@ -69,11 +69,11 @@ export function DashboardNavbar() {
                         {userInitial}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-success" />
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-border bg-success" />
                   </div>
                   
                   <div className="hidden sm:flex flex-col items-start gap-0.5">
-                    <span className="text-sm font-bold text-content-primary leading-tight">
+                    <span className="text-sm font-semibold text-content-primary leading-tight">
                       {userName}
                     </span>
                     <span className="text-xs font-medium text-content-secondary">
@@ -90,17 +90,17 @@ export function DashboardNavbar() {
               <Link href={`/dashboard/users/${userId}`}>
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
+                  className="w-full justify-start cursor-pointer"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  {tAuth("name")}
+                  {tAuth("profile")}
                 </Button>
                   </Link>
 
                 <Button
                   onClick={handleLogout}
                   variant="destructive"
-                  className="w-full justify-start"
+                  className="w-full justify-start cursor-pointer"
                   disabled={isLoggingOut}
                 >
                   <LogOut className="h-4 w-4 mr-2" />

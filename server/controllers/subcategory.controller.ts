@@ -13,6 +13,13 @@ import {
 } from "../schemas/subcategory.schema.js";
 import ApiFeatures from "../utils/ApiFeatures.js";
 import { validateUserData } from "../schemas/user.schema.js";
+import { Populated } from "../types/populated.type.js";
+
+interface ICategoryPopulated {
+  _id: mongoose.Types.ObjectId | string;
+  nameAr: string;
+  nameEn: string;
+}
 
 /**
  * Get all subcategories with filtering, searching, and pagination
@@ -25,7 +32,7 @@ export const getAllSubcategories = asyncHandler(async (req: Request, res: Respon
     .populate("categoryId", "nameAr nameEn")
     .sort({ priority: -1, createdAt: -1 });
 
-  const apiFeatures = new ApiFeatures(query, validatedQuery as any)
+  const apiFeatures = new ApiFeatures(query, validatedQuery as Record<string, unknown>)
     .filter()
     .search(["nameAr", "nameEn", "slug"])
     .paginate();
@@ -33,12 +40,15 @@ export const getAllSubcategories = asyncHandler(async (req: Request, res: Respon
   const { results: rawSubcategories, pagination } = await apiFeatures.execute();
 
   // Map to the format the client expects
-  const subcategories = rawSubcategories.map((sub: any) => ({
-    ...sub.toObject(),
-    categoryNameAr: sub.categoryId?.nameAr,
-    categoryNameEn: sub.categoryId?.nameEn,
-    categoryId: sub.categoryId?._id || sub.categoryId,
-  }));
+  const subcategories = rawSubcategories.map((sub) => {
+    const category = sub.categoryId as unknown as ICategoryPopulated | undefined;
+    return {
+      ...sub.toObject(),
+      categoryNameAr: category?.nameAr,
+      categoryNameEn: category?.nameEn,
+      categoryId: category?._id || sub.categoryId,
+    };
+  });
 
   sendResponse(res, 200, {
     success: true,
@@ -66,11 +76,12 @@ export const getSubcategoryById = asyncHandler(async (req: Request, res: Respons
     throw new AppError("Subcategory not found", 404);
   }
 
+  const category = subcategory.categoryId as unknown as ICategoryPopulated | undefined;
   const subcategoryData = {
     ...subcategory.toObject(),
-    categoryNameAr: (subcategory.categoryId as any)?.nameAr,
-    categoryNameEn: (subcategory.categoryId as any)?.nameEn,
-    categoryId: (subcategory.categoryId as any)?._id || subcategory.categoryId,
+    categoryNameAr: category?.nameAr,
+    categoryNameEn: category?.nameEn,
+    categoryId: category?._id || subcategory.categoryId,
   };
 
   sendResponse(res, 200, {
@@ -91,11 +102,12 @@ export const getSubcategoryBySlug = asyncHandler(async (req: Request, res: Respo
     throw new AppError("Subcategory not found", 404);
   }
 
+  const category = subcategory.categoryId as unknown as ICategoryPopulated | undefined;
   const subcategoryData = {
     ...subcategory.toObject(),
-    categoryNameAr: (subcategory.categoryId as any)?.nameAr,
-    categoryNameEn: (subcategory.categoryId as any)?.nameEn,
-    categoryId: (subcategory.categoryId as any)?._id || subcategory.categoryId,
+    categoryNameAr: category?.nameAr,
+    categoryNameEn: category?.nameEn,
+    categoryId: category?._id || subcategory.categoryId,
   };
 
   sendResponse(res, 200, {
@@ -125,7 +137,7 @@ export const createSubcategory = asyncHandler(async (req: Request, res: Response
   try {
     const subcategory = await SubcategoryModel.create({
       ...otherData,
-      categoryId: (categoryId as any),
+      categoryId: categoryId as unknown as mongoose.Types.ObjectId,
       image: imagePath,
     });
 
@@ -182,7 +194,7 @@ export const updateSubcategory = asyncHandler(async (req: Request, res: Response
 
   Object.assign(subcategory, {
     ...otherData,
-    ...(categoryId && { categoryId: categoryId as any }),
+    ...(categoryId && { categoryId: categoryId as unknown as mongoose.Types.ObjectId }),
     image: imagePath,
   });
 

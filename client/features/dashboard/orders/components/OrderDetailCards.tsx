@@ -47,9 +47,13 @@ interface MockOrder {
 export function OrderDetailCards({ data }: { data: MockOrder | Order }) {
   if (!data) return null;
 
-  // Type guard or simple cast for mock vs real data 
-  // Since the component currently relies on mock properties, we cast to any internally but keep prop strict
-  const d = data as any; 
+  const id = 'id' in data ? data.id : data._id;
+  const status = data.status;
+  const date = 'date' in data ? data.date : data.createdAt;
+  const paymentMethod = 'payment_method' in data ? data.payment_method : data.paymentMethod;
+  const orderType = 'order_type' in data ? data.order_type : "Standard";
+  const customer = 'customer' in data ? data.customer : data.recipientName;
+  const phone = 'recipient_phone' in data ? data.recipient_phone : data.recipientPhone;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -57,16 +61,16 @@ export function OrderDetailCards({ data }: { data: MockOrder | Order }) {
       <Card className="rounded-[24px] border-none shadow-none">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold">Order #{d.id || d._id}</CardTitle>
+            <CardTitle className="text-lg font-semibold">Order #{id}</CardTitle>
             <Badge className="bg-primary text-white border-none shadow-none px-3 py-1 rounded-lg">
-              {d.status}
+              {status}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <InfoRow icon={Calendar} label="Added" value={d.date || d.createdAt} />
-          <InfoRow icon={CreditCard} label="Payment Method" value={d.payment_method || d.paymentMethod} />
-          <InfoRow icon={ShoppingBag} label="Type" value={d.order_type || "Standard"} />
+          <InfoRow icon={Calendar} label="Added" value={date} />
+          <InfoRow icon={CreditCard} label="Payment Method" value={paymentMethod} />
+          <InfoRow icon={ShoppingBag} label="Type" value={orderType} />
         </CardContent>
       </Card>
 
@@ -76,8 +80,8 @@ export function OrderDetailCards({ data }: { data: MockOrder | Order }) {
           <CardTitle className="text-lg font-semibold">Customer</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <InfoRow icon={User} label="Customer" value={d.customer || d.recipientName} />
-          <InfoRow icon={Smartphone} label="Phone" value={d.recipient_phone || d.recipientPhone} />
+          <InfoRow icon={User} label="Customer" value={customer} />
+          <InfoRow icon={Smartphone} label="Phone" value={phone} />
         </CardContent>
       </Card>
 

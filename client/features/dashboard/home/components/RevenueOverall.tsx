@@ -11,7 +11,13 @@ import {
 } from "recharts";
 import { useTranslations, useLocale } from "next-intl";
 
-export function RevenueOverall({ stats }: { stats: any }) {
+interface RevenueAnalyticData {
+  name: string;
+  profits: number;
+  orders: number;
+}
+
+export function RevenueOverall({ stats }: { stats: RevenueAnalyticData[] | undefined }) {
   const t = useTranslations("Dashboard");
 
   const chartData = Array.isArray(stats) ? stats : [];
