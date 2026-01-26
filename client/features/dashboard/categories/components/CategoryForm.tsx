@@ -2,17 +2,10 @@
 
 import { useForm, Control, FieldValues, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
-import { FormInputField } from "@/components/shared/FormInputField";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+import { Form, FormItem, FormLabel } from "@/components/ui/form";
+import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
+import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
 import { categorySchema, CategoryFormValues } from "../schemas/category.schema";
@@ -185,90 +178,49 @@ export function CategoryForm({
             <h3 className="text-xl font-semibold text-content-primary mb-6">{tCommon("general_info")}</h3>
             
             <div className="space-y-6">
-              <FormInputField
-                control={form.control as unknown as Control<FieldValues>}
+              <UniInput
+                control={form.control}
                 name="nameAr"
                 label={t("category_name_ar")}
                 placeholder={t("category_name_ar")}
                 required
-                className="space-y-1"
-                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
               
-              <FormInputField
-                control={form.control as unknown as Control<FieldValues>}
+              <UniInput
+                control={form.control}
                 name="nameEn"
                 label={t("category_name_en")}
                 placeholder={t("category_name_en")}
                 required
-                className="space-y-1"
-                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
 
-              <FormField
+              <UniTextarea
                 control={form.control}
                 name="descriptionAr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base text-content-secondary">{t("category_description_ar")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder={t("category_description_ar")}
-                        className="min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label={t("category_description_ar")}
+                placeholder={t("category_description_ar")}
               />
 
-              <FormField
+              <UniTextarea
                 control={form.control}
                 name="descriptionEn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base text-content-secondary">{t("category_description_en")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder={t("category_description_en")}
-                        className="min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label={t("category_description_en")}
+                placeholder={t("category_description_en")}
               />
 
-              <FormInputField
-                control={form.control as unknown as Control<FieldValues>}
+              <UniInput
+                control={form.control}
                 name="priority"
                 label={t("priority")}
                 type="number"
                 placeholder="0"
-                className="space-y-1"
-                inputClassName="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none"
               />
 
-              <FormField
+              <UniSwitch
                 control={form.control}
                 name="isShow"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between gap-4 p-4 border border-divider/50 rounded-xl">
-                    <FormLabel className="text-base text-primary font-semibold cursor-pointer flex-1">
-                      {t("status")}
-                    </FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isLoading}
-                        className="data-[state=checked]:bg-primary"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                label={t("status")}
+                disabled={isLoading}
               />
             </div>
           </Card>

@@ -13,14 +13,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
+import { UniInput } from "@/components/shared/uni-form/UniInput"
+import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox"
+import { UniCheckbox } from "@/components/shared/uni-form/UniCheckbox"
 import { Card } from "@/components/ui/card"
 import { adSchema, type AdFormValues } from "../schemas/adSchemas"
 import { useTranslations } from "next-intl"
 
-import { AsyncCombobox } from "@/components/shared/AsyncCombobox"
 import { getAllProducts } from "@/features/dashboard/products/services/product.service"
+import { Product } from "@/features/dashboard/products/types"
 import type { Ad } from "../types"
 
 interface AdFormProps {
@@ -184,159 +185,71 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
             
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
+                <UniInput
                   control={form.control}
                   name="nameAr"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("name_ar")}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                          placeholder={t("enter_name_ar")} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("name_ar")}
+                  placeholder={t("enter_name_ar")}
+                  required
                 />
 
-                <FormField
+                <UniInput
                   control={form.control}
                   name="nameEn"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("name_en")}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                          placeholder={t("enter_name_en")} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("name_en")}
+                  placeholder={t("enter_name_en")}
+                  required
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
+                <UniInput
                   control={form.control}
                   name="descriptionAr"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("description_ar")}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                          placeholder={t("description_ar")} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("description_ar")}
+                  placeholder={t("description_ar")}
                 />
 
-                <FormField
+                <UniInput
                   control={form.control}
                   name="descriptionEn"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("description_en")}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                          placeholder={t("description_en")} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("description_en")}
+                  placeholder={t("description_en")}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <FormField
+                <UniInput
                   control={form.control}
                   name="priority"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("priority")}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          type="number"
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={t("priority")}
+                  type="number"
+                  required
                 />
 
-                <FormField
+                <UniInput
                   control={form.control}
                   name="link"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-base text-content-secondary">{t("link")} ({t("optional")})</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none" 
-                          placeholder="https://..." 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={`${t("link")} (${t("optional")})`}
+                  placeholder="https://..."
                 />
 
-                <FormField
+                <UniAsyncCombobox
                   control={form.control}
                   name="productId"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1 flex flex-col">
-                      <FormLabel className="text-base text-content-secondary">{tOrders("product")} ({t("optional")})</FormLabel>
-                      <FormControl>
-                        <AsyncCombobox
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          fetchData={fetchProducts}
-                          placeholder={tOrders("select_product")}
-                          searchPlaceholder={t("search")}
-                          emptyMessage={t("no_data")}
-                          getItemLabel={(product) => product.nameAr || product.nameEn}
-                          className="h-12 border-divider/50"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label={`${tOrders("product")} (${t("optional")})`}
+                  fetchData={fetchProducts}
+                  placeholder={tOrders("select_product")}
+                  searchPlaceholder={t("search")}
+                  emptyMessage={t("no_data")}
+                  getItemLabel={(product: Product) => product.nameAr || product.nameEn}
                 />
               </div>
 
-              <FormField
+              <UniCheckbox
                 control={form.control}
                 name="isShown"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 p-1">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="h-5 w-5 rounded border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
-                      />
-                    </FormControl>
-                    <FormLabel className="text-base font-semibold text-content-primary cursor-pointer">
-                      {t("is_show")}
-                    </FormLabel>
-                  </FormItem>
-                )}
+                label={t("is_show")}
               />
             </div>
           </Card>

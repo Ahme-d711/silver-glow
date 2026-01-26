@@ -10,17 +10,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
+import { UniSelect } from "@/components/shared/uni-form/UniSelect";
+import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
+import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
 import { productFormSchema, ProductFormData } from "../schemas/products.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { AsyncCombobox } from "@/components/shared/AsyncCombobox";
 import { getAllCategories as getAllCategoriesApi } from "../../categories/services/category.service";
 import { getAllSubcategories as getAllSubcategoriesApi } from "../../subcategories/services/subcategory.service";
 import { getAllBrands as getAllBrandsApi } from "../../brands/services/brand.service";
@@ -171,110 +172,54 @@ export function ProductForm({
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">{t("basic_info")}</h3>
             
-            <FormField
-              control={form.control}
-              name="nameAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("name_ar")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("name_ar_placeholder")} {...field} className="rounded-xl h-12" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-6">
+              <UniInput
+                control={form.control}
+                name="nameAr"
+                label={t("name_ar")}
+                placeholder={t("name_ar_placeholder")}
+                required
+              />
 
-            <FormField
-              control={form.control}
-              name="nameEn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("name_en")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("name_en_placeholder")} {...field} className="rounded-xl h-12" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <UniInput
+                control={form.control}
+                name="nameEn"
+                label={t("name_en")}
+                placeholder={t("name_en_placeholder")}
+                required
+              />
 
-            <div className="grid grid-cols-2 gap-4">
-               <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("price")}</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="rounded-xl h-12" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="oldPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("old_price")}</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="rounded-xl h-12" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              <div className="grid grid-cols-2 gap-4">
+                <UniInput
+                  control={form.control}
+                  name="price"
+                  label={t("price")}
+                  type="number"
+                  required
+                />
+                <UniInput
+                  control={form.control}
+                  name="oldPrice"
+                  label={t("old_price")}
+                  type="number"
+                />
+              </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="costPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("cost_price")}</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="rounded-xl h-12" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="stock"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("stock")}</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="rounded-xl h-12" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <UniInput
+                  control={form.control}
+                  name="costPrice"
+                  label={t("cost_price")}
+                  type="number"
+                />
+                <UniInput
+                  control={form.control}
+                  name="stock"
+                  label={t("stock")}
+                  type="number"
+                  required
+                />
+              </div>
             </div>
 
 
@@ -284,188 +229,103 @@ export function ProductForm({
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">{t("relationships")}</h3>
             
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tCommon("category")}</FormLabel>
-                  <FormControl>
-                    <AsyncCombobox
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      fetchData={async (search) => {
-                        const res = await getAllCategoriesApi({ search });
-                        return res.data?.categories || [];
-                      }}
-                      placeholder={tCommon("select_category")}
-                      searchPlaceholder={tCommon("search")}
-                      getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                      getItemValue={(item) => item._id}
-                      className="h-12"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-6">
+              <UniAsyncCombobox
+                control={form.control}
+                name="categoryId"
+                label={tCommon("category")}
+                placeholder={tCommon("select_category")}
+                searchPlaceholder={tCommon("search")}
+                fetchData={async (search) => {
+                  const res = await getAllCategoriesApi({ search });
+                  return res.data?.categories || [];
+                }}
+                getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item) => item._id}
+                required
+              />
 
-            <FormField
-              control={form.control}
-              name="subCategoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tCommon("subcategory")}</FormLabel>
-                  <FormControl>
-                    <AsyncCombobox
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      fetchData={async (search) => {
-                        const res = await getAllSubcategoriesApi({ search, categoryId: selectedCategoryId });
-                        return res.data?.subcategories || [];
-                      }}
-                      placeholder={tCommon("select_subcategory")}
-                      searchPlaceholder={tCommon("search")}
-                      getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                      getItemValue={(item) => item._id}
-                      className="h-12"
-                      disabled={!selectedCategoryId}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <UniAsyncCombobox
+                control={form.control}
+                name="subCategoryId"
+                label={tCommon("subcategory")}
+                placeholder={tCommon("select_subcategory")}
+                searchPlaceholder={tCommon("search")}
+                fetchData={async (search) => {
+                  const res = await getAllSubcategoriesApi({ search, categoryId: selectedCategoryId });
+                  return res.data?.subcategories || [];
+                }}
+                getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item) => item._id}
+                disabled={!selectedCategoryId}
+              />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="brandId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tCommon("brand")}</FormLabel>
-                    <FormControl>
-                      <AsyncCombobox
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        fetchData={async (search) => {
-                          const res = await getAllBrandsApi({ search });
-                          return res.data?.brands || [];
-                        }}
-                        placeholder={tCommon("select_brand")}
-                        searchPlaceholder={tCommon("search")}
-                        getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                        getItemValue={(item) => item._id}
-                        className="h-12"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="sectionId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tCommon("section")}</FormLabel>
-                    <FormControl>
-                      <AsyncCombobox
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        fetchData={async (search) => {
-                          const res = await getAllSectionsApi({ search });
-                          return res.data?.sections || [];
-                        }}
-                        placeholder={tCommon("select_section")}
-                        searchPlaceholder={tCommon("search")}
-                        getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                        getItemValue={(item) => item._id}
-                        className="h-12"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              <div className="grid grid-cols-2 gap-4">
+                <UniAsyncCombobox
+                  control={form.control}
+                  name="brandId"
+                  label={tCommon("brand")}
+                  placeholder={tCommon("select_brand")}
+                  searchPlaceholder={tCommon("search")}
+                  fetchData={async (search) => {
+                    const res = await getAllBrandsApi({ search });
+                    return res.data?.brands || [];
+                  }}
+                  getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item) => item._id}
+                />
+                <UniAsyncCombobox
+                  control={form.control}
+                  name="sectionId"
+                  label={tCommon("section")}
+                  placeholder={tCommon("select_section")}
+                  searchPlaceholder={tCommon("search")}
+                  fetchData={async (search) => {
+                    const res = await getAllSectionsApi({ search });
+                    return res.data?.sections || [];
+                  }}
+                  getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item) => item._id}
+                />
+              </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="priority"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{tCommon("priority")}</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        className="rounded-xl h-12" 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="isShow"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col justify-end pb-2">
-                    <FormLabel className="mb-2">{tCommon("show_on_store")}</FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <UniInput
+                  control={form.control}
+                  name="priority"
+                  label={tCommon("priority")}
+                  type="number"
+                />
+                <UniSwitch
+                  control={form.control}
+                  name="isShow"
+                  label={tCommon("show_on_store")}
+                  className="p-3 border-none bg-transparent"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <UniTextarea
             control={form.control}
             name="descriptionAr"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("description_ar")}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("description_ar_placeholder")}
-                    className="rounded-xl min-h-[120px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={t("description_ar")}
+            placeholder={t("description_ar_placeholder")}
+            className="md:col-span-1"
           />
 
-          <FormField
+          <UniTextarea
             control={form.control}
             name="descriptionEn"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("description_en")}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("description_en_placeholder")}
-                    className="rounded-xl min-h-[120px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={t("description_en")}
+            placeholder={t("description_en_placeholder")}
+            className="md:col-span-1"
           />
+        </div>
         </div>
 
         {/* Media */}

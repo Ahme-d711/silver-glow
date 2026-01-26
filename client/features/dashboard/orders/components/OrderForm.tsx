@@ -3,29 +3,20 @@
 import { useForm, useFieldArray, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
+import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
+import { UniSelect } from "@/components/shared/uni-form/UniSelect";
+import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader, Plus, Trash2 } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslations } from "next-intl";
 import { Order } from "../types";
-import { useProducts } from "@/features/dashboard/products/hooks/useProduct";
-import { useUsers } from "@/features/dashboard/users/hooks/useUser";
 import { Product } from "@/features/dashboard/products/types";
 import { User } from "@/features/dashboard/auth/types";
 import { UserReference } from "@/types";
 
-import { AsyncCombobox } from "@/components/shared/AsyncCombobox";
 import { getAllProducts } from "@/features/dashboard/products/services/product.service";
 import { getAllUsers } from "@/features/dashboard/users/services/user.service";
 
@@ -73,15 +64,12 @@ export function OrderForm({
 }: OrderFormProps) {
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
-  const tAuth = useTranslations("Auth");
 
   const initialUserId = typeof defaultValues?.userId === 'object' && defaultValues?.userId !== null 
     ? (defaultValues.userId as UserReference)._id 
     : (defaultValues?.userId as string) || "";
 
   const form = useForm<OrderFormData>({
-    // We cast the resolver to any to satisfy the complex generic requirements of React Hook Form + Zod
-    // while keeping the internal form values strictly typed as OrderFormData.
     resolver: zodResolver(orderFormSchema) as Resolver<OrderFormData>,
     defaultValues: {
       userId: initialUserId,
@@ -117,7 +105,6 @@ export function OrderForm({
     name: "items",
   });
 
-  // Automatically fill product details when productId is selected
   const handleProductSelect = (index: number, product: Product) => {
     if (product) {
       form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
@@ -126,7 +113,6 @@ export function OrderForm({
     }
   };
 
-  // Automatically fill recipient details when user is selected
   const handleUserSelect = (user: User) => {
     if (user) {
       form.setValue("recipientName", user.name || "");
@@ -141,52 +127,41 @@ export function OrderForm({
 
   const fetchProducts = async (search: string) => {
     const response = await getAllProducts({ search, limit: 10 });
-    // Service returns the array directly now after my previous fix if successful
     return Array.isArray(response) ? response : [];
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Customer Selection Section */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Customer Selection */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">{t("customer")}</h3>
-          <FormField
+          <h3 className="text-xl font-bold text-primary">{t("customer")}</h3>
+          <UniAsyncCombobox
             control={form.control}
             name="userId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("customer")}</FormLabel>
-                <FormControl>
-                  <AsyncCombobox
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    onSelect={handleUserSelect}
-                    fetchData={fetchUsers}
-                    placeholder={t("select_customer")}
-                    searchPlaceholder={tCommon("search")}
-                    emptyMessage={tCommon("no_data")}
-                    getItemLabel={(user) => `${user.name} (${user.phone})`}
-                    disabled={isEdit}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={t("customer")}
+            onSelect={handleUserSelect}
+            fetchData={fetchUsers}
+            placeholder={t("select_customer")}
+            searchPlaceholder={tCommon("search")}
+            emptyMessage={tCommon("no_data")}
+            getItemLabel={(user: User) => `${user.name} (${user.phone})`}
+            disabled={isEdit}
+            required
           />
         </div>
 
-        {/* Order Items Section */}
+        {/* Order Items */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{t("order_items")}</h3>
+            <h3 className="text-xl font-bold text-primary">{t("order_items")}</h3>
             {!isEdit && (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "" })}
-                className="rounded-xl"
+                className="rounded-xl border-primary text-primary hover:bg-primary/5"
               >
                 <Plus className="h-4 w-4 me-2" />
                 {t("add_item")}
@@ -196,9 +171,9 @@ export function OrderForm({
 
           <div className="space-y-4">
             {fields.map((field, index) => (
-              <div key={field.id} className="p-4 border rounded-2xl space-y-4 bg-gray-50/50">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-primary">{t("item")} {index + 1}</h4>
+              <div key={field.id} className="p-6 border border-divider/50 rounded-3xl space-y-6 bg-gray-50/30">
+                <div className="flex items-center justify-between border-b border-divider/50 pb-4">
+                  <h4 className="font-bold text-primary">{t("item")} {index + 1}</h4>
                   {fields.length > 1 && !isEdit && (
                     <Button
                       type="button"
@@ -212,83 +187,50 @@ export function OrderForm({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <UniAsyncCombobox
                     control={form.control}
                     name={`items.${index}.productId`}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>{t("product")}</FormLabel>
-                        <FormControl>
-                          <AsyncCombobox
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            onSelect={(product) => handleProductSelect(index, product)}
-                            fetchData={fetchProducts}
-                            placeholder={t("select_product")}
-                            searchPlaceholder={tCommon("search")}
-                            emptyMessage={tCommon("no_data")}
-                            getItemLabel={(product) => product.nameAr || product.nameEn}
-                            disabled={isEdit}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("product")}
+                    onSelect={(product: Product) => handleProductSelect(index, product)}
+                    fetchData={fetchProducts}
+                    placeholder={t("select_product")}
+                    searchPlaceholder={tCommon("search")}
+                    emptyMessage={tCommon("no_data")}
+                    getItemLabel={(product: Product) => product.nameAr || product.nameEn}
+                    disabled={isEdit}
+                    required
                   />
 
-                  <FormField
+                  <UniInput
                     control={form.control}
                     name={`items.${index}.name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("product_name")}</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder={t("enter_product_name")} readOnly />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("product_name")}
+                    placeholder={t("enter_product_name")}
+                    readOnly
+                    required
                   />
 
-                  <FormField
+                  <UniInput
                     control={form.control}
                     name={`items.${index}.price`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("price")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            placeholder="0.00"
-                            readOnly
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("price")}
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    readOnly
+                    required
                   />
 
-                  <FormField
+                  <UniInput
                     control={form.control}
                     name={`items.${index}.quantity`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("quantity")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            {...field}
-                            placeholder="1"
-                            readOnly={isEdit}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label={t("quantity")}
+                    type="number"
+                    min="1"
+                    placeholder="1"
+                    disabled={isEdit}
+                    required
                   />
                 </div>
               </div>
@@ -296,238 +238,164 @@ export function OrderForm({
           </div>
         </div>
 
-        {/* Shipping Information Section */}
+        {/* Shipping Information */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">{t("shipping_info")}</h3>
+          <h3 className="text-xl font-bold text-primary">{t("shipping_info")}</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <UniInput
               control={form.control}
               name="recipientName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("recipient_name")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder={t("enter_recipient_name")} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t("recipient_name")}
+              placeholder={t("enter_recipient_name")}
+              required
             />
 
-            <FormField
+            <UniInput
               control={form.control}
               name="recipientPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("recipient_phone")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="+1234567890" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t("recipient_phone")}
+              placeholder="+1234567890"
+              required
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="shippingAddress"
-              render={({ field }) => (
-                <FormItem className="md:col-span-2">
-                  <FormLabel>{t("shipping_address")}</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} placeholder={t("enter_full_address")} rows={3} className="rounded-xl resize-none" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <UniTextarea
+            control={form.control}
+            name="shippingAddress"
+            label={t("shipping_address")}
+            placeholder={t("enter_full_address")}
+            rows={3}
+            required
+          />
 
-            <FormField
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <UniInput
               control={form.control}
               name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("city")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder={t("enter_city")} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t("city")}
+              placeholder={t("enter_city")}
+              required
             />
 
-            <FormField
+            <UniInput
               control={form.control}
               name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("country")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder={t("enter_country")} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t("country")}
+              placeholder={t("enter_country")}
+              required
             />
 
-            <FormField
+            <UniInput
               control={form.control}
               name="postalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("postal_code")} ({tCommon("optional")})</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="12345" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="paymentMethod"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("payment_method")}</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-xl">
-                        <SelectValue placeholder={t("select_payment_method")} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="rounded-xl">
-                      <SelectItem value="COD">{t("payment_cod")}</SelectItem>
-                      <SelectItem value="CARD">{t("payment_card")}</SelectItem>
-                      <SelectItem value="PAYPAL">{t("payment_paypal")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t("postal_code")}
+              placeholder="12345"
             />
           </div>
         </div>
 
-        {/* Order Status (For Edit Only) */}
-        {isEdit && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{t("admin_status")}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("order_status")}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="rounded-xl">
-                        <SelectItem value="PENDING">{t("pending")}</SelectItem>
-                        <SelectItem value="CONFIRMED">{t("confirmed")}</SelectItem>
-                        <SelectItem value="PROCESSING">{t("processing")}</SelectItem>
-                        <SelectItem value="SHIPPED">{t("shipped")}</SelectItem>
-                        <SelectItem value="DELIVERED">{t("delivered")}</SelectItem>
-                        <SelectItem value="CANCELLED">{t("cancelled")}</SelectItem>
-                        <SelectItem value="RETURNED">{t("returned")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="paymentStatus"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("payment_status")}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="rounded-xl">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="rounded-xl">
-                        <SelectItem value="PENDING">{t("pending")}</SelectItem>
-                        <SelectItem value="PAID">{t("paid")}</SelectItem>
-                        <SelectItem value="FAILED">{t("failed")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Notes Section */}
+        {/* Payment & Status */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">{t("notes")}</h3>
+          <h3 className="text-xl font-bold text-primary">{t("payment_status")}</h3>
           
-          <FormField
-            control={form.control}
-            name="customerNotes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("customer_notes")} ({tCommon("optional")})</FormLabel>
-                <FormControl>
-                  <Textarea {...field} placeholder={t("enter_customer_notes")} rows={3} className="rounded-xl resize-none" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <UniSelect
+              control={form.control}
+              name="paymentMethod"
+              label={t("payment_method")}
+              options={[
+                { label: t("payment_cod"), value: "COD" },
+                { label: t("payment_card"), value: "CARD" },
+                { label: t("payment_paypal"), value: "PAYPAL" },
+              ]}
+              required
+            />
+
+            <UniSelect
+              control={form.control}
+              name="paymentStatus"
+              label={t("payment_status")}
+              options={[
+                { label: t("pending"), value: "PENDING" },
+                { label: t("paid"), value: "PAID" },
+                { label: t("failed"), value: "FAILED" },
+              ]}
+              disabled={!isEdit}
+            />
+          </div>
 
           {isEdit && (
-            <FormField
+            <UniSelect
               control={form.control}
-              name="adminNotes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("admin_notes")} ({tCommon("optional")})</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} placeholder={t("enter_admin_notes")} rows={3} className="rounded-xl resize-none" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              name="status"
+              label={t("order_status")}
+              options={[
+                { label: t("pending"), value: "PENDING" },
+                { label: t("confirmed"), value: "CONFIRMED" },
+                { label: t("processing"), value: "PROCESSING" },
+                { label: t("shipped"), value: "SHIPPED" },
+                { label: t("delivered"), value: "DELIVERED" },
+                { label: t("cancelled"), value: "CANCELLED" },
+                { label: t("returned"), value: "RETURNED" },
+              ]}
+              required
             />
           )}
         </div>
 
-        {/* Summary Section */}
-        <div className="p-6 bg-primary/5 border border-primary/10 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-content-secondary font-medium">
-            {t("total_items")}: <span className="text-primary font-bold">{fields.length}</span>
+        {/* Notes */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-primary">{t("notes")}</h3>
+          
+          <UniTextarea
+            control={form.control}
+            name="customerNotes"
+            label={t("customer_notes")}
+            placeholder={t("enter_customer_notes")}
+            rows={3}
+          />
+
+          {isEdit && (
+            <UniTextarea
+              control={form.control}
+              name="adminNotes"
+              label={t("admin_notes")}
+              placeholder={t("enter_admin_notes")}
+              rows={3}
+            />
+          )}
+        </div>
+
+        {/* Summary */}
+        <div className="p-8 bg-primary/5 border border-primary/10 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-lg text-content-secondary font-medium">
+            {t("total_items")}: <span className="text-primary font-bold text-2xl ml-2">{fields.length}</span>
           </div>
-          <div className="text-xl font-bold text-primary">
-            {t("total_amount")}: {(form.watch("items") || []).reduce((acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0), 0).toFixed(2)} {tCommon("currency")}
+          <div className="text-2xl font-bold text-primary">
+            {t("total_amount")}: {((form.watch("items") || []).reduce((acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0), 0)).toFixed(2)} {tCommon("currency")}
           </div>
         </div>
 
-        {/* Form Actions */}
-        <div className="flex gap-4 justify-end pt-6 border-t">
+        {/* Actions */}
+        <div className="flex gap-4 justify-end pt-8 border-t border-divider/50">
           {onCancel && (
             <Button
               type="button"
               variant="outline"
               onClick={onCancel}
               disabled={isLoading}
-              className="px-8 rounded-xl"
+              className="px-10 h-12 rounded-xl border-divider text-content-secondary font-bold hover:bg-gray-100"
             >
               {tCommon("cancel")}
             </Button>
           )}
-          <Button type="submit" disabled={isLoading} className="px-8 rounded-xl h-11">
-            {isLoading && <Loader className="me-2 h-4 w-4 animate-spin" />}
+          <Button 
+            type="submit" 
+            disabled={isLoading} 
+            className="px-12 h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 shadow-lg shadow-primary/20"
+          >
+            {isLoading && <Loader className="me-2 h-5 w-5 animate-spin" />}
             {submitLabel || tCommon("submit")}
           </Button>
         </div>

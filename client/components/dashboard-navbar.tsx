@@ -20,7 +20,7 @@ export function DashboardNavbar() {
   const tAuth = useTranslations("Auth");
   
   const { logout, loading: isLoggingOut } = useLogout();
-  
+  console.log(user);
 
   const userName = user?.name || user?.username || "Ahmed Elgedawy";
   const userPhoto = user?.photo || user?.profileImage;

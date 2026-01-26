@@ -3,22 +3,9 @@
 import { useForm, Control, FieldValues, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import { FormInputField } from "@/components/shared/FormInputField";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniSelect } from "@/components/shared/uni-form/UniSelect";
+import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Camera, X } from "lucide-react";
 import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
@@ -159,8 +146,8 @@ export function UserForm({
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          <FormInputField
-            control={form.control as unknown as Control<FieldValues>}
+          <UniInput
+            control={form.control}
             name="name"
             label={t("name")}
             placeholder={t("name")}
@@ -169,16 +156,16 @@ export function UserForm({
           
           {!isEdit && (
             <>
-              <FormInputField
-                control={form.control as unknown as Control<FieldValues>}
+              <UniInput
+                control={form.control}
                 name="email"
                 label={t("email")}
                 placeholder={t("email")}
                 type="email"
                 required
               />
-              <FormInputField
-                control={form.control as unknown as Control<FieldValues>}
+              <UniInput
+                control={form.control}
                 name="password"
                 label={t("password")}
                 placeholder="••••••"
@@ -189,8 +176,8 @@ export function UserForm({
           )}
 
           {isEdit && (
-            <FormInputField
-              control={form.control as unknown as Control<FieldValues>}
+            <UniInput
+              control={form.control}
               name="password"
               label={t("password")}
               placeholder="••••••"
@@ -198,8 +185,8 @@ export function UserForm({
             />
           )}
 
-          <FormInputField
-            control={form.control as unknown as Control<FieldValues>}
+          <UniInput
+            control={form.control}
             name="phone"
             label={t("phone")}
             placeholder="+20..."
@@ -207,68 +194,38 @@ export function UserForm({
             required
           />
 
-          <FormField
+          <UniSelect
             control={form.control}
             name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">{t("role")} <span className="text-destructive ml-1">*</span></FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-white border-divider rounded-xl h-11 w-full">
-                      <SelectValue placeholder={t("select_role")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-white border-divider rounded-xl" position="popper">
-                    <SelectItem value="user">{t("user")}</SelectItem>
-                    <SelectItem value="admin">{t("admin")}</SelectItem>
-                    <SelectItem value="employee">{t("employee")}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={t("role")}
+            placeholder={t("select_role")}
+            options={[
+              { label: t("user"), value: "user" },
+              { label: t("admin"), value: "admin" },
+              { label: t("employee"), value: "employee" },
+            ]}
+            required
           />
 
-          <FormInputField
-            control={form.control as unknown as Control<FieldValues>}
+          <UniInput
+            control={form.control}
             name="address"
             label={t("address")}
             placeholder={t("address")}
           />
 
-          <FormField
+          <UniSwitch
             control={form.control}
             name="isActive"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between gap-4 space-y-0">
-                <FormLabel className="text-base text-primary font-semibold">{t("is_active")}</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+            label={t("is_active")}
+            disabled={isLoading}
           />
 
-          <FormField
+          <UniSwitch
             control={form.control}
             name="isVerified"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between gap-4 space-y-0">
-                <FormLabel className="text-base text-primary font-semibold">{t("is_verified")}</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+            label={t("is_verified")}
+            disabled={isLoading}
           />
 
         <div className="flex pt-4 gap-3">

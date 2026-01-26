@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { FormInputField } from "@/components/shared/FormInputField";
+import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { loginSchema, type LoginFormValues } from "../schemas/authSchemas";
 import { toast } from "sonner";
 
@@ -50,7 +50,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormInputField
+          <UniInput
             control={form.control}
             name="phone"
             label="Phone Number"
@@ -59,7 +59,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
             autoComplete="tel"
           />
 
-          <FormInputField
+          <UniInput
             control={form.control}
             name="password"
             label="Password"
