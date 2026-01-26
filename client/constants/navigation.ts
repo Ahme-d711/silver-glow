@@ -10,11 +10,12 @@ import {
   Award,
   LayoutGrid,
 } from "lucide-react";
+import { IconType } from "@/types";
 
 export interface NavItem {
   titleKey: string;
   href: string;
-  icon: any;
+  icon: IconType;
 }
 
 export const navItems: NavItem[] = [

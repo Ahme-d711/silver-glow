@@ -10,6 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import type { Order } from "../types"
 
 interface InfoRowProps {
   icon: LucideIcon;
@@ -31,8 +32,24 @@ function InfoRow({ icon: Icon, label, value }: InfoRowProps) {
   )
 }
 
-export function OrderDetailCards({ data }: { data: any }) {
+interface MockOrder {
+  id: string;
+  status: string;
+  date: string;
+  payment_method: string;
+  order_type: string;
+  customer: string;
+  recipient_phone: string;
+  billing_address: string;
+  shipping_address: string;
+}
+
+export function OrderDetailCards({ data }: { data: MockOrder | Order }) {
   if (!data) return null;
+
+  // Type guard or simple cast for mock vs real data 
+  // Since the component currently relies on mock properties, we cast to any internally but keep prop strict
+  const d = data as any; 
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -40,16 +57,16 @@ export function OrderDetailCards({ data }: { data: any }) {
       <Card className="rounded-[24px] border-none shadow-none">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold">Order #{data.id}</CardTitle>
+            <CardTitle className="text-lg font-semibold">Order #{d.id || d._id}</CardTitle>
             <Badge className="bg-primary text-white border-none shadow-none px-3 py-1 rounded-lg">
-              {data.status}
+              {d.status}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <InfoRow icon={Calendar} label="Added" value={data.date} />
-          <InfoRow icon={CreditCard} label="Payment Method" value={data.payment_method} />
-          <InfoRow icon={ShoppingBag} label="Type" value={data.order_type} />
+          <InfoRow icon={Calendar} label="Added" value={d.date || d.createdAt} />
+          <InfoRow icon={CreditCard} label="Payment Method" value={d.payment_method || d.paymentMethod} />
+          <InfoRow icon={ShoppingBag} label="Type" value={d.order_type || "Standard"} />
         </CardContent>
       </Card>
 
@@ -59,8 +76,8 @@ export function OrderDetailCards({ data }: { data: any }) {
           <CardTitle className="text-lg font-semibold">Customer</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <InfoRow icon={User} label="Customer" value={data.customer} />
-          <InfoRow icon={Smartphone} label="Phone" value={data.recipient_phone} />
+          <InfoRow icon={User} label="Customer" value={d.customer || d.recipientName} />
+          <InfoRow icon={Smartphone} label="Phone" value={d.recipient_phone || d.recipientPhone} />
         </CardContent>
       </Card>
 

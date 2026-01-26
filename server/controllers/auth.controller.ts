@@ -25,7 +25,7 @@ import { generateToken, extractTokenFromRequest, verifyToken } from "../utils/jw
  * @param message - Success message
  */
 const sendAuthResponse = (
-  user: IUser & { _id: any; toObject: () => any; password?: string },
+  user: IUser & { _id: unknown; toObject: () => Record<string, unknown>; password?: string },
   res: Response,
   statusCode: number = 200,
   message: string = "Authentication successful"
@@ -314,7 +314,7 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   // Destroy session if exists
       if (req.session) {
     return new Promise<void>((resolve, reject) => {
-      req.session!.destroy((err: any) => {
+      req.session!.destroy((err: unknown) => {
           if (err) {
           reject(new AppError("Error ending session", 500));
         } else {

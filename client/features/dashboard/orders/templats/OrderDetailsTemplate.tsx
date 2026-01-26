@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/PageHeader"
 import { OrderDetailCards } from "../components/OrderDetailCards"
 import { OrderDetailTable } from "../components/OrderDetailTable"
 import { OrderDetailSidebar } from "../components/OrderDetailSidebar"
-import { EditOrderTemplate } from "./EditOrderTemplate"
+import  EditOrderTemplate  from "./EditOrderTemplate"
 import React from "react"
 import { useParams } from "next/navigation"
 
@@ -62,14 +62,14 @@ export default function OrderDetailsTemplate() {
           </div>
 
           {/* Sidebar: Address & Status */}
-          <OrderDetailSidebar data={orderData} />
+          <OrderDetailSidebar data={orderData as any} />
         </div>
       </div>
 
       <EditOrderTemplate 
         isOpen={isEditOpen} 
         onClose={() => setIsEditOpen(false)} 
-        orderData={orderData} 
+        orderData={orderData as any} 
       />
     </div>
   )

@@ -3,7 +3,7 @@ import { z } from "zod"
 export const updateProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone number is required"),
-  image: z.any().optional(), // File object for upload
+  image: z.file().optional(), // File object for upload
 })
 
 export type UpdateProfileFormValues = z.infer<typeof updateProfileSchema>

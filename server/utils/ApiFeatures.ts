@@ -90,7 +90,7 @@ class ApiFeatures<T extends Document> {
 
       if (searchTerm) {
         const searchRegex = new RegExp(searchTerm, 'i');
-        const orConditions: any[] = fields.map(
+        const orConditions: Record<string, unknown>[] = fields.map(
           (field) => ({ [field as string]: searchRegex })
         );
 

@@ -118,7 +118,7 @@ export const getRevenueAnalytics = asyncHandler(async (req: Request, res: Respon
   const period = (req.query.period as string) || "Today";
   const now = new Date();
   let startDate = new Date();
-  let grouping: any = { day: { $dayOfMonth: "$createdAt" } };
+  let grouping: Record<string, Record<string, string>> = { day: { $dayOfMonth: "$createdAt" } };
   let formatKey = "name";
 
   switch (period) {
@@ -146,7 +146,7 @@ export const getRevenueAnalytics = asyncHandler(async (req: Request, res: Respon
       break;
   }
 
-  const matchQuery: any = {
+  const matchQuery: Record<string, unknown> = {
     status: "DELIVERED",
     createdAt: { $gte: startDate },
   };
@@ -154,7 +154,7 @@ export const getRevenueAnalytics = asyncHandler(async (req: Request, res: Respon
   if (period === "Yesterday") {
     const endOfYesterday = new Date(startDate);
     endOfYesterday.setHours(23, 59, 59, 999);
-    matchQuery.createdAt.$lte = endOfYesterday;
+    (matchQuery.createdAt as { $gte: Date; $lte?: Date }).$lte = endOfYesterday;
   }
 
   const analytics = await OrderModel.aggregate([

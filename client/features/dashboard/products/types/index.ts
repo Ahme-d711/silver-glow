@@ -1,3 +1,5 @@
+import { PopulatedField, CategoryReference, SubCategoryReference, BrandReference, SectionReference, Pagination } from "@/types";
+
 export interface Product {
     _id: string;
     nameAr: string;
@@ -12,10 +14,10 @@ export interface Product {
     slug: string;
     mainImage: string;
     images: string[];
-    categoryId: any; // Will be populated
-    subCategoryId?: any;
-    brandId?: any;
-    sectionId?: any;
+    categoryId: PopulatedField<CategoryReference>;
+    subCategoryId?: PopulatedField<SubCategoryReference>;
+    brandId?: PopulatedField<BrandReference>;
+    sectionId?: PopulatedField<SectionReference>;
     priority: number;
     isShow: boolean;
     isDeleted: boolean;
@@ -61,3 +63,6 @@ export interface ServiceResponse<T> {
     data?: T;
     error?: unknown;
 }
+
+// Re-export Pagination for convenience
+export type { Pagination };

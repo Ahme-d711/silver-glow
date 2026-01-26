@@ -1,9 +1,10 @@
 import UniTable, { ActionCell, ActionButton, Check, Trash2, Pencil, UniTableColumn } from "@/components/shared/UniTable"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslations } from "next-intl"
+import type { Ad } from "../types"
 
 interface AdsTableProps {
-  ads: any[]
+  ads: Ad[]
   selectedIds: string[]
   onToggleSelect: (id: string) => void
   onDelete: (id: string) => void
@@ -14,7 +15,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
   const t = useTranslations("Common")
   const tAds = useTranslations("Ads")
   
-  const columns: UniTableColumn<any>[] = [
+  const columns: UniTableColumn<Ad>[] = [
     {
       id: "select_id",
       header: (
@@ -25,7 +26,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
           <span>{tAds("title")}</span>
         </div>
       ),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <div className="flex items-center gap-3">
           <Checkbox 
             checked={selectedIds.includes(row.id)}
@@ -39,7 +40,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
     {
       id: "image",
       header: t("image"),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <div className="h-10 w-10 bg-gray-200 rounded-lg overflow-hidden">
              <img src={row.photo ? (row.photo.startsWith('http') || row.photo.startsWith('/') ? row.photo : `/${row.photo}`) : "/ads-1.svg"} alt={row.nameEn} className="h-full w-full object-cover" />
         </div>
@@ -48,14 +49,14 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
     {
       id: "title",
       header: t("title"),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <span className="text-gray-600 font-medium">{row.nameAr} | {row.nameEn}</span>
       ),
     },
     {
       id: "description",
       header: t("description"),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <span className="text-gray-500 text-sm truncate max-w-[150px] block">
             {row.link || t("none")}
         </span>
@@ -64,7 +65,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
     {
       id: "date",
       header: t("date"),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <span className="text-gray-500 text-sm">
             {row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "-"}
         </span>
@@ -73,7 +74,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
     {
       id: "action",
       header: t("action"),
-      cell: (_: unknown, row: any) => (
+      cell: (_: unknown, row: Ad) => (
         <ActionCell>
            <ActionButton icon={Trash2} variant="danger" onClick={() => onDelete(row.id)} />
            <ActionButton icon={Pencil} onClick={() => onEdit(row.id)} />
@@ -84,7 +85,7 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
 
   return (
     <div className="bg-white rounded-[24px] shadow-sm border border-divider p-6">
-       <UniTable<any>
+       <UniTable<Ad>
         data={ads}
         columns={columns}
         enablePagination={true}

@@ -12,9 +12,10 @@ import NoDataMsg from "@/components/shared/NoDataMsg"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
 import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
 import { useTranslations, useLocale } from "next-intl"
+import { Ad } from "../types"
 
 // Convert Ad to AdCard format (for mockup)
-function convertAdToCardFormat(ad: any, locale: string): any {
+function convertAdToCardFormat(ad: Ad, locale: string): any {
   let imageUrl = "/ads-1.svg" 
   if (ad.photo) {
     imageUrl = ad.photo.startsWith('http') || ad.photo.startsWith('/') ? ad.photo : `/${ad.photo}`

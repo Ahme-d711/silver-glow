@@ -21,9 +21,10 @@ import { useTranslations } from "next-intl"
 
 import { AsyncCombobox } from "@/components/shared/AsyncCombobox"
 import { getAllProducts } from "@/features/dashboard/products/services/product.service"
+import type { Ad } from "../types"
 
 interface AdFormProps {
-  initialData?: any
+  initialData?: Partial<Ad>
   onSubmit: (data: FormData) => void
   onCancel?: () => void
   isLoading?: boolean
@@ -39,18 +40,23 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
   )
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const form = useForm<any>({
-    resolver: zodResolver(adSchema),
+  const productIdValue = initialData?.productId;
+  const initialProductId = typeof productIdValue === 'object' && productIdValue !== null
+    ? (productIdValue as { _id: string })._id
+    : (productIdValue as string) || "";
+
+  const form = useForm<AdFormValues>({
+    resolver: zodResolver(adSchema) as unknown as any,
     defaultValues: {
       nameAr: initialData?.nameAr || "",
       nameEn: initialData?.nameEn || "",
       descriptionAr: initialData?.descriptionAr || "",
       descriptionEn: initialData?.descriptionEn || "",
       isShown: initialData?.isShown ?? true,
-      priority: initialData?.priority ?? 0,
+      priority: Number(initialData?.priority) || 0,
       link: initialData?.link || "",
-      productId: initialData?.productId?._id || initialData?.productId || "",
-      photo: initialData?.photo,
+      productId: initialProductId,
+      photo: initialData?.photo || undefined,
     },
   })
 

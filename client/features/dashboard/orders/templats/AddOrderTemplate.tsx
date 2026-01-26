@@ -16,7 +16,21 @@ export default function AddOrderTemplate() {
   const { mutate: createOrder, isPending } = useCreateOrder();
 
   const handleSubmit = (values: OrderFormData) => {
-    createOrder(values, {
+    // Calculate totals strictly for the payload
+    const subtotal = values.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const shippingCost = 0; // Default or calculate if needed
+    const discountAmount = 0;
+    const totalAmount = subtotal + shippingCost - discountAmount;
+
+    const payload: any = { // Temporary any for complex union till we fix service
+      ...values,
+      subtotal,
+      shippingCost,
+      discountAmount,
+      totalAmount,
+    };
+
+    createOrder(payload, {
       onSuccess: (response) => {
         if (response.success) {
           router.refresh();

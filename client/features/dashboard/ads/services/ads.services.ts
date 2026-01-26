@@ -4,7 +4,13 @@ import clientAxios from "@/lib/axios/clientAxios";
 import { ServiceResponse } from "@/features/dashboard/orders/services/orders.services";
 import { Ad } from "../types";
 
-export const getAllAds = async (params: any = {}) => {
+export interface GetAdsParams {
+  isShown?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+export const getAllAds = async (params: GetAdsParams = {}) => {
   const response = await clientAxios.get<{ success: boolean; data: { ads: Ad[] } }>("/ads", { params });
   return response.data.data.ads;
 };

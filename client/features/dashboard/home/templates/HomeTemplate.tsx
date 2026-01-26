@@ -45,7 +45,7 @@ export default function HomeTemplate() {
         </div>
       </div>
       
-      <ChartsSection stats={stats} />
+      <ChartsSection />
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import { PopulatedField, UserReference } from "@/types";
+
 export type OrderStatus = 
   | "PENDING"
   | "CONFIRMED"
@@ -20,7 +22,7 @@ export interface OrderItem {
 
 export interface Order {
   _id: string
-  userId: any // To handle populated user object or ID string
+  userId: PopulatedField<UserReference>
   
   // المنتجات داخل الطلب
   items: OrderItem[]
@@ -62,3 +64,34 @@ export interface Order {
   updatedAt: string
 }
 
+export interface CreateOrderPayload {
+  userId: string
+  items: OrderItem[]
+  recipientName: string
+  recipientPhone: string
+  shippingAddress: string
+  city: string
+  country: string
+  postalCode?: string
+  subtotal: number
+  shippingCost: number
+  discountAmount: number
+  totalAmount: number
+  paymentMethod: PaymentMethod
+  paymentStatus?: PaymentStatus
+  customerNotes?: string
+}
+
+export interface UpdateOrderPayload {
+  status?: OrderStatus
+  paymentStatus?: PaymentStatus
+  trackingNumber?: string
+  shippingCompany?: string
+  adminNotes?: string
+  recipientName?: string
+  recipientPhone?: string
+  shippingAddress?: string
+  city?: string
+  country?: string
+  postalCode?: string
+}

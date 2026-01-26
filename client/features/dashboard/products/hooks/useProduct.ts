@@ -16,6 +16,7 @@ import {
 } from "../types";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { getErrorMessage } from "@/types";
 
 export const useProducts = (params: GetProductsParams = {}) => {
   return useQuery({
@@ -54,8 +55,8 @@ export const useCreateProduct = () => {
         toast.error(response.message || t("error"));
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || t("error"));
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || t("error"));
     },
   });
 };
@@ -80,8 +81,8 @@ export const useUpdateProduct = () => {
         toast.error(response.message || t("error"));
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || t("error"));
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || t("error"));
     },
   });
 };
@@ -100,8 +101,8 @@ export const useDeleteProduct = () => {
         toast.error(response.message || t("error"));
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || t("error"));
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || t("error"));
     },
   });
 };
@@ -120,8 +121,8 @@ export const useToggleProductStatus = () => {
         toast.error(response.message || t("error"));
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || t("error"));
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || t("error"));
     },
   });
 };
@@ -140,8 +141,8 @@ export const useRestoreProduct = () => {
         toast.error(response.message || t("error"));
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || t("error"));
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || t("error"));
     },
   });
 };

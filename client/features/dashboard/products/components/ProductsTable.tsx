@@ -111,10 +111,10 @@ export default function ProductsTable({
         const category = row.categoryId;
         return (
           <span className="text-sm text-content-secondary">
-            {category
+            {typeof category === 'object' && category !== null
               ? locale === "ar"
-                ? category.nameAr
-                : category.nameEn
+                ? category.nameAr || category.nameEn
+                : category.nameEn || category.nameAr
               : "-"}
           </span>
         );
@@ -127,10 +127,10 @@ export default function ProductsTable({
         const brand = row.brandId;
         return (
           <span className="text-sm text-content-secondary">
-            {brand
+            {typeof brand === 'object' && brand !== null
               ? locale === "ar"
-                ? brand.nameAr
-                : brand.nameEn
+                ? brand.nameAr || brand.nameEn
+                : brand.nameEn || brand.nameAr
               : "-"}
           </span>
         );
@@ -143,10 +143,10 @@ export default function ProductsTable({
         const subCategory = row.subCategoryId;
         return (
           <span className="text-sm text-content-secondary">
-            {subCategory
+            {typeof subCategory === 'object' && subCategory !== null
               ? locale === "ar"
-                ? subCategory.nameAr
-                : subCategory.nameEn
+                ? subCategory.nameAr || subCategory.nameEn
+                : subCategory.nameEn || subCategory.nameAr
               : "-"}
           </span>
         );
@@ -159,10 +159,10 @@ export default function ProductsTable({
         const section = row.sectionId;
         return (
           <span className="text-sm text-content-secondary">
-            {section
+            {typeof section === 'object' && section !== null
               ? locale === "ar"
-                ? section.nameAr
-                : section.nameEn
+                ? section.nameAr || section.nameEn
+                : section.nameEn || section.nameAr
               : "-"}
           </span>
         );

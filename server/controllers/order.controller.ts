@@ -11,7 +11,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
   const validatedQuery = queryOrderSchema.parse(req.query);
   const { status, paymentStatus, userId, search, page, limit } = validatedQuery;
 
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (status) query.status = status;
   if (paymentStatus) query.paymentStatus = paymentStatus;
@@ -87,7 +87,7 @@ export const getOrderById = async (req: Request, res: Response) => {
 export const createOrder = async (req: Request, res: Response) => {
   const validatedBody = createOrderSchema.parse(req.body);
   
-  const userId = (req as any).user?._id;
+  const userId = req.user?._id;
   if (!userId) {
      throw new AppError("Authentication required", 401);
   }
@@ -146,7 +146,7 @@ export const updateOrder = async (req: Request, res: Response) => {
   }
 
   // Update logic with automatic timestamp updates
-  const updateData: any = { ...validatedBody };
+  const updateData: Record<string, unknown> = { ...validatedBody };
   
   // Set timestamps for status changes
   if (validatedBody.status === "SHIPPED" && order.status !== "SHIPPED") {

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 import UniLoading from "@/components/shared/UniLoading"
 
 interface TableRowData extends Record<string, unknown> {
-  id: number
+  id: string
   productName: string
   otherProducts: string
   productImage: string
@@ -40,13 +40,13 @@ export function RecentOrdersTable() {
       })
       .slice(0, 5)
       .map((order) => ({
-        id: order.id,
-        productName: order.orderType || "Order",
+        id: order._id || "",
+        productName: order.items?.[0]?.name || "Order",
         otherProducts: order.trackingNumber ? `Tracking: ${order.trackingNumber}` : "No tracking",
-        productImage: order.pictureUrl || "",
-        customerName: order.recipientName || order.userName || "-",
+        productImage: order.items?.[0]?.image || "",
+        customerName: order.recipientName || (typeof order.userId === 'object' && order.userId !== null ? order.userId.name : "-"),
         customerPhone: order.recipientPhone || "-",
-        total: `$${order.deliveryCost?.toFixed(2) || "0.00"}`,
+        total: `$${order.totalAmount?.toFixed(2) || "0.00"}`,
         status: order.status,
         originalOrder: order,
       }))
@@ -60,8 +60,8 @@ export function RecentOrdersTable() {
     return tableData.filter((row) => row.status === filter)
   }, [tableData, filter])
 
-  const handleView = (orderId: number) => {
-    router.push(`/orders/${orderId}`)
+  const handleView = (orderId: string) => {
+    router.push(`/dashboard/orders/${orderId}`)
   }
 
   const columns = [

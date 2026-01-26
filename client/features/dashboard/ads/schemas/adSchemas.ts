@@ -1,13 +1,16 @@
 import * as z from "zod";
 
 export const adSchema = z.object({
-  photo: z.any().refine((file) => !!file, { message: "Photo is required" }),
+  photo: z.preprocess((val) => val === "" ? undefined : val, z.union([
+    z.custom<File>((val) => val instanceof File),
+    z.string().min(1)
+  ]).optional()),
   nameAr: z.string().min(1, "Name (AR) is required"),
   nameEn: z.string().min(1, "Name (EN) is required"),
   descriptionAr: z.string().optional(),
   descriptionEn: z.string().optional(),
-  isShown: z.boolean().default(true),
-  priority: z.coerce.number().int().optional().default(0),
+  isShown: z.boolean(),
+  priority: z.coerce.number().int(),
   link: z.string().optional(),
   productId: z.string().optional(),
 });

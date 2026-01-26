@@ -2,9 +2,24 @@
 
 import { MapPin, CheckCircle2, Clock, Package, Truck, CheckCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { Order } from "../types"
 
-export function OrderDetailSidebar({ data }: { data: any }) {
+interface MockOrder {
+  id: string;
+  status: string;
+  date: string;
+  payment_method: string;
+  order_type: string;
+  customer: string;
+  recipient_phone: string;
+  billing_address: string;
+  shipping_address: string;
+}
+
+export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
   if (!data) return null;
+
+  const d = data as any;
 
   return (
     <div className="space-y-6">
@@ -21,7 +36,7 @@ export function OrderDetailSidebar({ data }: { data: any }) {
             <div className="flex flex-col gap-1">
               <span className="text-sm text-content-tertiary">Billing Address</span>
               <p className="text-sm font-medium text-content-primary">
-                {data.billing_address}
+                {d.billing_address || d.shippingAddress}
               </p>
             </div>
           </div>
@@ -32,7 +47,7 @@ export function OrderDetailSidebar({ data }: { data: any }) {
             <div className="flex flex-col gap-1">
               <span className="text-sm text-content-tertiary">Shipping Address</span>
               <p className="text-sm font-medium text-content-primary">
-                {data.shipping_address}
+                {d.shipping_address || d.shippingAddress}
               </p>
             </div>
           </div>

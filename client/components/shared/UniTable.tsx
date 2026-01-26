@@ -12,6 +12,8 @@ import { Pagination } from "./Pagination"
 import { getImageUrl } from "@/utils/image.utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
+import { IconType } from "@/types"
+
 // Types for flexible cell rendering
 export type CellRenderer<TData> = (value: unknown, row: TData) => React.ReactNode
 
@@ -129,7 +131,7 @@ export function ActionButton({
   onClick, 
   variant = "default" 
 }: { 
-  icon: any; 
+  icon: IconType; 
   onClick?: () => void; 
   variant?: "default" | "danger" 
 }) {

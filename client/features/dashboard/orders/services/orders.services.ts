@@ -2,7 +2,8 @@
 
 import { AxiosError } from "axios";
 import clientAxios from "@/lib/axios/clientAxios";
-import type { Order, OrderStatus } from "../types";
+import type { Order, OrderStatus, CreateOrderPayload, UpdateOrderPayload } from "../types";
+import { Pagination } from "@/types";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -29,9 +30,9 @@ export interface GetOrdersParams {
 /**
  * Get all orders
  */
-export async function getOrders(params?: GetOrdersParams): Promise<ServiceResponse<{ orders: Order[], pagination: any }>> {
+export async function getOrders(params?: GetOrdersParams): Promise<ServiceResponse<{ orders: Order[], pagination: Pagination }>> {
   try {
-    const response = await clientAxios.get<ApiResponse<{ orders: Order[], pagination: any }>>("/orders", { params });
+    const response = await clientAxios.get<ApiResponse<{ orders: Order[], pagination: Pagination }>>("/orders", { params });
 
     return {
       success: true,
@@ -95,7 +96,7 @@ export async function getOrderById(id: string): Promise<ServiceResponse<{ order:
  */
 export async function updateOrder(
   id: string,
-  payload: any
+  payload: UpdateOrderPayload
 ): Promise<ServiceResponse<{ order: Order }>> {
   try {
     const response = await clientAxios.patch<ApiResponse<{ order: Order }>>(`/orders/${id}`, payload);
@@ -118,7 +119,7 @@ export async function updateOrder(
 /**
  * Create new order
  */
-export async function createOrder(payload: any): Promise<ServiceResponse<{ order: Order }>> {
+export async function createOrder(payload: CreateOrderPayload): Promise<ServiceResponse<{ order: Order }>> {
   try {
     const response = await clientAxios.post<ApiResponse<{ order: Order }>>("/orders", payload);
 

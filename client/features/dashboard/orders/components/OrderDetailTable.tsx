@@ -31,7 +31,7 @@ export function OrderDetailTable() {
     {
       id: "product",
       header: "Product",
-      cell: (_: any, row: any) => (
+      cell: (_: unknown, row: typeof orderItems[number]) => (
         <ProductCell 
           title={row.productName} 
           subtitle={row.subtitle} 

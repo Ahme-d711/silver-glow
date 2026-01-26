@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import Image from "next/image"
-import { Ad } from "./AdCard"
+import { Ad } from "../types"
 import { cn } from "@/lib/utils"
 
 interface SortableAdItemProps {
@@ -64,8 +64,8 @@ function SortableAdItem({ ad, index }: SortableAdItemProps) {
       )}
     >
       <Image
-        src={ad.image}
-        alt={ad.title}
+        src={ad.photo.startsWith('http') || ad.photo.startsWith('/') ? ad.photo : `/${ad.photo}`}
+        alt={ad.nameEn}
         fill
         priority
         className="object-cover pointer-events-none"

@@ -34,11 +34,11 @@ export async function initDefaultAdmin(): Promise<void> {
           role: "admin",
         });
         await adminUser.save();
-      } catch (createError: any) {
-        if (createError.code === 11000) {
+      } catch (createError: unknown) {
+        if (createError && typeof createError === 'object' && 'code' in createError && createError.code === 11000) {
           throw new AppError("Admin email already exists", 409);
         }
-        const errorMessage = createError?.message || "Unknown error";
+        const errorMessage = createError instanceof Error ? createError.message : "Unknown error";
         throw new AppError(
           `Failed to create admin: ${errorMessage}`,
           500

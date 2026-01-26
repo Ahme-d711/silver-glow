@@ -72,17 +72,29 @@ export function OrderForm({
   const tCommon = useTranslations("Common");
   const tAuth = useTranslations("Auth");
 
-  const form = useForm<any>({
-    resolver: zodResolver(orderFormSchema),
+  const initialUserId = typeof defaultValues?.userId === 'object' && defaultValues?.userId !== null 
+    ? (defaultValues.userId as any)._id 
+    : defaultValues?.userId || "";
+
+  const form = useForm<OrderFormData>({
+    // We cast the resolver to any to satisfy the complex generic requirements of React Hook Form + Zod
+    // while keeping the internal form values strictly typed as OrderFormData.
+    resolver: zodResolver(orderFormSchema) as any,
     defaultValues: {
-      userId: defaultValues?.userId?._id || defaultValues?.userId || "",
-      items: defaultValues?.items?.map(item => ({
+      userId: initialUserId,
+      items: (defaultValues?.items || []).map(item => ({
         productId: item.productId || "",
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
-      })) || [{ productId: "", name: "", price: 0, quantity: 1, image: "" }],
+      })).length > 0 ? (defaultValues?.items || []).map(item => ({
+        productId: item.productId || "",
+        name: item.name || "",
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+        image: item.image || "",
+      })) : [{ productId: "", name: "", price: 0, quantity: 1, image: "" }],
       recipientName: defaultValues?.recipientName || "",
       recipientPhone: defaultValues?.recipientPhone || "",
       shippingAddress: defaultValues?.shippingAddress || "",

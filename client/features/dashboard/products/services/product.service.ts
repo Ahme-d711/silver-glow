@@ -7,11 +7,12 @@ import {
   UpdateProductPayload,
   GetProductsParams,
   ServiceResponse,
+  Pagination,
 } from "../types";
 
 export const getAllProducts = async (params: GetProductsParams = {}) => {
   const response = await clientAxios.get<
-    ServiceResponse<{ products: Product[]; pagination: any }>
+    ServiceResponse<{ products: Product[]; pagination: Pagination }>
   >("/products", { params });
   return response.data.data?.products || [];
 };
