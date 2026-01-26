@@ -23,26 +23,26 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        "flex justify-between items-center rounded-[24px] p-6 h-[140px] relative overflow-hidden transition-all hover:scale-[1.02]",
+        "flex flex-col gap-2 rounded-[24px] p-6 h-[140px] relative overflow-hidden transition-all hover:scale-[1.02]",
         isDark ? "bg-primary text-white" : "bg-secondary text-primary"
       )}
     >
-      <div className="flex flex-col gap-2">
-        <span className={cn("text-base font-medium opacity-80")}>
-          {title}
-        </span>
+      <span className={cn("text-base font-medium opacity-80")}>
+        {title}
+      </span>
+      <div className="flex items-center justify-between gap-2">
         <span className="text-3xl font-bold tracking-tight">
           {value}
         </span>
-      </div>
 
-      <div className="flex items-center justify-end gap-1 text-xs font-medium">
-        <span>{trend}</span>
-        {isUp ? (
-          <TrendingUp className="size-3.5" />
-        ) : (
-          <TrendingDown className="size-3.5" />
-        )}
+        <div className="flex items-center gap-1 text-xs font-medium">
+          <span>{trend}</span>
+          {isUp ? (
+            <TrendingUp className="size-3.5" />
+          ) : (
+            <TrendingDown className="size-3.5" />
+          )}
+        </div>
       </div>
     </div>
   );

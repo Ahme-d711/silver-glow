@@ -17,6 +17,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Loader, Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { useState } from "react";
 
 interface SubCategoriesTableProps {
@@ -181,6 +182,10 @@ export default function SubCategoriesTable({
       ),
     },
   ];
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={7} rowCount={10} />;
+  }
 
   return (
     <>

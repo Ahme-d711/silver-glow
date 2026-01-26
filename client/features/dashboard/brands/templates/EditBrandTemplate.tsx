@@ -6,7 +6,7 @@ import { BrandForm } from "../components/BrandForm";
 import { useUpdateBrand, useBrandBySlug } from "../hooks/useBrand";
 import { useTranslations } from "next-intl";
 import { BrandFormData } from "../types";
-import { Loader } from "lucide-react";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditBrandTemplate() {
   const router = useRouter();
@@ -36,13 +36,7 @@ export default function EditBrandTemplate() {
     });
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (isFetching) return <FormPageSkeleton />;
 
   if (!brand) {
     return (

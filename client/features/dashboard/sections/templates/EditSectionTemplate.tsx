@@ -6,7 +6,7 @@ import { SectionForm } from "../components/SectionForm";
 import { useUpdateSection, useSectionBySlug } from "../hooks/useSection";
 import { useTranslations } from "next-intl";
 import { SectionFormData } from "../types";
-import { Loader } from "lucide-react";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditSectionTemplate() {
   const router = useRouter();
@@ -31,13 +31,7 @@ export default function EditSectionTemplate() {
     });
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (isFetching) return <FormPageSkeleton />;
 
   if (!section) {
     return (

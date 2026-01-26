@@ -13,6 +13,7 @@ import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
 import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
 import { useTranslations, useLocale } from "next-intl"
 import { Ad, AdCard } from "../types"
+import { AdsSkeleton } from "../components/AdsSkeleton"
 
 // Convert Ad to AdCard format (for mockup)
 function convertAdToCardFormat(ad: Ad, locale: string): AdCard {
@@ -97,7 +98,7 @@ export default function AdsTemplate() {
     router.push(`/dashboard/ads/edit/${id}`)
   }
 
-  if (isLoading) return <UniLoading />
+  if (isLoading) return <AdsSkeleton />
   if (error) return <NoDataMsg title={tCommon("error_loading_ads") || "Error loading ads"} />
 
   return (
@@ -129,6 +130,7 @@ export default function AdsTemplate() {
                 <AdsTable 
                     ads={filteredAds}
                     selectedIds={filteredAds.filter((a) => a.isShown).map((a) => a._id || a.id)}
+                    isLoading={isLoading}
                     onToggleSelect={handleToggleSelect}
                     onDelete={handleDeleteClick}
                     onEdit={handleEdit}

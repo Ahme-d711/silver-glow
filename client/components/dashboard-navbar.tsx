@@ -13,6 +13,7 @@ import { useLogout } from "@/features/dashboard/auth/hooks/useLogout";
 import { ConfirmationDialog } from "./shared/ConfirmationDialog";
 import LanguageSelector from "./shared/LanguageSelector";
 import { useTranslations } from "next-intl";
+import { getImageUrl } from "@/utils/image.utils";
 
 export function DashboardNavbar() {
   const { user } = useAuthStore();
@@ -22,8 +23,8 @@ export function DashboardNavbar() {
   const { logout, loading: isLoggingOut } = useLogout();
   console.log(user);
 
-  const userName = user?.name || user?.username || "Ahmed Elgedawy";
-  const userPhoto = user?.photo || user?.profileImage;
+  const userName = user?.name || "Ahmed Elgedawy";
+  const userPhoto = getImageUrl(user?.picture);
   const userInitial = userName?.charAt(0).toUpperCase() || "M";
   const userRole = user?.role === "admin" ? "Admin" : "Admin"; // Simplified for now
   const [imageError, setImageError] = useState(false);

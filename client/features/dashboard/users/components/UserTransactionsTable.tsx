@@ -1,6 +1,9 @@
+
 "use client"
 
 import React from "react"
+import { format } from "date-fns";
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 import { TableFilters } from "@/components/shared/TableFilters"
@@ -32,6 +35,9 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
   
   const [date, setDate] = React.useState<Date | undefined>()
   const [filter, setFilter] = React.useState("all")
+
+  // Assuming isLoading is defined elsewhere, e.g., from a data fetching hook
+  const isLoading = false; // Placeholder for demonstration
 
   const columns = [
     {
@@ -72,6 +78,10 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
       className: "text-content-tertiary font-medium"
     }
   ]
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={5} rowCount={5} />;
+  }
 
   return (
     <div className="bg-white rounded-[32px] border border-divider">

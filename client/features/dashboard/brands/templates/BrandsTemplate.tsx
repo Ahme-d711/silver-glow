@@ -9,6 +9,7 @@ import { useBrands, useDeleteBrand } from "../hooks/useBrand";
 import { Brand } from "../types";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
+import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
 export default function BrandsTemplate() {
@@ -27,6 +28,8 @@ export default function BrandsTemplate() {
     search
   });
   const { mutate: deleteBrand } = useDeleteBrand();
+
+  if (isLoading) return <TablePageSkeleton columnCount={7} rowCount={10} />;
 
   const brands = brandsData;
 

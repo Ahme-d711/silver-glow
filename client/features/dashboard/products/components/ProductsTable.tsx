@@ -17,6 +17,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { useState } from "react";
 
 interface ProductsTableProps {
@@ -231,6 +232,10 @@ export default function ProductsTable({
 
   if (isLoading) {
     return <UniLoading message={tCommon("loading")} />;
+  }
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={8} rowCount={10} />;
   }
 
   return (

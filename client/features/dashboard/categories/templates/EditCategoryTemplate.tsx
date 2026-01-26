@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditCategoryTemplate() {
   const router = useRouter();
@@ -50,21 +51,7 @@ export default function EditCategoryTemplate() {
     };
   }, [category]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title={t("edit_category")}
-          breadcrumbs={[
-            { label: tNav("dashboard"), href: "/" },
-            { label: t("title"), href: "/dashboard/categories" },
-            { label: t("edit_category") },
-          ]}
-        />
-        <UniLoading />
-      </div>
-    );
-  }
+  if (isLoading) return <FormPageSkeleton />;
 
   if (error || !category) {
     return (

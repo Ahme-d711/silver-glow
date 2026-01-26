@@ -7,6 +7,7 @@ import { AdForm } from "../components/AdForm"
 import { useAd, useUpdateAd } from "../hooks/useAds"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton"
 
 export default function EditAdsTemplate() {
   const router = useRouter()
@@ -30,7 +31,7 @@ export default function EditAdsTemplate() {
     router.back()
   }
 
-  if (isLoadingAd) return <UniLoading />
+  if (isLoadingAd) return <FormPageSkeleton />;
   if (error || !ad) return <NoDataMsg title="Error loading ad" />
 
   return (

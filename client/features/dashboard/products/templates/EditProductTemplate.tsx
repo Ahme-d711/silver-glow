@@ -6,7 +6,7 @@ import { ProductForm } from "../components/ProductForm";
 import { useUpdateProduct, useProductBySlug } from "../hooks/useProduct";
 import { useTranslations } from "next-intl";
 import { ProductFormData } from "../schemas/products.schema";
-import { Loader } from "lucide-react";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditProductTemplate() {
   const router = useRouter();
@@ -31,13 +31,7 @@ export default function EditProductTemplate() {
     });
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (isFetching) return <FormPageSkeleton />;
 
   if (!product) {
     return (

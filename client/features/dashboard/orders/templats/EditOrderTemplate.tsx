@@ -5,8 +5,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { OrderForm, OrderFormData } from "../components/OrderForm";
 import { useUpdateOrder, useOrder } from "../hooks/useOrders";
 import { useTranslations } from "next-intl";
-import { Loader } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 import type { Order, OrderStatus, PaymentStatus, UpdateOrderPayload } from "../types";
 
 interface EditOrderTemplateProps {
@@ -83,9 +83,7 @@ export default function EditOrderTemplate({ isOpen, onClose, orderData }: EditOr
       
       <div className={isOpen ? "" : "bg-white p-6 rounded-3xl shadow-sm border border-divider"}>
         {isFetching && !orderData ? (
-          <div className="flex items-center justify-center min-h-[400px]">
-            <Loader className="h-8 w-8 animate-spin text-primary" />
-          </div>
+          <FormPageSkeleton />
         ) : !order ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <p className="text-content-tertiary">Order not found</p>

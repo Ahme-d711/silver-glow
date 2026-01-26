@@ -17,6 +17,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Loader, Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 
 interface BrandsTableProps {
   brands: Brand[];
@@ -171,6 +172,10 @@ export default function BrandsTable({
       ),
     },
   ];
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={6} rowCount={10} />;
+  }
 
   return (
     <>

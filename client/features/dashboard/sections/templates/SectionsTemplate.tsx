@@ -9,6 +9,7 @@ import { useSections, useDeleteSection } from "../hooks/useSection";
 import { Section } from "../types";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
+import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
 export default function SectionsTemplate() {
@@ -27,6 +28,8 @@ export default function SectionsTemplate() {
     search
   });
   const { mutate: deleteSection } = useDeleteSection();
+
+  if (isLoading) return <TablePageSkeleton columnCount={7} rowCount={10} />;
 
   const sections = sectionsData;
 

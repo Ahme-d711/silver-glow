@@ -58,6 +58,10 @@
     "quick_navigation": "Quick Navigation"
   },
   "Dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Welcome back! Here's your overview.",
+    "export_report": "Export",
+    "revenue_analytics": "Revenue Analytics",
     "welcome": "Welcome",
     "overview": "Overview",
     "users": "Users",

@@ -8,6 +8,7 @@ import { OrdersTable } from "../components/OrdersTable"
 import { OrderStatus } from "../types"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl";
 
@@ -103,8 +104,8 @@ export default function OrdersTemplate() {
         />
 
         {isLoading ? (
-          <div className="p-8">
-            <UniLoading />
+          <div className="p-0">
+             <UniTableSkeleton columnCount={8} rowCount={10} />
           </div>
         ) : error ? (
           <div className="p-8">

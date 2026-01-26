@@ -9,6 +9,7 @@ import { useCategories, useDeleteCategory } from "../hooks/useCategory";
 import { Category } from "../services/category.service";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
+import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
 export default function CategoriesTemplate() {
@@ -27,6 +28,8 @@ export default function CategoriesTemplate() {
     search
   });
   const { mutate: deleteCategory } = useDeleteCategory();
+
+  if (isLoading) return <TablePageSkeleton columnCount={6} rowCount={10} />;
 
   const categories = categoriesData;
 

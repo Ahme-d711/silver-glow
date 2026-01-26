@@ -12,8 +12,8 @@ import UniTable, {
   SelectionHeader,
   SelectionCell
 } from "@/components/shared/UniTable"
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { cn } from "@/lib/utils"
-// import { EditOrderTemplate } from "../templats/EditOrderTemplate"
 import { Order } from "../types"
 import { format } from "date-fns"
 import { useCancelOrder } from "../hooks/useOrders"
@@ -21,6 +21,7 @@ import React from "react"
 
 interface OrdersTableProps {
   orders?: Order[]
+  isLoading?: boolean
 }
 
 interface TableRowData extends Record<string, unknown> {
@@ -39,13 +40,11 @@ interface TableRowData extends Record<string, unknown> {
 
 import { useTranslations } from "next-intl"
 
-export function OrdersTable({ orders = [] }: OrdersTableProps) {
+export function OrdersTable({ orders = [], isLoading }: OrdersTableProps) {
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
   const router = useRouter()
-  const [editingOrder, setEditingOrder] = React.useState<Order | null>(null)
-  const [isEditOpen, setIsEditOpen] = React.useState(false)
-  const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder()
+  const { mutate: cancelOrder } = useCancelOrder()
 
   const handleEdit = (orderId: string) => {
     router.push(`/dashboard/orders/${orderId}/edit`)
@@ -175,6 +174,10 @@ export function OrdersTable({ orders = [] }: OrdersTableProps) {
       },
     },
   ]
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={9} rowCount={10} />;
+  }
 
   return (
     <>

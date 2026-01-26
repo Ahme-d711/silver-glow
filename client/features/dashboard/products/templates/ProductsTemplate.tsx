@@ -9,6 +9,7 @@ import { useProducts, useDeleteProduct } from "../hooks/useProduct";
 import { Product } from "../types";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
+import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
 export default function ProductsTemplate() {
@@ -27,6 +28,8 @@ export default function ProductsTemplate() {
     search
   });
   const { mutate: deleteProduct } = useDeleteProduct();
+
+  if (isLoading) return <TablePageSkeleton columnCount={8} rowCount={10} />;
 
   const handleEdit = (product: Product) => {
     router.push(`/dashboard/products/edit/${product.slug}`);

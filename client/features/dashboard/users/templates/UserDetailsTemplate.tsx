@@ -11,6 +11,7 @@ import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { AddBalanceModal } from "../components/AddBalanceModal";
+import { UserDetailsSkeleton } from "../components/UserDetailsSkeleton";
 import EditUserTemplate from "./EditUserTemplate";
 import { format } from "date-fns";
 import type { User } from "@/features/dashboard/auth/types";
@@ -42,21 +43,7 @@ export default function UserDetailsTemplate() {
   const [balanceModalOpen, setBalanceModalOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <PageHeader 
-          title="User Details"
-          breadcrumbs={[
-            { label: "Dashboard", href: "/dashboard" },
-            { label: "User List", href: "/dashboard/users" },
-            { label: "User Details" },
-          ]}
-        />
-        <UniLoading message="Loading user details..." />
-      </div>
-    );
-  }
+  if (isLoading) return <UserDetailsSkeleton />;
 
   if (error || !user) {
     return (

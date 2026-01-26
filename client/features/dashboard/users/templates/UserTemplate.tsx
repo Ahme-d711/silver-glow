@@ -8,6 +8,7 @@ import { UserCard } from "../components/UserCard";
 import { useUsers } from "../hooks/useUser";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
+import { UserGridSkeleton } from "../components/UserGridSkeleton";
 import type { User } from "@/features/dashboard/auth/types";
 import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
@@ -76,41 +77,6 @@ export default function UserTemplate() {
     return usersData.users.map(convertUserToCardFormat);
   }, [usersData]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6 min-h-screen">
-        <PageHeader
-          title="User"
-          breadcrumbs={[
-            { label: "Dashboard", href: "/dashboard" },
-            { label: "User List" },
-          ]}
-        />
-        <UniLoading message="Loading users..." />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6 min-h-screen">
-        <PageHeader
-          title="User"
-          breadcrumbs={[
-            { label: "Dashboard", href: "/dashboard" },
-            { label: "User List" },
-          ]}
-        />
-        <NoDataMsg
-          title="Failed to load users"
-          description={error instanceof Error ? error.message : "An error occurred"}
-          iconBgColor="bg-red-100"
-          iconColor="text-red-500"
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 min-h-screen">
       <PageHeader
@@ -145,7 +111,9 @@ export default function UserTemplate() {
           setActiveTab={setActiveTab}
         />
 
-        {filteredUsers.length === 0 ? (
+        {isLoading ? (
+          <UserGridSkeleton />
+        ) : filteredUsers.length === 0 ? (
           <NoDataMsg
             title="No users found"
             description={search || activeTab !== "all" ? "Try adjusting your filters" : "No users available"}

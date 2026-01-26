@@ -58,6 +58,10 @@
     "quick_navigation": "الوصول السريع"
   },
   "Dashboard": {
+    "title": "لوحة التحكم",
+    "subtitle": "مرحباً بعودتك! إليك نظرة عامة على بياناتك.",
+    "export_report": "تصدير",
+    "revenue_analytics": "تحليلات الإيرادات",
     "welcome": "مرحبًا بك",
     "overview": "نظرة عامة",
     "users": "المستخدمين",

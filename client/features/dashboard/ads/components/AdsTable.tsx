@@ -1,4 +1,7 @@
 import UniTable, { ActionCell, ActionButton, Check, Trash2, Pencil, UniTableColumn } from "@/components/shared/UniTable"
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslations } from "next-intl"
 import type { Ad } from "../types"
@@ -9,9 +12,10 @@ interface AdsTableProps {
   onToggleSelect: (id: string) => void
   onDelete: (id: string) => void
   onEdit: (id: string) => void
+  isLoading: boolean
 }
 
-export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }: AdsTableProps) {
+export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit, isLoading }: AdsTableProps) {
   const t = useTranslations("Common")
   const tAds = useTranslations("Ads")
   
@@ -82,6 +86,10 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit }:
       ),
     },
   ]
+
+  if (isLoading) {
+    return <UniTableSkeleton columnCount={6} rowCount={10} />;
+  }
 
   return (
     <div className="bg-white rounded-[24px] shadow-sm border border-divider p-6">

@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
+import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditSubCategoryTemplate() {
   const router = useRouter();
@@ -51,21 +52,7 @@ export default function EditSubCategoryTemplate() {
     };
   }, [subcategory]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title={t("edit_subcategory")}
-          breadcrumbs={[
-            { label: tNav("dashboard"), href: "/" },
-            { label: t("title"), href: "/dashboard/subcategories" },
-            { label: t("edit_subcategory") },
-          ]}
-        />
-        <UniLoading />
-      </div>
-    );
-  }
+  if (isLoading) return <FormPageSkeleton />;
 
   if (error || !subcategory) {
     return (

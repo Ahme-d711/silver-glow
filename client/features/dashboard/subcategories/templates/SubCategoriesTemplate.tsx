@@ -9,6 +9,7 @@ import { useSubcategories, useDeleteSubcategory } from "../hooks/useSubCategory"
 import { Subcategory } from "../services/subcategory.service";
 import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
+import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
 export default function SubCategoriesTemplate() {
@@ -27,6 +28,8 @@ export default function SubCategoriesTemplate() {
     search
   });
   const { mutate: deleteSubcategory } = useDeleteSubcategory();
+
+  if (isLoading) return <TablePageSkeleton columnCount={7} rowCount={10} />;
 
   const subcategories = subcategoriesData;
 

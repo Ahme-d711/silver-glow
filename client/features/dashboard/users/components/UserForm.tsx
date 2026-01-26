@@ -26,6 +26,21 @@ interface UserFormProps {
   isEdit?: boolean;
 }
 
+import { motion } from "framer-motion";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 }
+};
+
 export function UserForm({
   defaultValues,
   onSubmit,
@@ -86,7 +101,6 @@ export function UserForm({
     if (selectedFile) {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        // Skip picture field if we have a new file, and skip empty values
         if (key !== "picture" && value !== undefined && value !== null && value !== "") {
           formData.append(key, String(value));
         }
@@ -145,111 +159,134 @@ export function UserForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
-          <UniInput
-            control={form.control}
-            name="name"
-            label={t("name")}
-            placeholder={t("name")}
-            required
-          />
+        <motion.div 
+          className="grid grid-cols-1 gap-6"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={item}>
+            <UniInput
+              control={form.control}
+              name="name"
+              label={t("name")}
+              placeholder={t("name")}
+              required
+            />
+          </motion.div>
           
           {!isEdit && (
             <>
-              <UniInput
-                control={form.control}
-                name="email"
-                label={t("email")}
-                placeholder={t("email")}
-                type="email"
-                required
-              />
+              <motion.div variants={item}>
+                <UniInput
+                  control={form.control}
+                  name="email"
+                  label={t("email")}
+                  placeholder={t("email")}
+                  type="email"
+                  required
+                />
+              </motion.div>
+              <motion.div variants={item}>
+                <UniInput
+                  control={form.control}
+                  name="password"
+                  label={t("password")}
+                  placeholder="••••••"
+                  type="password"
+                  required
+                />
+              </motion.div>
+            </>
+          )}
+
+          {isEdit && (
+            <motion.div variants={item}>
               <UniInput
                 control={form.control}
                 name="password"
                 label={t("password")}
                 placeholder="••••••"
                 type="password"
-                required
               />
-            </>
+            </motion.div>
           )}
 
-          {isEdit && (
+          <motion.div variants={item}>
             <UniInput
               control={form.control}
-              name="password"
-              label={t("password")}
-              placeholder="••••••"
-              type="password"
+              name="phone"
+              label={t("phone")}
+              placeholder="+20..."
+              type="tel"
+              required
             />
-          )}
+          </motion.div>
 
-          <UniInput
-            control={form.control}
-            name="phone"
-            label={t("phone")}
-            placeholder="+20..."
-            type="tel"
-            required
-          />
+          <motion.div variants={item}>
+            <UniSelect
+              control={form.control}
+              name="role"
+              label={t("role")}
+              placeholder={t("select_role")}
+              options={[
+                { label: t("user"), value: "user" },
+                { label: t("admin"), value: "admin" },
+                { label: t("employee"), value: "employee" },
+              ]}
+              required
+            />
+          </motion.div>
 
-          <UniSelect
-            control={form.control}
-            name="role"
-            label={t("role")}
-            placeholder={t("select_role")}
-            options={[
-              { label: t("user"), value: "user" },
-              { label: t("admin"), value: "admin" },
-              { label: t("employee"), value: "employee" },
-            ]}
-            required
-          />
+          <motion.div variants={item}>
+            <UniInput
+              control={form.control}
+              name="address"
+              label={t("address")}
+              placeholder={t("address")}
+            />
+          </motion.div>
 
-          <UniInput
-            control={form.control}
-            name="address"
-            label={t("address")}
-            placeholder={t("address")}
-          />
-
-          <UniSwitch
-            control={form.control}
-            name="isActive"
-            label={t("is_active")}
-            disabled={isLoading}
-          />
-
-          <UniSwitch
-            control={form.control}
-            name="isVerified"
-            label={t("is_verified")}
-            disabled={isLoading}
-          />
-
-        <div className="flex pt-4 gap-3">
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
+          <motion.div variants={item}>
+            <UniSwitch
+              control={form.control}
+              name="isActive"
+              label={t("is_active")}
               disabled={isLoading}
-              className="rounded-xl h-11 px-6 cursor-pointer"
+            />
+          </motion.div>
+
+          <motion.div variants={item}>
+            <UniSwitch
+              control={form.control}
+              name="isVerified"
+              label={t("is_verified")}
+              disabled={isLoading}
+            />
+          </motion.div>
+
+          <div className="flex pt-4 gap-3">
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isLoading}
+                className="rounded-xl h-11 px-6 cursor-pointer"
+              >
+                {tCommon("cancel")}
+              </Button>
+            )}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-primary text-white hover:bg-primary/90 rounded-xl h-11 px-8 cursor-pointer"
             >
-              {tCommon("cancel")}
+              {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+              {submitLabel}
             </Button>
-          )}
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="bg-primary text-white hover:bg-primary/90 rounded-xl h-11 px-8 cursor-pointer"
-          >
-            {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-            {submitLabel}
-          </Button>
-        </div>
-        </div>
+          </div>
+        </motion.div>
       </form>
     </Form>
   );
