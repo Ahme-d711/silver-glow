@@ -93,9 +93,20 @@ export function WaselTable() {
   const columns = [
     {
       id: "id",
-      header: <SelectionHeader label="Order ID" />,
-      cell: (_: unknown, row: WaselOrder) => (
-        <SelectionCell checked={row.selected} id={row.id} />
+      header: (props: any) => (
+        <SelectionHeader 
+          label="Order ID" 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
+      ),
+      cell: (_: unknown, row: WaselOrder, props: any) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row.id} 
+        />
       ),
     },
     {
@@ -176,6 +187,7 @@ export function WaselTable() {
         enablePagination={true}
         pageSize={10}
         itemLabel="Orders"
+        showSelection={true}
       />
       {/* <EditOrderTemplate 
         isOpen={isEditOpen} 

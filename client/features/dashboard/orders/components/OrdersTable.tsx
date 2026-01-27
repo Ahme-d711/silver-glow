@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { HeaderContext, CellContext } from "@tanstack/react-table"
 import UniTable, { 
   ProductCell, 
   ActionCell, 
@@ -97,9 +98,20 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   const columns = [
     {
       id: "id",
-      header: <SelectionHeader label={t("order_id")} />,
-      cell: (_: unknown, row: TableRowData) => (
-        <SelectionCell checked={row.selected} id={row.id.toString().slice(-6).toUpperCase()} />
+      header: (props: HeaderContext<TableRowData, any>) => (
+        <SelectionHeader 
+          label={t("order_id")} 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
+      ),
+      cell: (_: unknown, row: TableRowData, props: CellContext<TableRowData, any>) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row.id.toString().slice(-6).toUpperCase()} 
+        />
       ),
     },
     {
@@ -201,8 +213,11 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
         enablePagination={true}
         pageSize={10}
         itemLabel="Orders"
-        onSelectionChange={(rows) => onSelectionChange?.(rows.map(r => r.originalOrder))}
+        onSelectionChange={React.useCallback((rows: TableRowData[]) => {
+          onSelectionChange?.(rows.map(r => r.originalOrder))
+        }, [onSelectionChange])}
         getRowId={(row) => row.id}
+        showSelection={true}
       />
       {/* <EditOrderTemplate 
         isOpen={isEditOpen} 

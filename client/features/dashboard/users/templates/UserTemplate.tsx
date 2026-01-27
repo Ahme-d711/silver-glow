@@ -12,6 +12,7 @@ import { UserGridSkeleton } from "../components/UserGridSkeleton";
 import type { User } from "@/features/dashboard/auth/types";
 import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { getImageUrl } from "@/utils/image.utils";
 import { format } from "date-fns";
 import { exportToExcel } from "@/utils/excelExport";
@@ -54,6 +55,8 @@ function convertUserToCardFormat(user: User) {
 
 export default function UserTemplate() {
   const searchParams = useSearchParams();
+  const tNav = useTranslations("Navigation");
+  const tCommon = useTranslations("Common");
   const search = searchParams.get("search") || "";
   
   const [activeTab, setActiveTab] = useState("all");
@@ -68,7 +71,7 @@ export default function UserTemplate() {
 
   const handleExport = () => {
     if (filteredUsers.length === 0 || selectedIds.length === 0) {
-      toast.error("No data to export");
+      toast.error(tCommon("no_data_to_export") || "No data selected for export");
       return;
     }
     
@@ -105,14 +108,14 @@ export default function UserTemplate() {
   return (
     <div className="space-y-6 min-h-screen">
       <PageHeader
-        title="User"
+        title={tCommon("view")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "User List" },
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: tCommon("all") },
         ]}
         actionButtons={[
           {
-            label: "Export",
+            label: tCommon("export"),
             icon: Download,
             variant: "outline",
             className: "bg-secondary text-primary border-none hover:bg-secondary/80",

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { HeaderContext, CellContext } from "@tanstack/react-table"
 import UniTable, { 
   SelectionCell,
   SelectionHeader,
@@ -86,9 +87,20 @@ export default function CategoriesTable({
   const columns: UniTableColumn<Category>[] = [
     {
       id: "selection",
-      header: <SelectionHeader label={t("category_id")} />,
-      cell: (value, row) => (
-        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "302012"} />
+      header: (props: HeaderContext<Category, any>) => (
+        <SelectionHeader 
+          label={t("category_id")} 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
+      ),
+      cell: (value, row, props: CellContext<Category, any>) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row._id?.slice(-6).toUpperCase() || "302012"} 
+        />
       ),
     },
     {
@@ -197,8 +209,11 @@ export default function CategoriesTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
-        onSelectionChange={onSelectionChange}
+        onSelectionChange={React.useCallback((rows: Category[]) => {
+          onSelectionChange?.(rows)
+        }, [onSelectionChange])}
         getRowId={(row) => row._id}
+        showSelection={true}
       />
       
       <ConfirmationModal

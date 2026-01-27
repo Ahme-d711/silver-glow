@@ -1,7 +1,7 @@
-import UniTable, { ActionCell, ActionButton, Check, Trash2, Pencil, UniTableColumn } from "@/components/shared/UniTable"
-import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
+import UniTable, { ActionCell, ActionButton, Check, Trash2, Pencil, UniTableColumn, SelectionCell, SelectionHeader } from "@/components/shared/UniTable"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
-import { useState } from "react";
+import { HeaderContext, CellContext } from "@tanstack/react-table"
+import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslations } from "next-intl"
 import type { Ad } from "../types"
@@ -12,33 +12,39 @@ interface AdsTableProps {
   onToggleSelect: (id: string) => void
   onDelete: (id: string) => void
   onEdit: (id: string) => void
+  onSelectionChange?: (selectedRows: Ad[]) => void
   isLoading: boolean
 }
 
-export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit, isLoading }: AdsTableProps) {
+export function AdsTable({ 
+  ads, 
+  selectedIds, 
+  onToggleSelect, 
+  onDelete, 
+  onEdit, 
+  onSelectionChange,
+  isLoading 
+}: AdsTableProps) {
   const t = useTranslations("Common")
   const tAds = useTranslations("Ads")
   
   const columns: UniTableColumn<Ad>[] = [
     {
       id: "select_id",
-      header: (
-        <div className="flex items-center gap-2">
-            <div className="bg-[#192C56] rounded-full p-[2px]">
-                <div className="h-4 w-4 bg-[#192C56] rounded-full flex items-center justify-center text-white font-bold text-xs">-</div>
-            </div>
-          <span>{tAds("title")}</span>
-        </div>
+      header: (props: HeaderContext<Ad, any>) => (
+        <SelectionHeader 
+          label={tAds("title")} 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
       ),
-      cell: (_: unknown, row: Ad) => (
-        <div className="flex items-center gap-3">
-          <Checkbox 
-            checked={selectedIds.includes(row.id)}
-            onCheckedChange={() => onToggleSelect(row.id)}
-            className="rounded bg-[#192C56] border-[#192C56] data-[state=checked]:bg-[#192C56] data-[state=checked]:text-white data-[state=unchecked]:bg-transparent data-[state=unchecked]:border-gray-400"
-          />
-          <span className="font-semibold text-primary">{row.id?.substring(0, 6) || "..."}</span>
-        </div>
+      cell: (_: unknown, row: Ad, props: CellContext<Ad, any>) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row.id?.substring(0, 6) || "..."} 
+        />
       ),
     },
     {
@@ -99,6 +105,11 @@ export function AdsTable({ ads, selectedIds, onToggleSelect, onDelete, onEdit, i
         enablePagination={true}
         pageSize={10}
         itemLabel={tAds("title")}
+        onSelectionChange={React.useCallback((rows: Ad[]) => {
+          onSelectionChange?.(rows)
+        }, [onSelectionChange])}
+        getRowId={(row: Ad) => row.id}
+        showSelection={true}
       />
     </div>
   )

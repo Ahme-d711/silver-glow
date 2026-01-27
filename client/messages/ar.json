@@ -72,7 +72,12 @@
     "advertisements": "الإعلانات",
     "support": "الدعم الفني",
     "settings": "الإعدادات",
-    "statistics": "الإحصائيات"
+    "statistics": "الإحصائيات",
+    "order_statistics": "إحصائيات الطلبات",
+    "traffic_by_gov": "حركة المرور حسب المحافظة",
+    "revenue_overview": "نظرة عامة على الإيرادات",
+    "profits": "الأرباح",
+    "no_data": "لا توجد بيانات متاحة"
   },
   "Common": {
     "loading": "جاري التحميل...",
@@ -160,7 +165,8 @@
     "date": "التاريخ",
     "max_3_ads": "مسموح بـ 3 إعلانات فقط على الصفحة الرئيسية",
     "error_loading_ads": "خطأ في تحميل الإعلانات",
-    "success_delete": "تم الحذف بنجاح"
+    "success_delete": "تم الحذف بنجاح",
+    "no_data_to_export": "لم يتم اختيار بيانات للتصدير"
   },
   "Users": {
     "title": "المستخدمين",

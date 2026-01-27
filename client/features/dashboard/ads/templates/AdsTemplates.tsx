@@ -14,6 +14,8 @@ import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
 import { useTranslations, useLocale } from "next-intl"
 import { Ad, AdCard } from "../types"
 import { AdsSkeleton } from "../components/AdsSkeleton"
+import { format } from "date-fns"
+import { exportToExcel } from "@/utils/excelExport"
 
 // Convert Ad to AdCard format (for mockup)
 function convertAdToCardFormat(ad: Ad, locale: string): AdCard {
@@ -45,6 +47,7 @@ export default function AdsTemplate() {
   const { mutate: deleteAd } = useDeleteAd()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [adToDelete, setAdToDelete] = useState<string | null>(null)
+  const [selectedAds, setSelectedAds] = useState<Ad[]>([])
 
   // Filter ads based on search
   const filteredAds = useMemo(() => {
@@ -61,6 +64,26 @@ export default function AdsTemplate() {
     const active = cards.filter(ad => ad.showOnHome)
     return active.length > 0 ? active : cards.slice(0, 5)
   }, [adsData, locale])
+
+  const handleExport = () => {
+    if (filteredAds.length === 0 || selectedAds.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data selected for export");
+      return;
+    }
+
+    const dataToExport = selectedAds.map((ad: Ad) => ({
+      [tCommon("nameAr")]: ad.nameAr,
+      [tCommon("nameEn")]: ad.nameEn,
+      "Link": ad.link || "-",
+      "Shown": ad.isShown ? tCommon("yes") : tCommon("no"),
+      [tCommon("date")]: ad.createdAt ? format(new Date(ad.createdAt), "dd MMM yyyy") : "-",
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `Ads_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Advertisements",
+    });
+  };
 
   const handleToggleSelect = (id: string) => {
     const originalAd = adsData?.find((a) => (a._id || a.id) === id)
@@ -113,7 +136,7 @@ export default function AdsTemplate() {
           {
             label: tCommon("export"),
             icon: Download,
-            onClick: () => console.log("Exporting"),
+            onClick: handleExport,
             variant: "secondary",
           },
           {
@@ -134,6 +157,7 @@ export default function AdsTemplate() {
                     onToggleSelect={handleToggleSelect}
                     onDelete={handleDeleteClick}
                     onEdit={handleEdit}
+                    onSelectionChange={setSelectedAds}
                 />
             </div>
 

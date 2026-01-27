@@ -76,7 +76,8 @@
     "order_statistics": "Order statistics",
     "traffic_by_gov": "Traffic by Government",
     "revenue_overview": "Revenue Overview",
-    "profits": "Profits"
+    "profits": "Profits",
+    "no_data": "No data available"
   },
   "Common": {
     "loading": "Loading...",
@@ -166,7 +167,8 @@
     "error_loading_ads": "Error loading ads",
     "success_delete": "Deleted successfully",
     "phone": "Phone",
-    "address": "Address"
+    "address": "Address",
+    "no_data_to_export": "No data selected for export"
   },
   "Users": {
     "title": "Users",
@@ -195,7 +197,7 @@
   },
   "Categories": {
     "title": "Categories List",
-    "add_category": "Add New Category",
+    "add_category": "Add Category",
     "edit_category": "Edit Category",
     "delete_category": "Delete Category",
     "category_id": "Category ID",
@@ -317,7 +319,7 @@
     "tracking_number": "Tracking Number",
     "details": "Order Details",
     "edit": "Edit Order",
-    "export": "Export Orders",
+    "export": "Export",
     "all_orders": "All Orders",
     "pending": "Pending",
     "confirmed": "Confirmed",

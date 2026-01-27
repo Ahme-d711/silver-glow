@@ -1,4 +1,5 @@
-"use client";
+import React, { useState } from "react";
+import { HeaderContext, CellContext } from "@tanstack/react-table"
 
 import UniTable, {
   SelectionCell,
@@ -18,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
-import { useState } from "react";
 
 interface ProductsTableProps {
   products: Product[];
@@ -90,9 +90,20 @@ export default function ProductsTable({
   const columns: UniTableColumn<Product>[] = [
     {
       id: "selection",
-      header: <SelectionHeader label={t("product_id")} />,
-      cell: (_, row) => (
-        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase()} />
+      header: (props: HeaderContext<Product, any>) => (
+        <SelectionHeader 
+          label={t("product_id")} 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
+      ),
+      cell: (_, row, props: CellContext<Product, any>) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row._id?.slice(-6).toUpperCase()} 
+        />
       ),
     },
     {
@@ -248,8 +259,11 @@ export default function ProductsTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
-        onSelectionChange={onSelectionChange}
+        onSelectionChange={React.useCallback((rows: Product[]) => {
+          onSelectionChange?.(rows)
+        }, [onSelectionChange])}
         getRowId={(row) => row._id}
+        showSelection={true}
       />
 
       <ConfirmationModal

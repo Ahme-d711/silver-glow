@@ -21,12 +21,14 @@ import {
   SelectValue 
 } from "@/components/ui/select"
 
+import { Row, Table, HeaderContext, CellContext } from "@tanstack/react-table"
+
 // Types for flexible cell rendering
-export type CellRenderer<TData> = (value: unknown, row: TData) => React.ReactNode
+export type CellRenderer<TData> = (value: unknown, row: TData, props: CellContext<TData, any>) => React.ReactNode
 
 export interface UniTableColumn<TData> {
   id: string
-  header: string | React.ReactNode
+  header: string | React.ReactNode | ((props: HeaderContext<TData, any>) => React.ReactNode)
   accessorKey?: keyof TData | string
   cell?: CellRenderer<TData>
   enableSorting?: boolean
@@ -107,8 +109,10 @@ export function SelectionHeader({
         checked={checked} 
         onCheckedChange={(val) => onChange?.(!!val)}
         className={cn(
-          "rounded bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white shrink-0",
-          indeterminate && "opacity-50"
+          "rounded transition-colors shrink-0",
+          (checked || indeterminate) 
+            ? "bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" 
+            : "border-divider bg-white"
         )} 
       />
       {label && <span className="whitespace-nowrap">{label}</span>}
@@ -256,38 +260,21 @@ function UniTable<TData>({
       id: col.id,
       accessorKey: col.accessorKey as string,
       header: (headerProps) => {
-        if (col.id === "id" && showSelection) {
-          // Wrap SelectionHeader with table state integration
-          if (React.isValidElement(col.header) && (col.header.type as any).name === "SelectionHeader") {
-             return (
-               <SelectionHeader 
-                 checked={headerProps.table.getIsAllPageRowsSelected()}
-                 indeterminate={headerProps.table.getIsSomePageRowsSelected()}
-                 onChange={(val) => headerProps.table.toggleAllPageRowsSelected(val)}
-                 label={(col.header.props as any).label}
-               />
-             )
-          }
+        if (typeof col.header === "function") {
+          return col.header(headerProps)
         }
         return col.header
       },
       cell: (cellProps) => {
         const value = cellProps.getValue()
-        if (col.id === "id" && showSelection && col.cell) {
-           // We need to pass selection props to the cell if it's the id column
-           return (
-             <SelectionCell 
-               checked={cellProps.row.getIsSelected()}
-               onChange={(val) => cellProps.row.toggleSelected(val)}
-               id={value as string}
-             />
-           )
+        if (col.cell) {
+          return col.cell(value, cellProps.row.original, cellProps)
         }
-        return col.cell ? col.cell(value, cellProps.row.original) : (value ?? "-")
+        return value ?? "-"
       },
       enableSorting: col.enableSorting ?? false,
     }))
-  }, [columns, showSelection])
+  }, [columns])
 
   const table = useReactTable({
     data,
@@ -307,13 +294,17 @@ function UniTable<TData>({
     },
   })
 
+  // Use a ref to store the latest callback to avoid unnecessary effect triggers
+  const onSelectionChangeRef = React.useRef(onSelectionChange)
+  onSelectionChangeRef.current = onSelectionChange
+
   // Trigger onSelectionChange when selection updates
   React.useEffect(() => {
-    if (onSelectionChange) {
+    if (onSelectionChangeRef.current) {
       const selectedRows = table.getSelectedRowModel().flatRows.map(row => row.original)
-      onSelectionChange(selectedRows)
+      onSelectionChangeRef.current(selectedRows)
     }
-  }, [rowSelection, table, onSelectionChange])
+  }, [rowSelection]) // ONLY depend on rowSelection to avoid infinite loops if table/props change
 
   // No longer needed
   // const columnWidths = React.useMemo(() => ... )

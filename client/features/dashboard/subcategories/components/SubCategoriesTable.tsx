@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { HeaderContext, CellContext } from "@tanstack/react-table"
 import UniTable, { 
   SelectionCell,
   SelectionHeader,
@@ -86,9 +87,20 @@ export default function SubCategoriesTable({
   const columns: UniTableColumn<Subcategory>[] = [
     {
       id: "selection",
-      header: <SelectionHeader label={t("subcategory_id")} />,
-      cell: (value, row) => (
-        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "SUB" + row.nameEn.slice(0,3).toUpperCase()} />
+      header: (props: HeaderContext<Subcategory, any>) => (
+        <SelectionHeader 
+          label={t("subcategory_id")} 
+          checked={props.table.getIsAllPageRowsSelected()}
+          indeterminate={props.table.getIsSomePageRowsSelected()}
+          onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
+        />
+      ),
+      cell: (value, row, props: CellContext<Subcategory, any>) => (
+        <SelectionCell 
+          checked={props.row.getIsSelected()} 
+          onChange={(val) => props.row.toggleSelected(val)}
+          id={row._id?.slice(-6).toUpperCase() || "SUB" + row.nameEn.slice(0,3).toUpperCase()} 
+        />
       ),
     },
     {
@@ -197,8 +209,11 @@ export default function SubCategoriesTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
-        onSelectionChange={onSelectionChange}
+        onSelectionChange={React.useCallback((rows: Subcategory[]) => {
+          onSelectionChange?.(rows)
+        }, [onSelectionChange])}
         getRowId={(row) => row._id}
+        showSelection={true}
       />
       
       <ConfirmationModal
