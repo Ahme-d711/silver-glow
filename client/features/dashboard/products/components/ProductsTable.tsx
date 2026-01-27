@@ -170,15 +170,23 @@ export default function ProductsTable({
       id: "section",
       header: tCommon("section"),
       cell: (_, row) => {
-        const section = row.sectionId;
+        const sections = row.sectionIds;
+        if (!Array.isArray(sections) || sections.length === 0) return "-";
+        
         return (
-          <span className="text-sm text-content-secondary">
-            {typeof section === 'object' && section !== null
-              ? locale === "ar"
-                ? section.nameAr || section.nameEn
-                : section.nameEn || section.nameAr
-              : "-"}
-          </span>
+          <div className="flex flex-wrap gap-1 max-w-[200px]">
+            {sections.map((section: any, index) => {
+              const name = typeof section === 'object' && section !== null
+                ? (locale === "ar" ? section.nameAr : section.nameEn)
+                : section;
+                
+              return (
+                <span key={index} className="text-xs bg-secondary/20 text-primary px-1.5 py-0.5 rounded-md whitespace-nowrap">
+                  {name}
+                </span>
+              );
+            })}
+          </div>
         );
       },
     },

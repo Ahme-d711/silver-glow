@@ -17,7 +17,7 @@ export interface Product {
     categoryId: PopulatedField<CategoryReference>;
     subCategoryId?: PopulatedField<SubCategoryReference>;
     brandId?: PopulatedField<BrandReference>;
-    sectionId?: PopulatedField<SectionReference>;
+    sectionIds: PopulatedField<SectionReference>[];
     priority: number;
     isShow: boolean;
     isDeleted: boolean;
@@ -38,7 +38,7 @@ export interface CreateProductPayload {
     categoryId: string;
     subCategoryId?: string;
     brandId?: string;
-    sectionId?: string;
+    sectionIds: string[];
     priority?: number;
     isShow?: boolean;
 }
@@ -50,7 +50,7 @@ export interface GetProductsParams {
     categoryId?: string;
     subCategoryId?: string;
     brandId?: string;
-    sectionId?: string;
+    sectionIds?: string[];
     isDeleted?: boolean;
     isShow?: boolean;
     page?: number;

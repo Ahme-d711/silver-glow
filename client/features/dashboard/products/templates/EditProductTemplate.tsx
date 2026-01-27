@@ -67,7 +67,9 @@ export default function EditProductTemplate() {
           categoryId: typeof product.categoryId === 'object' && product.categoryId !== null ? product.categoryId._id : product.categoryId,
           subCategoryId: typeof product.subCategoryId === 'object' && product.subCategoryId !== null ? product.subCategoryId._id : product.subCategoryId,
           brandId: typeof product.brandId === 'object' && product.brandId !== null ? product.brandId._id : product.brandId,
-          sectionId: typeof product.sectionId === 'object' && product.sectionId !== null ? product.sectionId._id : product.sectionId,
+          sectionIds: Array.isArray(product.sectionIds) 
+            ? product.sectionIds.map((s: any) => typeof s === 'object' && s !== null ? s._id : s)
+            : [],
           mainImage: product.mainImage,
           images: product.images,
         }}

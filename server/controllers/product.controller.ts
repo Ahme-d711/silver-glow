@@ -12,7 +12,7 @@ import path from "path";
  */
 export const getAllProducts = async (req: Request, res: Response) => {
   const validatedQuery = queryProductSchema.parse(req.query);
-  const { search, categoryId, subCategoryId, brandId, sectionId, isDeleted, isShow, page, limit } = validatedQuery;
+  const { search, categoryId, subCategoryId, brandId, sectionIds, isDeleted, isShow, page, limit } = validatedQuery;
 
   const query: QueryFilter<IProduct> = { isDeleted: isDeleted || false };
 
@@ -36,7 +36,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
   if (categoryId) query.categoryId = categoryId;
   if (subCategoryId) query.subCategoryId = subCategoryId;
   if (brandId) query.brandId = brandId;
-  if (sectionId) query.sectionId = sectionId;
+  if (sectionIds && sectionIds.length > 0) {
+    query.sectionIds = { $in: sectionIds };
+  }
   if (isShow !== undefined) query.isShow = isShow;
 
   const skip = (page - 1) * limit;
@@ -49,7 +51,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       .populate("categoryId", "nameAr nameEn")
       .populate("subCategoryId", "nameAr nameEn")
       .populate("brandId", "nameAr nameEn")
-      .populate("sectionId", "nameAr nameEn"),
+      .populate("sectionIds", "nameAr nameEn"),
     ProductModel.countDocuments(query),
   ]);
 

@@ -14,6 +14,7 @@ import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
 import { UniSelect } from "@/components/shared/uni-form/UniSelect";
 import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
+import { UniAsyncMultiCombobox } from "@/components/shared/uni-form/UniAsyncMultiCombobox";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
@@ -78,7 +79,7 @@ export function ProductForm({
   const imagesRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as any,
     defaultValues: {
       nameAr: "",
       nameEn: "",
@@ -88,9 +89,9 @@ export function ProductForm({
       oldPrice: 0,
       costPrice: 0,
       stock: 0,
-      priority: 0,
       isShow: true,
       categoryId: "",
+      sectionIds: [],
       ...defaultValues,
     },
   });
@@ -145,10 +146,13 @@ export function ProductForm({
           if (img instanceof File) {
             formData.append("images", img);
           } else if (typeof img === "string") {
-            // If it's an existing image URL/path, we might store it as a hidden field or handle it differently
-            // Usually for multiple images, if you send back existing ones it depends on backend logic
             formData.append("existingImages", img);
           }
+        });
+      } else if (key === "sectionIds" && Array.isArray(value)) {
+        // Multi-select sections
+        value.forEach((id) => {
+          formData.append("sectionIds", id);
         });
       } else if (key === "mainImage") {
         if (value instanceof File) {
@@ -166,7 +170,7 @@ export function ProductForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onFormSubmit as any)} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Main Info */}
           <div className="space-y-6">
@@ -174,7 +178,7 @@ export function ProductForm({
             
             <div className="space-y-6">
               <UniInput
-                control={form.control}
+                control={form.control as any}
                 name="nameAr"
                 label={t("name_ar")}
                 placeholder={t("name_ar_placeholder")}
@@ -182,7 +186,7 @@ export function ProductForm({
               />
 
               <UniInput
-                control={form.control}
+                control={form.control as any}
                 name="nameEn"
                 label={t("name_en")}
                 placeholder={t("name_en_placeholder")}
@@ -191,14 +195,14 @@ export function ProductForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control}
+                  control={form.control as any}
                   name="price"
                   label={t("price")}
                   type="number"
                   required
                 />
                 <UniInput
-                  control={form.control}
+                  control={form.control as any}
                   name="oldPrice"
                   label={t("old_price")}
                   type="number"
@@ -207,13 +211,13 @@ export function ProductForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control}
+                  control={form.control as any}
                   name="costPrice"
                   label={t("cost_price")}
                   type="number"
                 />
                 <UniInput
-                  control={form.control}
+                  control={form.control as any}
                   name="stock"
                   label={t("stock")}
                   type="number"
@@ -231,7 +235,7 @@ export function ProductForm({
             
             <div className="space-y-6">
               <UniAsyncCombobox
-                control={form.control}
+                control={form.control as any}
                 name="categoryId"
                 label={tCommon("category")}
                 placeholder={tCommon("select_category")}
@@ -240,13 +244,13 @@ export function ProductForm({
                   const res = await getAllCategoriesApi({ search });
                   return res.data?.categories || [];
                 }}
-                getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                getItemValue={(item) => item._id}
+                getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item: any) => item._id}
                 required
               />
 
               <UniAsyncCombobox
-                control={form.control}
+                control={form.control as any}
                 name="subCategoryId"
                 label={tCommon("subcategory")}
                 placeholder={tCommon("select_subcategory")}
@@ -255,14 +259,14 @@ export function ProductForm({
                   const res = await getAllSubcategoriesApi({ search, categoryId: selectedCategoryId });
                   return res.data?.subcategories || [];
                 }}
-                getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                getItemValue={(item) => item._id}
+                getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item: any) => item._id}
                 disabled={!selectedCategoryId}
               />
 
               <div className="grid grid-cols-2 gap-4">
                 <UniAsyncCombobox
-                  control={form.control}
+                  control={form.control as any}
                   name="brandId"
                   label={tCommon("brand")}
                   placeholder={tCommon("select_brand")}
@@ -271,12 +275,12 @@ export function ProductForm({
                     const res = await getAllBrandsApi({ search });
                     return res.data?.brands || [];
                   }}
-                  getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                  getItemValue={(item) => item._id}
+                  getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item: any) => item._id}
                 />
-                <UniAsyncCombobox
-                  control={form.control}
-                  name="sectionId"
+                <UniAsyncMultiCombobox
+                  control={form.control as any}
+                  name="sectionIds"
                   label={tCommon("section")}
                   placeholder={tCommon("select_section")}
                   searchPlaceholder={tCommon("search")}
@@ -284,20 +288,20 @@ export function ProductForm({
                     const res = await getAllSectionsApi({ search });
                     return res.data?.sections || [];
                   }}
-                  getItemLabel={(item) => locale === "ar" ? item.nameAr : item.nameEn}
-                  getItemValue={(item) => item._id}
+                  getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item: any) => item._id}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control}
+                  control={form.control as any}
                   name="priority"
                   label={tCommon("priority")}
                   type="number"
                 />
                 <UniSwitch
-                  control={form.control}
+                  control={form.control as any}
                   name="isShow"
                   label={tCommon("show_on_store")}
                   className="p-3 border-none bg-transparent"
@@ -310,7 +314,7 @@ export function ProductForm({
         {/* Descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UniTextarea
-            control={form.control}
+            control={form.control as any}
             name="descriptionAr"
             label={t("description_ar")}
             placeholder={t("description_ar_placeholder")}
@@ -318,7 +322,7 @@ export function ProductForm({
           />
 
           <UniTextarea
-            control={form.control}
+            control={form.control as any}
             name="descriptionEn"
             label={t("description_en")}
             placeholder={t("description_en_placeholder")}

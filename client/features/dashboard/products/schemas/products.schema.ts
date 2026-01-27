@@ -12,7 +12,7 @@ export const productFormSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),
-  sectionId: z.string().optional(),
+  sectionIds: z.array(z.string()).default([]),
   priority: z.number().int().min(0),
   isShow: z.boolean(),
   mainImage: z.union([z.instanceof(File), z.string()]).optional(),

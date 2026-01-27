@@ -13,7 +13,10 @@ export const createProductSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),
-  sectionId: z.string().optional(),
+  sectionIds: z.preprocess((val) => {
+    if (typeof val === "string") return val.split(",").filter(Boolean);
+    return val;
+  }, z.array(z.string())).optional().default([]),
   priority: z.coerce.number().int().min(0).default(0),
   isShow: z.preprocess((val) => val === "true" || val === true, z.boolean()).default(true),
 });
@@ -25,7 +28,10 @@ export const queryProductSchema = z.object({
   categoryId: z.string().optional(),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),
-  sectionId: z.string().optional(),
+  sectionIds: z.preprocess((val) => {
+    if (typeof val === "string") return val.split(",").filter(Boolean);
+    return val;
+  }, z.array(z.string())).optional(),
   isDeleted: z.preprocess((val) => val === "true", z.boolean()).optional(),
   isShow: z.preprocess((val) => val === "true", z.boolean()).optional(),
   page: z.coerce.number().int().min(1).default(1),

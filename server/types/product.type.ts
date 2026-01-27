@@ -16,7 +16,7 @@ export interface IProduct extends Document {
   categoryId: Types.ObjectId;
   subCategoryId?: Types.ObjectId;
   brandId?: Types.ObjectId;
-  sectionId?: Types.ObjectId;
+  sectionIds: Types.ObjectId[];
   priority: number;
   isShow: boolean;
   isDeleted: boolean;

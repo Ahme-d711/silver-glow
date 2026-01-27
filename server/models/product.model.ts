@@ -83,10 +83,10 @@ const ProductSchema = new Schema<IProduct>(
       ref: "brands",
       required: false,
     },
-    sectionId: {
-      type: Schema.Types.ObjectId,
+    sectionIds: {
+      type: [Schema.Types.ObjectId],
       ref: "sections",
-      required: false,
+      default: [],
     },
     priority: {
       type: Number,
@@ -149,7 +149,7 @@ ProductSchema.index({ nameAr: "text", nameEn: "text" });
 ProductSchema.index({ categoryId: 1 });
 ProductSchema.index({ subCategoryId: 1 });
 ProductSchema.index({ brandId: 1 });
-ProductSchema.index({ sectionId: 1 });
+ProductSchema.index({ sectionIds: 1 });
 ProductSchema.index({ isShow: 1 });
 ProductSchema.index({ isDeleted: 1 });
 ProductSchema.index({ priority: -1 });
