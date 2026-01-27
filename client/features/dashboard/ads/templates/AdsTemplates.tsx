@@ -16,6 +16,7 @@ import { Ad, AdCard } from "../types"
 import { AdsSkeleton } from "../components/AdsSkeleton"
 import { format } from "date-fns"
 import { exportToExcel } from "@/utils/excelExport"
+import { TableFilters } from "@/components/shared/TableFilters"
 
 // Convert Ad to AdCard format (for mockup)
 function convertAdToCardFormat(ad: Ad, locale: string): AdCard {
@@ -48,15 +49,24 @@ export default function AdsTemplate() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [adToDelete, setAdToDelete] = useState<string | null>(null)
   const [selectedAds, setSelectedAds] = useState<Ad[]>([])
+  const [activeTab, setActiveTab] = useState("all")
 
-  // Filter ads based on search
+  // Filter ads based on search and active tab
   const filteredAds = useMemo(() => {
     if (!adsData) return []
-    return adsData.filter(ad => 
+    let result = adsData.filter(ad => 
         ad.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) ||
         ad.nameEn.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [adsData, searchQuery])
+
+    if (activeTab === "active") {
+      result = result.filter(ad => ad.isShown)
+    } else if (activeTab === "inactive") {
+      result = result.filter(ad => !ad.isShown)
+    }
+
+    return result
+  }, [adsData, searchQuery, activeTab])
 
   // Get active ads for preview
   const previewAds = useMemo(() => {
@@ -150,15 +160,26 @@ export default function AdsTemplate() {
         <div className="flex flex-col xl:flex-row gap-8 items-start">
             {/* Left: Table */}
             <div className="flex-1 w-full">
-                <AdsTable 
-                    ads={filteredAds}
-                    selectedIds={filteredAds.filter((a) => a.isShown).map((a) => a._id || a.id)}
-                    isLoading={isLoading}
-                    onToggleSelect={handleToggleSelect}
-                    onDelete={handleDeleteClick}
-                    onEdit={handleEdit}
-                    onSelectionChange={setSelectedAds}
-                />
+                <div className="bg-white rounded-[24px] shadow-sm border border-divider overflow-hidden">
+                  <TableFilters
+                    tabs={[
+                      { label: tCommon("all"), value: "all" },
+                      { label: tCommon("active"), value: "active" },
+                      { label: tCommon("inactive"), value: "inactive" },
+                    ]}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                  />
+                  <AdsTable 
+                      ads={filteredAds}
+                      selectedIds={filteredAds.filter((a) => a.isShown).map((a) => a._id || a.id)}
+                      isLoading={isLoading}
+                      onToggleSelect={handleToggleSelect}
+                      onDelete={handleDeleteClick}
+                      onEdit={handleEdit}
+                      onSelectionChange={setSelectedAds}
+                  />
+                </div>
             </div>
 
             {/* Right: Mobile Preview */}

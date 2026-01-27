@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { Bell, Heart, Home, ShoppingBag, User, Search, Signal, Wifi, Battery } from "lucide-react"
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getImageUrl } from "@/utils/image.utils"
 
 // Swiper imports
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -55,11 +56,11 @@ export function AdsMobileMockup({ ads }: { ads: AdCard[] }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex-1 overflow-y-auto bg-gray-50 [&::-webkit-scrollbar]: [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="p-4 space-y-6">
             
             {/* Hero Ad Swiper */}
-            <div className="relative h-40 rounded-xl overflow-hidden bg-gray-200 shadow-sm group">
+            <div className="relative h-40 rounded-xl overflow- bg-gray-200 shadow-sm group">
                 {ads.length > 0 ? (
                   <Swiper
                     modules={[Autoplay, Pagination]}
@@ -71,17 +72,19 @@ export function AdsMobileMockup({ ads }: { ads: AdCard[] }) {
                     className="h-full w-full [&_.swiper-pagination-bullet-active]:bg-white [&_.swiper-pagination-bullet]:bg-white/60"
                   >
                     {ads.map((currentAd) => (
-                      <SwiperSlide key={currentAd.id} className="relative h-full w-full">
-                        <Image 
-                            src={currentAd.image} 
-                            alt={currentAd.title} 
-                            fill
-                            className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent p-4 flex flex-col justify-end text-white">
-                             <h3 className="font-bold text-sm mb-1 line-clamp-1">{currentAd.title}</h3>
-                             <p className="text-[10px] opacity-90 line-clamp-2 mb-2">Own a timeless, elegant ring at a special price.</p>
-                             <button className="absolute -bottom-3 -right-3 bg-[#1A2F5A] text-white text-[11px] font-bold py-2 px-5 rounded-full border-[3px] border-white shadow-sm z-20">Shop Now</button>
+                      <SwiperSlide key={currentAd.id} className="relative h-full w-full overflow-auto">
+                        <div className="relative h-full w-full rounded-xl overflow-hidden">
+                          <Image 
+                              src={getImageUrl(currentAd.image) || "/ads-1.svg"} 
+                              alt={currentAd.title} 
+                              fill
+                              className="object-cover"
+                          />
+                          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent p-4 flex flex-col justify-end text-white">
+                               <h3 className="font-bold text-sm mb-1 line-clamp-1">{currentAd.title}</h3>
+                               <p className="text-[10px] opacity-90 line-clamp-2 mb-2">Own a timeless, elegant ring at a special price.</p>
+                          </div>
+                        {/* <button className="absolute -bottom-3 right-3 bg-primary text-white text-[11px] font-bold py-2 px-5 rounded-full border-[3px] border-white shadow-sm z-20">Shop Now</button> */}
                         </div>
                       </SwiperSlide>
                     ))}

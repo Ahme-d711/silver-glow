@@ -3,7 +3,8 @@ import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
+import { getImageUrl } from "@/utils/image.utils"
 import type { Ad } from "../types"
 
 interface AdsTableProps {
@@ -27,6 +28,7 @@ export function AdsTable({
 }: AdsTableProps) {
   const t = useTranslations("Common")
   const tAds = useTranslations("Ads")
+  const locale = useLocale()
   
   const columns: UniTableColumn<Ad>[] = [
     {
@@ -52,7 +54,7 @@ export function AdsTable({
       header: t("image"),
       cell: (_: unknown, row: Ad) => (
         <div className="h-10 w-10 bg-gray-200 rounded-lg overflow-hidden">
-             <img src={row.photo ? (row.photo.startsWith('http') || row.photo.startsWith('/') ? row.photo : `/${row.photo}`) : "/ads-1.svg"} alt={row.nameEn} className="h-full w-full object-cover" />
+             <img src={getImageUrl(row.photo) || "/ads-1.svg"} alt={row.nameEn} className="h-full w-full object-cover" />
         </div>
       ),
     },
@@ -60,7 +62,7 @@ export function AdsTable({
       id: "title",
       header: t("title"),
       cell: (_: unknown, row: Ad) => (
-        <span className="text-gray-600 font-medium">{row.nameAr} | {row.nameEn}</span>
+        <span className="text-gray-600 font-medium">{locale === "ar" ? row.nameAr : row.nameEn}</span>
       ),
     },
     {
@@ -98,7 +100,6 @@ export function AdsTable({
   }
 
   return (
-    <div className="bg-white rounded-[24px] shadow-sm border border-divider p-6">
        <UniTable<Ad>
         data={ads}
         columns={columns}
@@ -111,6 +112,5 @@ export function AdsTable({
         getRowId={(row: Ad) => row.id}
         showSelection={true}
       />
-    </div>
   )
 }
