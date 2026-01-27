@@ -3,6 +3,7 @@ import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
 import { useTranslations, useLocale } from "next-intl"
 import { getImageUrl } from "@/utils/image.utils"
 import type { Ad } from "../types"
@@ -11,6 +12,7 @@ interface AdsTableProps {
   ads: Ad[]
   selectedIds: string[]
   onToggleSelect: (id: string) => void
+  onToggleStatus: (id: string, isShown: boolean) => void
   onDelete: (id: string) => void
   onEdit: (id: string) => void
   onSelectionChange?: (selectedRows: Ad[]) => void
@@ -21,6 +23,7 @@ export function AdsTable({
   ads, 
   selectedIds, 
   onToggleSelect, 
+  onToggleStatus,
   onDelete, 
   onEdit, 
   onSelectionChange,
@@ -78,9 +81,20 @@ export function AdsTable({
       id: "date",
       header: t("date"),
       cell: (_: unknown, row: Ad) => (
-        <span className="text-gray-500 text-sm">
+        <span className="text-gray-600 font-medium text-sm">
             {row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "-"}
         </span>
+      ),
+    },
+    {
+      id: "status",
+      header: t("status"),
+      cell: (_: unknown, row: Ad) => (
+        <Switch
+          checked={row.isShown}
+          onCheckedChange={(checked) => onToggleStatus(row.id || row._id || "", checked)}
+          className="data-[state=checked]:bg-primary"
+        />
       ),
     },
     {
@@ -96,7 +110,7 @@ export function AdsTable({
   ]
 
   if (isLoading) {
-    return <UniTableSkeleton columnCount={6} rowCount={10} />;
+    return <UniTableSkeleton columnCount={7} rowCount={10} />;
   }
 
   return (

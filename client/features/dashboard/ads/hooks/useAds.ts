@@ -3,22 +3,22 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import type { Ad } from "../types"
-import { getAllAds, getAdById, createAd, updateAd, deleteAd } from "../services/ads.services"
+import { getAllAds, getAdById, createAd, updateAd, deleteAd, GetAdsParams } from "../services/ads.services"
 import { getErrorMessage } from "@/utils/api.utils"
 
 // Query keys
 export const adsKeys = {
   all: ["ads"] as const,
-  lists: () => [...adsKeys.all, "list"] as const,
+  lists: (params?: GetAdsParams) => [...adsKeys.all, "list", params] as const,
   details: () => [...adsKeys.all, "detail"] as const,
   detail: (id: string) => [...adsKeys.details(), id] as const,
 }
 
 // Get Ads Query
-export function useAds() {
+export function useAds(params?: GetAdsParams) {
   return useQuery({
-    queryKey: adsKeys.lists(),
-    queryFn: () => getAllAds(),
+    queryKey: adsKeys.lists(params),
+    queryFn: () => getAllAds(params),
   })
 }
 

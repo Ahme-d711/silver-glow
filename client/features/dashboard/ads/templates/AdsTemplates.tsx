@@ -43,7 +43,6 @@ export default function AdsTemplate() {
   const tCommon = useTranslations("Common")
   const tNav = useTranslations("Navigation")
 
-  const { data: adsData, isLoading, error } = useAds()
   const { mutate: updateAd } = useUpdateAd()
   const { mutate: deleteAd } = useDeleteAd()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -51,22 +50,15 @@ export default function AdsTemplate() {
   const [selectedAds, setSelectedAds] = useState<Ad[]>([])
   const [activeTab, setActiveTab] = useState("all")
 
-  // Filter ads based on search and active tab
-  const filteredAds = useMemo(() => {
-    if (!adsData) return []
-    let result = adsData.filter(ad => 
-        ad.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ad.nameEn.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-
-    if (activeTab === "active") {
-      result = result.filter(ad => ad.isShown)
-    } else if (activeTab === "inactive") {
-      result = result.filter(ad => !ad.isShown)
+  // Filters for server-side
+  const filters = useMemo(() => {
+    return {
+      search: searchQuery,
+      isShown: activeTab === "all" ? undefined : activeTab === "active",
     }
+  }, [searchQuery, activeTab])
 
-    return result
-  }, [adsData, searchQuery, activeTab])
+  const { data: adsData, isLoading, error } = useAds(filters)
 
   // Get active ads for preview
   const previewAds = useMemo(() => {
@@ -76,7 +68,7 @@ export default function AdsTemplate() {
   }, [adsData, locale])
 
   const handleExport = () => {
-    if (filteredAds.length === 0 || selectedAds.length === 0) {
+    if (!adsData || adsData.length === 0 || selectedAds.length === 0) {
       toast.error(tCommon("no_data_to_export") || "No data selected for export");
       return;
     }
@@ -95,19 +87,19 @@ export default function AdsTemplate() {
     });
   };
 
-  const handleToggleSelect = (id: string) => {
+  const handleToggleStatus = (id: string, isShown: boolean) => {
     const originalAd = adsData?.find((a) => (a._id || a.id) === id)
     if (!originalAd) return
 
     // Limit check for home screen
     const currentlyShownCount = adsData?.filter(a => a.isShown).length || 0
-    if (!originalAd.isShown && currentlyShownCount >= 3) {
+    if (isShown && currentlyShownCount >= 3) {
       toast.error(tCommon("max_3_ads") || "Maximum 3 ads allowed on home screen")
       return
     }
 
     const formData = new FormData()
-    formData.append("isShown", String(!originalAd.isShown))
+    formData.append("isShown", String(isShown))
     
     updateAd({
       id: originalAd._id || originalAd.id,
@@ -171,10 +163,11 @@ export default function AdsTemplate() {
                     setActiveTab={setActiveTab}
                   />
                   <AdsTable 
-                      ads={filteredAds}
-                      selectedIds={filteredAds.filter((a) => a.isShown).map((a) => a._id || a.id)}
+                      ads={adsData || []}
+                      selectedIds={(adsData || []).filter((a) => a.isShown).map((a) => a._id || a.id)}
                       isLoading={isLoading}
-                      onToggleSelect={handleToggleSelect}
+                      onToggleSelect={() => {}} 
+                      onToggleStatus={handleToggleStatus}
                       onDelete={handleDeleteClick}
                       onEdit={handleEdit}
                       onSelectionChange={setSelectedAds}
