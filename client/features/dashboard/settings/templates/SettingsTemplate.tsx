@@ -11,7 +11,7 @@ export default function SettingsTemplate() {
   const tNav = useTranslations("Navigation")
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6">
       <PageHeader
         title={t("title")}
         breadcrumbs={[

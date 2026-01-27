@@ -309,7 +309,6 @@ export function ProductForm({
 
         {/* Descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UniTextarea
             control={form.control}
             name="descriptionAr"
@@ -325,7 +324,6 @@ export function ProductForm({
             placeholder={t("description_en_placeholder")}
             className="md:col-span-1"
           />
-        </div>
         </div>
 
         {/* Media */}
