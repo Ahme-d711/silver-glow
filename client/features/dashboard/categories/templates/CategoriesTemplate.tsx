@@ -11,13 +11,40 @@ import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
+import { toast } from "sonner";
+
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
 
 export default function CategoriesTemplate() {
   const router = useRouter();
   const t = useTranslations("Categories");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-  
+
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+
+  const handleExport = () => {
+    if (categories.length === 0 || selectedCategories.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedCategories.map((category: Category) => ({
+      [tCommon("nameAr")]: category.nameAr,
+      [tCommon("nameEn")]: category.nameEn,
+      [tCommon("priority")]: category.priority,
+      [tCommon("status")]: category.isDeleted ? tCommon("deleted") : tCommon("active"),
+      "Slug": category.slug,
+      [tCommon("date")]: category.createdAt ? format(new Date(category.createdAt), "dd MMM yyyy") : "-",
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `Categories_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Categories",
+    });
+  };
+
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
@@ -41,15 +68,13 @@ export default function CategoriesTemplate() {
     {
       label: tCommon("export"),
       icon: Download,
-      variant: "outline" as const,
-      className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-      onClick: () => console.log("Exporting...")
+      variant: "secondary" as const,
+      onClick: handleExport
     },
     {
       label: t("add_category"),
       icon: Plus,
       href: "/dashboard/categories/add",
-      className: "bg-primary text-white font-bold hover:bg-primary/90 shadow-md active:scale-95 h-11 px-6 rounded-xl",
     }
   ];
 
@@ -86,6 +111,7 @@ export default function CategoriesTemplate() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => deleteCategory(id)}
+            onSelectionChange={setSelectedCategories}
           />
         )}
       </div>

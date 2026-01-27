@@ -11,13 +11,47 @@ import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
+import { toast } from "sonner";
+
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
+import { CategoryReference, BrandReference } from "@/types";
 
 export default function ProductsTemplate() {
   const router = useRouter();
   const t = useTranslations("Products");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-  
+
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+
+  const handleExport = () => {
+    if (products.length === 0 || selectedProducts.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedProducts.map((product: Product) => {
+      const category = typeof product.categoryId === "object" ? (product.categoryId as CategoryReference).nameEn : "-";
+      const brand = typeof product.brandId === "object" ? (product.brandId as BrandReference).nameEn : "-";
+
+      return {
+        [tCommon("nameAr")]: product.nameAr,
+        [tCommon("nameEn")]: product.nameEn,
+        [t("price")]: product.price,
+        [t("category")]: category,
+        [t("brand")]: brand,
+        [tCommon("status")]: product.isDeleted ? tCommon("deleted") : tCommon("active"),
+        [tCommon("date")]: product.createdAt ? format(new Date(product.createdAt), "dd MMM yyyy") : "-",
+      };
+    });
+
+    exportToExcel(dataToExport, {
+      filename: `Products_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Products",
+    });
+  };
+
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
@@ -39,15 +73,13 @@ export default function ProductsTemplate() {
     {
       label: tCommon("export"),
       icon: Download,
-      variant: "outline" as const,
-      className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-      onClick: () => console.log("Exporting...")
+      variant: "secondary" as const,
+      onClick: handleExport
     },
     {
       label: t("add_product"),
       icon: Plus,
       href: "/dashboard/products/add",
-      className: "bg-primary text-white font-bold hover:bg-primary/90 shadow-md active:scale-95 h-11 px-6 rounded-xl",
     }
   ];
 
@@ -84,6 +116,7 @@ export default function ProductsTemplate() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => deleteProduct(id)}
+            onSelectionChange={setSelectedProducts}
           />
         )}
       </div>

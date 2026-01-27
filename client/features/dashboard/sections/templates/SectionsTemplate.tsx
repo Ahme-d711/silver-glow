@@ -11,13 +11,40 @@ import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
+import { toast } from "sonner";
+
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
 
 export default function SectionsTemplate() {
   const router = useRouter();
   const t = useTranslations("Sections");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-  
+
+  const [selectedSections, setSelectedSections] = useState<Section[]>([]);
+
+  const handleExport = () => {
+    if (sectionsData.length === 0 || selectedSections.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedSections.map((section: Section) => ({
+      [tCommon("nameAr")]: section.nameAr,
+      [tCommon("nameEn")]: section.nameEn,
+      [tCommon("priority")]: section.priority,
+      [tCommon("status")]: section.isDeleted ? tCommon("deleted") : tCommon("active"),
+      "Slug": section.slug,
+      [tCommon("date")]: section.createdAt ? format(new Date(section.createdAt), "dd MMM yyyy") : "-",
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `Sections_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Sections",
+    });
+  };
+
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
@@ -41,15 +68,13 @@ export default function SectionsTemplate() {
     {
       label: tCommon("export"),
       icon: Download,
-      variant: "outline" as const,
-      className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-      onClick: () => console.log("Exporting...")
+      variant: "secondary" as const,
+      onClick: handleExport
     },
     {
       label: t("add_section"),
       icon: Plus,
       href: "/dashboard/sections/add",
-      className: "bg-primary text-white font-bold hover:bg-primary/90 shadow-md active:scale-95 h-11 px-6 rounded-xl",
     }
   ];
 
@@ -86,6 +111,7 @@ export default function SectionsTemplate() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => deleteSection(id)}
+            onSelectionChange={setSelectedSections}
           />
         )}
       </div>

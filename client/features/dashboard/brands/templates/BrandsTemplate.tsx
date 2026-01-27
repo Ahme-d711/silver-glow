@@ -12,12 +12,39 @@ import { TableFilters } from "@/components/shared/TableFilters";
 import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
 
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
+import { toast } from "sonner";
+
 export default function BrandsTemplate() {
   const router = useRouter();
   const t = useTranslations("Brands");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-  
+
+  const [selectedBrands, setSelectedBrands] = useState<Brand[]>([]);
+
+  const handleExport = () => {
+    if (brands.length === 0 || selectedBrands.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedBrands.map((brand: Brand) => ({
+      [tCommon("nameAr")]: brand.nameAr,
+      [tCommon("nameEn")]: brand.nameEn,
+      [tCommon("priority")]: brand.priority,
+      [tCommon("status")]: brand.isDeleted ? tCommon("deleted") : tCommon("active"),
+      "Slug": brand.slug,
+      [tCommon("date")]: brand.createdAt ? format(new Date(brand.createdAt), "dd MMM yyyy") : "-",
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `Brands_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Brands",
+    });
+  };
+
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
@@ -41,15 +68,13 @@ export default function BrandsTemplate() {
     {
       label: tCommon("export"),
       icon: Download,
-      variant: "outline" as const,
-      className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-      onClick: () => console.log("Exporting...")
+      variant: "secondary" as const,
+      onClick: handleExport
     },
     {
       label: t("add_brand"),
       icon: Plus,
       href: "/dashboard/brands/add",
-      className: "bg-primary text-white font-bold hover:bg-primary/90 shadow-md active:scale-95 h-11 px-6 rounded-xl",
     }
   ];
 
@@ -86,6 +111,7 @@ export default function BrandsTemplate() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => deleteBrand(id)}
+            onSelectionChange={setSelectedBrands}
           />
         )}
       </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getOrders, getOrdersByStatus, getOrderById, createOrder, updateOrder, cancelOrder } from "../services/orders.services"
+import { getOrders, getOrdersByStatus, getOrderById, createOrder, updateOrder, cancelOrder, updateOrderStatus } from "../services/orders.services"
 import type { Order, OrderStatus, UpdateOrderPayload } from "../types"
 import { useAuthStore } from "@/features/dashboard/auth/stores/authStore"
 import { toast } from "sonner"
@@ -134,6 +134,28 @@ export function useCancelOrder() {
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || "Failed to cancel order");
+    },
+  });
+}
+// Update Order Status Mutation
+export function useUpdateOrderStatus() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => updateOrderStatus(id, status),
+    onSuccess: (response) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+        if (response.data?.order?._id) {
+          queryClient.invalidateQueries({ queryKey: ordersKeys.detail(response.data.order._id) });
+        }
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || "Failed to update order status");
     },
   });
 }

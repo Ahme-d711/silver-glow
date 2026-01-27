@@ -4,7 +4,8 @@ import {
   getOrderById, 
   createOrder, 
   updateOrder,
-  cancelOrder
+  cancelOrder,
+  updateOrderStatus
 } from "../controllers/order.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -22,6 +23,7 @@ router.route("/:id")
   .get(asyncHandler(getOrderById))
   .patch(asyncHandler(updateOrder));
 
+router.patch("/:id/status", asyncHandler(updateOrderStatus));
 router.patch("/:id/cancel", asyncHandler(cancelOrder));
 
 export { router as orderRouter };

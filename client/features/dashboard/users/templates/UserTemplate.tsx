@@ -13,6 +13,9 @@ import type { User } from "@/features/dashboard/auth/types";
 import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
 import { getImageUrl } from "@/utils/image.utils";
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
+import { toast } from "sonner";
 
 const categoryTabs = [
   { label: "All Status", value: "all" },
@@ -63,6 +66,28 @@ export default function UserTemplate() {
     isBlocked: activeTab === "blocked" ? true : activeTab === "not_blocked" ? false : undefined,
   });
 
+  const handleExport = () => {
+    if (filteredUsers.length === 0 || selectedIds.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+    
+    // Map selected IDs to the formatted data
+    const dataToExport = filteredUsers
+      .filter(u => selectedIds.includes(u.id))
+      .map((user) => ({
+        "Name": user.name || "Unknown",
+        "Status": user.status,
+        "Balance": user.balance,
+        "Orders": user.orders,
+      }));
+
+    exportToExcel(dataToExport, {
+      filename: `Users_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Users",
+    });
+  };
+
   const handleSelect = (id: string, selected: boolean) => {
     if (selected) {
       setSelectedIds((prev) => [...prev, id]);
@@ -91,7 +116,7 @@ export default function UserTemplate() {
             icon: Download,
             variant: "outline",
             className: "bg-secondary text-primary border-none hover:bg-secondary/80",
-            onClick: () => console.log("Exporting...")
+            onClick: handleExport
           },
           {
             label: "Add User",
@@ -119,7 +144,7 @@ export default function UserTemplate() {
             description={search || activeTab !== "all" ? "Try adjusting your filters" : "No users available"}
           />
         ) : (
-          <div className="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
             {filteredUsers.map((user) => (
               <UserCard
                 key={user.id}

@@ -54,6 +54,11 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       trim: true,
     },
+    governorate: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     country: {
       type: String,
       required: true,

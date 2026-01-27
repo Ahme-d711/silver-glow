@@ -11,13 +11,41 @@ import { useTranslations } from "next-intl";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { TablePageSkeleton } from "@/components/shared/TablePageSkeleton";
 import { useState } from "react";
+import { toast } from "sonner";
+
+import { format } from "date-fns";
+import { exportToExcel } from "@/utils/excelExport";
 
 export default function SubCategoriesTemplate() {
   const router = useRouter();
   const t = useTranslations("SubCategories");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-  
+
+  const [selectedSubcategories, setSelectedSubcategories] = useState<Subcategory[]>([]);
+
+  const handleExport = () => {
+    if (subcategories.length === 0 || selectedSubcategories.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedSubcategories.map((sub: Subcategory) => ({
+      [tCommon("nameAr")]: sub.nameAr,
+      [tCommon("nameEn")]: sub.nameEn,
+      [tCommon("priority")]: sub.priority,
+      [t("category")]: typeof sub.categoryId === "object" ? (sub.categoryId as any).nameEn : "-",
+      [tCommon("status")]: sub.isDeleted ? tCommon("deleted") : tCommon("active"),
+      "Slug": sub.slug,
+      [tCommon("date")]: sub.createdAt ? format(new Date(sub.createdAt), "dd MMM yyyy") : "-",
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `SubCategories_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "SubCategories",
+    });
+  };
+
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
@@ -41,15 +69,13 @@ export default function SubCategoriesTemplate() {
     {
       label: tCommon("export"),
       icon: Download,
-      variant: "outline" as const,
-      className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-      onClick: () => console.log("Exporting...")
+      variant: "secondary" as const,
+      onClick: handleExport
     },
     {
       label: t("add_subcategory"),
       icon: Plus,
       href: "/dashboard/subcategories/add",
-      className: "bg-primary text-white font-bold hover:bg-primary/90 shadow-md active:scale-95 h-11 px-6 rounded-xl",
     }
   ];
 
@@ -86,6 +112,7 @@ export default function SubCategoriesTemplate() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => deleteSubcategory(id)}
+            onSelectionChange={setSelectedSubcategories}
           />
         )}
       </div>

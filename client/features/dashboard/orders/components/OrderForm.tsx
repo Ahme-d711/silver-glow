@@ -34,6 +34,7 @@ const orderFormSchema = z.object({
   recipientPhone: z.string().min(1),
   shippingAddress: z.string().min(1),
   city: z.string().min(1),
+  governorate: z.string().min(1, "Governorate is required"),
   country: z.string().min(1),
   postalCode: z.string().optional(),
   paymentMethod: z.string(),
@@ -90,6 +91,7 @@ export function OrderForm({
       recipientPhone: defaultValues?.recipientPhone || "",
       shippingAddress: defaultValues?.shippingAddress || "",
       city: defaultValues?.city || "",
+      governorate: defaultValues?.governorate || "",
       country: defaultValues?.country || "",
       postalCode: defaultValues?.postalCode || "",
       paymentMethod: defaultValues?.paymentMethod || "COD",
@@ -269,7 +271,7 @@ export function OrderForm({
             required
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UniInput
               control={form.control}
               name="city"
@@ -278,6 +280,31 @@ export function OrderForm({
               required
             />
 
+            <UniAsyncCombobox
+              control={form.control}
+              name="governorate"
+              label={t("governorate") || "Governorate"}
+              fetchData={async (search) => {
+                const { EGYPT_GOVERNORATES } = await import("@/constants/governorates");
+                const locale = window.localStorage.getItem("NEXT_LOCALE") || "ar";
+                return EGYPT_GOVERNORATES.filter((g) => 
+                  g.nameAr.includes(search) || 
+                  g.nameEn.toLowerCase().includes(search.toLowerCase())
+                );
+              }}
+              placeholder={t("select_governorate") || "Select Governorate"}
+              searchPlaceholder={tCommon("search")}
+              emptyMessage={tCommon("no_data")}
+              getItemLabel={(g: any) => {
+                const locale = typeof window !== 'undefined' ? window.localStorage.getItem("NEXT_LOCALE") || "ar" : "ar";
+                return locale === "ar" ? g.nameAr : g.nameEn;
+              }}
+              getItemValue={(g: any) => g.nameEn}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UniInput
               control={form.control}
               name="country"

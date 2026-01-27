@@ -27,10 +27,12 @@ export const createOrderSchema = z.object({
   recipientPhone: z.string().min(1),
   shippingAddress: z.string().min(1),
   city: z.string().min(1),
+  governorate: z.string().min(1),
   country: z.string().min(1),
   postalCode: z.string().optional(),
   customerNotes: z.string().optional(),
   paymentMethod: paymentMethodSchema.default("COD"),
+  paymentStatus: paymentStatusSchema.optional(),
 });
 
 export const updateOrderSchema = z.object({
@@ -42,6 +44,17 @@ export const updateOrderSchema = z.object({
   shippedAt: z.string().optional(),
   deliveredAt: z.string().optional(),
   adminNotes: z.string().optional(),
+  recipientName: z.string().optional(),
+  recipientPhone: z.string().optional(),
+  shippingAddress: z.string().optional(),
+  city: z.string().optional(),
+  governorate: z.string().optional(),
+  country: z.string().optional(),
+  postalCode: z.string().optional(),
+});
+
+export const updateOrderStatusSchema = z.object({
+  status: orderStatusSchema,
 });
 
 export const queryOrderSchema = z.object({

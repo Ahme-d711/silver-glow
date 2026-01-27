@@ -25,6 +25,7 @@ interface ProductsTableProps {
   isLoading: boolean;
   onEdit: (product: Product) => void;
   onDelete: (id: string) => void;
+  onSelectionChange?: (selectedRows: Product[]) => void;
 }
 
 export default function ProductsTable({
@@ -32,6 +33,7 @@ export default function ProductsTable({
   isLoading,
   onEdit,
   onDelete,
+  onSelectionChange
 }: ProductsTableProps) {
   const t = useTranslations("Products");
   const tCommon = useTranslations("Common");
@@ -90,7 +92,7 @@ export default function ProductsTable({
       id: "selection",
       header: <SelectionHeader label={t("product_id")} />,
       cell: (_, row) => (
-        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase()} />
+        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase()} />
       ),
     },
     {
@@ -246,6 +248,8 @@ export default function ProductsTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
+        onSelectionChange={onSelectionChange}
+        getRowId={(row) => row._id}
       />
 
       <ConfirmationModal

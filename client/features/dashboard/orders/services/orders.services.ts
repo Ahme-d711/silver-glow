@@ -159,3 +159,27 @@ export async function cancelOrder(id: string): Promise<ServiceResponse<{ order: 
     };
   }
 }
+/**
+ * Update order status
+ */
+export async function updateOrderStatus(
+  id: string,
+  status: string
+): Promise<ServiceResponse<{ order: Order }>> {
+  try {
+    const response = await clientAxios.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/status`, { status });
+
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse<null>>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to update order status",
+      error: err.message,
+    };
+  }
+}

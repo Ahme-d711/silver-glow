@@ -24,13 +24,15 @@ interface SectionsTableProps {
   onEdit: (section: Section) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
+  onSelectionChange?: (selectedRows: Section[]) => void;
 }
 
 export default function SectionsTable({ 
   sections, 
   onEdit, 
   onDelete,
-  isLoading 
+  isLoading,
+  onSelectionChange
 }: SectionsTableProps) {
   const t = useTranslations("Sections");
   const tCommon = useTranslations("Common");
@@ -85,7 +87,7 @@ export default function SectionsTable({
       id: "selection",
       header: <SelectionHeader label={t("section_id")} />,
       cell: (value, row) => (
-        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase() || "SEC"} />
+        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "SEC"} />
       ),
     },
     {
@@ -185,6 +187,8 @@ export default function SectionsTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
+        onSelectionChange={onSelectionChange}
+        getRowId={(row) => row._id}
       />
       
       <ConfirmationModal

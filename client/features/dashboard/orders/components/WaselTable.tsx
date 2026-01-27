@@ -95,7 +95,7 @@ export function WaselTable() {
       id: "id",
       header: <SelectionHeader label="Order ID" />,
       cell: (_: unknown, row: WaselOrder) => (
-        <SelectionCell isSelected={row.selected} id={row.id} />
+        <SelectionCell checked={row.selected} id={row.id} />
       ),
     },
     {

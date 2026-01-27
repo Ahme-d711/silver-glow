@@ -25,13 +25,15 @@ interface SubCategoriesTableProps {
   onEdit: (subcategory: Subcategory) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
+  onSelectionChange?: (selectedRows: Subcategory[]) => void;
 }
 
 export default function SubCategoriesTable({ 
   subcategories, 
   onEdit, 
   onDelete,
-  isLoading 
+  isLoading,
+  onSelectionChange
 }: SubCategoriesTableProps) {
   const t = useTranslations("SubCategories");
   const tCommon = useTranslations("Common");
@@ -86,7 +88,7 @@ export default function SubCategoriesTable({
       id: "selection",
       header: <SelectionHeader label={t("subcategory_id")} />,
       cell: (value, row) => (
-        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase() || "SUB" + row.nameEn.slice(0,3).toUpperCase()} />
+        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "SUB" + row.nameEn.slice(0,3).toUpperCase()} />
       ),
     },
     {
@@ -195,6 +197,8 @@ export default function SubCategoriesTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
+        onSelectionChange={onSelectionChange}
+        getRowId={(row) => row._id}
       />
       
       <ConfirmationModal

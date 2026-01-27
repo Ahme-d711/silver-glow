@@ -30,6 +30,7 @@ export default function AddOrderTemplate() {
       recipientPhone: values.recipientPhone,
       shippingAddress: values.shippingAddress,
       city: values.city,
+      governorate: values.governorate,
       country: values.country,
       postalCode: values.postalCode,
       subtotal,

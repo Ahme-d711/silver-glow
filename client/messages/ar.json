@@ -359,6 +359,8 @@
     "enter_admin_notes": "أدخل ملاحظات الإدارة",
     "select_customer": "اختر العميل",
     "select_product": "اختر المنتج",
+    "governorate": "المحافظة",
+    "select_governorate": "اختر المحافظة",
     "total_items": "ملخص المنتجات",
     "total_amount": "إجمالي المبلغ"
   },

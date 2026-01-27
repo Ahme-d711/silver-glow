@@ -13,7 +13,6 @@ import {
 } from "../schemas/subcategory.schema.js";
 import ApiFeatures from "../utils/ApiFeatures.js";
 import { validateUserData } from "../schemas/user.schema.js";
-import { Populated } from "../types/populated.type.js";
 
 interface ICategoryPopulated {
   _id: mongoose.Types.ObjectId | string;

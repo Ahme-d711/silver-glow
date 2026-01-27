@@ -33,6 +33,7 @@ export interface DashboardStats {
   ordersByStatus: OrdersByStatus;
   charts: {
     monthlyRevenue: MonthlyRevenueData[];
+    ordersByGovernorate: { name: string; value: number }[];
   };
   recentOrders: Order[];
 }

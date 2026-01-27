@@ -18,19 +18,20 @@ import { cn } from "@/lib/utils";
 import { Loader, Pencil, Trash2, RotateCcw } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
-
 interface BrandsTableProps {
   brands: Brand[];
   onEdit: (brand: Brand) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
+  onSelectionChange?: (selectedRows: Brand[]) => void;
 }
 
 export default function BrandsTable({ 
   brands, 
   onEdit, 
   onDelete,
-  isLoading 
+  isLoading,
+  onSelectionChange
 }: BrandsTableProps) {
   const t = useTranslations("Brands");
   const tCommon = useTranslations("Common");
@@ -85,7 +86,7 @@ export default function BrandsTable({
       id: "selection",
       header: <SelectionHeader label={t("brand_id")} />,
       cell: (value, row) => (
-        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase() || "BRAND"} />
+        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "BRAND"} />
       ),
     },
     {
@@ -185,6 +186,8 @@ export default function BrandsTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
+        onSelectionChange={onSelectionChange}
+        getRowId={(row) => row._id}
       />
       
       <ConfirmationModal

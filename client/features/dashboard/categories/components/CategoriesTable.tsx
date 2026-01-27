@@ -25,13 +25,15 @@ interface CategoriesTableProps {
   onEdit: (category: Category) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
+  onSelectionChange?: (selectedRows: Category[]) => void;
 }
 
 export default function CategoriesTable({ 
   categories, 
   onEdit, 
   onDelete,
-  isLoading 
+  isLoading,
+  onSelectionChange
 }: CategoriesTableProps) {
   const t = useTranslations("Categories");
   const tCommon = useTranslations("Common");
@@ -86,7 +88,7 @@ export default function CategoriesTable({
       id: "selection",
       header: <SelectionHeader label={t("category_id")} />,
       cell: (value, row) => (
-        <SelectionCell isSelected={false} id={row._id?.slice(-6).toUpperCase() || "302012"} />
+        <SelectionCell checked={false} id={row._id?.slice(-6).toUpperCase() || "302012"} />
       ),
     },
     {
@@ -195,6 +197,8 @@ export default function CategoriesTable({
         enablePagination={true}
         pageSize={10}
         itemLabel={t("title")}
+        onSelectionChange={onSelectionChange}
+        getRowId={(row) => row._id}
       />
       
       <ConfirmationModal

@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
 import UniTable, { 
   ProductCell, 
   ActionCell, 
@@ -10,18 +9,21 @@ import UniTable, {
   Pencil,
   Eye,
   SelectionHeader,
-  SelectionCell
+  SelectionCell,
+  StatusSelectCell
 } from "@/components/shared/UniTable"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { cn } from "@/lib/utils"
-import { Order } from "../types"
+import { Order, OrderStatus } from "../types"
 import { format } from "date-fns"
-import { useCancelOrder } from "../hooks/useOrders"
+import { useCancelOrder, useUpdateOrderStatus } from "../hooks/useOrders"
 import React from "react"
+import { useTranslations } from "next-intl"
 
 interface OrdersTableProps {
   orders?: Order[]
   isLoading?: boolean
+  onSelectionChange?: (selectedRows: Order[]) => void
 }
 
 interface TableRowData extends Record<string, unknown> {
@@ -38,13 +40,23 @@ interface TableRowData extends Record<string, unknown> {
   originalOrder: Order
 }
 
-import { useTranslations } from "next-intl"
 
-export function OrdersTable({ orders = [], isLoading }: OrdersTableProps) {
+export function OrdersTable({ orders = [], isLoading, onSelectionChange }: OrdersTableProps) {
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
   const router = useRouter()
   const { mutate: cancelOrder } = useCancelOrder()
+  const { mutate: updateStatus } = useUpdateOrderStatus()
+
+  const statusOptions: OrderStatus[] = [
+    "PENDING",
+    "CONFIRMED",
+    "PROCESSING",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
+    "RETURNED",
+  ]
 
   const handleEdit = (orderId: string) => {
     router.push(`/dashboard/orders/${orderId}/edit`)
@@ -87,7 +99,7 @@ export function OrdersTable({ orders = [], isLoading }: OrdersTableProps) {
       id: "id",
       header: <SelectionHeader label={t("order_id")} />,
       cell: (_: unknown, row: TableRowData) => (
-        <SelectionCell isSelected={row.selected} id={row.id.toString().slice(-6).toUpperCase()} />
+        <SelectionCell checked={row.selected} id={row.id.toString().slice(-6).toUpperCase()} />
       ),
     },
     {
@@ -129,22 +141,24 @@ export function OrdersTable({ orders = [], isLoading }: OrdersTableProps) {
       id: "status",
       header: t("status"),
       cell: (_: unknown, row: TableRowData) => {
-        const statusColors: Record<string, string> = {
-          PENDING: "bg-yellow-100/50 text-yellow-600",
-          CONFIRMED: "bg-blue-100/50 text-blue-600",
-          PROCESSING: "bg-purple-100/50 text-purple-600",
-          SHIPPED: "bg-indigo-100/50 text-indigo-600",
-          DELIVERED: "bg-success/10 text-success",
-          CANCELLED: "bg-gray-100/50 text-gray-600",
-          RETURNED: "bg-error/10 text-error",
+        const statusColors: Record<OrderStatus, string> = {
+          PENDING: "bg-yellow-100/50 text-yellow-600 border-yellow-200",
+          CONFIRMED: "bg-blue-100/50 text-blue-600 border-blue-200",
+          PROCESSING: "bg-purple-100/50 text-purple-600 border-purple-200",
+          SHIPPED: "bg-indigo-100/50 text-indigo-600 border-indigo-200",
+          DELIVERED: "bg-green-100/50 text-green-600 border-green-200",
+          CANCELLED: "bg-gray-100/50 text-gray-600 border-gray-200",
+          RETURNED: "bg-red-100/50 text-red-600 border-red-200",
         }
+
         return (
-          <Badge className={cn(
-            "border-none px-3 py-1 rounded-lg font-medium shadow-none",
-            statusColors[row.status] || "bg-gray-100 text-gray-600"
-          )}>
-            {t(row.status.toLowerCase() as Parameters<typeof t>[0])}
-          </Badge>
+          <StatusSelectCell
+            value={row.status}
+            onValueChange={(newStatus) => updateStatus({ id: row.id, status: newStatus })}
+            options={statusOptions}
+            colorMap={statusColors}
+            t={t}
+          />
         )
       },
     },
@@ -187,6 +201,8 @@ export function OrdersTable({ orders = [], isLoading }: OrdersTableProps) {
         enablePagination={true}
         pageSize={10}
         itemLabel="Orders"
+        onSelectionChange={(rows) => onSelectionChange?.(rows.map(r => r.originalOrder))}
+        getRowId={(row) => row.id}
       />
       {/* <EditOrderTemplate 
         isOpen={isEditOpen} 

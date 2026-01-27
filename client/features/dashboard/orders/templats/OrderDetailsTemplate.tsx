@@ -9,6 +9,7 @@ import  EditOrderTemplate  from "./EditOrderTemplate"
 import React from "react"
 import { useParams } from "next/navigation"
 import { OrderStatus } from "../types"
+import { exportToExcel } from "@/utils/excelExport"
 
 interface MockOrder {
   id: string;
@@ -38,6 +39,13 @@ export default function OrderDetailsTemplate() {
     billing_address: "1833 Bel Meadow Drive, Fontana, California 92335, USA",
     shipping_address: "1833 Bel Meadow Drive, Fontana, California 92335, USA"
   }
+
+  const handleExport = () => {
+    exportToExcel([orderData] as any[], {
+      filename: `Order_${orderData.id}.xlsx`,
+      sheetName: "Order Details",
+    });
+  };
   return (
     <div className="p-8 space-y-6 min-h-screen">
       <PageHeader
@@ -53,7 +61,7 @@ export default function OrderDetailsTemplate() {
             icon: Download,
             variant: "outline",
             className: "bg-secondary text-primary border-divider rounded-xl h-10 px-6 gap-2 font-semibold border-none",
-            onClick: () => console.log("Exporting...")
+            onClick: handleExport
           },
           {
             label: "Edit Order",

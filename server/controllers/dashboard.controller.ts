@@ -18,6 +18,7 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
     totalOrders,
     totalRevenueResult,
     ordersByStatus,
+    ordersByGovernorate,
   ] = await Promise.all([
     UserModel.countDocuments({ isDeleted: false }),
     ProductModel.countDocuments({ isDeleted: false }),
@@ -28,6 +29,12 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
     ]),
     OrderModel.aggregate([
       { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]),
+    OrderModel.aggregate([
+      { $group: { _id: "$governorate", value: { $sum: 1 } } },
+      { $sort: { value: -1 } },
+      { $limit: 6 },
+      { $project: { _id: 0, name: "$_id", value: 1 } }
     ]),
   ]);
 
@@ -105,6 +112,7 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
       ordersByStatus: statusCounts,
       charts: {
         monthlyRevenue,
+        ordersByGovernorate,
       },
       recentOrders,
     },

@@ -13,6 +13,13 @@ import { getImageUrl } from "@/utils/image.utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 import { IconType } from "@/types"
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select"
 
 // Types for flexible cell rendering
 export type CellRenderer<TData> = (value: unknown, row: TData) => React.ReactNode
@@ -36,6 +43,8 @@ export interface UniTableProps<TData> {
   emptyMessage?: string
   itemLabel?: string 
   showSelection?: boolean
+  onSelectionChange?: (selectedRows: TData[]) => void
+  getRowId?: (row: TData) => string
   serverPagination?: {
     currentPage: number
     totalPages: number
@@ -82,17 +91,25 @@ export function ProductCell({
  * Selection icon for the header (e.g. "Select All" state)
  */
 export function SelectionHeader({ 
-  isAllSelected = true, 
+  checked,
+  indeterminate,
+  onChange,
   label 
 }: { 
-  isAllSelected?: boolean; 
+  checked?: boolean;
+  indeterminate?: boolean;
+  onChange?: (checked: boolean) => void;
   label?: string 
 }) {
   return (
     <div className="flex items-center gap-3">
       <Checkbox 
-        checked={isAllSelected} 
-        className="rounded bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white shrink-0" 
+        checked={checked} 
+        onCheckedChange={(val) => onChange?.(!!val)}
+        className={cn(
+          "rounded bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white shrink-0",
+          indeterminate && "opacity-50"
+        )} 
       />
       {label && <span className="whitespace-nowrap">{label}</span>}
     </div>
@@ -103,19 +120,22 @@ export function SelectionHeader({
  * Selection icon for a row
  */
 export function SelectionCell({ 
-  isSelected = false, 
+  checked = false, 
+  onChange,
   id 
 }: { 
-  isSelected?: boolean; 
+  checked?: boolean; 
+  onChange?: (checked: boolean) => void;
   id?: string | number 
 }) {
   return (
     <div className="flex items-center gap-3">
       <Checkbox 
-        checked={isSelected} 
+        checked={checked} 
+        onCheckedChange={(val) => onChange?.(!!val)}
         className={cn(
           "rounded transition-colors shrink-0",
-          isSelected ? "bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" : "border-divider bg-white"
+          checked ? "bg-primary border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" : "border-divider bg-white"
         )} 
       />
       {id && <span className="font-semibold text-primary whitespace-nowrap">{id}</span>}
@@ -166,6 +186,56 @@ export function ActionCell({ children }: { children: React.ReactNode }) {
   )
 }
 
+/**
+ * StatusSelectCell helper for rendering a status dropdown with colors
+ */
+export function StatusSelectCell({
+  value,
+  onValueChange,
+  options,
+  colorMap,
+  t,
+  className
+}: {
+  value: string;
+  onValueChange: (newValue: string) => void;
+  options: string[];
+  colorMap: Record<string, string>;
+  t: (key: any) => string;
+  className?: string;
+}) {
+  return (
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger 
+        className={cn(
+          "h-8 w-[130px] border px-3 py-1 rounded-lg font-medium shadow-none transition-colors",
+          colorMap[value] || "bg-gray-100 text-gray-600 border-gray-200",
+          className
+        )}
+      >
+        <SelectValue>
+          {t(value.toLowerCase())}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent position="popper">
+        {options.map((option) => (
+          <SelectItem 
+            key={option} 
+            value={option}
+            className={cn(
+              "flex items-center gap-2",
+              colorMap[option] ? `focus:${colorMap[option]} data-[state=checked]:${colorMap[option]}` : ""
+            )}
+          >
+            <div className={cn("size-2 rounded-full", colorMap[option]?.split(" ")[0] || "bg-gray-400")} />
+            {t(option.toLowerCase())}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
 function UniTable<TData>({
   data,
   columns,
@@ -175,25 +245,59 @@ function UniTable<TData>({
   emptyMessage = "No data found",
   itemLabel = "items",
   showSelection = false,
+  onSelectionChange,
+  getRowId,
   serverPagination,
 }: UniTableProps<TData>) {
+  const [rowSelection, setRowSelection] = React.useState({})
   
   const tableColumns = React.useMemo<ColumnDef<TData>[]>(() => {
     return columns.map((col) => ({
       id: col.id,
       accessorKey: col.accessorKey as string,
-      header: () => col.header,
-      cell: ({ row, getValue }) => {
-        const value = getValue()
-        return col.cell ? col.cell(value, row.original) : (value ?? "-")
+      header: (headerProps) => {
+        if (col.id === "id" && showSelection) {
+          // Wrap SelectionHeader with table state integration
+          if (React.isValidElement(col.header) && (col.header.type as any).name === "SelectionHeader") {
+             return (
+               <SelectionHeader 
+                 checked={headerProps.table.getIsAllPageRowsSelected()}
+                 indeterminate={headerProps.table.getIsSomePageRowsSelected()}
+                 onChange={(val) => headerProps.table.toggleAllPageRowsSelected(val)}
+                 label={(col.header.props as any).label}
+               />
+             )
+          }
+        }
+        return col.header
+      },
+      cell: (cellProps) => {
+        const value = cellProps.getValue()
+        if (col.id === "id" && showSelection && col.cell) {
+           // We need to pass selection props to the cell if it's the id column
+           return (
+             <SelectionCell 
+               checked={cellProps.row.getIsSelected()}
+               onChange={(val) => cellProps.row.toggleSelected(val)}
+               id={value as string}
+             />
+           )
+        }
+        return col.cell ? col.cell(value, cellProps.row.original) : (value ?? "-")
       },
       enableSorting: col.enableSorting ?? false,
     }))
-  }, [columns])
+  }, [columns, showSelection])
 
   const table = useReactTable({
     data,
     columns: tableColumns,
+    state: {
+      rowSelection,
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    getRowId: getRowId,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: enablePagination ? getPaginationRowModel() : undefined,
     initialState: {
@@ -202,6 +306,14 @@ function UniTable<TData>({
       },
     },
   })
+
+  // Trigger onSelectionChange when selection updates
+  React.useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRows = table.getSelectedRowModel().flatRows.map(row => row.original)
+      onSelectionChange(selectedRows)
+    }
+  }, [rowSelection, table, onSelectionChange])
 
   // No longer needed
   // const columnWidths = React.useMemo(() => ... )

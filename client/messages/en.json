@@ -164,7 +164,9 @@
     "date": "Date",
     "max_3_ads": "Maximum 3 ads allowed on home screen",
     "error_loading_ads": "Error loading ads",
-    "success_delete": "Deleted successfully"
+    "success_delete": "Deleted successfully",
+    "phone": "Phone",
+    "address": "Address"
   },
   "Users": {
     "title": "Users",
@@ -363,6 +365,8 @@
     "enter_admin_notes": "Enter admin notes",
     "select_customer": "Select Customer",
     "select_product": "Select Product",
+    "governorate": "Governorate",
+    "select_governorate": "Select Governorate",
     "total_items": "Items Summary",
     "total_amount": "Total Amount"
   },

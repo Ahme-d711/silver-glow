@@ -32,6 +32,7 @@ export interface Order {
   recipientPhone: string
   shippingAddress: string
   city: string
+  governorate: string
   country: string
   postalCode?: string
   
@@ -71,6 +72,7 @@ export interface CreateOrderPayload {
   recipientPhone: string
   shippingAddress: string
   city: string
+  governorate: string
   country: string
   postalCode?: string
   subtotal: number
@@ -92,6 +94,7 @@ export interface UpdateOrderPayload {
   recipientPhone?: string
   shippingAddress?: string
   city?: string
+  governorate?: string
   country?: string
   postalCode?: string
 }

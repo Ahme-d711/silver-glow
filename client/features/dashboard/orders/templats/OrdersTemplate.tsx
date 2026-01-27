@@ -5,18 +5,47 @@ import { PageHeader } from "@/components/shared/PageHeader"
 import { useOrdersState, useOrders, useOrdersByStatus, useCancelOrder } from "../hooks/useOrders"
 import { TableFilters } from "@/components/shared/TableFilters"
 import { OrdersTable } from "../components/OrdersTable"
-import { OrderStatus } from "../types"
+import { Order, OrderStatus } from "../types"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton"
 import { useSearchParams } from "next/navigation"
+import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { exportToExcel } from "@/utils/excelExport";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export default function OrdersTemplate() {
   const searchParams = useSearchParams();
   const t = useTranslations("Orders");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
+
+  const [selectedOrders, setSelectedOrders] = useState<Order[]>([]);
+
+  const handleExport = () => {
+    if (filteredOrders.length === 0 || selectedOrders.length === 0) {
+      toast.error(tCommon("no_data_to_export") || "No data to export");
+      return;
+    }
+
+    const dataToExport = selectedOrders.map((order) => ({
+      [t("order_id")]: order._id?.toString().slice(-6).toUpperCase(),
+      [t("customer")]: order.recipientName,
+      [t("date")]: order.createdAt ? format(new Date(order.createdAt), "dd MMM yyyy") : "-",
+      [t("total")]: `${order.totalAmount?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
+      [t("payment")]: t(`payment_${order.paymentMethod?.toLowerCase()}` as Parameters<typeof t>[0]) || order.paymentMethod,
+      [t("status")]: t(order.status.toLowerCase() as Parameters<typeof t>[0]),
+      [tNav("contact")]: order.recipientPhone,
+      [t("shipping_address")]: `${order.shippingAddress}, ${order.city}, ${order.governorate}`,
+    }));
+
+    exportToExcel(dataToExport, {
+      filename: `Orders_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: "Orders",
+    });
+  };
 
   const statusTabs = [
     { label: t("all_orders"), value: "all" },
@@ -80,15 +109,13 @@ export default function OrdersTemplate() {
           {
             label: t("export"),
             icon: Download,
-            variant: "outline",
-            className: "bg-secondary/10 text-primary border-none hover:bg-secondary/20 font-bold h-11 px-6 rounded-xl",
-            onClick: () => console.log("Exporting...")
+            variant: "secondary",
+            onClick: handleExport
           },
           {
             label: t("add_order"),
             icon: Plus,
             href: "/dashboard/orders/add",
-            className: "bg-primary text-white hover:bg-primary/90 font-bold h-11 px-6 rounded-xl",
           }
         ]}
       />
@@ -115,7 +142,10 @@ export default function OrdersTemplate() {
             />
           </div>
         ) : (
-          <OrdersTable orders={filteredOrders} />
+          <OrdersTable 
+            orders={filteredOrders} 
+            onSelectionChange={setSelectedOrders}
+          />
         )}
       </div>
     </div>

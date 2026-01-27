@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model.js";
 import { UserModel } from "../models/user.model.js";
-import { createOrderSchema, updateOrderSchema, queryOrderSchema } from "../schemas/order.schema.js";
+import { createOrderSchema, updateOrderSchema, queryOrderSchema, updateOrderStatusSchema } from "../schemas/order.schema.js";
 import AppError from "../errors/AppError.js";
 
 /**
@@ -186,5 +186,36 @@ export const cancelOrder = async (req: Request, res: Response) => {
     success: true,
     message: "Order cancelled successfully",
     data: { order },
+  });
+};
+
+/**
+ * Update order status
+ */
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = updateOrderStatusSchema.parse(req.body);
+
+  const order = await OrderModel.findById(id);
+  if (!order) {
+    throw new AppError("Order not found", 404);
+  }
+
+  const updateData: Record<string, unknown> = { status };
+
+  if (status === "SHIPPED" && order.status !== "SHIPPED") {
+    updateData.shippedAt = new Date();
+  } else if (status === "DELIVERED" && order.status !== "DELIVERED") {
+    updateData.deliveredAt = new Date();
+  }
+
+  const updatedOrder = await OrderModel.findByIdAndUpdate(id, updateData, { new: true })
+    .populate("userId", "name phone email")
+    .populate("items.productId", "nameAr nameEn mainImage");
+
+  res.status(200).json({
+    success: true,
+    message: "Order status updated successfully",
+    data: { order: updatedOrder },
   });
 };

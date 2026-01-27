@@ -1,4 +1,4 @@
-import { type Document, type Schema } from "mongoose";
+import mongoose, { type Document } from "mongoose";
 
 export interface ISubcategory extends Document {
   nameAr: string;
@@ -7,7 +7,7 @@ export interface ISubcategory extends Document {
   descriptionEn?: string;
   priority: number;
   slug: string;
-  categoryId: Schema.Types.ObjectId;
+  categoryId: mongoose.Types.ObjectId | string;
   image?: string;
   isShow: boolean;
   isDeleted: boolean;
