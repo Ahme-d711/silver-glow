@@ -1,11 +1,12 @@
 import UniTable, { ActionCell, ActionButton, Trash2, Pencil, UniTableColumn, SelectionCell, SelectionHeader } from "@/components/shared/UniTable"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
-import React from "react";
+import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch"
 import { useTranslations, useLocale } from "next-intl"
 import { getImageUrl } from "@/utils/image.utils"
 import type { Ad } from "../types"
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 interface AdsTableProps {
   ads: Ad[]
@@ -32,6 +33,31 @@ export function AdsTable({
   const tAds = useTranslations("Ads")
   const tProducts = useTranslations("Products")
   const locale = useLocale()
+
+  const [modalConfig, setModalConfig] = useState<{
+    open: boolean;
+    adId: string;
+    adName: string;
+  }>({
+    open: false,
+    adId: "",
+    adName: "",
+  });
+
+  const handleDeleteClick = (ad: Ad) => {
+    setModalConfig({
+      open: true,
+      adId: ad.id || ad._id || "",
+      adName: locale === "ar" ? ad.nameAr : ad.nameEn,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (modalConfig.adId) {
+      onDelete(modalConfig.adId);
+      setModalConfig({ open: false, adId: "", adName: "" });
+    }
+  };
   
   const columns: UniTableColumn<Ad>[] = [
     {
@@ -124,8 +150,12 @@ export function AdsTable({
       header: tCommon("action"),
       cell: (_: unknown, row: Ad) => (
         <ActionCell>
-           <ActionButton icon={Trash2} variant="danger" onClick={() => onDelete(row.id)} />
-           <ActionButton icon={Pencil} onClick={() => onEdit(row.id)} />
+           <ActionButton 
+              icon={Trash2} 
+              variant="danger" 
+              onClick={() => handleDeleteClick(row)} 
+            />
+           <ActionButton icon={Pencil} onClick={() => onEdit(row.id || row._id || "")} />
         </ActionCell>
       ),
     },
@@ -136,6 +166,7 @@ export function AdsTable({
   }
 
   return (
+    <>
        <UniTable<Ad>
         data={ads}
         columns={columns}
@@ -145,8 +176,20 @@ export function AdsTable({
         onSelectionChange={React.useCallback((rows: Ad[]) => {
           onSelectionChange?.(rows)
         }, [onSelectionChange])}
-        getRowId={(row: Ad) => row.id}
+        getRowId={(row: Ad) => row.id || row._id || ""}
         showSelection={true}
       />
+
+      <ConfirmationModal
+        open={modalConfig.open}
+        onOpenChange={(open) => setModalConfig((prev) => ({ ...prev, open }))}
+        title={tAds("confirm_delete_title") || tCommon("confirm_delete_title")}
+        description={tAds("confirm_delete_desc", { name: modalConfig.adName }) || tCommon("confirm_delete_desc", { name: modalConfig.adName })}
+        onConfirm={handleConfirmDelete}
+        variant="destructive"
+        confirmText={tCommon("delete")}
+        cancelText={tCommon("cancel")}
+      />
+    </>
   )
 }

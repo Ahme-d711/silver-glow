@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import { Pagination } from "./Pagination"
 import { getImageUrl } from "@/utils/image.utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { motion, AnimatePresence } from "framer-motion"
 
 import { IconType } from "@/types"
 import { 
@@ -343,30 +344,40 @@ function UniTable<TData>({
               </tr>
             ))}
           </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="bg-white border-b border-divider hover:bg-gray-50/50 transition-colors cursor-pointer"
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const column = columns.find((col) => col.id === cell.column.id)
-                  return (
-                    <td
-                      key={cell.id}
-                      className={cn(
-                        "p-4 align-middle first:pl-6 last:pr-6",
-                        column?.className
-                      )}
-                    >
-                      <div className="flex items-center whitespace-nowrap">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </div>
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
+          <tbody className="relative">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {table.getRowModel().rows.map((row) => (
+                <motion.tr
+                  key={row.id}
+                  layout
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20, backgroundColor: "rgba(239, 68, 68, 0.1)" }}
+                  transition={{ 
+                    opacity: { duration: 0.2 },
+                    layout: { type: "spring", stiffness: 500, damping: 50, mass: 1 }
+                  }}
+                  className="bg-white border-b border-divider hover:bg-gray-50/50 transition-colors cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const column = columns.find((col) => col.id === cell.column.id)
+                    return (
+                      <td
+                        key={cell.id}
+                        className={cn(
+                          "p-4 align-middle first:pl-6 last:pr-6",
+                          column?.className
+                        )}
+                      >
+                        <div className="flex items-center whitespace-nowrap">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
+                      </td>
+                    )
+                  })}
+                </motion.tr>
+              ))}
+            </AnimatePresence>
           </tbody>
         </table>
       </div>

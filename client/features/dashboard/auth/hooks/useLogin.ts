@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { loginUser } from "../actions/auth.service";
 import { useAuthStore } from "../stores/authStore";
+import { useRouter } from "next/navigation";
 
 interface UseLoginReturn {
   login: (phone: string, password: string) => Promise<void>;
@@ -11,6 +12,7 @@ interface UseLoginReturn {
 }
 
 export function useLogin(): UseLoginReturn {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { setUser, setToken } = useAuthStore((state) => state);
@@ -34,8 +36,19 @@ export function useLogin(): UseLoginReturn {
         setToken(response.data?.accessToken || response.accessToken || "");
       }
 
-      // Use window.location for full page redirect to ensure middleware sees the cookie
-      window.location.href = "/dashboard";
+      // Role-based redirection logic
+      if (response.data?.user) {
+        const user = response.data.user;
+        const isAdmin = user.role === "admin";
+        
+        if (isAdmin) {
+          router.push("/dashboard");
+        } else {
+          router.push("/");
+        }
+      } else {
+        router.push("/");
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);

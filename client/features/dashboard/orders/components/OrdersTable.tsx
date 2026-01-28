@@ -18,8 +18,9 @@ import { cn } from "@/lib/utils"
 import { Order, OrderStatus } from "../types"
 import { format } from "date-fns"
 import { useCancelOrder, useUpdateOrderStatus } from "../hooks/useOrders"
-import React from "react"
+import React, { useState } from "react"
 import { useTranslations } from "next-intl"
+import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 
 interface OrdersTableProps {
   orders?: Order[]
@@ -49,6 +50,14 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   const { mutate: cancelOrder } = useCancelOrder()
   const { mutate: updateStatus } = useUpdateOrderStatus()
 
+  const [modalConfig, setModalConfig] = useState<{
+    open: boolean;
+    orderId: string;
+  }>({
+    open: false,
+    orderId: "",
+  });
+
   const statusOptions: OrderStatus[] = [
     "PENDING",
     "CONFIRMED",
@@ -68,10 +77,18 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   }
 
   const handleCancelClick = (orderId: string) => {
-    if (window.confirm("Are you sure you want to cancel this order?")) {
-      cancelOrder(orderId)
+    setModalConfig({
+      open: true,
+      orderId,
+    });
+  };
+
+  const handleConfirmCancel = async () => {
+    if (modalConfig.orderId) {
+      cancelOrder(modalConfig.orderId);
+      setModalConfig({ open: false, orderId: "" });
     }
-  }
+  };
 
   // Transform orders data for table display
   const tableData = React.useMemo<TableRowData[]>(() => {
@@ -219,11 +236,17 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
         getRowId={(row) => row.id}
         showSelection={true}
       />
-      {/* <EditOrderTemplate 
-        isOpen={isEditOpen} 
-        onClose={() => setIsEditOpen(false)} 
-        orderData={editingOrder} 
-      /> */}
+      
+      <ConfirmationModal
+        open={modalConfig.open}
+        onOpenChange={(open) => setModalConfig((prev) => ({ ...prev, open }))}
+        title={t("cancel_order_title") || "Cancel Order"}
+        description={t("cancel_order_desc") || "Are you sure you want to cancel this order? This action cannot be undone."}
+        onConfirm={handleConfirmCancel}
+        variant="destructive"
+        confirmText={tCommon("confirm")}
+        cancelText={tCommon("cancel")}
+      />
     </>
   )
 }

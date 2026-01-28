@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 
 interface UserCardProps {
   id: string
@@ -31,9 +32,13 @@ export function UserCard({
   const router = useRouter()
 
   return (
-    <div 
+    <motion.div 
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
       onClick={() => router.push(`/dashboard/users/${id}`)}
-      className="bg-white rounded-[24px] border border-divider p-6 flex flex-col items-center relative group hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-white rounded-[24px] border border-divider p-6 flex flex-col items-center relative group hover:shadow-md transition-shadow cursor-pointer h-full"
     >
       <div 
         className="absolute top-4 left-4 z-10"
@@ -81,6 +86,6 @@ export function UserCard({
           <span className="text-sm font-bold text-content-primary">{balance}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

@@ -347,8 +347,8 @@
     "shipping_address": "عنوان الشحن",
     "enter_full_address": "أدخل العنوان بالكامل",
     "city": "المدينة",
-    "enter_city": "أدخل المدينة",
     "country": "الدولة",
+    "enter_city": "أدخل المدينة",
     "enter_country": "أدخل الدولة",
     "postal_code": "الرمز البريدي",
     "payment_method": "طريقة الدفع",
@@ -368,14 +368,18 @@
     "governorate": "المحافظة",
     "select_governorate": "اختر المحافظة",
     "total_items": "ملخص المنتجات",
-    "total_amount": "إجمالي المبلغ"
+    "total_amount": "إجمالي المبلغ",
+    "cancel_order_title": "إلغاء الطلب",
+    "cancel_order_desc": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ هذا الإجراء لا يمكن التراجع عنه."
   },
   "Ads": {
     "title": "الإعلانات",
     "add_ad": "إضافة إعلان",
     "edit_ad": "تعديل إعلان",
     "delete_ad": "حذف إعلان",
-    "ad_details": "تفاصيل الإعلان"
+    "ad_details": "تفاصيل الإعلان",
+    "confirm_delete_title": "تأكيد حذف الإعلان",
+    "confirm_delete_desc": "هل أنت متأكد من حذف الإعلان \"{name}\"؟"
   },
   "Settings": {
     "title": "الإعدادات",

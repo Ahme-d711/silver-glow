@@ -32,8 +32,12 @@ serverAxios.interceptors.response.use(
         error.response.data.message.includes("Unauthenticated") ||
         error.response.status === 401)
     ) {
-      (await cookies()).delete("accessToken");
-      (await cookies()).delete("token");
+      // Note: Cookies cannot be deleted during component rendering in Next.js.
+      // Authentication status should be handled by the middleware (proxy.ts) 
+      // or through manual Logout Server Actions.
+      
+      // (await cookies()).delete("accessToken");
+      // (await cookies()).delete("token");
       delete serverAxios.defaults.headers.common["Authorization"];
     }
     return Promise.reject(error);

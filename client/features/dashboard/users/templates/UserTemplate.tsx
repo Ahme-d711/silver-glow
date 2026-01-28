@@ -6,7 +6,6 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { TableFilters } from "@/components/shared/TableFilters";
 import { UserCard } from "../components/UserCard";
 import { useUsers } from "../hooks/useUser";
-import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { UserGridSkeleton } from "../components/UserGridSkeleton";
 import type { User } from "@/features/dashboard/auth/types";
@@ -17,6 +16,7 @@ import { getImageUrl } from "@/utils/image.utils";
 import { format } from "date-fns";
 import { exportToExcel } from "@/utils/excelExport";
 import { toast } from "sonner";
+import { AnimatePresence } from "framer-motion";
 
 const categoryTabs = [
   { label: "All Status", value: "all" },
@@ -148,14 +148,16 @@ export default function UserTemplate() {
           />
         ) : (
           <div className="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {filteredUsers.map((user) => (
-              <UserCard
-                key={user.id}
-                {...user}
-                selected={selectedIds.includes(user.id)}
-                onSelect={handleSelect}
-              />
-            ))}
+            <AnimatePresence mode="popLayout" initial={false}>
+              {filteredUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  {...user}
+                  selected={selectedIds.includes(user.id)}
+                  onSelect={handleSelect}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>

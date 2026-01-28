@@ -349,8 +349,8 @@
     "shipping_address": "Shipping Address",
     "enter_full_address": "Enter full address",
     "city": "City",
-    "enter_city": "Enter city",
     "country": "Country",
+    "enter_city": "Enter city",
     "enter_country": "Enter country",
     "postal_code": "Postal Code",
     "payment_method": "Payment Method",
@@ -370,18 +370,22 @@
     "governorate": "Governorate",
     "select_governorate": "Select Governorate",
     "total_items": "Items Summary",
-    "total_amount": "Total Amount"
+    "total_amount": "Total Amount",
+    "cancel_order_title": "Cancel Order",
+    "cancel_order_desc": "Are you sure you want to cancel this order? This action cannot be undone."
   },
   "Ads": {
-    "title": "Title",
+    "title": "Advertisements",
     "adId": "Ad ID",
     "add_ad": "Add Advertisement",
     "edit_ad": "Edit Advertisement",
     "delete_ad": "Delete Advertisement",
-    "ad_details": "Advertisement Details"
+    "ad_details": "Advertisement Details",
+    "confirm_delete_title": "Confirm Delete Ad",
+    "confirm_delete_desc": "Are you sure you want to delete ad \"{name}\"?"
   },
   "Settings": {
-    "title": "Setting",
+    "title": "Settings",
     "theme": "Theme",
     "language": "Language",
     "light": "Light",

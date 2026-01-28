@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 /**
  * Export data to Excel file
  * Requires: npm install xlsx
@@ -17,7 +19,7 @@ export function exportToExcel<T extends Record<string, unknown>>(
   options: ExcelExportOptions = {}
 ): void {
   if (data.length === 0) {
-    alert('لا توجد بيانات للتصدير')
+    toast.error('لا توجد بيانات للتصدير')
     return
   }
 
@@ -52,7 +54,7 @@ export function exportToCSV<T extends Record<string, unknown>>(
   filename: string = 'export.csv'
 ): void {
   if (data.length === 0) {
-    alert('لا توجد بيانات للتصدير')
+    toast.error('لا توجد بيانات للتصدير')
     return
   }
 
@@ -94,4 +96,3 @@ export function exportToCSV<T extends Record<string, unknown>>(
   
   URL.revokeObjectURL(url)
 }
-
