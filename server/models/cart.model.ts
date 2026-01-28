@@ -1,6 +1,32 @@
 import { Schema, model } from "mongoose";
 import { ICart } from "../types/cart.type.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CartItem:
+ *       type: object
+ *       required:
+ *         - productId
+ *         - quantity
+ *       properties:
+ *         productId: { type: string }
+ *         quantity: { type: number }
+ *     Cart:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - items
+ *       properties:
+ *         id: { type: string }
+ *         userId: { type: string }
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CartItem'
+ */
+
 const CartSchema = new Schema<ICart>(
   {
     userId: {

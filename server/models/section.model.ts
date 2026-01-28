@@ -2,6 +2,36 @@ import { Schema, model } from "mongoose";
 import { ISection } from "../types/section.type.js";
 import { slugify } from "../utils/string.utils.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Section:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         image:
+ *           type: string
+ *         priority:
+ *           type: number
+ *         isShow:
+ *           type: boolean
+ */
+
 const SectionSchema = new Schema<ISection>(
   {
     nameAr: {

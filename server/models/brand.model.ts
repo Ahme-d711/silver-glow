@@ -2,6 +2,36 @@ import { Schema, model } from "mongoose";
 import { IBrand } from "../types/brand.type.js";
 import { slugify } from "../utils/string.utils.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Brand:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         logo:
+ *           type: string
+ *         priority:
+ *           type: number
+ *         isShow:
+ *           type: boolean
+ */
+
 const BrandSchema = new Schema<IBrand>(
   {
     nameAr: {

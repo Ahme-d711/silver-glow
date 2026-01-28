@@ -190,8 +190,7 @@
     "profile_picture": "الصورة الشخصية",
     "select_role": "اختر الدور",
     "admin": "مدير",
-    "user": "مستخدم",
-    "employee": "موظف"
+    "user": "مستخدم"
   },
   "Categories": {
     "title": "قائمة الفئات",

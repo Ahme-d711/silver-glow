@@ -1,6 +1,50 @@
 import { Schema, model } from "mongoose";
 import { IOrder } from "../types/order.type.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     OrderItem:
+ *       type: object
+ *       required:
+ *         - productId
+ *         - name
+ *         - price
+ *         - quantity
+ *       properties:
+ *         productId: { type: string }
+ *         name: { type: string }
+ *         price: { type: number }
+ *         quantity: { type: number }
+ *         image: { type: string }
+ *     Order:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - items
+ *         - recipientName
+ *         - recipientPhone
+ *         - shippingAddress
+ *         - totalAmount
+ *       properties:
+ *         id: { type: string }
+ *         userId: { type: string }
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/OrderItem'
+ *         recipientName: { type: string }
+ *         recipientPhone: { type: string }
+ *         shippingAddress: { type: string }
+ *         city: { type: string }
+ *         governorate: { type: string }
+ *         totalAmount: { type: number }
+ *         paymentMethod: { type: string, enum: [COD, CARD, PAYPAL] }
+ *         paymentStatus: { type: string, enum: [PENDING, PAID, FAILED] }
+ *         status: { type: string, enum: [PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, RETURNED] }
+ */
+
 const OrderSchema = new Schema<IOrder>(
   {
     userId: {

@@ -1,7 +1,43 @@
 import { IUser, USER_ROLES } from '../types/user.type.js';
 import { Schema, model } from "mongoose";
 
-
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the user
+ *         name:
+ *           type: string
+ *           description: The user's full name
+ *         email:
+ *           type: string
+ *           description: The user's email address
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ *           description: The user's role
+ *         picture:
+ *           type: string
+ *           description: URL to user's profile picture
+ *         phone:
+ *           type: string
+ *           description: User's phone number
+ *         walletBalance:
+ *           type: number
+ *           description: Current balance in user's wallet
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Account creation date
+ */
 
 const UserSchema = new Schema<IUser>(
   {
@@ -93,5 +129,3 @@ UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ isActive: 1 }); // Index for filtering active users
 
 export const UserModel = model<IUser>("users", UserSchema);
-
-

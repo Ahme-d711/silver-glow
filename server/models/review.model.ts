@@ -2,6 +2,24 @@ import { Schema, model, Types } from "mongoose";
 import { IReview } from "../types/review.type.js";
 import { ProductModel } from "./product.model.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Review:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - productId
+ *         - rating
+ *       properties:
+ *         id: { type: string }
+ *         userId: { type: string }
+ *         productId: { type: string }
+ *         rating: { type: number, minimum: 1, maximum: 5 }
+ *         comment: { type: string }
+ */
+
 const ReviewSchema = new Schema<IReview>(
   {
     userId: {

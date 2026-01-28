@@ -232,7 +232,6 @@ export function UserForm({
               options={[
                 { label: t("user"), value: "user" },
                 { label: t("admin"), value: "admin" },
-                { label: t("employee"), value: "employee" },
               ]}
               required
             />

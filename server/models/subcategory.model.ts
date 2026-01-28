@@ -2,6 +2,39 @@ import { Schema, model } from "mongoose";
 import { ISubcategory } from "../types/subcategory.type.js";
 import { slugify } from "../utils/string.utils.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Subcategory:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *         - categoryId
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         categoryId:
+ *           type: string
+ *         image:
+ *           type: string
+ *         priority:
+ *           type: number
+ *         isShow:
+ *           type: boolean
+ */
+
 const SubcategorySchema = new Schema<ISubcategory>(
   {
     nameAr: {

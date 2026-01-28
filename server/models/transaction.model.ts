@@ -2,6 +2,27 @@ import { Schema, model } from "mongoose";
 import { ITransaction } from "../types/transaction.type.js";
 import { UserModel } from "./user.model.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Transaction:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - amount
+ *         - type
+ *       properties:
+ *         id: { type: string }
+ *         userId: { type: string }
+ *         amount: { type: number }
+ *         type: { type: string, enum: [TOPUP, PURCHASE, REFUND, BONUS] }
+ *         status: { type: string, enum: [PENDING, COMPLETED, FAILED] }
+ *         description: { type: string }
+ *         referenceId: { type: string }
+ *         createdAt: { type: string, format: date-time }
+ */
+
 const TransactionSchema = new Schema<ITransaction>(
   {
     userId: {

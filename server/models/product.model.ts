@@ -2,6 +2,64 @@ import { Schema, model } from "mongoose";
 import { IProduct } from "../types/product.type.js";
 import { slugify } from "../utils/string.utils.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *         - price
+ *         - stock
+ *         - categoryId
+ *         - mainImage
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         price:
+ *           type: number
+ *         oldPrice:
+ *           type: number
+ *         costPrice:
+ *           type: number
+ *         stock:
+ *           type: number
+ *         sku:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         mainImage:
+ *           type: string
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *         categoryId:
+ *           type: string
+ *         subCategoryId:
+ *           type: string
+ *         brandId:
+ *           type: string
+ *         sectionIds:
+ *           type: array
+ *           items:
+ *             type: string
+ *         averageRating:
+ *           type: number
+ *         numReviews:
+ *           type: number
+ */
+
 const ProductSchema = new Schema<IProduct>(
   {
     nameAr: {

@@ -7,16 +7,15 @@ import compression from "compression";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import path from "path";
+import swaggerUi from 'swagger-ui-express';
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/notfound.middleware.js";
 import { apiLimiter } from "./middlewares/rateLimiter.middleware.js";
 import { env } from "./config/env.js";
 import { connectDatabase } from "./config/database.js";
 import { initDefaultAdmin } from "./utils/initDefaultAdmin.js";
-
+import { swaggerSpec } from "./config/swagger.config.js";
 import { router as apiRouter } from "./routes/index.js";
-
-// __dirname is available globally in CommonJS
 
 const PORT = env.port;
 
@@ -35,15 +34,14 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(express.json({ limit: '50mb' })); // Increase JSON body limit for large chassis arrays
-app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Increase URL-encoded body limit
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use(compression());
 app.use(morgan("dev"));
 
 // Apply rate limiting to all API routes
 app.use("/api", apiLimiter);
-
 
 app.use(
   session({
@@ -55,7 +53,7 @@ app.use(
           mongoUrl: env.mongodbUri,
           touchAfter: 24 * 3600 // lazy session update
         })
-      : undefined, // Use default MemoryStore in development
+      : undefined,
     cookie: {
       secure: env.nodeEnv === "production",
       httpOnly: true,
@@ -72,6 +70,15 @@ const uploadsPath = env.nodeEnv === "production"
 
 app.use("/uploads", express.static(uploadsPath));
 
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    docExpansion: 'none', // Correctly collapse all sections by default
+    persistAuthorization: true,
+  },
+  customSiteTitle: "Silver Glow API Docs",
+}));
+
 app.use("/api", apiRouter);
 
 app.get("/health", (req, res) => {
@@ -87,7 +94,6 @@ app.get("/health", (req, res) => {
 app.use(globalErrorHandler);
 app.use(notFoundHandler);
 
-
 async function start() {
   try {
     await connectDatabase();
@@ -98,6 +104,7 @@ async function start() {
     
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`);
     });
   } catch (err) {
     console.error("Failed to start server:", err);

@@ -1,6 +1,39 @@
 import { Schema, model } from "mongoose";
 import { IAd } from "../types/ad.type.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Ad:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *         - photo
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         photo:
+ *           type: string
+ *         isShown:
+ *           type: boolean
+ *         priority:
+ *           type: number
+ *         link:
+ *           type: string
+ *         productId:
+ *           type: string
+ */
+
 const AdSchema = new Schema<IAd>(
   {
     nameAr: {

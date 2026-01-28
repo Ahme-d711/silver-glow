@@ -2,6 +2,36 @@ import { Schema, model } from "mongoose";
 import { ICategory } from "../types/category.type.js";
 import { slugify } from "../utils/string.utils.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       required:
+ *         - nameAr
+ *         - nameEn
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         descriptionAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         image:
+ *           type: string
+ *         priority:
+ *           type: number
+ *         isShow:
+ *           type: boolean
+ */
+
 const CategorySchema = new Schema<ICategory>(
   {
     nameAr: {

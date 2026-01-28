@@ -192,8 +192,7 @@
     "profile_picture": "Profile Picture",
     "select_role": "Select Role",
     "admin": "Admin",
-    "user": "User",
-    "employee": "Employee"
+    "user": "User"
   },
   "Categories": {
     "title": "Categories List",

@@ -42,7 +42,7 @@ export default async function middleware(request: NextRequest) {
   let isAdmin = false;
   try {
     const payload = decodeJwt(token);
-    isAdmin = payload.role === 'admin' || payload.role === 'employee';
+    isAdmin = payload.role === 'admin';
   } catch (error) {
     // If token is invalid, treat as unauthenticated
     if (!isAuthPage) {

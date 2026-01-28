@@ -11,11 +11,69 @@ import { uploadAd } from "../utils/upload.js";
 
 export const router = Router();
 
-// Public routes
+/**
+ * @swagger
+ * tags:
+ *   name: Ads
+ *   description: Advertisement management
+ */
+
+/**
+ * @swagger
+ * /ads:
+ *   get:
+ *     summary: Get all advertisements
+ *     tags: [Ads]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of ads
+ */
 router.get("/", getAllAds);
+
+/**
+ * @swagger
+ * /ads/{id}:
+ *   get:
+ *     summary: Get advertisement by ID
+ *     tags: [Ads]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Ad details
+ */
 router.get("/:id", getAdById);
 
-// Admin only routes
+/**
+ * @swagger
+ * /ads:
+ *   post:
+ *     summary: Create advertisement (Admin only)
+ *     tags: [Ads]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nameAr: { type: string }
+ *               nameEn: { type: string }
+ *               photo: { type: string, format: binary }
+ *     responses:
+ *       201:
+ *         description: Ad created
+ */
 router.post(
   "/",
   authenticate,
@@ -24,6 +82,33 @@ router.post(
   createAd
 );
 
+/**
+ * @swagger
+ * /ads/{id}:
+ *   put:
+ *     summary: Update advertisement (Admin only)
+ *     tags: [Ads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nameAr: { type: string }
+ *               nameEn: { type: string }
+ *               photo: { type: string, format: binary }
+ *     responses:
+ *       200:
+ *         description: Ad updated
+ */
 router.put(
   "/:id",
   authenticate,
@@ -32,4 +117,22 @@ router.put(
   updateAd
 );
 
+/**
+ * @swagger
+ * /ads/{id}:
+ *   delete:
+ *     summary: Delete advertisement (Admin only)
+ *     tags: [Ads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Ad deleted
+ */
 router.delete("/:id", authenticate, authorize("admin"), deleteAd);
