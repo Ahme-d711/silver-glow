@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 import UniTable, {
   SelectionCell,
@@ -174,19 +179,30 @@ export default function ProductsTable({
         if (!Array.isArray(sections) || sections.length === 0) return "-";
         
         return (
-          <div className="flex flex-wrap gap-1 max-w-[200px]">
-            {sections.map((section: any, index) => {
-              const name = typeof section === 'object' && section !== null
-                ? (locale === "ar" ? section.nameAr : section.nameEn)
-                : section;
-                
-              return (
-                <span key={index} className="text-xs bg-secondary/20 text-primary px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                  {name}
-                </span>
-              );
-            })}
-          </div>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div className="cursor-pointer">
+                <Badge variant="outline" className="hover:bg-secondary/10 transition-colors">
+                  {sections.length} {tCommon("section")}
+                </Badge>
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+              <div className="flex flex-wrap gap-1">
+                {sections.map((section: any, index) => {
+                  const name = typeof section === 'object' && section !== null
+                    ? (locale === "ar" ? section.nameAr : section.nameEn)
+                    : section;
+                    
+                  return (
+                    <span key={index} className="text-xs bg-secondary/20 text-primary px-1.5 py-0.5 rounded-md whitespace-nowrap">
+                      {name}
+                    </span>
+                  );
+                })}
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         );
       },
     },

@@ -9,6 +9,7 @@ import { router as productRouter } from "./product.route.js";
 import { orderRouter } from "./order.route.js";
 import { router as adRouter } from "./ad.route.js";
 import dashboardRouter from "./dashboard.route.js";
+import cartRouter from "./cart.route.js";
 
 export const router = Router();
 
@@ -22,3 +23,4 @@ router.use("/products", productRouter);
 router.use("/orders", orderRouter);
 router.use("/ads", adRouter);
 router.use("/dashboard", dashboardRouter);
+router.use("/cart", cartRouter);

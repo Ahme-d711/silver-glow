@@ -113,9 +113,30 @@ export function AsyncMultiCombobox<TItem = object>({
             className={cn("w-full justify-between rounded-xl font-normal h-auto min-h-12 py-2", className)}
             disabled={disabled}
           >
-            <div className="flex flex-wrap gap-1 max-w-[90%]">
-              {value.length > 0 ? (
-                <span className="text-sm">{value.length} selected</span>
+            <div className="flex flex-wrap gap-1.5 flex-1 items-center">
+              {value.length > 0 && selectedItems.length > 0 ? (
+                selectedItems.map((item) => (
+                  <Badge 
+                    key={getItemValue(item)}
+                    variant="secondary"
+                    className="pl-2 pr-1 py-0.5 rounded-md bg-secondary/30 text-primary border-none flex items-center gap-1 z-50 pointer-events-auto"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <span className="text-[10px] sm:text-xs">{getItemLabel(item)}</span>
+                    <div
+                      role="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(getItemValue(item));
+                      }}
+                      className="hover:bg-primary/20 rounded-full p-0.5 cursor-pointer flex items-center justify-center"
+                    >
+                      <X className="h-3 w-3" />
+                    </div>
+                  </Badge>
+                ))
               ) : (
                 <span className="truncate text-content-tertiary">{placeholder}</span>
               )}
@@ -168,28 +189,6 @@ export function AsyncMultiCombobox<TItem = object>({
           </div>
         </PopoverContent>
       </Popover>
-
-      {/* Selected Items Badges */}
-      {selectedItems.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-1">
-          {selectedItems.map((item) => (
-            <Badge 
-              key={getItemValue(item)}
-              variant="secondary"
-              className="pl-2 pr-1 py-1 rounded-lg bg-secondary/30 text-primary border-none flex items-center gap-1"
-            >
-              <span className="text-xs">{getItemLabel(item)}</span>
-              <button
-                type="button"
-                onClick={() => removeItem(getItemValue(item))}
-                className="hover:bg-primary/10 rounded-full p-0.5"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
