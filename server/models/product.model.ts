@@ -103,6 +103,18 @@ const ProductSchema = new Schema<IProduct>(
       required: true,
       default: false,
     },
+    averageRating: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+    },
+    numReviews: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true,
