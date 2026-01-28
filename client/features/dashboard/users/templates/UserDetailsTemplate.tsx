@@ -14,7 +14,7 @@ import { AddBalanceModal } from "../components/AddBalanceModal";
 import { UserDetailsSkeleton } from "../components/UserDetailsSkeleton";
 import EditUserTemplate from "./EditUserTemplate";
 import { format } from "date-fns";
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 import { Wallet, Pencil } from "lucide-react";
 import { getImageUrl } from "@/utils/image.utils";
 

@@ -2,7 +2,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { getQueryClient } from "@/utils/queryClient";
 import AuthProvider from "@/providers/AuthProvider";
-import { User } from "@/features/dashboard/auth/types";
+import { User } from "@/features/auth/types";
 import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = getQueryClient();

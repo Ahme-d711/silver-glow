@@ -14,7 +14,7 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import { Order } from "../types";
 import { Product } from "@/features/dashboard/products/types";
-import { User } from "@/features/dashboard/auth/types";
+import { User } from "@/features/auth/types"; 
 import { UserReference } from "@/types";
 
 import { getAllProducts } from "@/features/dashboard/products/services/product.service";

@@ -10,7 +10,7 @@ import {
 import { UserForm } from "../components/UserForm";
 import { useUpdateUser } from "../hooks/useUser";
 import { UserFormValues } from "../schemas/user.schema";
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 import { useTranslations } from "next-intl";
 
 interface EditUserDialogProps {

@@ -12,7 +12,7 @@ import {
   addUserBalance,
   activateUser,
 } from "../services/user.service";
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 import type {
   GetAllUsersParams,
   GetAllUsersResponse,

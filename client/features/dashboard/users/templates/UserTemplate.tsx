@@ -8,7 +8,7 @@ import { UserCard } from "../components/UserCard";
 import { useUsers } from "../hooks/useUser";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { UserGridSkeleton } from "../components/UserGridSkeleton";
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 import AddUserTemplate from "./AddUserTemplate";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";

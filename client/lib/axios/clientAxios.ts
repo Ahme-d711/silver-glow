@@ -2,7 +2,7 @@
 
 import axios, { AxiosInstance } from "axios";
 import { API_URL } from "@/utils/constants";
-import { useAuthStore } from "@/features/dashboard/auth/stores/authStore";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 
 const clientAxios: AxiosInstance = axios.create({
   baseURL: API_URL,

@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getOrders, getOrdersByStatus, getOrderById, createOrder, updateOrder, cancelOrder, updateOrderStatus } from "../services/orders.services"
 import type { Order, OrderStatus, UpdateOrderPayload } from "../types"
-import { useAuthStore } from "@/features/dashboard/auth/stores/authStore"
 import { toast } from "sonner"
 import { getErrorMessage } from "@/types"
 

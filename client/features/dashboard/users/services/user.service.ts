@@ -2,7 +2,7 @@
 
 import { AxiosError } from "axios";
 import clientAxios from "@/lib/axios/clientAxios";
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 import type {
   ApiResponse,
   GetAllUsersParams,

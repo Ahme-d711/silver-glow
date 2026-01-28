@@ -1,4 +1,4 @@
-import type { User } from "@/features/dashboard/auth/types";
+import type { User } from "@/features/auth/types";
 
 /**
  * API Response structure

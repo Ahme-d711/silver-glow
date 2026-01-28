@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/features/dashboard/auth/stores/authStore"
+import { useAuthStore } from "@/features/auth/stores/authStore"
 import { useQuery } from "@tanstack/react-query"
 import { getDashboardStats } from "../services/dashboard.services"
 import { DashboardStats } from "../types/dashboard.types"
