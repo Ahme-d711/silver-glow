@@ -7,7 +7,6 @@ import { toast } from "sonner"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { AdsTable } from "../components/AdsTable"
 import { AdsMobileMockup } from "../components/AdsMobileMockup"
-import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
 import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
@@ -74,8 +73,8 @@ export default function AdsTemplate() {
     }
 
     const dataToExport = selectedAds.map((ad: Ad) => ({
-      [tCommon("nameAr")]: ad.nameAr,
-      [tCommon("nameEn")]: ad.nameEn,
+      [tCommon("name_ar")]: ad.nameAr,
+      [tCommon("name_en")]: ad.nameEn,
       "Link": ad.link || "-",
       "Shown": ad.isShown ? tCommon("yes") : tCommon("no"),
       [tCommon("date")]: ad.createdAt ? format(new Date(ad.createdAt), "dd MMM yyyy") : "-",

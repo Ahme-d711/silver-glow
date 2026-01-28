@@ -31,8 +31,8 @@ export default function CategoriesTemplate() {
     }
 
     const dataToExport = selectedCategories.map((category: Category) => ({
-      [tCommon("nameAr")]: category.nameAr,
-      [tCommon("nameEn")]: category.nameEn,
+      [tCommon("name_ar")]: category.nameAr,
+      [tCommon("name_en")]: category.nameEn,
       [tCommon("priority")]: category.priority,
       [tCommon("status")]: category.isDeleted ? tCommon("deleted") : tCommon("active"),
       "Slug": category.slug,

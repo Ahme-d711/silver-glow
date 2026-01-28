@@ -36,11 +36,11 @@ export default function ProductsTemplate() {
       const brand = typeof product.brandId === "object" ? (product.brandId as BrandReference).nameEn : "-";
 
       return {
-        [tCommon("nameAr")]: product.nameAr,
-        [tCommon("nameEn")]: product.nameEn,
+        [tCommon("name_ar")]: product.nameAr,
+        [tCommon("name_en")]: product.nameEn,
         [t("price")]: product.price,
-        [t("category")]: category,
-        [t("brand")]: brand,
+        [tCommon("category")]: category,
+        [tCommon("brand")]: brand,
         [tCommon("status")]: product.isDeleted ? tCommon("deleted") : tCommon("active"),
         [tCommon("date")]: product.createdAt ? format(new Date(product.createdAt), "dd MMM yyyy") : "-",
       };

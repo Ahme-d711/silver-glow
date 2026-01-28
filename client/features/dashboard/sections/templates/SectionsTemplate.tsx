@@ -31,8 +31,8 @@ export default function SectionsTemplate() {
     }
 
     const dataToExport = selectedSections.map((section: Section) => ({
-      [tCommon("nameAr")]: section.nameAr,
-      [tCommon("nameEn")]: section.nameEn,
+      [tCommon("name_ar")]: section.nameAr,
+      [tCommon("name_en")]: section.nameEn,
       [tCommon("priority")]: section.priority,
       [tCommon("status")]: section.isDeleted ? tCommon("deleted") : tCommon("active"),
       "Slug": section.slug,

@@ -105,17 +105,6 @@ export function AdsMobileMockup({ ads }: { ads: AdCard[] }) {
                      </div>
                 ))}
             </div>
-
-            {/* Best Seller Section Title */}
-            <div>
-                 <h3 className="font-bold text-gray-800 mb-2">Best Seller</h3>
-                 <div className="flex gap-3 overflow-hidden">
-                     {/* Horizontal list placeholders */}
-                     {Array(3).fill(0).map((_, i) => (
-                        <div key={i} className="w-24 h-32 bg-slate-200 rounded-xl animate-pulse shrink-0" />
-                     ))}
-                 </div>
-            </div>
         </div>
       </div>
 

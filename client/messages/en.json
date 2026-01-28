@@ -373,7 +373,8 @@
     "total_amount": "Total Amount"
   },
   "Ads": {
-    "title": "Advertisements",
+    "title": "Title",
+    "adId": "Ad ID",
     "add_ad": "Add Advertisement",
     "edit_ad": "Edit Advertisement",
     "delete_ad": "Delete Advertisement",

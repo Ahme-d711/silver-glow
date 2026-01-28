@@ -31,8 +31,8 @@ export default function BrandsTemplate() {
     }
 
     const dataToExport = selectedBrands.map((brand: Brand) => ({
-      [tCommon("nameAr")]: brand.nameAr,
-      [tCommon("nameEn")]: brand.nameEn,
+      [tCommon("name_ar")]: brand.nameAr,
+      [tCommon("name_en")]: brand.nameEn,
       [tCommon("priority")]: brand.priority,
       [tCommon("status")]: brand.isDeleted ? tCommon("deleted") : tCommon("active"),
       "Slug": brand.slug,

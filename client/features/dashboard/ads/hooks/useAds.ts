@@ -39,7 +39,7 @@ export function useCreateAd() {
     mutationFn: (data: FormData) => createAd(data),
     onSuccess: (response) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: adsKeys.lists() })
+        queryClient.invalidateQueries({ queryKey: adsKeys.all })
         toast.success(response.message || "Ad created successfully")
       } else {
         toast.error(response.message || "Failed to create ad")
@@ -59,7 +59,7 @@ export function useUpdateAd() {
     mutationFn: ({ id, data }: { id: string; data: FormData }) => updateAd(id, data),
     onSuccess: (response, variables) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: adsKeys.lists() })
+        queryClient.invalidateQueries({ queryKey: adsKeys.all })
         queryClient.invalidateQueries({ queryKey: adsKeys.detail(variables.id) })
         toast.success(response.message || "Ad updated successfully")
       } else {
@@ -80,7 +80,7 @@ export function useDeleteAd() {
     mutationFn: (id: string) => deleteAd(id),
     onSuccess: (response, deletedId) => {
       if (response.success) {
-        queryClient.invalidateQueries({ queryKey: adsKeys.lists() })
+        queryClient.invalidateQueries({ queryKey: adsKeys.all })
         queryClient.removeQueries({ queryKey: adsKeys.detail(deletedId) })
         toast.success(response.message || "Ad deleted successfully")
       } else {

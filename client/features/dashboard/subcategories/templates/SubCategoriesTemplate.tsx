@@ -31,8 +31,8 @@ export default function SubCategoriesTemplate() {
     }
 
     const dataToExport = selectedSubcategories.map((sub: Subcategory) => ({
-      [tCommon("nameAr")]: sub.nameAr,
-      [tCommon("nameEn")]: sub.nameEn,
+      [tCommon("name_ar")]: sub.nameAr,
+      [tCommon("name_en")]: sub.nameEn,
       [tCommon("priority")]: sub.priority,
       [t("category")]: typeof sub.categoryId === "object" ? (sub.categoryId as any).nameEn : "-",
       [tCommon("status")]: sub.isDeleted ? tCommon("deleted") : tCommon("active"),
