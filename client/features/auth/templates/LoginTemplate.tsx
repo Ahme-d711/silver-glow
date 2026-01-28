@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { LoginForm } from "../components/LoginForm";
+import { AuthFooter } from "../components/AuthFooter";
 import { useLogin } from "../hooks/useLogin";
 
 export function LoginTemplate() {
@@ -28,15 +29,7 @@ export function LoginTemplate() {
         />
       </div>
 
-      <div className="absolute bottom-10 left-60 w-[1300] flex items-center justify-between">
-        <span className="text-sm font-medium text-primary/60">© 2022 Horizon UI. All Rights Reserved. Made with love by Simmmple!</span>
-        <div className="flex items-center gap-8 text-white">
-          <span>Marketplace</span>
-          <span>License</span>
-          <span>Terms of Use</span>
-          <span>Blog</span>
-        </div>
-      </div>
+      <AuthFooter />
     </div>
   );
 }

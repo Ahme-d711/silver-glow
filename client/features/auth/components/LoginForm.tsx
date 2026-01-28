@@ -4,12 +4,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { loginSchema, type LoginFormValues } from "../schemas/authSchemas";
-import { toast } from "sonner";
 
 interface LoginFormProps {
   login: (phone: string, password: string) => Promise<void>;
@@ -17,6 +18,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ login, loading }: LoginFormProps) {
+  const t = useTranslations("Auth");
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -28,10 +30,8 @@ export function LoginForm({ login, loading }: LoginFormProps) {
 
   async function onSubmit(data: LoginFormValues) {
     try {
-      console.log(data);
-      
       await login(data.phone, data.password);
-      toast.success("Login successful!");
+      toast.success(t("login_success") || "Login successful!");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "An error occurred during login";
       toast.error(errorMessage);
@@ -43,9 +43,9 @@ export function LoginForm({ login, loading }: LoginFormProps) {
     <div className="w-full space-y-8 max-w-xl mx-auto">
       <div>
         <h2 className="text-[40px] font-bold text-primary">
-          Sign In
+          {t("login")}
         </h2>
-        <p className="font-medium text-primary/60">Enter your phone number and password to sign in!</p>
+        <p className="font-medium text-primary/60">{t("sign_in_text")}</p>
       </div>
 
       <Form {...form}>
@@ -53,7 +53,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
           <UniInput
             control={form.control}
             name="phone"
-            label="Phone Number"
+            label={t("phone")}
             placeholder=""
             type="tel"
             autoComplete="tel"
@@ -62,11 +62,10 @@ export function LoginForm({ login, loading }: LoginFormProps) {
           <UniInput
             control={form.control}
             name="password"
-            label="Password"
+            label={t("password")}
             placeholder=""
             type="password"
             autoComplete="current-password"
-            helperText="It must be a combination of minimum 6 letters, numbers, and symbols."
           />
 
           <div className="">
@@ -74,14 +73,22 @@ export function LoginForm({ login, loading }: LoginFormProps) {
               href="/forgot-password"
               className="text-sm font-medium text-primary"
             >
-              Forgot Password?
+              {t("forgot_password")}
             </Link>
           </div>
 
-          <Button type="submit" className="w-full rounded-2xl text-base" disabled={loading}>
-            Log In
-            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" className="w-full h-14 rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
+            {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("submit")}
           </Button>
+
+          <div className="text-center pt-2">
+            <p className="text-sm font-medium text-primary/60">
+              {t("dont_have_account")}{" "}
+              <Link href="/register" className="text-primary font-bold hover:underline">
+                {t("sign_up")}
+              </Link>
+            </p>
+          </div>
         </form>
       </Form>
     </div>

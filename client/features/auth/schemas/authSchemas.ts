@@ -9,3 +9,27 @@ export const loginSchema = z.object({
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
+
+export const registerSchema = z
+  .object({
+    name: z.string().min(1, { message: "Name is required" }).max(500),
+    email: z.string().email("Invalid email format").min(1, "Email is required").max(500),
+    phone: z
+      .string()
+      .min(1, "Phone number is required")
+      .max(20)
+      .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(255)
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain uppercase, lowercase, and number"),
+    confirmPassword: z.string().min(1, "Password confirmation is required"),
+    gender: z.enum(["male", "female"]).optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type RegisterFormValues = z.infer<typeof registerSchema>;
