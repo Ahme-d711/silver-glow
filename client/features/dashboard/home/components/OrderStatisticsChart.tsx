@@ -30,14 +30,15 @@ const renderCustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, 
 
 export function OrderStatisticsChart({ stats }: { stats: DashboardStats | undefined }) {
   const t = useTranslations("Dashboard");
-  const tOrders = useTranslations("Orders");
 
-  const data = [
-    { name: tOrders("processing"), value: stats?.ordersByStatus?.PROCESSING || 0, color: "#192C56" },
-    { name: tOrders("delivered"), value: stats?.ordersByStatus?.DELIVERED || 0, color: "#3B4758" },
-    { name: tOrders("cancelled"), value: stats?.ordersByStatus?.CANCELLED || 0, color: "#6F7895" },
-    { name: tOrders("pending"), value: stats?.ordersByStatus?.PENDING || 0, color: "#A0AEC0" },
-  ].filter(item => item.value > 0);
+  // Colors for categories
+  const COLORS = ["#192C56", "#3B4758", "#6F7895", "#A0AEC0", "#CBD5E0", "#EDF2F7"];
+
+  const data = stats?.charts?.ordersByCategory?.map((item, index) => ({
+    name: item.name,
+    value: item.value,
+    color: COLORS[index % COLORS.length]
+  })) || [];
 
   // Fallback if no data
   const chartData = data.length > 0 ? data : [{ name: "No Data", value: 1, color: "#E5E7EB" }];

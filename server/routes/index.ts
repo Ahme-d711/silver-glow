@@ -12,6 +12,7 @@ import dashboardRouter from "./dashboard.route.js";
 import cartRouter from "./cart.route.js";
 import wishlistRouter from "./wishlist.route.js";
 import reviewRouter from "./review.route.js";
+import transactionRouter from "./transaction.route.js";
 
 export const router = Router();
 
@@ -28,3 +29,4 @@ router.use("/dashboard", dashboardRouter);
 router.use("/cart", cartRouter);
 router.use("/wishlist", wishlistRouter);
 router.use("/reviews", reviewRouter);
+router.use("/transactions", transactionRouter);

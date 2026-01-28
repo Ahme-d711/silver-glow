@@ -30,6 +30,4 @@ const CartSchema = new Schema<ICart>(
   }
 );
 
-CartSchema.index({ userId: 1 });
-
 export const CartModel = model<ICart>("carts", CartSchema);

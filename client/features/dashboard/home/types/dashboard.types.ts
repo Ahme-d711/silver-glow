@@ -8,17 +8,6 @@ export interface DashboardSummary {
   newUsersLast30Days: number;
 }
 
-export interface OrdersByStatus {
-  PENDING: number;
-  CONFIRMED: number;
-  PROCESSING: number;
-  SHIPPED: number;
-  DELIVERED: number;
-  CANCELLED: number;
-  RETURNED: number;
-  [key: string]: number;
-}
-
 export interface MonthlyRevenueData {
   _id: {
     year: number;
@@ -30,8 +19,9 @@ export interface MonthlyRevenueData {
 
 export interface DashboardStats {
   summary: DashboardSummary;
-  ordersByStatus: OrdersByStatus;
+  ordersByStatus: { [key: string]: number };
   charts: {
+    ordersByCategory: { name: string; value: number }[];
     monthlyRevenue: MonthlyRevenueData[];
     ordersByGovernorate: { name: string; value: number }[];
   };

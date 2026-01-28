@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model.js";
 import { UserModel } from "../models/user.model.js";
 import { createOrderSchema, updateOrderSchema, queryOrderSchema, updateOrderStatusSchema } from "../schemas/order.schema.js";
+import { checkoutSchema } from "../schemas/checkout.schema.js";
+import { CartModel } from "../models/cart.model.js";
+import { ProductModel } from "../models/product.model.js";
+import { TransactionModel } from "../models/transaction.model.js";
 import AppError from "../errors/AppError.js";
 
 /**
@@ -217,5 +221,141 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     success: true,
     message: "Order status updated successfully",
     data: { order: updatedOrder },
+  });
+};
+
+/**
+ * Checkout process: Convert cart to order
+ */
+export const checkout = async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const validatedBody = checkoutSchema.parse(req.body);
+
+  // 1. Get User Cart
+  const cart = await CartModel.findOne({ userId }).populate({
+    path: "items.productId",
+    select: "nameAr nameEn price stock isShow isDeleted",
+  });
+
+  if (!cart || cart.items.length === 0) {
+    throw new AppError("Your cart is empty", 400);
+  }
+
+  // 2. Validate Stock and Availability
+  let subtotal = 0;
+  const orderItems = [];
+
+  for (const item of cart.items) {
+    const product = item.productId as any; // Populated product
+
+    if (!product || product.isDeleted || !product.isShow) {
+      throw new AppError(`Product ${product?.nameEn || "unknown"} is no longer available`, 400);
+    }
+
+    if (product.stock < item.quantity) {
+      throw new AppError(`Product ${product.nameEn} only has ${product.stock} items in stock`, 400);
+    }
+
+    subtotal += product.price * item.quantity;
+    orderItems.push({
+      productId: product._id,
+      name: product.nameEn, // Using English name for order record
+      price: product.price,
+      quantity: item.quantity,
+      image: product.mainImage,
+    });
+  }
+
+  // 3. Pricing
+  const shippingCost = 50; // Flat rate for now
+  const totalAmount = subtotal + shippingCost;
+
+  // 4. Verify Balance
+  const user = await UserModel.findById(userId);
+  if (!user) throw new AppError("User not found", 404);
+
+  if ((user.totalBalance || 0) < totalAmount) {
+    throw new AppError(`Insufficient balance. Current balance: ${user.totalBalance}`, 400);
+  }
+
+  // 5. Atomic Operations (Simulated)
+  // Create Order
+  const trackingNumber = `SG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const order = await OrderModel.create({
+    ...validatedBody,
+    userId,
+    items: orderItems,
+    subtotal,
+    shippingCost,
+    totalAmount,
+    trackingNumber,
+    paymentStatus: "PAID", // Since it's from balance
+    status: "PENDING",
+  });
+
+  // Create Transaction Record
+  await TransactionModel.create({
+    userId,
+    amount: -totalAmount, // Negative for deduction
+    type: "PURCHASE",
+    status: "COMPLETED",
+    description: `Purchase of order ${trackingNumber}`,
+    referenceId: order._id.toString(),
+  });
+
+  // User balance is updated via TransactionModel middleware
+
+  // Deduct Stock
+  for (const item of cart.items) {
+    await ProductModel.findByIdAndUpdate(item.productId, {
+      $inc: { stock: -item.quantity }
+    });
+  }
+
+  // Clear Cart
+  cart.items = [];
+  await cart.save();
+
+  res.status(201).json({
+    success: true,
+    message: "Checkout successful! Your order has been placed.",
+    data: { order },
+  });
+};
+
+/**
+ * Get current user's orders
+ */
+export const getMyOrders = async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const validatedQuery = queryOrderSchema.parse(req.query);
+  const { status, page, limit } = validatedQuery;
+
+  const query: Record<string, unknown> = { userId };
+  if (status) query.status = status;
+
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await Promise.all([
+    OrderModel.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("items.productId", "nameAr nameEn mainImage"),
+    OrderModel.countDocuments(query),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: "Your orders fetched successfully",
+    data: {
+      orders,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    },
   });
 };

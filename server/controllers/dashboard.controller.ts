@@ -17,8 +17,9 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
     totalProducts,
     totalOrders,
     totalRevenueResult,
-    ordersByStatus,
+    ordersByCategory,
     ordersByGovernorate,
+    ordersByStatus,
   ] = await Promise.all([
     UserModel.countDocuments({ isDeleted: false }),
     ProductModel.countDocuments({ isDeleted: false }),
@@ -28,13 +29,42 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
       { $group: { _id: null, total: { $sum: "$totalAmount" } } },
     ]),
     OrderModel.aggregate([
-      { $group: { _id: "$status", count: { $sum: 1 } } },
+      { $unwind: "$items" },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.productId",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "product.categoryId",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      {
+        $group: {
+          _id: "$category.nameAr",
+          value: { $sum: 1 },
+        },
+      },
+      { $project: { _id: 0, name: "$_id", value: 1 } },
+      { $sort: { value: -1 } },
     ]),
     OrderModel.aggregate([
       { $group: { _id: "$governorate", value: { $sum: 1 } } },
       { $sort: { value: -1 } },
       { $limit: 6 },
-      { $project: { _id: 0, name: "$_id", value: 1 } }
+      { $project: { _id: 0, name: "$_id", value: 1 } },
+    ]),
+    OrderModel.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } },
     ]),
   ]);
 
@@ -51,7 +81,7 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
     RETURNED: 0,
   };
   
-  ordersByStatus.forEach((item) => {
+  ordersByStatus.forEach((item: any) => {
     if (item._id in statusCounts) {
       statusCounts[item._id] = item.count;
     }
@@ -109,11 +139,12 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
         totalRevenue,
         newUsersLast30Days,
       },
-      ordersByStatus: statusCounts,
       charts: {
+        ordersByCategory,
         monthlyRevenue,
         ordersByGovernorate,
       },
+      ordersByStatus: statusCounts,
       recentOrders,
     },
   });

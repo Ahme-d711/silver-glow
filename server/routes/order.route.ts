@@ -5,7 +5,9 @@ import {
   createOrder, 
   updateOrder,
   cancelOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  checkout,
+  getMyOrders
 } from "../controllers/order.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -18,6 +20,9 @@ router.use(authenticate);
 router.route("/")
   .get(asyncHandler(getAllOrders))
   .post(asyncHandler(createOrder));
+
+router.get("/my-orders", asyncHandler(getMyOrders));
+router.post("/checkout", asyncHandler(checkout));
 
 router.route("/:id")
   .get(asyncHandler(getOrderById))

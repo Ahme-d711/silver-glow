@@ -21,6 +21,4 @@ const WishlistSchema = new Schema<IWishlist>(
   }
 );
 
-WishlistSchema.index({ userId: 1 });
-
 export const WishlistModel = model<IWishlist>("wishlists", WishlistSchema);
