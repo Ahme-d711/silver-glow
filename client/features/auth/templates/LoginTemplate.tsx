@@ -4,12 +4,18 @@ import Image from "next/image";
 import { LoginForm } from "../components/LoginForm";
 import { AuthFooter } from "../components/AuthFooter";
 import { useLogin } from "../hooks/useLogin";
+import { motion } from "framer-motion";
 
 export function LoginTemplate() {
   const { login, loading } = useLogin();
 
   return (
-    <div className="flex items-center min-h-screen w-full relative">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="flex items-center min-h-screen w-full relative"
+    >
       {/* Left Side - Form */}
       <div className="flex w-full flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-1/2 lg:px-12">
         <div className="mx-auto w-full">
@@ -30,6 +36,6 @@ export function LoginTemplate() {
       </div>
 
       <AuthFooter />
-    </div>
+    </motion.div>
   );
 }

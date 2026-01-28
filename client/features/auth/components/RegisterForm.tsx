@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniPhoneInput } from "@/components/shared/uni-form/UniPhoneInput";
 import { registerSchema, type RegisterFormValues } from "../schemas/authSchemas";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -44,8 +45,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
 
   return (
     <div className="w-full space-y-8 max-w-xl mx-auto">
-      <div>
-        <h2 className="text-[40px] font-bold text-primary">
+      <div className="space-y-3">
+        <h2 className="text-5xl font-bold text-primary">
           {t("create_account")}
         </h2>
         <p className="font-medium text-primary/60">{t("sign_up_text")}</p>
@@ -60,19 +61,18 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             placeholder="ex. John Smith"
           />
 
-          <UniInput
+          <UniPhoneInput
             control={form.control}
             name="phone"
             label={t("phone")}
-            placeholder="ex. +20123456789"
-            type="tel"
+            placeholder="123456789"
           />
 
           <UniInput
             control={form.control}
             name="email"
             label={t("email")}
-            placeholder="ex. ahmed@simple.com"
+            placeholder="ahmed@simple.com"
             type="email"
           />
 
@@ -81,8 +81,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             control={form.control}
             name="gender"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel className="text-content-secondary font-medium">{t("gender")}</FormLabel>
+              <FormItem className="space-y-">
+                <FormLabel className="text-content-secondary text-base font-medium">{t("gender")}</FormLabel>
                 <FormControl>
                   <div className="flex gap-4">
                     <button
@@ -138,11 +138,11 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             />
           </div>
 
-          <Button type="submit" className="w-full h-14 rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
+          <Button type="submit" className="w-full h-14 mt-4 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
             {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("register_submit")}
           </Button>
 
-          <div className="text-center pt-2">
+          <div className="text-center">
             <p className="text-sm font-medium text-primary/60">
               {t("already_have_account")}{" "}
               <Link href="/login" className="text-primary font-bold hover:underline">

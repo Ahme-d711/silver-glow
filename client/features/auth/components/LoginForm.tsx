@@ -77,7 +77,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
             </Link>
           </div>
 
-          <Button type="submit" className="w-full h-14 rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
+          <Button type="submit" className="w-full h-14 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
             {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("submit")}
           </Button>
 
