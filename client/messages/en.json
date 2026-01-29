@@ -10,7 +10,11 @@
     "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout",
-    "open_menu": "Open Menu"
+    "open_menu": "Open Menu",
+    "cart": "Cart",
+    "wallet": "Wallet",
+    "log_in": "Log in",
+    "create_account": "Create an account"
   },
   "Auth": {
     "login": "Login",
@@ -46,6 +50,11 @@
     "female": "Female",
     "register_success": "Account created successfully!",
     "register_error": "An error occurred during registration.",
+    "verify_success": "Phone verified successfully!",
+    "code_resent": "Verification code sent again!",
+    "verification_instructions": "Please enter the 6-digit verification code sent to your phone.",
+    "resend_in": "Resend in {seconds}s",
+    "back": "Back",
     "reset_password": "Reset Password",
     "verify_phone": "Verify Phone Number",
     "verification_code": "Verification Code",

@@ -14,6 +14,8 @@ import { registerSchema, type RegisterFormValues } from "../schemas/authSchemas"
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+import { useRouter } from "next/navigation";
+
 interface RegisterFormProps {
   register: (values: RegisterFormValues) => Promise<void>;
   loading: boolean;
@@ -21,6 +23,7 @@ interface RegisterFormProps {
 
 export function RegisterForm({ register, loading }: RegisterFormProps) {
   const t = useTranslations("Auth");
+  const router = useRouter();
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -37,6 +40,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
     try {
       await register(data);
       toast.success(t("register_success") || "Account created successfully!");
+      // Redirect to verification page
+      router.push(`/verify?phone=${encodeURIComponent(data.phone)}`);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "An error occurred during registration";
       toast.error(errorMessage);

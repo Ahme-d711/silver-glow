@@ -10,7 +10,11 @@
     "dashboard": "لوحة التحكم",
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
-    "open_menu": "فتح القائمة"
+    "open_menu": "فتح القائمة",
+    "cart": "السلة",
+    "wallet": "المحفظة",
+    "log_in": "دخول",
+    "create_account": "حساب جديد"
   },
   "Auth": {
     "login": "تسجيل الدخول",
@@ -46,6 +50,11 @@
     "female": "أنثى",
     "register_success": "تم إنشاء الحساب بنجاح!",
     "register_error": "حدث خطأ أثناء إنشاء الحساب.",
+    "verify_success": "تم التحقق من رقم الهاتف بنجاح!",
+    "code_resent": "تم إعادة إرسال رمز التحقق.",
+    "verification_instructions": "الرجاء إدخال رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك.",
+    "resend_in": "إعادة الإرسال خلال {seconds} ثانية",
+    "back": "الرجوع",
     "reset_password": "إعادة تعيين كلمة المرور",
     "verify_phone": "تحقق من رقم الهاتف",
     "verification_code": "رمز التحقق",

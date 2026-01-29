@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { RegisterForm } from "../components/RegisterForm";
 import { AuthFooter } from "../components/AuthFooter";
 import { useRegister } from "../hooks/useRegister";
 import { motion } from "framer-motion";
+import RightSide from "../components/RightSide";
 
 export function RegisterTemplate() {
   const { register, loading } = useRegister();
@@ -24,16 +24,7 @@ export function RegisterTemplate() {
       </div>
 
       {/* Right Side - Illustration */}
-      <div className="h-screen w-1/2 hidden lg:flex flex-col items-center justify-center bg-primary rounded-bl-[150px]">
-        <Image 
-          src="/logo.svg" 
-          alt="register logo" 
-          width={266}
-          height={365}
-          className="object-contain"
-          priority
-        />
-      </div>
+      <RightSide />
 
       <AuthFooter />
     </motion.div>

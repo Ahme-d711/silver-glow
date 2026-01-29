@@ -56,7 +56,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <CoreProviders>
             <Providers data={profileData}>
-              <DashboardLayoutClient>{children}</DashboardLayoutClient>
+              {children}
             </Providers>
           </CoreProviders>
         </NextIntlClientProvider>

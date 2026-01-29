@@ -1,7 +1,6 @@
 "use client";
 
 import { Sidebar } from "@/components/sidebar";
-import { usePathname } from "@/i18n/routing";
 import { Slide } from "react-awesome-reveal";
 import { DashboardNavbar } from "@/components/dashboard-navbar";
 import { Suspense } from "react";
@@ -12,34 +11,7 @@ export default function DashboardLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
   const locale = useLocale();
-  
-  const loginPaths = ["/login", "/register"];
-  const isLoginPage = loginPaths.includes(pathname);
-
-  // List of valid routes that should show sidebar and navbar
-  // next-intl usePathname returns path without locale prefix
-  const validRoutes = [
-    "/dashboard",
-    "/dashboard/packages",
-    "/dashboard/users",
-    "/dashboard/ads",
-    "/dashboard/services",
-    "/dashboard/orders",
-    "/dashboard/settings",
-  ];
-
-  // Check if current pathname is a valid route or starts with a valid route
-  const isValidRoute = validRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
-
-  // Hide sidebar and navbar for login page or invalid routes (404 pages)
-  if (isLoginPage || !isValidRoute) {
-    return <>{children}</>;
-  }
-
   const isRtl = locale === 'ar';
 
   return (
@@ -49,7 +21,7 @@ export default function DashboardLayoutClient({
         <div className="flex-1 overflow-y-auto p-6 flex flex-col">
             <div className="relative z-40 overflow-visible!">
               <Slide direction="up" duration={300} triggerOnce fraction={0.1} className="overflow-visible!">
-                <Suspense>
+                <Suspense fallback={null}>
                   <DashboardNavbar />
                 </Suspense>
               </Slide>
@@ -64,5 +36,3 @@ export default function DashboardLayoutClient({
     </div>
   );
 }
-
-

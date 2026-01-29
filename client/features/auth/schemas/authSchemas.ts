@@ -33,3 +33,14 @@ export const registerSchema = z
   });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;
+
+export const verifyPhoneSchema = z.object({
+  phone: z.string().min(1, "Phone number is required"),
+  code: z
+    .string()
+    .min(4, "Verification code must be at least 4 digits")
+    .max(6, "Verification code must be at most 6 digits")
+    .regex(/^\d+$/, "Verification code must be numeric"),
+});
+
+export type VerifyPhoneFormValues = z.infer<typeof verifyPhoneSchema>;
