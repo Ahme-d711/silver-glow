@@ -139,7 +139,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
           </div>
 
           <Button type="submit" className="w-full h-14 mt-4 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
-            {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("register_submit")}
+            {t("register_submit")}
+            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" /> } 
           </Button>
 
           <div className="text-center">

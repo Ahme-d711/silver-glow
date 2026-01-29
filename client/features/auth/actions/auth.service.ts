@@ -113,7 +113,6 @@ export async function loginUser(credentials: {
 }): Promise<AuthActionResponse> {
   try {
     const res = await authAction(credentials, "/auth/login");
-    console.log(res);
     
     
     if (res.success && res.accessToken) {
@@ -192,6 +191,13 @@ export async function getProfile(): Promise<{
       token,
     };
   } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      // Expected for unauthenticated users, keep it silent
+      return {
+        user: null,
+        token: null,
+      };
+    }
     console.error("Failed to fetch profile", error);
     return {
       user: null,

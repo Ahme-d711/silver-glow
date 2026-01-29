@@ -15,7 +15,7 @@ export default function DashboardLayoutClient({
   const pathname = usePathname();
   const locale = useLocale();
   
-  const loginPaths = ["/login"];
+  const loginPaths = ["/login", "/register"];
   const isLoginPage = loginPaths.includes(pathname);
 
   // List of valid routes that should show sidebar and navbar

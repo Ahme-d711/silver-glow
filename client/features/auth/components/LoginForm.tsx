@@ -78,7 +78,8 @@ export function LoginForm({ login, loading }: LoginFormProps) {
           </div>
 
           <Button type="submit" className="w-full h-14 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
-            {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("submit")}
+            {t("submit")}
+            {loading && <Loader className="mr-2 h-4 w-4 animate-spin" /> } 
           </Button>
 
           <div className="text-center pt-2">

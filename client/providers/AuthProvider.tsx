@@ -15,12 +15,9 @@ export default function AuthProvider({
   const { setUser, setToken } = useAuthStore((state) => state);
 
   useEffect(() => {
-    if (token) {
-      setToken(token);
-    }
-    if (user) {
-      setUser(user);
-    }
+    // Sync store with server data
+    setToken(token || "");
+    setUser(user || null);
   }, [token, user, setUser, setToken]);
 
   return <>{children}</>;
