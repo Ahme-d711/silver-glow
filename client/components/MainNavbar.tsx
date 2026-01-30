@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 function UserMenu() {
   const { user } = useAuthStore();
@@ -104,7 +105,7 @@ export function MainNavbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-20 flex items-center",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-8 px-10 flex items-center",
         isScrolled || !isHome ? "bg-primary shadow-lg" : "bg-transparent"
       )}
     >
@@ -114,8 +115,8 @@ export function MainNavbar() {
           <Image
             src="/logo.svg"
             alt="Silver Glow"
-            width={50}
-            height={50}
+            width={80}
+            height={80}
             className="brightness-0 invert"
           />
         </Link>
@@ -123,10 +124,10 @@ export function MainNavbar() {
         {/* Search Bar (Middle) */}
         <div className="hidden md:flex flex-1 max-w-2xl relative">
           <div className="relative w-full">
-            <input
+            <Input
               type="text"
               placeholder="Here's a gift for you..."
-              className="w-full h-12 rounded-xl bg-white text-primary px-12 focus:outline-none shadow-sm"
+              className="w-full h-18.5 bg-white rounded-2xl text-primary px-12 focus:outline-none shadow-sm"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 p-1 border-l border-divider/50">
@@ -136,7 +137,7 @@ export function MainNavbar() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 md:gap-6 text-white font-medium">
+        <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">
           <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <ShoppingCart className="h-5 w-5" />
             <span className="hidden lg:inline">{t("cart")}</span>
