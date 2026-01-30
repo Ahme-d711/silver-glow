@@ -26,7 +26,7 @@ export function HeroSection({ ads }: { ads: Ad[] }) {
   if (displayAds.length === 0) return null;
 
   return (
-    <div className="relative w-full h-screen overflow-hidden group">
+    <div className="relative w-full h-[64vh] overflow-hidden group">
       <Swiper
         modules={[Pagination, Navigation, Autoplay, EffectFade]}
         effect="fade"
