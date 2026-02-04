@@ -407,5 +407,11 @@
     "dark": "داكن",
     "english": "الإنجليزية",
     "arabic": "العربية"
+  },
+  "Home": {
+    "best_seller": "الأكثر مبيعاً",
+    "shop_by_category": "تسوق حسب {category}",
+    "view_all": "عرض الكل",
+    "more_products": "المزيد من المنتجات"
   }
 }

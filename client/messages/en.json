@@ -410,5 +410,11 @@
     "dark": "Dark",
     "english": "English",
     "arabic": "Arabic"
+  },
+  "Home": {
+    "best_seller": "Best Seller",
+    "shop_by_category": "Shop By {category}",
+    "view_all": "View All",
+    "more_products": "More Products"
   }
 }
