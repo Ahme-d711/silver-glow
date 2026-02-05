@@ -75,7 +75,7 @@ export const ProductTabsSection: React.FC = () => {
       {/* View All Button */}
       <div className="flex justify-center mt-12">
         <Link
-          href="/products"
+          href="/shop"
           className="px-10 py-4 rounded-2xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all duration-300"
         >
           {t("more_products")}

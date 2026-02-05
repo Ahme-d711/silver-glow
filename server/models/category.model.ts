@@ -99,6 +99,14 @@ CategorySchema.virtual("subcategoriesCount", {
   match: { isDeleted: false },
 });
 
+CategorySchema.virtual("productsCount", {
+  ref: "products",
+  localField: "_id",
+  foreignField: "categoryId",
+  count: true,
+  match: { isDeleted: false, isShow: true },
+});
+
 CategorySchema.pre("validate", async function () {
   if (this.isModified("nameEn")) {
     const baseSlug = slugify(this.nameEn);

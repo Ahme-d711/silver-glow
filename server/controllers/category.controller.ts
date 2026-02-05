@@ -22,6 +22,7 @@ export const getAllCategories = asyncHandler(async (req: Request, res: Response)
   // No default isDeleted filter here. ApiFeatures.filter() will handle it if provided.
   const query = CategoryModel.find()
     .populate("subcategoriesCount")
+    .populate("productsCount")
     .sort({ priority: -1, createdAt: -1 });
 
   const apiFeatures = new ApiFeatures(query, validatedQuery as Record<string, unknown>)

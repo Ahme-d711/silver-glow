@@ -26,6 +26,7 @@ export interface Category {
   priority: number;
   slug: string;
   subcategoriesCount?: number;
+  productsCount?: number;
   image: string;
   isShow: boolean;
   isDeleted: boolean;

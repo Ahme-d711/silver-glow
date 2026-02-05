@@ -460,5 +460,12 @@
     "how_to_blog": "How to - Blog",
     "youtube_playlist": "Youtube Playlist",
     "rights": "Silver Glow.COM © 2000-2023, All Rights Reserved"
+  },
+  "Shop": {
+    "title": "Shop",
+    "home": "Home",
+    "items": "Items",
+    "categoriesTitle": "Shop by Category",
+    "productsSectionPlaceholder": "Featured Products Section (Coming Soon)"
   }
 }

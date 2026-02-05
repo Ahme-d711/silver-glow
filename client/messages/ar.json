@@ -457,5 +457,12 @@
     "how_to_blog": "كيفية القيام - مدونة",
     "youtube_playlist": "قائمة يوتيوب",
     "rights": "سيلفر جلو.COM © 2000-2023، جميع الحقوق محفوظة"
+  },
+  "Shop": {
+    "title": "المتجر",
+    "home": "الرئيسية",
+    "items": "منتجات",
+    "categoriesTitle": "تسوق حسب الفئة",
+    "productsSectionPlaceholder": "قسم المنتجات المميزة (قريباً)"
   }
 }
