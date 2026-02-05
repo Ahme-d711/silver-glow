@@ -36,7 +36,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <Link
       href={`/products/${product._id}`}
-      className="group relative block aspect-3/4 w-full overflow-hidden rounded-2xl bg-gray-100"
+      className="group relative block aspect-3/4 w-full overflow-hidden rounded-2xl bg-secondary"
     >
       <Image
         src={imageUrl || "/images/placeholder.png"}
@@ -65,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Info */}
       <div className="absolute bottom-0 left-0 right-0 p-5 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <h3 className="text-lg font-bold mb-1 line-clamp-1">{name}</h3>
-        <p className="text-sm text-gray-200 line-clamp-1">
+        <p className="text-sm text-secondary line-clamp-1">
           {description || "Your ring, your style"}
         </p>
       </div>

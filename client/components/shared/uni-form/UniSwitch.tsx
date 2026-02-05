@@ -38,7 +38,7 @@ export function UniSwitch<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("flex flex-row items-center justify-between gap-4 p-4 border border-divider/50 rounded-xl bg-white", className)}>
+        <FormItem className={cn("flex flex-row items-center justify-between gap-4 p-4 border border-divider/50 rounded-xl bg-white", className)} id={name}>
           <FormLabel className={cn("text-base text-primary font-semibold cursor-pointer flex-1", labelClassName)}>
             {label}
             {required && <span className="text-destructive ml-1">*</span>}

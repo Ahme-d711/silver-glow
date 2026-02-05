@@ -1,10 +1,19 @@
-// This is a placeholder root layout
-// The actual layout logic is in app/[locale]/layout.tsx
-export default function RootLayout({
+import { MainNavbar } from "@/components/MainNavbar";
+import { MainFooter } from "@/components/MainFooter";
+
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <MainNavbar />
+      <main className="flex-grow">
+        {children}
+      </main>
+      <MainFooter />
+    </div>
+  );
 }
 

@@ -55,7 +55,7 @@ export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("space-y-1.5", className)}>
+        <FormItem className={cn("space-y-1.5", className)} id={name}>
           {label && (
             <FormLabel className={cn("text-base text-content-secondary cursor-pointer", labelClassName)}>
               {label}

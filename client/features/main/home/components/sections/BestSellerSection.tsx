@@ -27,7 +27,7 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
     <section className="py-16 container mx-auto px-4">
       {/* Section Title */}
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">
+        <h2 className="text-3xl font-bold text-primary">
           {t("best_seller")}
         </h2>
       </div>
@@ -48,7 +48,7 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
       <div className="flex justify-center mt-10">
         <Link
           href="/products"
-          className="px-8 py-3 rounded-full border-2 border-gray-800 text-gray-800 font-medium hover:bg-gray-800 hover:text-white transition-all duration-300"
+          className="px-8 py-3 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary hover:text-white transition-all duration-300"
         >
           {t("more_products")}
         </Link>

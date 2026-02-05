@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { getPublicAds, getPublicCategories, getPublicProducts } from "../services/home.service";
+import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections } from "../services/home.service";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { Product } from "@/features/dashboard/products/types";
+import { Section } from "@/features/dashboard/sections/types";
 
 /**
  * Professional Query Key Factory for Home feature
@@ -13,6 +14,7 @@ export const homeKeys = {
   all: ["home"] as const,
   ads: () => [...homeKeys.all, "ads"] as const,
   categories: () => [...homeKeys.all, "categories"] as const,
+  sections: () => [...homeKeys.all, "sections"] as const,
   products: (filters?: Record<string, any>) => [...homeKeys.all, "products", { ...filters }] as const,
 };
 
@@ -41,12 +43,24 @@ export function useHomeCategories(options?: Partial<UseQueryOptions<Category[]>>
 }
 
 /**
- * Hook to fetch home/featured products
+ * Hook to fetch home sections
  */
-export function useHomeProducts(options?: Partial<UseQueryOptions<Product[]>>) {
+export function useHomeSections(options?: Partial<UseQueryOptions<Section[]>>) {
   return useQuery({
-    queryKey: homeKeys.products(),
-    queryFn: getPublicProducts,
+    queryKey: homeKeys.sections(),
+    queryFn: getPublicSections,
+    staleTime: 1000 * 60 * 60, // 1 hour
+    ...options,
+  });
+}
+
+/**
+ * Hook to fetch home/featured products with optional section filtering
+ */
+export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOptions<Product[]>>) {
+  return useQuery({
+    queryKey: homeKeys.products({ sectionId }),
+    queryFn: () => getPublicProducts(sectionId),
     staleTime: 1000 * 60 * 10, // 10 minutes
     ...options,
   });

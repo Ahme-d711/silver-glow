@@ -63,7 +63,7 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
         const displayValue = field.value?.replace(selectedCountry.dialCode, "") || "";
 
         return (
-          <FormItem className={cn(className)}>
+          <FormItem className={cn(className)} id={name}>
             {label && (
               <FormLabel className="text-base text-content-secondary font-medium cursor-pointer">
                 {label}

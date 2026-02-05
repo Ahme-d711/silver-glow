@@ -413,8 +413,52 @@
   },
   "Home": {
     "best_seller": "Best Seller",
-    "shop_by_category": "Shop By {category}",
+    "shop_by_category": "Shop By <category>Category</category>",
     "view_all": "View All",
-    "more_products": "More Products"
+    "more_products": "More Products",
+    "our_products": "Our Product",
+    "no_products_found": "No products found in this section",
+    "customer_opinions": "Customer Opinions",
+    "testimonials": [
+      {
+        "text": "\"Honestly, the bag turned out much more beautiful than the pictures! The material is very strong, the color is stable and doesn't fade. The space is wide and comfortable to carry, and it arrived exactly on time. I highly recommend it ❤️\"",
+        "author": "Nancy Mohamed",
+        "product": "Bag - Shein"
+      },
+      {
+        "text": "\"Honestly, the bag turned out much more beautiful than the pictures! The material is very strong, the color is stable and doesn't fade. The space is wide and comfortable to carry, and it arrived exactly on time. I highly recommend it ❤️\"",
+        "author": "Nancy Mohamed",
+        "product": "Bag - Shein"
+      },
+      {
+        "text": "\"Honestly, the bag turned out much more beautiful than the pictures! The material is very strong, the color is stable and doesn't fade. The space is wide and comfortable to carry, and it arrived exactly on time. I highly recommend it ❤️\"",
+        "author": "Nancy Mohamed",
+        "product": "Bag - Shein"
+      }
+    ]
+  },
+  "Footer": {
+    "description": "We have clothes that suits your style and which you're proud to wear. From women to men.",
+    "company": "Company",
+    "help": "Help",
+    "faq": "FAQ",
+    "resources": "Resources",
+    "about": "About",
+    "features": "Features",
+    "works": "Works",
+    "career": "Career",
+    "customer_support": "Customer Support",
+    "delivery_details": "Delivery Details",
+    "terms_conditions": "Terms & Conditions",
+    "privacy_policy": "Privacy Policy",
+    "account": "Account",
+    "manage_deliveries": "Manage Deliveries",
+    "orders": "Orders",
+    "payments": "Payments",
+    "free_ebooks": "Free eBooks",
+    "development_tutorial": "Development Tutorial",
+    "how_to_blog": "How to - Blog",
+    "youtube_playlist": "Youtube Playlist",
+    "rights": "Silver Glow.COM © 2000-2023, All Rights Reserved"
   }
 }

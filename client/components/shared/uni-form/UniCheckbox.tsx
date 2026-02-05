@@ -38,7 +38,7 @@ export function UniCheckbox<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("flex flex-row items-center space-x-3 space-y-0 p-1", className)}>
+        <FormItem className={cn("flex flex-row items-center space-x-3 space-y-0 p-1", className)} id={name}>
           <FormControl>
             <Checkbox
               checked={field.value}

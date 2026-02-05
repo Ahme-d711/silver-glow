@@ -21,14 +21,14 @@ const CategorySection: React.FC<CategorySectionProps> = ({ categories }) => {
   return (
     <section className="py-16 container mx-auto px-4">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">
+        <h2 className="text-3xl font-bold text-primary">
           {t.rich("shop_by_category", {
-            category: (chunks) => <span className="text-primary-500">{chunks}</span>,
+            category: (chunks) => <span className="text-content-primary">{chunks}</span>,
           })}
         </h2>
         <Link
           href="/categories"
-          className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 transition-colors"
+          className="text-primary hover:opacity-80 font-medium flex items-center gap-2 transition-all"
         >
           {t("view_all")} {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
         </Link>

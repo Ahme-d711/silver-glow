@@ -56,7 +56,7 @@ export function UniInput<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn(className)}>
+        <FormItem className={cn(className)} id={name}>
           {label && (
             <FormLabel className={cn("text-base text-content-secondary font-medium cursor-pointer", labelClassName)}>
               {label}

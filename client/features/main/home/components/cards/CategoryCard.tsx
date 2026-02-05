@@ -21,7 +21,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   return (
     <Link
       href={`/categories/${category._id}`}
-      className="group relative block aspect-4/5 w-full overflow-hidden rounded-[2.5rem] bg-gray-100"
+      className="group relative block aspect-4/5 w-full overflow-hidden rounded-[2.5rem] bg-secondary"
     >
       <Image
         src={imageUrl || "/images/placeholder.png"} // Fallback to avoid crash if image is missing

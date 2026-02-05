@@ -53,7 +53,7 @@ export function UniAsyncMultiCombobox<TItem = object, TFieldValues extends Field
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("space-y-1.5 flex flex-col", className)}>
+        <FormItem className={cn("space-y-1.5 flex flex-col", className)} id={name}>
           {label && (
             <FormLabel className={cn("text-base text-content-secondary cursor-pointer", labelClassName)}>
               {label}

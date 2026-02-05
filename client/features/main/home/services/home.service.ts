@@ -2,6 +2,7 @@ import clientAxios from "@/lib/axios/clientAxios";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { Product } from "@/features/dashboard/products/types";
+import { Section } from "@/features/dashboard/sections/types";
 
 interface ApiResponse<T = unknown> {
   success: boolean;
@@ -40,16 +41,36 @@ export async function getPublicCategories(): Promise<Category[]> {
 }
 
 /**
- * Fetch featured products
+ * Fetch featured products, optionally filtered by sectionId
  */
-export async function getPublicProducts(): Promise<Product[]> {
+export async function getPublicProducts(sectionId?: string): Promise<Product[]> {
   try {
     const response = await clientAxios.get<ApiResponse<{ products: Product[] }>>("/products", {
-      params: { limit: 12 } // Example limit
+      params: { 
+        limit: 12,
+        isShow: true,
+        isDeleted: false,
+        sectionIds: sectionId ? [sectionId] : undefined 
+      }
     });
     return response.data?.data?.products || [];
   } catch (error) {
     console.error("Failed to fetch products:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch active sections
+ */
+export async function getPublicSections(): Promise<Section[]> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ sections: Section[] }>>("/sections", {
+      params: { isShow: true }
+    });
+    return response.data?.data?.sections || [];
+  } catch (error) {
+    console.error("Failed to fetch sections:", error);
     return [];
   }
 }
