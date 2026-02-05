@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Search, ShoppingCart, Wallet, User, Menu, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -13,6 +13,8 @@ import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useSearchParams } from "next/navigation";
+import { useDebounce } from "@/hooks/use-debounce";
 
 function UserMenu() {
   const { user } = useAuthStore();
@@ -90,6 +92,12 @@ export default function MainNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("Navigation");
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+  
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,6 +107,46 @@ export default function MainNavbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Update searchQuery when URL changes externally
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
+  }, [searchParams]);
+
+  // Live Search Logic
+  useEffect(() => {
+    // Skip if search hasn't changed from what's in the URL
+    const currentSearch = searchParams.get("search") || "";
+    if (debouncedSearch === currentSearch) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedSearch) {
+      params.set("search", debouncedSearch);
+    } else {
+      params.delete("search");
+    }
+
+    // Always ensure we are on /shop when searching
+    if (!pathname.includes("/shop")) {
+      if (debouncedSearch) {
+        router.push(`/shop?${params.toString()}`);
+      }
+    } else {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [debouncedSearch, pathname, router, searchParams]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Immediate search on submit
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchQuery.trim()) {
+      params.set("search", searchQuery.trim());
+    } else {
+      params.delete("search");
+    }
+    router.push(`/shop?${params.toString()}`);
+  };
 
   const isHome = pathname === "/";
   const isAuthPage = pathname.includes("/login") || pathname.includes("/register") || pathname.includes("/verify");
@@ -125,19 +173,27 @@ export default function MainNavbar() {
         </Link>
 
         {/* Search Bar (Middle) */}
-        <div className="hidden md:flex flex-1 max-w-2xl relative">
+        <form 
+          onSubmit={handleSearch}
+          className="hidden md:flex flex-1 max-w-2xl relative"
+        >
           <div className="relative w-full">
             <Input
               type="text"
-              placeholder="Here's a gift for you..."
+              placeholder={t("search_placeholder")}
               className="w-full h-18.5 bg-white rounded-2xl text-primary px-12 focus:outline-none shadow-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
+            <Search 
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40 cursor-pointer" 
+              onClick={handleSearch}
+            />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 p-1 border-l border-divider/50">
                <Menu className="h-5 w-5 text-primary/40" />
             </div>
           </div>
-        </div>
+        </form>
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">

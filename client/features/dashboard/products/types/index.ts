@@ -55,6 +55,8 @@ export interface GetProductsParams {
     isShow?: boolean;
     page?: number;
     limit?: number;
+    sort?: string;
+    categorySlug?: string;
 }
 
 export interface ServiceResponse<T> {

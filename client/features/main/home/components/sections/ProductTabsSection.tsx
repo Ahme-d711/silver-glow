@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useHomeProducts, useHomeSections } from "../../hooks/useHome";
 import { ProductCard } from "../cards/ProductCard";
 import { Section } from "@/features/dashboard/sections/types";
+import { Product } from "@/features/dashboard/products/types";
 
 export const ProductTabsSection: React.FC = () => {
   const t = useTranslations("Home");
@@ -15,7 +16,8 @@ export const ProductTabsSection: React.FC = () => {
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isSectionsLoading } = useHomeSections();
-  const { data: products = [], isLoading: isProductsLoading } = useHomeProducts(activeSectionId);
+  const { data, isLoading: isProductsLoading } = useHomeProducts(activeSectionId);
+  const products = (data as { products: Product[] })?.products || [];
 
   // Combine "All" with fetched sections
   const tabs = [

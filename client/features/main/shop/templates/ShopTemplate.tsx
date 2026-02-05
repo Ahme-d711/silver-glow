@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ShopCategorySection } from "../components/sections/ShopCategorySection";
+import { ShopProductSection } from "../components/sections/ShopProductSection";
 import { ChevronRight } from "lucide-react";
 
 export const ShopTemplate = () => {
@@ -32,13 +33,9 @@ export const ShopTemplate = () => {
           <ShopCategorySection />
         </section>
 
-        {/* Second Section Placeholder (as requested "shop page فيها اتنين section") */}
+        {/* Products Section */}
         <section>
-          <div className="bg-secondary/30 rounded-[32px] p-12 text-center border border-divider dashed">
-            <h3 className="text-xl font-medium text-content-tertiary">
-              {t("productsSectionPlaceholder")}
-            </h3>
-          </div>
+          <ShopProductSection />
         </section>
       </div>
     </div>

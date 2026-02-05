@@ -35,5 +35,7 @@ export const queryProductSchema = z.object({
   isDeleted: z.preprocess((val) => val === "true", z.boolean()).optional(),
   isShow: z.preprocess((val) => val === "true", z.boolean()).optional(),
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(12),
+  sort: z.string().optional(),
+  categorySlug: z.string().optional(),
 });

@@ -14,7 +14,8 @@
     "cart": "Cart",
     "wallet": "Wallet",
     "log_in": "Log in",
-    "create_account": "Create an account"
+    "create_account": "Create an account",
+    "search_placeholder": "Here's a gift for you..."
   },
   "Auth": {
     "login": "Login",
@@ -466,6 +467,16 @@
     "home": "Home",
     "items": "Items",
     "categoriesTitle": "Shop by Category",
-    "productsSectionPlaceholder": "Featured Products Section (Coming Soon)"
+    "searchProducts": "Search for products...",
+    "showingResults": "Showing all {count} results",
+    "popularity": "Popularity",
+    "newest": "Newest",
+    "priceLowHigh": "Price: Low to High",
+    "priceHighLow": "Price: High to Low",
+    "filter": "Filter",
+    "currency": "AED",
+    "first": "First",
+    "next": "Next",
+    "noProductsFound": "No products found matches your criteria."
   }
 }

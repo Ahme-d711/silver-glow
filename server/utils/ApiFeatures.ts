@@ -4,6 +4,7 @@ interface QueryParams {
   page?: string | number;
   limit?: string | number;
   search?: string;
+  sort?: string;
   [key: string]: unknown;
 }
 
@@ -40,8 +41,8 @@ class ApiFeatures<T extends Document> {
   filter(): this {
     const queryObj: Record<string, unknown> = { ...this.queryParams };
     
-    // Remove pagination and search fields
-    const excluded = ['page', 'limit', 'search'] as const;
+    // Remove pagination, search and sort fields
+    const excluded = ['page', 'limit', 'search', 'sort'] as const;
     excluded.forEach((field) => delete queryObj[field]);
 
     // Build filter object manually (safer than JSON.parse/stringify)
@@ -100,6 +101,26 @@ class ApiFeatures<T extends Document> {
 
         this.query = this.query.find({ $or: orConditions });
       }
+    }
+    return this;
+  }
+  
+  /**
+   * Apply sorting
+   */
+  sort(defaultSort: any = { priority: -1, createdAt: -1 }): this {
+    if (this.queryParams.sort) {
+      let sortBy = String(this.queryParams.sort);
+      
+      // Map frontend values to backend fields
+      if (sortBy === 'popularity') sortBy = '-averageRating';
+      if (sortBy === 'newest') sortBy = '-createdAt';
+      if (sortBy === 'priceLowHigh') sortBy = 'price';
+      if (sortBy === 'priceHighLow') sortBy = '-price';
+
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort(defaultSort);
     }
     return this;
   }

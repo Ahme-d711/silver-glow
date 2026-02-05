@@ -1,0 +1,110 @@
+"use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
+import { Link } from "@/i18n/routing";
+import { Heart, ShoppingBag, Eye } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Product } from "@/features/dashboard/products/types";
+import { getImageUrl } from "@/utils/image.utils";
+import { cn } from "@/lib/utils";
+
+interface ShopProductCardProps {
+  product: Product;
+}
+
+export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => {
+  const t = useTranslations("Shop");
+  const locale = useLocale();
+  const isAr = locale === "ar";
+  const [isHovered, setIsHovered] = useState(false);
+
+  const name = isAr ? product.nameAr : product.nameEn;
+  const description = isAr ? product.descriptionAr : product.descriptionEn;
+  const imageUrl = getImageUrl(product.mainImage);
+  const currency = t("currency") || "AED";
+
+  // Mock colors for the dots as requested in design
+  const colors = ["#2CC3F2", "#1B2A4E", "#F18742", "#D9D9D9"];
+
+  return (
+    <div 
+      className="group bg-white rounded-3xl overflow-hidden border border-divider/50 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 flex flex-col h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Image Wrapper */}
+      <Link href={`/products/${product._id}`} className="relative aspect-4/5 overflow-hidden block">
+        <Image
+          src={imageUrl || "/images/placeholder-product.jpg"}
+          alt={name}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+        />
+        
+        {/* Floating Actions */}
+        <div className={cn(
+          "absolute inset-0 bg-black/5 flex items-center justify-center gap-3 transition-opacity duration-300",
+          isHovered ? "opacity-100" : "opacity-0"
+        )}>
+          <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
+            <ShoppingBag className="w-5 h-5" />
+          </button>
+          <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
+            <Heart className="w-5 h-5" />
+          </button>
+          <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
+            <Eye className="w-5 h-5" />
+          </button>
+        </div>
+        
+        {/* Badges */}
+        {product.oldPrice && product.oldPrice > product.price && (
+          <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+            {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
+          </div>
+        )}
+      </Link>
+
+      {/* Content */}
+      <div className="p-6 flex flex-col items-center text-center grow">
+        <Link href={`/products/${product._id}`} className="block mb-3">
+          <h3 className="text-lg md:text-xl font-bold text-primary uppercase tracking-tight leading-tight group-hover:text-primary/80 transition-colors">
+            {name}
+          </h3>
+        </Link>
+        
+        <p className="text-sm text-content-tertiary mb-6 line-clamp-3 leading-relaxed font-medium max-w-[90%]">
+          {description || "Featured product with premium quality and elegant design."}
+        </p>
+        
+        {/* Price & Colors - Pushed to bottom */}
+        <div className="mt-auto w-full space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            {product.oldPrice && (
+              <span className="text-content-tertiary line-through text-sm font-medium">
+                {currency} {product.oldPrice.toFixed(2)}
+              </span>
+            )}
+            <span className="text-primary text-xl font-extrabold">
+              {currency} {product.price.toFixed(2)}
+            </span>
+          </div>
+          
+          {/* Color Selectors */}
+          <div className="flex items-center justify-center gap-2.5">
+            {colors.map((color, idx) => (
+              <button
+                key={idx}
+                className="w-4 h-4 rounded-full border border-divider hover:scale-125 transition-transform"
+                style={{ backgroundColor: color }}
+                aria-label={`Select color ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

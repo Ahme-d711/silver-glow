@@ -6,66 +6,43 @@ import { createProductSchema, updateProductSchema, queryProductSchema } from "..
 import AppError from "../errors/AppError.js";
 import fs from "fs";
 import path from "path";
+import ApiFeatures from "../utils/ApiFeatures.js";
 
 /**
  * Get all products
  */
 export const getAllProducts = async (req: Request, res: Response) => {
   const validatedQuery = queryProductSchema.parse(req.query);
-  const { search, categoryId, subCategoryId, brandId, sectionIds, isDeleted, isShow, page, limit } = validatedQuery;
 
-  const query: QueryFilter<IProduct> = { isDeleted: isDeleted || false };
-
-  if (search) {
-    query.$or = [
-      { nameAr: { $regex: search, $options: "i" } },
-      { nameEn: { $regex: search, $options: "i" } },
-      { sku: { $regex: search, $options: "i" } },
-      {
-        $expr: {
-          $regexMatch: {
-            input: { $toString: "$_id" },
-            regex: search,
-            options: "i"
-          }
-        }
-      }
-    ];
+  // If categorySlug is provided, find the category and use its _id
+  if (validatedQuery.categorySlug) {
+    const { CategoryModel } = await import("../models/category.model.js");
+    const category = await CategoryModel.findOne({ slug: validatedQuery.categorySlug });
+    if (category) {
+      validatedQuery.categoryId = category._id.toString();
+    }
   }
 
-  if (categoryId) query.categoryId = categoryId;
-  if (subCategoryId) query.subCategoryId = subCategoryId;
-  if (brandId) query.brandId = brandId;
-  if (sectionIds && sectionIds.length > 0) {
-    query.sectionIds = { $in: sectionIds };
-  }
-  if (isShow !== undefined) query.isShow = isShow;
+  const query = ProductModel.find()
+    .populate("categoryId", "nameAr nameEn")
+    .populate("subCategoryId", "nameAr nameEn")
+    .populate("brandId", "nameAr nameEn")
+    .populate("sectionIds", "nameAr nameEn");
 
-  const skip = (page - 1) * limit;
+  const apiFeatures = new ApiFeatures(query, validatedQuery as any)
+    .filter()
+    .search(["nameAr", "nameEn", "sku"])
+    .sort()
+    .paginate();
 
-  const [products, total] = await Promise.all([
-    ProductModel.find(query)
-      .sort({ priority: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate("categoryId", "nameAr nameEn")
-      .populate("subCategoryId", "nameAr nameEn")
-      .populate("brandId", "nameAr nameEn")
-      .populate("sectionIds", "nameAr nameEn"),
-    ProductModel.countDocuments(query),
-  ]);
+  const { results: products, pagination } = await apiFeatures.execute();
 
   res.status(200).json({
     success: true,
     message: "Products fetched successfully",
     data: {
       products,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit),
-      },
+      pagination,
     },
   });
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useHomeAds, useHomeCategories, useHomeProducts } from "../hooks/useHome";
+import { Product } from "@/features/dashboard/products/types";
 import { HeroSection } from "../components/sections/HeroSection";
 import CategorySection from "@/features/main/home/components/sections/CategorySection";
 import { BestSellerSection } from "../components/sections/BestSellerSection";
@@ -10,7 +11,8 @@ import { TestimonialSection } from "../components/sections/TestimonialSection";
 export default function HomeTemplate() {
   const { data: ads = [] } = useHomeAds();
   const { data: categories = [] } = useHomeCategories();
-  const { data: products = [] } = useHomeProducts();
+  const { data } = useHomeProducts();
+  const products = (data as { products: Product[] })?.products || [];
 
   return (
     <div className="flex flex-col min-h-screen">

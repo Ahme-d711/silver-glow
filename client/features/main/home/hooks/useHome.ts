@@ -4,7 +4,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections, getTopReviews } from "../services/home.service";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
-import { Product } from "@/features/dashboard/products/types";
+import { Product, GetProductsParams, Pagination } from "@/features/dashboard/products/types";
 import { Section } from "@/features/dashboard/sections/types";
 import { HomeReview } from "../types/review.types";
 
@@ -59,12 +59,24 @@ export function useHomeSections(options?: Partial<UseQueryOptions<Section[]>>) {
 /**
  * Hook to fetch home/featured products with optional section filtering
  */
-export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOptions<Product[]>>) {
+export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOptions<{ products: Product[], pagination?: Pagination }>>) {
   return useQuery({
-    queryKey: homeKeys.products({ sectionId }),
-    queryFn: () => getPublicProducts(sectionId),
+    queryKey: homeKeys.products({ sectionIds: sectionId ? [sectionId] : undefined }),
+    queryFn: () => getPublicProducts({ sectionIds: sectionId ? [sectionId] : undefined }),
     staleTime: 1000 * 60 * 10, // 10 minutes
-    ...options,
+    ...options as any,
+  });
+}
+
+/**
+ * Hook to fetch shop products with full filtering
+ */
+export function useShopProducts(params: GetProductsParams = {}, options?: Partial<UseQueryOptions<{ products: Product[], pagination?: Pagination }>>) {
+  return useQuery({
+    queryKey: homeKeys.products(params),
+    queryFn: () => getPublicProducts(params),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...options as any,
   });
 }
 

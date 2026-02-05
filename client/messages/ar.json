@@ -14,7 +14,8 @@
     "cart": "السلة",
     "wallet": "المحفظة",
     "log_in": "دخول",
-    "create_account": "حساب جديد"
+    "create_account": "حساب جديد",
+    "search_placeholder": "هناك هدية تنتظرك..."
   },
   "Auth": {
     "login": "تسجيل الدخول",
@@ -463,6 +464,16 @@
     "home": "الرئيسية",
     "items": "منتجات",
     "categoriesTitle": "تسوق حسب الفئة",
-    "productsSectionPlaceholder": "قسم المنتجات المميزة (قريباً)"
+    "searchProducts": "ابحث عن المنتجات...",
+    "showingResults": "عرض كل الـ {count} نتائج",
+    "popularity": "الأكثر رواجاً",
+    "newest": "الأحدث",
+    "priceLowHigh": "السعر: من الأقل للأعلى",
+    "priceHighLow": "السعر: من الأعلى للأقل",
+    "filter": "تصفية",
+    "currency": "د.إ",
+    "first": "الأول",
+    "next": "التالي",
+    "noProductsFound": "لم يتم العثور على منتجات تطابق بحثك."
   }
 }
