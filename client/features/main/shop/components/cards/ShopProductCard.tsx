@@ -24,8 +24,6 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   const imageUrl = getImageUrl(product.mainImage);
   const currency = t("currency") || "AED";
 
-  // Mock colors for the dots as requested in design
-  const colors = ["#2CC3F2", "#1B2A4E", "#F18742", "#D9D9D9"];
 
   return (
     <div 
@@ -79,8 +77,8 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
           {description || "Featured product with premium quality and elegant design."}
         </p>
         
-        {/* Price & Colors - Pushed to bottom */}
-        <div className="mt-auto w-full space-y-4">
+        {/* Price - Pushed to bottom */}
+        <div className="mt-auto w-full">
           <div className="flex items-center justify-center gap-3">
             {product.oldPrice && (
               <span className="text-content-tertiary line-through text-sm font-medium">
@@ -90,18 +88,6 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
             <span className="text-primary text-xl font-extrabold">
               {currency} {product.price.toFixed(2)}
             </span>
-          </div>
-          
-          {/* Color Selectors */}
-          <div className="flex items-center justify-center gap-2.5">
-            {colors.map((color, idx) => (
-              <button
-                key={idx}
-                className="w-4 h-4 rounded-full border border-divider hover:scale-125 transition-transform"
-                style={{ backgroundColor: color }}
-                aria-label={`Select color ${idx + 1}`}
-              />
-            ))}
           </div>
         </div>
       </div>

@@ -97,6 +97,7 @@ export default function MainNavbar() {
   const initialSearch = searchParams.get("search") || "";
   
   const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [isFocused, setIsFocused] = useState(false);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -108,14 +109,23 @@ export default function MainNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Update searchQuery when URL changes externally
+  // Update searchQuery when URL changes externally or on navigation
   useEffect(() => {
-    setSearchQuery(searchParams.get("search") || "");
-  }, [searchParams]);
+    const urlSearch = searchParams.get("search");
+    if (urlSearch !== null) {
+      setSearchQuery(urlSearch);
+    } else if (!pathname.includes("/shop")) {
+      // Clear input if we navigate away from shop and there's no search param
+      setSearchQuery("");
+    }
+  }, [searchParams, pathname]);
 
   // Live Search Logic
   useEffect(() => {
-    // Skip if search hasn't changed from what's in the URL
+    // Only trigger logic if focused or if we are already on shop page 
+    // (to allow clearing search if user deletes text)
+    if (!isFocused && !pathname.includes("/shop")) return;
+
     const currentSearch = searchParams.get("search") || "";
     if (debouncedSearch === currentSearch) return;
 
@@ -126,19 +136,18 @@ export default function MainNavbar() {
       params.delete("search");
     }
 
-    // Always ensure we are on /shop when searching
+    // Redirect to shop if searching from another page while focused
     if (!pathname.includes("/shop")) {
-      if (debouncedSearch) {
+      if (debouncedSearch && isFocused) {
         router.push(`/shop?${params.toString()}`);
       }
     } else {
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
-  }, [debouncedSearch, pathname, router, searchParams]);
+  }, [debouncedSearch, pathname, router, searchParams, isFocused]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Immediate search on submit
     const params = new URLSearchParams(searchParams.toString());
     if (searchQuery.trim()) {
       params.set("search", searchQuery.trim());
@@ -184,6 +193,8 @@ export default function MainNavbar() {
               className="w-full h-18.5 bg-white rounded-2xl text-primary px-12 focus:outline-none shadow-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             />
             <Search 
               className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40 cursor-pointer" 
