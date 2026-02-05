@@ -22,6 +22,23 @@ export const getProductReviews = async (req: Request, res: Response) => {
 };
 
 /**
+ * Get top reviews for homepage
+ */
+export const getTopReviews = async (req: Request, res: Response) => {
+  const reviews = await ReviewModel.find({ rating: 5 })
+    .populate("userId", "name picture")
+    .populate("productId", "nameEn nameAr")
+    .sort({ createdAt: -1 })
+    .limit(6);
+
+  res.status(200).json({
+    success: true,
+    message: "Top reviews fetched successfully",
+    data: { reviews },
+  });
+};
+
+/**
  * Add a review
  */
 export const addReview = async (req: Request, res: Response) => {

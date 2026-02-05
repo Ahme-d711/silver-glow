@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
-import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+import { TestimonialCard } from "../cards/TestimonialCard";
+import { useHomeReviews } from "../../hooks/useHome";
+import { HomeReview } from "../../types/review.types";
 
 // Import Swiper styles
 import "swiper/css";
@@ -14,9 +15,34 @@ import "swiper/css/navigation";
 
 export function TestimonialSection() {
   const t = useTranslations("Home");
-  const locale = useLocale();
-  const isAr = locale === "ar";
-  const testimonials = t.raw("testimonials") as { text: string; author: string; product: string }[];
+  const { data: reviews = [], isLoading } = useHomeReviews();
+  
+  // Use mock data if server has no reviews yet for demo/empty state
+  const mockTestimonials = t.raw("testimonials") as { text: string; author: string; product: string }[];
+  
+  // If we have real reviews, we follow a different mapping or just use them
+  // For now, let's just use real reviews if they exist (limit top 6)
+  
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 animate-pulse">
+           <div className="h-10 w-64 bg-secondary rounded-lg mb-12"></div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-80 bg-secondary rounded-[32px]"></div>
+              ))}
+           </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If no reviews yet, we can optionally show nothing or keep mock data
+  // Let's show mock data as a fallback to keep the design consistent
+  const displayItems = reviews.length > 0 ? reviews : [];
+
+  if (displayItems.length === 0) return null;
 
   return (
     <section className="py-20 bg-background">
@@ -61,34 +87,12 @@ export function TestimonialSection() {
             loop={true}
             className="h-full"
           >
-            {testimonials.map((testimonial, index) => (
-              <SwiperSlide key={index}>
-                <div className="bg-card p-8 md:p-10 rounded-[32px] border border-divider shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col justify-between">
-                  <div className="space-y-6">
-                    <p className="text-lg md:text-xl text-content-primary leading-relaxed font-medium italic">
-                      {testimonial.text}
-                    </p>
-                    
-                    <div className="flex items-center gap-4 pt-4 border-t border-divider">
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/10">
-                        <Image
-                          src={`https://i.pravatar.cc/150?u=${index}`}
-                          alt={testimonial.author}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <h4 className="font-bold text-content-primary text-lg">
-                          {testimonial.author}
-                        </h4>
-                        <span className="text-sm text-content-tertiary font-medium">
-                          {testimonial.product}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            {displayItems.map((item, index) => (
+              <SwiperSlide key={reviews.length > 0 ? (item as HomeReview)._id : index}>
+                <TestimonialCard 
+                  testimonial={item as HomeReview} 
+                  index={index} 
+                />
               </SwiperSlide>
             ))}
           </Swiper>

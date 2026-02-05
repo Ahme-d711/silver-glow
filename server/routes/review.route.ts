@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getProductReviews,
+  getTopReviews,
   addReview,
   updateReview,
   deleteReview,
@@ -33,6 +34,18 @@ const router = Router();
  *         description: List of reviews
  */
 router.get("/product/:productId", getProductReviews);
+
+/**
+ * @swagger
+ * /reviews/top:
+ *   get:
+ *     summary: Get top 5-star reviews for homepage
+ *     tags: [Reviews]
+ *     responses:
+ *       200:
+ *         description: List of top reviews
+ */
+router.get("/top", getTopReviews);
 
 // Protected routes
 router.use(authenticate);

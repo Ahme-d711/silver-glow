@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections } from "../services/home.service";
+import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections, getTopReviews } from "../services/home.service";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { Product } from "@/features/dashboard/products/types";
 import { Section } from "@/features/dashboard/sections/types";
+import { HomeReview } from "../types/review.types";
 
 /**
  * Professional Query Key Factory for Home feature
@@ -16,6 +17,7 @@ export const homeKeys = {
   categories: () => [...homeKeys.all, "categories"] as const,
   sections: () => [...homeKeys.all, "sections"] as const,
   products: (filters?: Record<string, any>) => [...homeKeys.all, "products", { ...filters }] as const,
+  reviews: () => [...homeKeys.all, "reviews"] as const,
 };
 
 /**
@@ -81,4 +83,16 @@ export function useHomeData() {
     isLoading: ads.isLoading || categories.isLoading || products.isLoading,
     isError: ads.isError || categories.isError || products.isError,
   };
+}
+
+/**
+ * Hook to fetch top rated reviews for testimonials
+ */
+export function useHomeReviews(options?: Partial<UseQueryOptions<HomeReview[]>>) {
+  return useQuery({
+    queryKey: homeKeys.reviews(),
+    queryFn: getTopReviews,
+    staleTime: 1000 * 60 * 60, // 1 hour
+    ...options,
+  });
 }
