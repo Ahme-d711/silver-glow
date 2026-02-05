@@ -1,5 +1,5 @@
-import { MainNavbar } from "@/components/MainNavbar";
-import { MainFooter } from "@/components/MainFooter";
+import MainNavbar from "@/components/MainNavbar";
+import MainFooter from "@/components/MainFooter";
 
 export default function MainLayout({
   children,
@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <MainNavbar />
-      <main className="flex-grow">
+      <main className="grow">
         {children}
       </main>
       <MainFooter />

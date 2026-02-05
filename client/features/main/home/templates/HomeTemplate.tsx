@@ -1,6 +1,5 @@
 "use client";
 
-import { MainNavbar } from "@/components/MainNavbar";
 import { useHomeAds, useHomeCategories, useHomeProducts } from "../hooks/useHome";
 import { HeroSection } from "../components/sections/HeroSection";
 import CategorySection from "@/features/main/home/components/sections/CategorySection";
@@ -15,8 +14,6 @@ export default function HomeTemplate() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <MainNavbar />
-
       {/* Hero Section */}
       <HeroSection ads={ads} />
 

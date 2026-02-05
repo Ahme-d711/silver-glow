@@ -10,11 +10,17 @@ import {
   CreditCard
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import { usePathname } from "@/i18n/routing";
 
-export const MainFooter = () => {
+const MainFooter = () => {
   const t = useTranslations("Footer");
   const locale = useLocale();
+  const pathname = usePathname();
   const isRtl = locale === "ar";
+
+  const isAuthPage = pathname.includes("/login") || pathname.includes("/register") || pathname.includes("/verify");
+
+  if (isAuthPage) return null;
 
   const sections = [
     {
@@ -128,3 +134,4 @@ export const MainFooter = () => {
     </footer>
   );
 };
+export default MainFooter;

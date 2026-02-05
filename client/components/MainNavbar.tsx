@@ -86,7 +86,7 @@ function UserMenu() {
   );
 }
 
-export function MainNavbar() {
+export default function MainNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("Navigation");
   const pathname = usePathname();
@@ -101,6 +101,9 @@ export function MainNavbar() {
   }, []);
 
   const isHome = pathname === "/";
+  const isAuthPage = pathname.includes("/login") || pathname.includes("/register") || pathname.includes("/verify");
+
+  if (isAuthPage) return null;
 
   return (
     <nav
