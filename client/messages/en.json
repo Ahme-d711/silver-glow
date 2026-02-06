@@ -464,6 +464,7 @@
   },
   "Shop": {
     "title": "Shop",
+    "best_seller": "Best Seller",
     "home": "Home",
     "items": "Items",
     "categoriesTitle": "Shop by Category",

@@ -9,6 +9,7 @@ import MainFooter from "@/components/MainFooter";
 import { useCartStore } from "../stores/useCartStore";
 import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
+import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
 
 export const CartTemplate: React.FC = () => {
   const t = useTranslations("Shop");
@@ -68,6 +69,9 @@ export const CartTemplate: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Bestseller Products Section */}
+        <BestsellerProductsSection />
       </div>
       <MainFooter />
     </>

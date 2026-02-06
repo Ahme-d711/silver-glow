@@ -4,6 +4,7 @@ import { useProduct } from "@/features/main/home/hooks/useHome";
 import { ProductGallery } from "../components/ProductGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import { ReviewsTab } from "../components/ReviewsTab";
+import { BestsellerProductsSection } from "../components/BestsellerProductsSection";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronRight } from "lucide-react";
@@ -89,7 +90,11 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
             <ReviewsTab productId={product._id} />
           </div>
         </div>
+
+        {/* Bestseller Products Section */}
+        <BestsellerProductsSection />
       </div>
+      <MainFooter />
     </>
   );
 };

@@ -461,6 +461,7 @@
   },
   "Shop": {
     "title": "المتجر",
+    "best_seller": "الأكثر مبيعاً",
     "home": "الرئيسية",
     "items": "منتجات",
     "categoriesTitle": "تسوق حسب الفئة",

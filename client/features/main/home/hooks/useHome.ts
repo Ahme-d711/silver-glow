@@ -65,7 +65,7 @@ export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOp
     queryKey: homeKeys.products({ sectionIds: sectionId ? [sectionId] : undefined }),
     queryFn: () => getPublicProducts({ sectionIds: sectionId ? [sectionId] : undefined }),
     staleTime: 1000 * 60 * 10, // 10 minutes
-    ...options as any,
+    ...options,
   });
 }
 
@@ -90,7 +90,7 @@ export function useShopProducts(params: GetProductsParams = {}, options?: Partia
     queryKey: homeKeys.products(params),
     queryFn: () => getPublicProducts(params),
     staleTime: 1000 * 60 * 5, // 5 minutes
-    ...options as any,
+    ...options,
   });
 }
 
