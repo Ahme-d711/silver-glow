@@ -11,16 +11,15 @@ export const useMergeCart = () => {
 
   useEffect(() => {
     const mergeCart = async () => {
-      // Only merge if we have a user and local guest items
-      if (user && items.length > 0 && !isMerging.current) {
+      const unsyncedItems = items.filter(item => !item.isSynced);
+      
+      // Only merge if we have a user and local guest items (unsynced)
+      if (user && unsyncedItems.length > 0 && !isMerging.current) {
         isMerging.current = true;
         
         try {
-          // Store items to clear later if successful
-          const itemsToMerge = [...items];
-          
-          // Send all local items to server
-          for (const item of itemsToMerge) {
+          // Send all unsynced local items to server
+          for (const item of unsyncedItems) {
             await addToCartServer({
               productId: item.productId,
               quantity: item.quantity,
@@ -28,8 +27,11 @@ export const useMergeCart = () => {
             });
           }
           
-          // Successfully migrated to server, now clear local storage
-          // This prevents the same items from being merged again if items.length changes
+          // These items have been sent to server, but we don't need to clear the whole cart
+          // because setItems will soon bring the synced versions.
+          // However, to stop the loop immediately, we can mark them as synced locally 
+          // or just wait for MainNavbar to call setItems(isSynced: true).
+          // To be safe, let's keep the clearCart() but it will only clear what was there.
           clearCart();
         } catch (error) {
           console.error("Failed to merge cart:", error);
@@ -40,5 +42,5 @@ export const useMergeCart = () => {
     };
 
     mergeCart();
-  }, [user, items.length, addToCartServer, clearCart]);
+  }, [user, items, addToCartServer, clearCart]);
 };

@@ -23,10 +23,11 @@ export const useCartStore = create<CartStore>()(
           updatedItems[existingItemIndex] = {
             ...updatedItems[existingItemIndex],
             quantity: newQuantity,
+            isSynced: false,
           };
           set({ items: updatedItems });
         } else {
-          set({ items: [...items, newItem] });
+          set({ items: [...items, { ...newItem, isSynced: false }] });
         }
       },
 

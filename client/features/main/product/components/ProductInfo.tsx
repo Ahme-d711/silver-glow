@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Star, ShoppingCart, Heart, Eye, CheckCircle2 } from "lucide-react";
+import { Star, ShoppingCart, Heart, Eye, CheckCircle2, Minus, Plus } from "lucide-react";
 import { Product } from "@/features/dashboard/products/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const { user } = useAuthStore();
   
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const { addItem } = useCartStore();
   const { mutate: addToCartServer, isPending } = useAddToCart();
@@ -45,7 +46,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
     const payload = {
       productId: product._id,
-      quantity: 1,
+      quantity: quantity,
       size: selectedSize || undefined,
     };
 
@@ -60,7 +61,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         price: product.price,
         mainImage: product.mainImage,
         size: selectedSize || "N/A",
-        quantity: 1,
+        quantity: quantity,
         stock: sizes.length > 0 
           ? (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock 
           : product.stock
@@ -179,39 +180,54 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
       <div className="h-4" />
 
-      <div className="flex flex-col sm:flex-row gap-4 pt-4">
-        <Button 
-          size="lg" 
-          onClick={handleAddToCart}
-          disabled={!isInStock || isPending}
-          className="flex-1 rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all"
-        >
-          {isPending ? t("Adding...") || "Adding..." : t("add_to_cart") || "Add to Cart"}
-        </Button>
-        
-        <div className="flex gap-3">
+      <div className="flex flex-col gap-6 pt-4">
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Quantity Selector */}
+          <div className="flex items-center bg-neutral-100 rounded-xl h-14 px-4 gap-6 border border-transparent focus-within:border-primary/20 transition-all">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              disabled={quantity <= 1 || isPending}
+              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors"
+            >
+              <Minus className="h-5 w-5" />
+            </button>
+            <span className="text-lg font-bold text-primary min-w-[30px] text-center">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+              disabled={quantity >= product.stock || isPending}
+              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          </div>
+
+          <Button 
+            size="lg" 
+            onClick={handleAddToCart}
+            disabled={!isInStock || isPending}
+            className="flex-1 min-w-[200px] rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+          >
+            {isPending ? (
+              <span className="flex items-center gap-2">
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                {t("adding_to_cart")}
+              </span>
+            ) : (
+              <>
+                <ShoppingCart className="w-5 h-5" />
+                {t("add_to_cart") || "Add to Cart"}
+              </>
+            )}
+          </Button>
+
           <Button
             variant="outline" 
             size="icon" 
-            className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
+            className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors shrink-0"
           >
             <Heart className="w-6 h-6" />
-          </Button>
-          <Button
-             variant="outline"
-             size="icon"
-             onClick={handleAddToCart}
-             disabled={!isInStock || isPending}
-             className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
-          >
-            <ShoppingCart className="w-6 h-6" />
-          </Button>
-          <Button
-             variant="outline"
-             size="icon"
-             className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
-          >
-            <Eye className="w-4 h-4" />
           </Button>
         </div>
       </div>

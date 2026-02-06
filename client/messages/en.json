@@ -501,6 +501,7 @@
     "empty_cart_desc": "Looks like you haven't added anything yet.",
     "continue_shopping": "Continue Shopping",
     "add_to_cart": "Add to Cart",
+    "adding_to_cart": "Adding...",
     "item_added": "Item added to cart",
     "select_size_first": "Please select a size first",
     "write_review": "Write a Review",

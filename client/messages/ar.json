@@ -498,6 +498,7 @@
     "empty_cart_desc": "يبدو أنك لم تضف أي شيء بعد.",
     "continue_shopping": "متابعة التسوق",
     "add_to_cart": "أضف إلى السلة",
+    "adding_to_cart": "جاري الإضافة...",
     "item_added": "تمت إضافة المنتج إلى السلة",
     "select_size_first": "الرجاء اختيار المقاس أولاً",
     "write_review": "اكتب تقييماً",

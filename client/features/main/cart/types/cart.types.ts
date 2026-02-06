@@ -8,6 +8,7 @@ export interface CartItem {
   size: string;
   quantity: number;
   stock: number;
+  isSynced?: boolean;
 }
 
 export interface CartStore {

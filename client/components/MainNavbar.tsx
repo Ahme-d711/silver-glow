@@ -128,6 +128,7 @@ export default function MainNavbar() {
         size: item.size || "N/A",
         quantity: item.quantity,
         stock: item.productId.stock, // Default to product stock, ideally size-specific
+        isSynced: true,
       }));
       setItems(backendItems);
     }
