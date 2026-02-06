@@ -26,37 +26,37 @@ const MainFooter = () => {
     {
       title: t("company"),
       links: [
-        { label: t("about"), href: "/about" },
-        { label: t("features"), href: "/features" },
-        { label: t("works"), href: "/works" },
-        { label: t("career"), href: "/career" },
+        { label: t("about"), href: "/#" },
+        { label: t("features"), href: "/#" },
+        { label: t("works"), href: "/#" },
+        { label: t("career"), href: "/#" },
       ],
     },
     {
       title: t("help"),
       links: [
-        { label: t("customer_support"), href: "/support" },
-        { label: t("delivery_details"), href: "/delivery" },
-        { label: t("terms_conditions"), href: "/terms" },
-        { label: t("privacy_policy"), href: "/privacy" },
+        { label: t("customer_support"), href: "/#" },
+        { label: t("delivery_details"), href: "/#" },
+        { label: t("terms_conditions"), href: "/#" },
+        { label: t("privacy_policy"), href: "/#" },
       ],
     },
     {
       title: t("faq"),
       links: [
-        { label: t("account"), href: "/account" },
-        { label: t("manage_deliveries"), href: "/deliveries" },
-        { label: t("orders"), href: "/orders" },
-        { label: t("payments"), href: "/payments" },
+        { label: t("account"), href: "/#" },
+        { label: t("manage_deliveries"), href: "/#" },
+        { label: t("orders"), href: "/#" },
+        { label: t("payments"), href: "/#" },
       ],
     },
     {
       title: t("resources"),
       links: [
-        { label: t("free_ebooks"), href: "/ebooks" },
-        { label: t("development_tutorial"), href: "/tutorial" },
-        { label: t("how_to_blog"), href: "/blog" },
-        { label: t("youtube_playlist"), href: "/youtube" },
+        { label: t("free_ebooks"), href: "/#" },
+        { label: t("development_tutorial"), href: "/#" },
+        { label: t("how_to_blog"), href: "/#" },
+        { label: t("youtube_playlist"), href: "/#" },
       ],
     },
   ];
