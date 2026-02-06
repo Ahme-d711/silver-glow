@@ -17,6 +17,7 @@ interface ReviewsTabProps {
 
 export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
   const t = useTranslations("Shop");
+  const tCommon = useTranslations("Common");
   const { user } = useAuthStore();
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -95,12 +96,12 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
       {user && (canAddReview || editingReviewId) && (
         <div className="border border-divider rounded-2xl p-6 space-y-4 bg-neutral-50/50">
           <h3 className="text-lg font-semibold text-primary">
-            {editingReviewId ? t("Edit Your Review") || "Edit Your Review" : t("Write a Review") || "Write a Review"}
+            {editingReviewId ? t("edit_review") : t("write_review")}
           </h3>
           
           {/* Star Rating */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-content-secondary">{t("Rating")}:</span>
+            <span className="text-sm font-medium text-content-secondary">{t("rating")}:</span>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -128,7 +129,7 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
           <Textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder={t("Share your thoughts about this product...") || "Share your thoughts about this product..."}
+            placeholder={t("share_thoughts")}
             className="min-h-[100px]"
           />
 
@@ -140,7 +141,7 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
               className="rounded-xl"
             >
               {(isAdding || isUpdating) && <Loader className="w-4 h-4 animate-spin mr-2" />}
-              {editingReviewId ? t("Update") || "Update" : t("Submit") || "Submit"}
+              {editingReviewId ? tCommon("save") : tCommon("submit")}
             </Button>
             {editingReviewId && (
               <Button
@@ -148,7 +149,7 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
                 onClick={handleCancelEdit}
                 className="rounded-xl"
               >
-                {t("Cancel") || "Cancel"}
+                {tCommon("cancel")}
               </Button>
             )}
           </div>
@@ -157,14 +158,11 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
 
       {/* Reviews List */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-primary">
-          {t("Customer Reviews")} ({reviews.length})
-        </h3>
 
         {reviews.length === 0 ? (
           <div className="text-center py-12 border-2 border-dashed border-divider rounded-2xl">
-            <p className="text-content-tertiary">{t("No reviews yet") || "No reviews yet"}</p>
-            {user && <p className="text-sm text-content-secondary mt-2">{t("Be the first to review!") || "Be the first to review!"}</p>}
+            <p className="text-content-tertiary">{t("no_reviews")}</p>
+            {user && <p className="text-sm text-content-secondary mt-2">{t("first_to_review")}</p>}
           </div>
         ) : (
           <div className="space-y-4">

@@ -3,7 +3,7 @@
 import { useProduct } from "@/features/main/home/hooks/useHome";
 import { ProductGallery } from "../components/ProductGallery";
 import { ProductInfo } from "../components/ProductInfo";
-import { ProductTabs } from "../components/ProductTabs";
+import { ReviewsTab } from "../components/ReviewsTab";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronRight } from "lucide-react";
@@ -57,11 +57,11 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
             <Link href="/" className="hover:text-primary transition-colors">
-              {t("Home") || "Home"}
+              {t("home") || "Home"}
             </Link>
             <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
             <Link href="/shop" className="hover:text-primary transition-colors">
-              {t("Shop") || "Shop"}
+              {t("title") || "Shop"}
             </Link>
             <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
             <span className="text-primary font-medium truncate max-w-[200px]">
@@ -81,9 +81,12 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
             <ProductInfo product={product} />
           </div>
 
-          {/* Product Tabs */}
+          {/* Customer Reviews */}
           <div className="mt-16">
-            <ProductTabs product={product} />
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              {t("Reviews") || "Customer Reviews"} ({product.numReviews || 0})
+            </h2>
+            <ReviewsTab productId={product._id} />
           </div>
         </div>
       </div>

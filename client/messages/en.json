@@ -475,6 +475,9 @@
     "priceHighLow": "Price: High to Low",
     "filter": "Filter",
     "currency": "AED",
+    "ring_size_chart": "Ring Size Chart",
+    "size_guide_desc": "Find your perfect size with our standard size guide.",
+    "Selected size is out of stock": "Selected size is out of stock",
     "first": "First",
     "next": "Next",
     "noProductsFound": "No products found matches your criteria.",
@@ -485,6 +488,12 @@
     "Out of Stock": "Out of Stock",
     "Guide": "Size Guide",
     "Reviews": "Reviews",
+    "write_review": "Write a Review",
+    "edit_review": "Edit Your Review",
+    "rating": "Rating",
+    "share_thoughts": "Share your thoughts about this product...",
+    "no_reviews": "No reviews yet",
+    "first_to_review": "Be the first to review!",
     "Product not found": "Product not found",
     "Return to Shop": "Return to Shop"
   }
