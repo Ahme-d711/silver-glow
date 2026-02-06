@@ -472,8 +472,20 @@
     "priceHighLow": "السعر: من الأعلى للأقل",
     "filter": "تصفية",
     "currency": "د.إ",
+    "ring_size_chart": "جدول مقاسات الخواتم",
+    "size_guide_desc": "اعثر على مقاسك المثالي باستخدام جدول المقاسات القياسي.",
+    "Selected size is out of stock": "المقاس المختار غير متوفر حالياً",
     "first": "الأول",
     "next": "التالي",
-    "noProductsFound": "لم يتم العثور على منتجات تطابق بحثك."
+    "noProductsFound": "لم يتم العثور على منتجات تطابق بحثك.",
+    "Size": "المقاس",
+    "Select Options": "اختر الخيارات",
+    "Availability": "التوفر",
+    "In Stock": "متوفر",
+    "Out of Stock": "غير متوفر",
+    "Guide": "دليل المقاسات",
+    "Reviews": "تقييمات",
+    "Product not found": "المنتج غير موجود",
+    "Return to Shop": "العودة للمتجر"
   }
 }

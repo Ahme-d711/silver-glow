@@ -54,7 +54,7 @@ export function DashboardNavbar() {
           {/* User Profile */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="h-auto p-1 hover:bg-transparent group">
+              <Button variant="ghost" className="h-auto p-1 hover:bg-transparent group" suppressHydrationWarning>
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-primary/20 transition-all">

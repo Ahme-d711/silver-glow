@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <Link
-      href={`/products/${product._id}`}
+      href={`/products/${product.slug}`}
       className="group relative block aspect-3/4 w-full overflow-hidden rounded-2xl bg-secondary"
     >
       <Image

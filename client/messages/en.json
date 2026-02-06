@@ -477,6 +477,15 @@
     "currency": "AED",
     "first": "First",
     "next": "Next",
-    "noProductsFound": "No products found matches your criteria."
+    "noProductsFound": "No products found matches your criteria.",
+    "Size": "Size",
+    "Select Options": "Select Options",
+    "Availability": "Availability",
+    "In Stock": "In Stock",
+    "Out of Stock": "Out of Stock",
+    "Guide": "Size Guide",
+    "Reviews": "Reviews",
+    "Product not found": "Product not found",
+    "Return to Shop": "Return to Shop"
   }
 }

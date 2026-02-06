@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections, getTopReviews } from "../services/home.service";
+import { getPublicAds, getPublicCategories, getPublicProducts, getPublicSections, getTopReviews, getPublicProductBySlug } from "../services/home.service";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { Product, GetProductsParams, Pagination } from "@/features/dashboard/products/types";
@@ -17,6 +17,7 @@ export const homeKeys = {
   categories: () => [...homeKeys.all, "categories"] as const,
   sections: () => [...homeKeys.all, "sections"] as const,
   products: (filters?: Record<string, any>) => [...homeKeys.all, "products", { ...filters }] as const,
+  product: (id: string) => [...homeKeys.all, "product", id] as const,
   reviews: () => [...homeKeys.all, "reviews"] as const,
 };
 
@@ -65,6 +66,19 @@ export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOp
     queryFn: () => getPublicProducts({ sectionIds: sectionId ? [sectionId] : undefined }),
     staleTime: 1000 * 60 * 10, // 10 minutes
     ...options as any,
+  });
+}
+
+/**
+ * Hook to fetch single product details
+ */
+export function useProduct(slug: string, options?: Partial<UseQueryOptions<Product | null>>) {
+  return useQuery({
+    queryKey: homeKeys.product(slug),
+    queryFn: () => getPublicProductBySlug(slug),
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...options,
   });
 }
 

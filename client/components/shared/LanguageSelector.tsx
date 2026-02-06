@@ -32,6 +32,7 @@ export default function LanguageSelector() {
           size="icon"
           className="rounded-xl hover:bg-accent"
           aria-label="Select Language"
+          suppressHydrationWarning
         >
           <Globe className="w-5 h-5" />
           <span className="sr-only">Select Language</span>

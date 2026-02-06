@@ -13,6 +13,10 @@ export const productFormSchema = z.object({
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),
   sectionIds: z.array(z.string()).default([]),
+  sizes: z.array(z.object({
+    size: z.string().min(1),
+    stock: z.coerce.number().min(0),
+  })).optional().default([]),
   priority: z.coerce.number().int().min(0),
   isShow: z.boolean(),
   mainImage: z.union([z.instanceof(File), z.string()]).optional(),

@@ -19,6 +19,7 @@ import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
 import { productFormSchema, ProductFormData } from "../schemas/products.schema";
+import { SizeStockList } from "./SizeStockList";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
@@ -151,7 +152,7 @@ export function ProductForm({
         });
       } else if (key === "sectionIds" && Array.isArray(value)) {
         // Multi-select sections
-        value.forEach((id) => {
+        (value as string[]).forEach((id) => {
           formData.append("sectionIds", id);
         });
       } else if (key === "mainImage") {
@@ -160,7 +161,9 @@ export function ProductForm({
         } else if (typeof value === "string") {
           formData.append("mainImage", value);
         }
-      } else {
+      } else if (key === "sizes" && Array.isArray(value)) {
+        formData.append("sizes", JSON.stringify(value));
+      } else if (key !== "sizes") {
         formData.append(key, String(value));
       }
     });
@@ -224,8 +227,7 @@ export function ProductForm({
                   required
                 />
               </div>
-            </div>
-
+              </div>
 
           </div>
 
@@ -309,6 +311,25 @@ export function ProductForm({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Sizes & Stock - Full Width */}
+        <div className="space-y-2">
+          <FormField
+            control={form.control}
+            name="sizes"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <SizeStockList
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         {/* Descriptions */}

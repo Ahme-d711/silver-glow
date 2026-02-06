@@ -66,13 +66,15 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
       </Link>
 
       {/* Content */}
-      <div className="p-6 flex flex-col items-center text-center grow">
-        <Link href={`/products/${product._id}`} className="block mb-3">
-          <h3 className="text-lg md:text-xl font-bold text-primary uppercase tracking-tight leading-tight group-hover:text-primary/80 transition-colors">
-            {name}
-          </h3>
-        </Link>
-        
+      <div className="p-4 flex-1 flex flex-col justify-between">
+        <div>
+          <Link href={`/products/${product.slug}`}>
+            <h3 className="text-secondary font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors duration-300">
+              {name}
+            </h3>
+          </Link>
+        </div>
+
         <p className="text-sm text-content-tertiary mb-6 line-clamp-3 leading-relaxed font-medium max-w-[90%]">
           {description || "Featured product with premium quality and elegant design."}
         </p>

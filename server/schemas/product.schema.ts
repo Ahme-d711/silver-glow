@@ -10,6 +10,19 @@ export const createProductSchema = z.object({
   costPrice: z.coerce.number().min(0).optional(),
   stock: z.coerce.number().int().min(0).default(0),
   sku: z.string().optional(),
+  sizes: z.preprocess((val) => {
+    if (typeof val === "string") {
+      try {
+        return JSON.parse(val);
+      } catch (e) {
+        return [];
+      }
+    }
+    return val;
+  }, z.array(z.object({
+    size: z.string().min(1),
+    stock: z.coerce.number().min(0),
+  }))).optional().default([]),
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),

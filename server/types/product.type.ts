@@ -13,6 +13,7 @@ export interface IProduct extends Document {
   slug: string;
   mainImage: string;
   images: string[];
+  sizes?: { size: string; stock: number }[]; // Updated to support stock per size
   categoryId: Types.ObjectId;
   subCategoryId?: Types.ObjectId;
   brandId?: Types.ObjectId;

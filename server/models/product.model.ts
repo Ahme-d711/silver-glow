@@ -126,6 +126,15 @@ const ProductSchema = new Schema<IProduct>(
       type: [String],
       default: [],
     },
+    sizes: {
+      type: [
+        {
+          size: { type: String, required: true },
+          stock: { type: Number, required: true, min: 0, default: 0 },
+        },
+      ],
+      default: [],
+    },
     categoryId: {
       type: Schema.Types.ObjectId,
       ref: "categories",

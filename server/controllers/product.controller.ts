@@ -56,7 +56,7 @@ export const getProductById = async (req: Request, res: Response) => {
     .populate("categoryId")
     .populate("subCategoryId")
     .populate("brandId")
-    .populate("sectionId");
+    .populate("sectionIds");
 
   if (!product) {
     throw new AppError("Product not found", 404);
@@ -78,7 +78,7 @@ export const getProductBySlug = async (req: Request, res: Response) => {
     .populate("categoryId")
     .populate("subCategoryId")
     .populate("brandId")
-    .populate("sectionId");
+    .populate("sectionIds");
 
   if (!product) {
     throw new AppError("Product not found", 404);

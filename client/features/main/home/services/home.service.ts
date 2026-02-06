@@ -65,6 +65,19 @@ export async function getPublicProducts(params: GetProductsParams = {}): Promise
 }
 
 /**
+ * Fetch single product by slug
+ */
+export async function getPublicProductBySlug(slug: string): Promise<Product | null> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ product: Product }>>(`/products/slug/${slug}`);
+    return response.data?.data?.product || null;
+  } catch (error) {
+    console.error(`Failed to fetch product ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
  * Fetch active sections
  */
 export async function getPublicSections(): Promise<Section[]> {

@@ -14,6 +14,7 @@ export interface Product {
     slug: string;
     mainImage: string;
     images: string[];
+    sizes?: { size: string; stock: number }[];
     categoryId: PopulatedField<CategoryReference>;
     subCategoryId?: PopulatedField<SubCategoryReference>;
     brandId?: PopulatedField<BrandReference>;
@@ -21,6 +22,8 @@ export interface Product {
     priority: number;
     isShow: boolean;
     isDeleted: boolean;
+    averageRating?: number;
+    numReviews?: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -35,6 +38,7 @@ export interface CreateProductPayload {
     costPrice?: number;
     stock?: number;
     sku?: string;
+    sizes?: { size: string; stock: number }[];
     categoryId: string;
     subCategoryId?: string;
     brandId?: string;

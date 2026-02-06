@@ -72,6 +72,7 @@ export default function EditProductTemplate() {
             : [],
           mainImage: product.mainImage,
           images: product.images,
+          sizes: product.sizes?.map((s: any) => ({ size: s.size, stock: s.stock })) || [],
         }}
         onSubmit={handleSubmit}
         isLoading={isPending}
