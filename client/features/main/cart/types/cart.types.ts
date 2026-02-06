@@ -1,0 +1,21 @@
+export interface CartItem {
+  id: string; // productId + size
+  productId: string;
+  nameEn: string;
+  nameAr: string;
+  price: number;
+  mainImage: string;
+  size: string;
+  quantity: number;
+  stock: number;
+}
+
+export interface CartStore {
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  getSubtotal: () => number;
+  getTotalItems: () => number;
+}

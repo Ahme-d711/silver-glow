@@ -7,6 +7,8 @@ import { Product } from "@/features/dashboard/products/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SizeGuideModal } from "./SizeGuideModal";
+import { useCartStore } from "@/features/main/cart/stores/useCartStore";
+import { toast } from "sonner";
 
 interface ProductInfoProps {
   product: Product;
@@ -19,6 +21,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const { addItem } = useCartStore();
 
   const name = isRtl ? product.nameAr : product.nameEn;
   const description = isRtl ? product.descriptionAr : product.descriptionEn;
@@ -30,9 +33,33 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   // Format sizes if they exist
   const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
 
+  const handleAddToCart = () => {
+    if (sizes.length > 0 && !selectedSize) {
+      toast.error(t("select_size_first"));
+      return;
+    }
+
+    const cartItem = {
+      id: `${product._id}-${selectedSize || "nosize"}`,
+      productId: product._id,
+      nameEn: product.nameEn,
+      nameAr: product.nameAr,
+      price: product.price,
+      mainImage: product.mainImage,
+      size: selectedSize || "N/A",
+      quantity: 1,
+      stock: sizes.length > 0 
+        ? (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock 
+        : product.stock
+    };
+
+    addItem(cartItem);
+    toast.success(t("item_added"));
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Title & Rating */}
+      {/* ... previous content ... */}
       <div className="space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold text-primary uppercase tracking-tight">
           {name}
@@ -58,7 +85,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* Price */}
       <div className="flex items-end gap-4 py-2">
         <div className="text-4xl font-extrabold text-primary">
           {currency} {product.price.toFixed(2)}
@@ -70,7 +96,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         )}
       </div>
 
-      {/* Availability */}
       <div className="flex items-center gap-2 text-sm font-medium">
         <span className="text-content-secondary">{t("Availability") || "Availability"}:</span>
         {isInStock ? (
@@ -84,7 +109,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
       <div className="h-px bg-divider w-full" />
 
-      {/* Size Selector - Only if sizes exist */}
       {sizes.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -135,22 +159,20 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       
       <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
 
-      {/* Description */}
       <div className="prose prose-stone max-w-none text-content-secondary leading-relaxed">
         <p>{description}</p>
       </div>
 
-      {/* Color Selection - REMOVED as per request */}
-
       <div className="h-4" />
 
-      {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4">
         <Button 
           size="lg" 
+          onClick={handleAddToCart}
+          disabled={!isInStock}
           className="flex-1 rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all"
         >
-          {t("Select Options") || "Select Options"}
+          {t("add_to_cart") || "Add to Cart"}
         </Button>
         
         <div className="flex gap-3">
@@ -164,6 +186,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           <Button
              variant="outline"
              size="icon"
+             onClick={handleAddToCart}
+             disabled={!isInStock}
              className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
           >
             <ShoppingCart className="w-6 h-6" />
@@ -173,10 +197,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
              size="icon"
              className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
           >
-            <Eye className="w-6 h-6" />
+            <Eye className="w-4 h-4" />
           </Button>
         </div>
       </div>
     </div>
   );
 };
+

@@ -12,6 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { Button } from "./ui/button";
+import { useCartStore } from "@/features/main/cart/stores/useCartStore";
+import { toast } from "sonner";
+
 import { Input } from "./ui/input";
 import { useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -98,7 +101,14 @@ export default function MainNavbar() {
   
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [isFocused, setIsFocused] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const debouncedSearch = useDebounce(searchQuery, 500);
+  
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -208,8 +218,15 @@ export default function MainNavbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">
-          <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <ShoppingCart className="h-5 w-5" />
+          <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
+            <div className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              {isHydrated && totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-white text-primary text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center shadow-sm">
+                  {totalItems}
+                </span>
+              )}
+            </div>
             <span className="hidden lg:inline">{t("cart")}</span>
           </Link>
           
