@@ -15,7 +15,6 @@ export interface CartStore {
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  setItems: (items: CartItem[]) => void;
   clearCart: () => void;
-  getSubtotal: () => number;
-  getTotalItems: () => number;
 }

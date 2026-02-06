@@ -1,11 +1,15 @@
 "use client";
 
 import { Minus, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { CartItem as CartItemType } from "../types/cart.types";
 import { useCartStore } from "../stores/useCartStore";
+import { useUpdateCartQuantity, useRemoveFromCart } from "../hooks/useCart";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { getImageUrl } from "@/utils/image.utils";
+import { cn } from "@/lib/utils";
 
 interface CartItemProps {
   item: CartItemType;
@@ -15,26 +19,62 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const locale = useLocale();
   const t = useTranslations("Shop");
   const isRtl = locale === "ar";
-  const { updateQuantity, removeItem } = useCartStore();
+  const { user } = useAuthStore();
+  const { updateQuantity: updateLocalQuantity, removeItem: removeLocalItem } = useCartStore();
+  
+  const { mutate: updateServerQuantity, isPending: isUpdating } = useUpdateCartQuantity();
+  const { mutate: removeFromServer, isPending: isRemoving } = useRemoveFromCart();
+
+  const isLoading = isUpdating || isRemoving;
 
   const handleIncrement = () => {
-    updateQuantity(item.id, item.quantity + 1);
+    const newQuantity = item.quantity + 1;
+    if (user) {
+      updateServerQuantity({ 
+        productId: item.productId, 
+        quantity: newQuantity, 
+        size: item.size === "N/A" ? undefined : item.size 
+      });
+    } else {
+      updateLocalQuantity(item.id, newQuantity);
+    }
   };
 
   const handleDecrement = () => {
     if (item.quantity > 1) {
-      updateQuantity(item.id, item.quantity - 1);
+      const newQuantity = item.quantity - 1;
+      if (user) {
+        updateServerQuantity({ 
+          productId: item.productId, 
+          quantity: newQuantity, 
+          size: item.size === "N/A" ? undefined : item.size 
+        });
+      } else {
+        updateLocalQuantity(item.id, newQuantity);
+      }
+    }
+  };
+
+  const handleRemove = () => {
+    if (user) {
+      removeFromServer({ 
+        productId: item.productId, 
+        size: item.size === "N/A" ? undefined : item.size 
+      });
+    } else {
+      removeLocalItem(item.id);
     }
   };
 
   return (
     <div className="flex items-center gap-4 py-4 px-2 hover:bg-neutral-50 rounded-2xl transition-colors group">
       {/* Product Image */}
-      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-divider">
-        <img
-          src={getImageUrl(item.mainImage)}
+      <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-divider">
+        <Image
+          src={getImageUrl(item.mainImage) || ""}
           alt={isRtl ? item.nameAr : item.nameEn}
-          className="h-full w-full object-cover"
+          fill
+          className="object-cover"
         />
       </div>
 
@@ -50,8 +90,9 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             </p>
           </div>
           <button
-            onClick={() => removeItem(item.id)}
-            className="text-destructive hover:scale-110 transition-transform p-1"
+            onClick={handleRemove}
+            disabled={isLoading}
+            className="text-destructive hover:scale-110 transition-transform p-1 disabled:opacity-50"
           >
             <Trash2 className="h-5 w-5" />
           </button>
@@ -66,7 +107,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           <div className="flex items-center bg-neutral-100 rounded-xl px-2 py-1 gap-4">
             <button
               onClick={handleDecrement}
-              disabled={item.quantity <= 1}
+              disabled={item.quantity <= 1 || isLoading}
               className="p-1 hover:text-primary disabled:text-content-tertiary transition-colors"
             >
               <Minus className="h-4 w-4" />
@@ -76,7 +117,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             </span>
             <button
               onClick={handleIncrement}
-              disabled={item.quantity >= item.stock}
+              disabled={item.quantity >= item.stock || isLoading}
               className="p-1 hover:text-primary disabled:text-content-tertiary transition-colors"
             >
               <Plus className="h-4 w-4" />

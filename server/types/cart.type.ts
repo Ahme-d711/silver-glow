@@ -3,6 +3,7 @@ import { Document, Types } from "mongoose";
 export interface ICartItem {
   productId: Types.ObjectId;
   quantity: number;
+  size?: string;
 }
 
 export interface ICart extends Document {

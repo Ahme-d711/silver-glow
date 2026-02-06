@@ -12,7 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { Button } from "./ui/button";
-import { useCartStore } from "@/features/main/cart/stores/useCartStore";
+import { useCartStore, getTotalItems } from "@/features/main/cart/stores/useCartStore";
+import { useCart } from "@/features/main/cart/hooks/useCart";
+import { useMergeCart } from "@/features/main/cart/hooks/useMergeCart";
 import { toast } from "sonner";
 
 import { Input } from "./ui/input";
@@ -92,6 +94,7 @@ function UserMenu() {
 }
 
 export default function MainNavbar() {
+  const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("Navigation");
   const pathname = usePathname();
@@ -103,12 +106,34 @@ export default function MainNavbar() {
   const [isFocused, setIsFocused] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const debouncedSearch = useDebounce(searchQuery, 500);
-  
-  const totalItems = useCartStore((state) => state.getTotalItems());
+
+  const { items, setItems } = useCartStore();
+  const { data: cartData } = useCart();
+  useMergeCart();
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  // Sync backend cart with store for authenticated users
+  useEffect(() => {
+    if (user && cartData?.data?.cart?.items) {
+      const backendItems = cartData.data.cart.items.map((item: any) => ({
+        id: `${item.productId._id}-${item.size || "nosize"}`,
+        productId: item.productId._id,
+        nameEn: item.productId.nameEn,
+        nameAr: item.productId.nameAr,
+        price: item.productId.price,
+        mainImage: item.productId.mainImage,
+        size: item.size || "N/A",
+        quantity: item.quantity,
+        stock: item.productId.stock, // Default to product stock, ideally size-specific
+      }));
+      setItems(backendItems);
+    }
+  }, [user, cartData, setItems]);
+
+  const totalItems = getTotalItems(items);
 
   useEffect(() => {
     const handleScroll = () => {

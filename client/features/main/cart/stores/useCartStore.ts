@@ -7,6 +7,8 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
 
+      setItems: (items) => set({ items }),
+
       addItem: (newItem) => {
         const { items } = get();
         const existingItemIndex = items.findIndex((item) => item.id === newItem.id);
@@ -44,14 +46,6 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => set({ items: [] }),
-
-      getSubtotal: () => {
-        return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
-      },
-
-      getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
-      },
     }),
     {
       name: "silver-glow-cart",
@@ -59,3 +53,10 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+// Helper selectors
+export const getSubtotal = (items: CartItem[]) => 
+  items.reduce((total, item) => total + item.price * item.quantity, 0);
+
+export const getTotalItems = (items: CartItem[]) => 
+  items.reduce((total, item) => total + item.quantity, 0);

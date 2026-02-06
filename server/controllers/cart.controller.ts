@@ -31,7 +31,7 @@ export const getCart = async (req: Request, res: Response) => {
  */
 export const addItemToCart = async (req: Request, res: Response) => {
   const userId = req.user?._id;
-  const { productId, quantity } = addToCartSchema.parse(req.body);
+  const { productId, quantity, size } = addToCartSchema.parse(req.body);
 
   // Check if product exists
   const product = await ProductModel.findById(productId);
@@ -39,7 +39,16 @@ export const addItemToCart = async (req: Request, res: Response) => {
     throw new AppError("Product not found", 404);
   }
 
-  if (product.stock < quantity) {
+  // Check stock (size-specific if size provided, otherwise general stock)
+  let availableStock = product.stock;
+  if (size && product.sizes && product.sizes.length > 0) {
+    const sizeObj = product.sizes.find((s) => s.size === size);
+    if (sizeObj) {
+      availableStock = sizeObj.stock;
+    }
+  }
+
+  if (availableStock < quantity) {
     throw new AppError("Not enough stock available", 400);
   }
 
@@ -49,14 +58,17 @@ export const addItemToCart = async (req: Request, res: Response) => {
     cart = new CartModel({ userId, items: [] });
   }
 
-  const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+  // Find item by both productId and size
+  const itemIndex = cart.items.findIndex(
+    (item) => item.productId.toString() === productId && item.size === size
+  );
 
   if (itemIndex > -1) {
     // Increment quantity
     cart.items[itemIndex].quantity += quantity;
   } else {
     // Add new item
-    cart.items.push({ productId: productId as any, quantity });
+    cart.items.push({ productId: productId as any, quantity, size });
   }
 
   await cart.save();
@@ -73,14 +85,16 @@ export const addItemToCart = async (req: Request, res: Response) => {
  */
 export const updateCartItemQuantity = async (req: Request, res: Response) => {
   const userId = req.user?._id;
-  const { productId, quantity } = updateCartItemSchema.parse(req.body);
+  const { productId, quantity, size } = updateCartItemSchema.parse(req.body);
 
   const cart = await CartModel.findOne({ userId });
   if (!cart) {
     throw new AppError("Cart not found", 404);
   }
 
-  const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+  const itemIndex = cart.items.findIndex(
+    (item) => item.productId.toString() === productId && item.size === size
+  );
 
   if (itemIndex === -1) {
     throw new AppError("Item not found in cart", 404);
@@ -92,7 +106,15 @@ export const updateCartItemQuantity = async (req: Request, res: Response) => {
     throw new AppError("Product not found", 404);
   }
 
-  if (product.stock < quantity) {
+  let availableStock = product.stock;
+  if (size && product.sizes && product.sizes.length > 0) {
+    const sizeObj = product.sizes.find((s) => s.size === size);
+    if (sizeObj) {
+      availableStock = sizeObj.stock;
+    }
+  }
+
+  if (availableStock < quantity) {
     throw new AppError("Not enough stock available", 400);
   }
 
@@ -112,13 +134,16 @@ export const updateCartItemQuantity = async (req: Request, res: Response) => {
 export const removeItemFromCart = async (req: Request, res: Response) => {
   const userId = req.user?._id;
   const { productId } = req.params;
+  const { size } = req.query; // Size might be passed as a query param for removal
 
   const cart = await CartModel.findOne({ userId });
   if (!cart) {
     throw new AppError("Cart not found", 404);
   }
 
-  cart.items = cart.items.filter((item) => item.productId.toString() !== productId);
+  cart.items = cart.items.filter(
+    (item) => !(item.productId.toString() === productId && (!size || item.size === size))
+  );
   await cart.save();
 
   res.status(200).json({

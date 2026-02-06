@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SizeGuideModal } from "./SizeGuideModal";
 import { useCartStore } from "@/features/main/cart/stores/useCartStore";
+import { useAddToCart } from "@/features/main/cart/hooks/useCart";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toast } from "sonner";
 
 interface ProductInfoProps {
@@ -18,10 +20,12 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const t = useTranslations("Shop");
   const locale = useLocale();
   const isRtl = locale === "ar";
+  const { user } = useAuthStore();
   
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const { addItem } = useCartStore();
+  const { mutate: addToCartServer, isPending } = useAddToCart();
 
   const name = isRtl ? product.nameAr : product.nameEn;
   const description = isRtl ? product.descriptionAr : product.descriptionEn;
@@ -39,22 +43,32 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       return;
     }
 
-    const cartItem = {
-      id: `${product._id}-${selectedSize || "nosize"}`,
+    const payload = {
       productId: product._id,
-      nameEn: product.nameEn,
-      nameAr: product.nameAr,
-      price: product.price,
-      mainImage: product.mainImage,
-      size: selectedSize || "N/A",
       quantity: 1,
-      stock: sizes.length > 0 
-        ? (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock 
-        : product.stock
+      size: selectedSize || undefined,
     };
 
-    addItem(cartItem);
-    toast.success(t("item_added"));
+    if (user) {
+      addToCartServer(payload);
+    } else {
+      const cartItem = {
+        id: `${product._id}-${selectedSize || "nosize"}`,
+        productId: product._id,
+        nameEn: product.nameEn,
+        nameAr: product.nameAr,
+        price: product.price,
+        mainImage: product.mainImage,
+        size: selectedSize || "N/A",
+        quantity: 1,
+        stock: sizes.length > 0 
+          ? (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock 
+          : product.stock
+      };
+
+      addItem(cartItem);
+      toast.success(t("item_added"));
+    }
   };
 
   return (
@@ -169,10 +183,10 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         <Button 
           size="lg" 
           onClick={handleAddToCart}
-          disabled={!isInStock}
+          disabled={!isInStock || isPending}
           className="flex-1 rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all"
         >
-          {t("add_to_cart") || "Add to Cart"}
+          {isPending ? t("Adding...") || "Adding..." : t("add_to_cart") || "Add to Cart"}
         </Button>
         
         <div className="flex gap-3">
@@ -187,7 +201,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
              variant="outline"
              size="icon"
              onClick={handleAddToCart}
-             disabled={!isInStock}
+             disabled={!isInStock || isPending}
              className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors"
           >
             <ShoppingCart className="w-6 h-6" />

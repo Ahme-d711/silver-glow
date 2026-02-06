@@ -42,6 +42,10 @@ const CartSchema = new Schema<ICart>(
           ref: "products",
           required: true,
         },
+        size: {
+          type: String,
+          required: false,
+        },
         quantity: {
           type: Number,
           required: true,

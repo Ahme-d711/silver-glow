@@ -2,13 +2,14 @@
 
 import { ArrowRight, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCartStore } from "../stores/useCartStore";
+import { useCartStore, getSubtotal } from "../stores/useCartStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const CartSummary: React.FC = () => {
   const t = useTranslations("Shop");
-  const subtotal = useCartStore((state) => state.getSubtotal());
+  const items = useCartStore((state) => state.items);
+  const subtotal = getSubtotal(items);
   
   // Dummy values for now as per design
   const discount = subtotal * 0.2; // 20% discount as shown in design
