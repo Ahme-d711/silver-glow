@@ -518,5 +518,23 @@
     "first_to_review": "كن أول من يكتب تقييماً!",
     "Product not found": "المنتج غير موجود",
     "Return to Shop": "العودة للمتجر"
+  },
+  "Wallet": {
+    "title": "محفظتي",
+    "balance": "الرصيد الحالي",
+    "transactions": "سجل المعاملات",
+    "no_transactions": "لا توجد معاملات بعد",
+    "topup": "شحن الرصيد",
+    "topup_desc": "إضافة أموال إلى رصيد محفظتك.",
+    "topup_success": "تم شحن الرصيد بنجاح!",
+    "amount": "المبلغ",
+    "description": "الوصف",
+    "type_topup": "شحن رصيد",
+    "type_purchase": "مشتريات",
+    "type_refund": "استرداد",
+    "type_bonus": "مكافأة",
+    "status_pending": "قيد الانتظار",
+    "status_completed": "مكتمل",
+    "status_failed": "فاشل"
   }
 }

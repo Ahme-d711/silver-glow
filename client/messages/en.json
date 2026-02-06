@@ -521,5 +521,23 @@
     "first_to_review": "Be the first to review!",
     "Product not found": "Product not found",
     "Return to Shop": "Return to Shop"
+  },
+  "Wallet": {
+    "title": "My Wallet",
+    "balance": "Current Balance",
+    "transactions": "Transaction History",
+    "no_transactions": "No transactions found",
+    "topup": "Top Up",
+    "topup_desc": "Add funds to your wallet balance.",
+    "topup_success": "Balance topped up successfully!",
+    "amount": "Amount",
+    "description": "Description",
+    "type_topup": "Top Up",
+    "type_purchase": "Purchase",
+    "type_refund": "Refund",
+    "type_bonus": "Bonus",
+    "status_pending": "Pending",
+    "status_completed": "Completed",
+    "status_failed": "Failed"
   }
 }

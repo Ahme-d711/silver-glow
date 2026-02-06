@@ -99,10 +99,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             {order.totalAmount.toFixed(2)} {t("currency")}
           </p>
         </div>
-        <button className="text-sm font-bold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
-          {tOrders("view_details") || "View Details"}
-          <ChevronDown className="w-4 h-4" />
-        </button>
       </div>
     </div>
   );
