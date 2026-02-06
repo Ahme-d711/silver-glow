@@ -7,12 +7,14 @@ import CategorySection from "@/features/main/home/components/sections/CategorySe
 import { BestSellerSection } from "../components/sections/BestSellerSection";
 import { ProductTabsSection } from "../components/sections/ProductTabsSection";
 import { TestimonialSection } from "../components/sections/TestimonialSection";
+import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
 
 export default function HomeTemplate() {
   const { data: ads = [] } = useHomeAds();
   const { data: categories = [] } = useHomeCategories();
   const { data } = useHomeProducts();
   const products = (data as { products: Product[] })?.products || [];
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -24,10 +26,17 @@ export default function HomeTemplate() {
         <CategorySection categories={categories} />
 
         {/* Best Seller Section */}
-        <BestSellerSection products={products} />
+        <BestSellerSection 
+          products={products} 
+          onToggleWishlist={toggleWishlist}
+          isInWishlist={isInWishlist}
+        />
 
         {/* Our Products Tabs Section */}
-        <ProductTabsSection />
+        <ProductTabsSection 
+          onToggleWishlist={toggleWishlist}
+          isInWishlist={isInWishlist}
+        />
 
         {/* Testimonial Section */}
         <TestimonialSection />

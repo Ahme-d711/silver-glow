@@ -33,7 +33,10 @@ export const useWishlist = () => {
   });
 
   const isInWishlist = (productId: string) => {
-    return data?.data?.wishlist?.products?.some((p: any) => p._id === productId) || false;
+    return data?.data?.wishlist?.products?.some((p: any) => {
+      if (typeof p === 'string') return p === productId;
+      return p._id === productId;
+    }) || false;
   };
 
   return {

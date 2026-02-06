@@ -8,7 +8,15 @@ import { ProductCard } from "../cards/ProductCard";
 import { Section } from "@/features/dashboard/sections/types";
 import { Product } from "@/features/dashboard/products/types";
 
-export const ProductTabsSection: React.FC = () => {
+interface ProductTabsSectionProps {
+  onToggleWishlist?: (productId: string) => void;
+  isInWishlist?: (productId: string) => boolean;
+}
+
+export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
+  onToggleWishlist,
+  isInWishlist,
+}) => {
   const t = useTranslations("Home");
   const locale = useLocale();
   const isRtl = locale === "ar";
@@ -65,7 +73,12 @@ export const ProductTabsSection: React.FC = () => {
             ))
         ) : products.length > 0 ? (
           products.slice(0, 8).map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard 
+              key={product._id} 
+              product={product} 
+              onToggleWishlist={onToggleWishlist}
+              isInWishlist={isInWishlist?.(product._id)}
+            />
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 text-content-tertiary">

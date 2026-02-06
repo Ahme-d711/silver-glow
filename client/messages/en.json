@@ -521,7 +521,8 @@
     "no_reviews": "No reviews yet",
     "first_to_review": "Be the first to review!",
     "Product not found": "Product not found",
-    "Return to Shop": "Return to Shop"
+    "Return to Shop": "Return to Shop",
+    "login_required": "Please login first to add items to your wishlist"
   },
   "Wallet": {
     "title": "My Wallet",

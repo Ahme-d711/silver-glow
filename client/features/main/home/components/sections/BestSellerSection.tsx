@@ -9,13 +9,13 @@ import { ProductCard } from "../cards/ProductCard";
 interface BestSellerSectionProps {
   products: Product[];
   onToggleWishlist?: (productId: string) => void;
-  wishlistIds?: Set<string>;
+  isInWishlist?: (productId: string) => boolean;
 }
 
 export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
   products,
   onToggleWishlist,
-  wishlistIds = new Set(),
+  isInWishlist,
 }) => {
   const t = useTranslations("Home");
   const locale = useLocale();
@@ -39,7 +39,7 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
             key={product._id}
             product={product}
             onToggleWishlist={onToggleWishlist}
-            isInWishlist={wishlistIds.has(product._id)}
+            isInWishlist={isInWishlist?.(product._id)}
           />
         ))}
       </div>
