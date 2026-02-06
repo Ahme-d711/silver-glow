@@ -32,7 +32,7 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Wrapper */}
-      <Link href={`/products/${product._id}`} className="relative aspect-4/5 overflow-hidden block">
+      <Link href={`/products/${product.slug}`} className="relative aspect-4/5 overflow-hidden block">
         <Image
           src={imageUrl || "/images/placeholder-product.jpg"}
           alt={name}
