@@ -234,7 +234,7 @@ export const checkout = async (req: Request, res: Response) => {
   // 1. Get User Cart
   const cart = await CartModel.findOne({ userId }).populate({
     path: "items.productId",
-    select: "nameAr nameEn price stock isShow isDeleted",
+    select: "nameAr nameEn price stock isShow isDeleted mainImage",
   });
 
   if (!cart || cart.items.length === 0) {

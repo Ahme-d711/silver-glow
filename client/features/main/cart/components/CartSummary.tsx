@@ -70,7 +70,7 @@ export const CartSummary: React.FC = () => {
       onSuccess: () => {
         toast.success("Order placed successfully!");
         clearCart();
-        router.push("/");
+        router.push("/orders");
       },
     });
   };

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Search, ShoppingCart, Wallet, User, Menu, LogOut, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Wallet, User, Menu, LogOut, ChevronDown, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/features/auth/stores/authStore";
@@ -77,6 +77,15 @@ function UserMenu() {
             >
               <User className="h-4 w-4 mr-2" />
                Dashboard
+            </Button>
+          </Link>
+          <Link href="/orders" className="w-full">
+            <Button
+              variant="ghost"
+              className="w-full justify-start cursor-pointer h-9 px-2"
+            >
+              <Package className="h-4 w-4 mr-2" />
+               {t("my_orders") || "My Orders"}
             </Button>
           </Link>
           <Button

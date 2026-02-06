@@ -15,7 +15,8 @@
     "wallet": "Wallet",
     "log_in": "Log in",
     "create_account": "Create an account",
-    "search_placeholder": "Here's a gift for you..."
+    "search_placeholder": "Here's a gift for you...",
+    "my_orders": "My Orders"
   },
   "Auth": {
     "login": "Login",
@@ -391,7 +392,14 @@
     "total_items": "Items Summary",
     "total_amount": "Total Amount",
     "cancel_order_title": "Cancel Order",
-    "cancel_order_desc": "Are you sure you want to cancel this order? This action cannot be undone."
+    "cancel_order_desc": "Are you sure you want to cancel this order? This action cannot be undone.",
+    "my_orders": "My Orders",
+    "view_details": "View Details",
+    "order_number": "Order Number",
+    "order_date": "Order Date",
+    "no_orders_title": "No orders yet",
+    "no_orders_desc": "Looks like you haven't placed any orders yet. Start exploring our premium collection!",
+    "more_items": "more items"
   },
   "Ads": {
     "title": "Advertisements",
