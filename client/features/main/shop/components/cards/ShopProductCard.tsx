@@ -5,8 +5,12 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Heart, ShoppingBag, Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Product } from "@/features/dashboard/products/types";
 import { getImageUrl } from "@/utils/image.utils";
+import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
+import { useRouter } from "@/i18n/routing";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 import { cn } from "@/lib/utils";
 
 interface ShopProductCardProps {
@@ -16,6 +20,10 @@ interface ShopProductCardProps {
 export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => {
   const t = useTranslations("Shop");
   const locale = useLocale();
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const { isInWishlist, toggleWishlist, isToggling } = useWishlist();
+  
   const isAr = locale === "ar";
   const [isHovered, setIsHovered] = useState(false);
 
@@ -24,6 +32,18 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   const imageUrl = getImageUrl(product.mainImage);
   const currency = t("currency") || "AED";
 
+  const isLiked = isInWishlist(product._id);
+
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      toast.error(t("login_required") || "Please login first");
+      router.push("/login");
+      return;
+    }
+    toggleWishlist(product._id);
+  };
 
   return (
     <div 
@@ -49,8 +69,15 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
           <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
             <ShoppingBag className="w-5 h-5" />
           </button>
-          <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
-            <Heart className="w-5 h-5" />
+          <button 
+            onClick={handleHeartClick}
+            disabled={isToggling}
+            className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110 duration-200",
+              isLiked ? "bg-red-500 text-white" : "bg-white text-primary hover:bg-primary hover:text-white"
+            )}
+          >
+            <Heart className={cn("w-5 h-5", isLiked && "fill-current")} />
           </button>
           <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-all transform hover:scale-110 duration-200">
             <Eye className="w-5 h-5" />

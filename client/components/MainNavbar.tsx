@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Search, ShoppingCart, Wallet, User, Menu, LogOut, ChevronDown, Package } from "lucide-react";
+import { Search, ShoppingCart, Wallet, User, Menu, LogOut, ChevronDown, Package, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/features/auth/stores/authStore";
@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
 
 function UserMenu() {
   const { user } = useAuthStore();
@@ -144,6 +145,8 @@ export default function MainNavbar() {
   }, [user, cartData, setItems]);
 
   const totalItems = getTotalItems(items);
+  const { wishlist } = useWishlist();
+  const wishlistCount = wishlist?.products?.length || 0;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -253,7 +256,7 @@ export default function MainNavbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">
-          <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
+                  <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
             <div className="relative">
               <ShoppingCart className="h-5 w-5" />
               {isHydrated && totalItems > 0 && (
@@ -263,6 +266,20 @@ export default function MainNavbar() {
               )}
             </div>
             <span className="hidden lg:inline">{t("cart")}</span>
+          </Link>
+          
+          <div className="h-6 w-px bg-white/20 hidden md:block" />
+
+          <Link href="/wishlist" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
+            <div className="relative">
+              <Heart className="h-5 w-5" />
+              {isHydrated && wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center shadow-sm">
+                  {wishlistCount}
+                </span>
+              )}
+            </div>
+            <span className="hidden lg:inline">{t("wishlist") || "Wishlist"}</span>
           </Link>
           
           <div className="h-6 w-px bg-white/20 hidden md:block" />
