@@ -3,6 +3,7 @@
 import { useProduct } from "@/features/main/home/hooks/useHome";
 import { ProductGallery } from "../components/ProductGallery";
 import { ProductInfo } from "../components/ProductInfo";
+import { ProductTabs } from "../components/ProductTabs";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronRight } from "lucide-react";
@@ -79,9 +80,13 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
             {/* Info */}
             <ProductInfo product={product} />
           </div>
+
+          {/* Product Tabs */}
+          <div className="mt-16">
+            <ProductTabs product={product} />
+          </div>
         </div>
       </div>
-      <MainFooter />
     </>
   );
 };
