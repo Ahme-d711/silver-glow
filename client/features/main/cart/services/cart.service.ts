@@ -27,4 +27,9 @@ export const cartService = {
     const response = await clientAxios.delete("/cart/clear");
     return response.data;
   },
+
+  checkout: async (payload: any) => {
+    const response = await clientAxios.post("/orders/checkout", payload);
+    return response.data;
+  },
 };

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import MainNavbar from "@/components/MainNavbar";
 import MainFooter from "@/components/MainFooter";
 import { useCartStore } from "../stores/useCartStore";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
 import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
@@ -16,6 +17,7 @@ export const CartTemplate: React.FC = () => {
   const locale = useLocale();
   const isRtl = locale === "ar";
   const items = useCartStore((state) => state.items);
+  const { user } = useAuthStore();
 
   return (
     <>

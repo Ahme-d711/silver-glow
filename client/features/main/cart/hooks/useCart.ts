@@ -69,3 +69,18 @@ export const useClearCart = () => {
     },
   });
 };
+
+export const useCheckout = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cartService.checkout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Checkout failed");
+    },
+  });
+};
