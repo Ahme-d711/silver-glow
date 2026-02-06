@@ -106,10 +106,14 @@ export const createProduct = async (req: Request, res: Response) => {
   const mainImage = `/uploads/products/${files.mainImage[0].filename}`;
   const images = files.images?.map(file => `/uploads/products/${file.filename}`) || [];
 
+  // Calculate total stock from sizes
+  const totalStock = validatedBody.sizes?.reduce((sum, size) => sum + size.stock, 0) || 0;
+
   const product = await ProductModel.create({
     ...validatedBody,
     mainImage,
     images,
+    stock: totalStock,
   } as unknown as IProduct);
 
   res.status(201).json({
@@ -150,6 +154,11 @@ export const updateProduct = async (req: Request, res: Response) => {
       const newImages = files.images.map(file => `/uploads/products/${file.filename}`);
       updateData.images = [...(product.images || []), ...newImages];
     }
+  }
+
+  // Calculate total stock from sizes if sizes are provided
+  if (validatedBody.sizes) {
+    updateData.stock = validatedBody.sizes.reduce((sum, size) => sum + size.stock, 0);
   }
 
   const updatedProduct = await ProductModel.findByIdAndUpdate(id, updateData, { new: true });

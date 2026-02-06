@@ -89,7 +89,6 @@ export function ProductForm({
       price: 0,
       oldPrice: 0,
       costPrice: 0,
-      stock: 0,
       isShow: true,
       categoryId: "",
       sectionIds: [],
@@ -212,21 +211,12 @@ export function ProductForm({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <UniInput
-                  control={form.control as any}
-                  name="costPrice"
-                  label={t("cost_price")}
-                  type="number"
-                />
-                <UniInput
-                  control={form.control as any}
-                  name="stock"
-                  label={t("stock")}
-                  type="number"
-                  required
-                />
-              </div>
+              <UniInput
+                control={form.control as any}
+                name="costPrice"
+                label={t("cost_price")}
+                type="number"
+              />
               </div>
 
           </div>
