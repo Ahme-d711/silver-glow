@@ -11,7 +11,8 @@ import { useCartStore } from "@/features/main/cart/stores/useCartStore";
 import { useAddToCart } from "@/features/main/cart/hooks/useCart";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toast } from "sonner";
-
+import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
+import { Loader2 } from "lucide-react";
 interface ProductInfoProps {
   product: Product;
 }
@@ -71,10 +72,19 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       toast.success(t("item_added"));
     }
   };
+  const { toggleWishlist, isInWishlist, isToggling } = useWishlist();
+  const isFavorite = isInWishlist(product._id);
+
+  const handleToggleWishlist = () => {
+    if (!user) {
+      toast.error(t("login_required_wishlist") || "Please login to add items to your wishlist");
+      return;
+    }
+    toggleWishlist(product._id);
+  };
 
   return (
     <div className="flex flex-col gap-6">
-      {/* ... previous content ... */}
       <div className="space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold text-primary uppercase tracking-tight">
           {name}
@@ -225,9 +235,20 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           <Button
             variant="outline" 
             size="icon" 
-            className="h-14 w-14 rounded-xl border-divider hover:border-primary hover:text-primary transition-colors shrink-0"
+            onClick={handleToggleWishlist}
+            disabled={isToggling}
+            className={cn(
+              "h-14 w-14 rounded-xl border-divider transition-all shrink-0",
+              isFavorite 
+                ? "bg-red-50 border-red-200 text-red-500 hover:bg-red-100 hover:border-red-300" 
+                : "hover:border-primary hover:text-primary"
+            )}
           >
-            <Heart className="w-6 h-6" />
+            {isToggling ? (
+              <Loader2 className="w-6 h-6 animate-spin" />
+            ) : (
+              <Heart className={cn("w-6 h-6", isFavorite && "fill-current")} />
+            )}
           </Button>
         </div>
       </div>

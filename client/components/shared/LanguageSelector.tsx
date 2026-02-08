@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { usePathname, useRouter } from "@/i18n/routing"
 import { Globe, Check } from "lucide-react"
 import { useLocale } from "next-intl"
@@ -16,13 +17,31 @@ const languages = [
 ]
 
 export default function LanguageSelector({ showLabel = false }: { showLabel?: boolean }) {
+  const [mounted, setMounted] = useState(false);
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleLanguageChange = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale });
   };
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center gap-2 opacity-0">
+        <Globe className="h-5 w-5" />
+        {showLabel && (
+          <span className="hidden lg:inline uppercase text-sm font-medium">
+            {locale}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Popover>

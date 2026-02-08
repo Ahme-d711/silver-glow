@@ -51,7 +51,7 @@ export const StorefrontPageHeader: React.FC<StorefrontPageHeaderProps> = ({
                   {item.label}
                 </Link>
               ) : (
-                <span className={cn(isLast && "text-primary font-bold")}>
+                <span className={cn(isLast && "text-primary font-bold capitalize")}>
                   {item.label}
                 </span>
               )}

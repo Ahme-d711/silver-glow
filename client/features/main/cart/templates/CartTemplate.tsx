@@ -4,9 +4,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import MainNavbar from "@/components/MainNavbar";
-import MainFooter from "@/components/MainFooter";
 import { useCartStore } from "../stores/useCartStore";
-import { useAuthStore } from "@/features/auth/stores/authStore";
 import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
 import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
@@ -20,7 +18,7 @@ export const CartTemplate: React.FC = () => {
   return (
     <>
       <MainNavbar />
-      <div className="min-h-screen bg-background pt-40 pb-20">
+      <div className="min-h-screen bg-background pt-38 pb-20">
         <div className="container mx-auto px-4">
           <StorefrontPageHeader
             title={t("my_cart") || "My Cart"}

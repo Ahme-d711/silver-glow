@@ -101,7 +101,7 @@ const MainFooter = () => {
           <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
             {sections.map((section, idx) => (
               <div key={idx} className="space-y-6">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-primary">
+                <h4 className="text-lg font-medium uppercase tracking-widest text-primary">
                   {section.title}
                 </h4>
                 <ul className="space-y-4">

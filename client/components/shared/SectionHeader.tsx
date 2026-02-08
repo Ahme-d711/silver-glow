@@ -25,7 +25,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       leftOnMobile && "text-center md:text-start",
       className
     )}>
-      <h2 className={cn("text-[26px] leading-[28px] font-bold text-content-primary", titleClassName)}>
+      <h2 className={cn("text-[26px] capitalize leading-[28px] font-bold text-content-primary", titleClassName)}>
         {title || children}
       </h2>
     </div>
