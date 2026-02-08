@@ -29,6 +29,11 @@ export const CategoryDetailsTemplate: React.FC<CategoryDetailsTemplateProps> = (
   return (
     <div className="min-h-screen bg-background pt-40 pb-20">
       <div className="container max-w-7xl mx-auto px-4">
+
+        <SectionHeader 
+            title={categoryName} 
+            className="mb-2"
+        />
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
           <Link href="/" className="hover:text-primary transition-colors">
@@ -43,11 +48,6 @@ export const CategoryDetailsTemplate: React.FC<CategoryDetailsTemplateProps> = (
             {categoryName}
           </span>
         </nav>
-
-        <SectionHeader 
-            title={categoryName} 
-            className="mb-12"
-        />
 
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-pulse">
