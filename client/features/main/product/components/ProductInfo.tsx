@@ -23,7 +23,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const isRtl = locale === "ar";
   const { user } = useAuthStore();
   
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(
+    product.sizes && product.sizes.length > 0 
+      ? (typeof product.sizes[0] === 'string' ? product.sizes[0] : (product.sizes[0] as any).size) 
+      : null
+  );
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const { addItem } = useCartStore();
@@ -33,9 +37,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const description = isRtl ? product.descriptionAr : product.descriptionEn;
   const currency = t("currency") || "AED";
 
-  // Check availability
-  const isInStock = product.stock > 0;
-  
   // Format sizes if they exist
   const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
 
@@ -43,6 +44,12 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const selectedSizeData = selectedSize ? sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) : null;
   const currentPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.price) || product.price;
   const currentOldPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.oldPrice) || product.oldPrice;
+  const currentStock = (selectedSizeData && typeof selectedSizeData === 'object' && 'stock' in selectedSizeData) 
+    ? selectedSizeData.stock 
+    : product.stock;
+
+  // Check availability
+  const isInStock = currentStock > 0;
 
   const handleAddToCart = () => {
     if (sizes.length > 0 && !selectedSize) {
@@ -130,7 +137,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         <span className="text-content-secondary">{t("Availability") || "Availability"}:</span>
         {isInStock ? (
           <span className="text-green-600 flex items-center gap-1">
-            <CheckCircle2 className="w-4 h-4" /> {t("In Stock") || "In Stock"}
+            <CheckCircle2 className="w-4 h-4" /> 
+            {t("In Stock") || "In Stock"} 
+            <span className="text-primary/60 font-bold ml-1">
+              ({currentStock} {t("pieces") || "pieces"})
+            </span>
           </span>
         ) : (
           <span className="text-red-500">{t("Out of Stock")}</span>

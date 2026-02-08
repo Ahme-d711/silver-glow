@@ -45,6 +45,12 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
     toggleWishlist(product._id);
   };
 
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  const firstSize = hasSizes ? (product.sizes![0] as any) : null;
+  const displayPrice = firstSize?.price || product.price;
+  const displayOldPrice = firstSize?.oldPrice || product.oldPrice;
+  const sizeLabel = firstSize?.size ? `${t("Size") || "Size"}: ${firstSize.size}` : null;
+
   return (
     <div 
       className="group bg-white rounded-3xl overflow-hidden border border-divider/50 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 flex flex-col h-full"
@@ -106,16 +112,23 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
           {description || "Featured product with premium quality and elegant design."}
         </p>
         
-        {/* Price - Pushed to bottom */}
-        <div className="mt-auto w-full">
+        {/* Price & Size Label - Pushed to bottom */}
+        <div className="mt-auto w-full space-y-3">
+          {sizeLabel && (
+            <div className="flex justify-center">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60 bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
+                {sizeLabel}
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-center gap-3">
-            {product.oldPrice && (
-              <span className="text-content-tertiary line-through text-sm font-medium">
-                {currency} {product.oldPrice.toFixed(2)}
+            {displayOldPrice && displayOldPrice > displayPrice && (
+              <span className="text-content-tertiary line-through text-sm font-medium opacity-50">
+                {currency} {displayOldPrice.toFixed(2)}
               </span>
             )}
-            <span className="text-primary text-xl font-extrabold">
-              {currency} {product.price.toFixed(2)}
+            <span className="text-primary text-xl font-extrabold tracking-tight">
+              {currency} {displayPrice.toFixed(2)}
             </span>
           </div>
         </div>
