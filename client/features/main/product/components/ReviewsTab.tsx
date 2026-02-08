@@ -126,18 +126,29 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
           </div>
 
           {/* Comment */}
-          <Textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder={t("share_thoughts")}
-            className="min-h-[100px]"
-          />
+          <div className="space-y-2">
+            <Textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder={t("share_thoughts")}
+              className="min-h-[100px]"
+              maxLength={300}
+            />
+            <div className="flex justify-end">
+              <span className={cn(
+                "text-[10px] font-medium transition-colors",
+                comment.length >= 250 ? "text-destructive" : "text-content-tertiary"
+              )}>
+                {comment.length}/300
+              </span>
+            </div>
+          </div>
 
           {/* Actions */}
           <div className="flex gap-3">
             <Button
               onClick={handleSubmit}
-              disabled={rating === 0 || isAdding || isUpdating}
+              disabled={rating === 0 || comment.length > 300 || isAdding || isUpdating}
               className="rounded-xl"
             >
               {(isAdding || isUpdating) && <Loader className="w-4 h-4 animate-spin mr-2" />}

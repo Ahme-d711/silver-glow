@@ -17,7 +17,7 @@ import { ProductModel } from "./product.model.js";
  *         userId: { type: string }
  *         productId: { type: string }
  *         rating: { type: number, minimum: 1, maximum: 5 }
- *         comment: { type: string }
+ *         comment: { type: string, maxLength: 300 }
  */
 
 const ReviewSchema = new Schema<IReview>(
@@ -42,7 +42,7 @@ const ReviewSchema = new Schema<IReview>(
       type: String,
       required: false,
       trim: true,
-      maxlength: 1000,
+      maxlength: 300,
     },
   },
   {
