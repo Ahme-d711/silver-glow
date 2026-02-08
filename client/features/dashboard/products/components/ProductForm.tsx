@@ -224,12 +224,20 @@ export function ProductForm({
                 />
               </div>
 
-              <UniInput
-                control={form.control as any}
-                name="costPrice"
-                label={t("cost_price")}
-                type="number"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <UniInput
+                  control={form.control as any}
+                  name="costPrice"
+                  label={t("cost_price")}
+                  type="number"
+                />
+                <UniInput
+                  control={form.control as any}
+                  name="stock"
+                  label={t("stock")}
+                  type="number"
+                />
+              </div>
               </div>
 
           </div>

@@ -61,6 +61,7 @@ export default function EditProductTemplate() {
           price: product.price,
           oldPrice: product.oldPrice,
           costPrice: product.costPrice,
+          stock: product.stock || 0,
           priority: product.priority,
           isShow: product.isShow,
           categoryId: typeof product.categoryId === 'object' && product.categoryId !== null ? product.categoryId._id : product.categoryId,

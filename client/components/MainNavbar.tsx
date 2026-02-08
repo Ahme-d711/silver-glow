@@ -127,18 +127,20 @@ export default function MainNavbar() {
   // Sync backend cart with store for authenticated users
   useEffect(() => {
     if (user && cartData?.data?.cart?.items) {
-      const backendItems = cartData.data.cart.items.map((item: any) => ({
-        id: `${item.productId._id}-${item.size || "nosize"}`,
-        productId: item.productId._id,
-        nameEn: item.productId.nameEn,
-        nameAr: item.productId.nameAr,
-        price: item.productId.price,
-        mainImage: item.productId.mainImage,
-        size: item.size || "N/A",
-        quantity: item.quantity,
-        stock: item.productId.stock, // Default to product stock, ideally size-specific
-        isSynced: true,
-      }));
+      const backendItems = cartData.data.cart.items
+        .filter((item: any) => item.productId) // Safety check: productId might be null if product deleted
+        .map((item: any) => ({
+          id: `${item.productId._id}-${item.size || "nosize"}`,
+          productId: item.productId._id,
+          nameEn: item.productId.nameEn,
+          nameAr: item.productId.nameAr,
+          price: item.productId.price,
+          mainImage: item.productId.mainImage,
+          size: item.size || "N/A",
+          quantity: item.quantity,
+          stock: item.productId.stock, 
+          isSynced: true,
+        }));
       setItems(backendItems);
     }
   }, [user, cartData, setItems]);

@@ -127,8 +127,11 @@ export const createProduct = async (req: Request, res: Response) => {
     throw new AppError("Maximum 4 additional images allowed", 400);
   }
 
-  // Calculate total stock from sizes
-  const totalStock = validatedBody.sizes?.reduce((sum, size) => sum + size.stock, 0) || 0;
+  // Calculate total stock from sizes if provided and not empty
+  let totalStock = validatedBody.stock || 0;
+  if (validatedBody.sizes && validatedBody.sizes.length > 0) {
+    totalStock = validatedBody.sizes.reduce((sum, size) => sum + size.stock, 0);
+  }
 
   const product = await ProductModel.create({
     ...validatedBody,
@@ -199,9 +202,11 @@ export const updateProduct = async (req: Request, res: Response) => {
     updateData.images = imagesToKeep;
   }
 
-  // Calculate total stock from sizes if sizes are provided
-  if (validatedBody.sizes) {
+  // Calculate total stock from sizes if sizes are provided and not empty
+  if (validatedBody.sizes && validatedBody.sizes.length > 0) {
     updateData.stock = validatedBody.sizes.reduce((sum, size) => sum + size.stock, 0);
+  } else if (validatedBody.stock !== undefined) {
+    updateData.stock = validatedBody.stock;
   }
 
   const updatedProduct = await ProductModel.findByIdAndUpdate(id, updateData, { new: true });

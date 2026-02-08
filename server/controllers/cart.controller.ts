@@ -17,6 +17,15 @@ export const getCart = async (req: Request, res: Response) => {
 
   if (!cart) {
     cart = await CartModel.create({ userId, items: [] });
+  } else {
+    // Filter out items where productId is null (e.g., product deleted)
+    const originalLength = cart.items.length;
+    cart.items = cart.items.filter(item => item.productId !== null) as any;
+    
+    // If we removed items, we should save the cart to clean it up in DB
+    if (cart.items.length !== originalLength) {
+      await cart.save();
+    }
   }
 
   res.status(200).json({

@@ -56,7 +56,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {items.map((item, index) => (
           <div key={index} className="space-y-4 p-4 border rounded-2xl bg-neutral-50/50 relative group">
             <Button
