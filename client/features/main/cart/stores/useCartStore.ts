@@ -60,4 +60,4 @@ export const getSubtotal = (items: CartItem[]) =>
   items.reduce((total, item) => total + item.price * item.quantity, 0);
 
 export const getTotalItems = (items: CartItem[]) => 
-  items.reduce((total, item) => total + item.quantity, 0);
+  items.length;

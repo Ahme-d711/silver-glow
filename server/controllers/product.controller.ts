@@ -123,6 +123,10 @@ export const createProduct = async (req: Request, res: Response) => {
   const mainImage = `/uploads/products/${files.mainImage[0].filename}`;
   const images = files.images?.map(file => `/uploads/products/${file.filename}`) || [];
 
+  if (images.length > 4) {
+    throw new AppError("Maximum 4 additional images allowed", 400);
+  }
+
   // Calculate total stock from sizes
   const totalStock = validatedBody.sizes?.reduce((sum, size) => sum + size.stock, 0) || 0;
 
@@ -186,6 +190,10 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (files && files.images && files.images.length > 0) {
       const newImages = files.images.map(file => `/uploads/products/${file.filename}`);
       imagesToKeep = [...imagesToKeep, ...newImages];
+    }
+
+    if (imagesToKeep.length > 4) {
+      throw new AppError("Maximum 4 additional images allowed", 400);
     }
 
     updateData.images = imagesToKeep;

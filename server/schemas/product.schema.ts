@@ -38,7 +38,7 @@ export const updateProductSchema = createProductSchema.partial().extend({
   existingImages: z.preprocess((val) => {
     if (typeof val === "string") return [val];
     return val;
-  }, z.array(z.string())).optional(),
+  }, z.array(z.string()).max(4, "Maximum 4 additional images allowed")).optional().default([]),
 });
 
 export const queryProductSchema = z.preprocess(

@@ -18,6 +18,7 @@ import { UniAsyncMultiCombobox } from "@/components/shared/uni-form/UniAsyncMult
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { productFormSchema, ProductFormData } from "../schemas/products.schema";
 import { SizeStockList } from "./SizeStockList";
 import React, { useState, useRef, useEffect } from "react";
@@ -114,9 +115,21 @@ export function ProductForm({
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       const currentImages = form.getValues("images") || [];
-      form.setValue("images", [...currentImages, ...files]);
+      const remainingQuota = 4 - currentImages.length;
+
+      if (remainingQuota <= 0) {
+        toast.error("Maximum 4 additional images allowed");
+        return;
+      }
+
+      const filesToUpload = files.slice(0, remainingQuota);
+      if (files.length > remainingQuota) {
+        toast.warning(`Only ${remainingQuota} more images can be added`);
+      }
+
+      form.setValue("images", [...currentImages, ...filesToUpload]);
       
-      files.forEach(file => {
+      filesToUpload.forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
           setImagesPreviews(prev => [...prev, reader.result as string]);
@@ -385,13 +398,15 @@ export function ProductForm({
                      </button>
                    </div>
                  ))}
-                 <button
-                   type="button"
-                   onClick={() => imagesRef.current?.click()}
-                   className="h-24 w-full border-2 border-dashed border-divider rounded-xl flex items-center justify-center hover:bg-neutral-50 transition-colors"
-                 >
-                   <Plus className="h-6 w-6 text-neutral-300" />
-                 </button>
+                 {imagesPreviews.length < 4 && (
+                   <button
+                     type="button"
+                     onClick={() => imagesRef.current?.click()}
+                     className="h-24 w-full border-2 border-dashed border-divider rounded-xl flex items-center justify-center hover:bg-neutral-50 transition-colors"
+                   >
+                     <Plus className="h-6 w-6 text-neutral-300" />
+                   </button>
+                 )}
                </div>
                <input
                  type="file"
