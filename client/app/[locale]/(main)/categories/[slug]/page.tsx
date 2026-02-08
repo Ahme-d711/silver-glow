@@ -12,15 +12,13 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { locale, slug } = await params;
   const isRtl = locale === 'ar';
   
-  const response = await getCategoryBySlug(slug);
+  const category = await getPublicCategoryBySlug(slug);
   
-  if (!response.success || !response.data?.category) {
+  if (!category) {
     return {
       title: "Not Found | Silver Glow",
     };
   }
-
-  const category = response.data.category;
   const name = isRtl ? category.nameAr : category.nameEn;
   const description = isRtl ? category.descriptionAr : category.descriptionEn;
   
@@ -33,11 +31,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
   
-  const response = await getCategoryBySlug(slug);
+  const category = await getPublicCategoryBySlug(slug);
   
-  if (!response.success || !response.data?.category) {
+  if (!category) {
     notFound();
   }
 
-  return <CategoryDetailsTemplate category={response.data.category as any} />;
+  return <CategoryDetailsTemplate category={category} />;
 }
