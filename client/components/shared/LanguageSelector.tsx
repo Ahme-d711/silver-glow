@@ -15,7 +15,7 @@ const languages = [
   { code: 'ar', name: 'العربية', flag: '🇪🇬' },
 ]
 
-export default function LanguageSelector() {
+export default function LanguageSelector({ showLabel = false }: { showLabel?: boolean }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -27,16 +27,17 @@ export default function LanguageSelector() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button 
-          variant="ghost"
-          size="icon"
-          className="rounded-xl hover:bg-accent"
+        <button 
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer"
           aria-label="Select Language"
-          suppressHydrationWarning
         >
-          <Globe className="w-5 h-5" />
-          <span className="sr-only">Select Language</span>
-        </Button>
+          <Globe className="h-5 w-5" />
+          {showLabel && (
+            <span className="hidden lg:inline uppercase text-sm font-medium">
+              {locale}
+            </span>
+          )}
+        </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-48 p-2">
         <div className="flex flex-col gap-1">

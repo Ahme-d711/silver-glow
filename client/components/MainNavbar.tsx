@@ -15,12 +15,12 @@ import { Button } from "./ui/button";
 import { useCartStore, getTotalItems } from "@/features/main/cart/stores/useCartStore";
 import { useCart } from "@/features/main/cart/hooks/useCart";
 import { useMergeCart } from "@/features/main/cart/hooks/useMergeCart";
-import { toast } from "sonner";
 
 import { Input } from "./ui/input";
 import { useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
+import LanguageSelector from "./shared/LanguageSelector";
 
 function UserMenu() {
   const { user } = useAuthStore();
@@ -29,7 +29,6 @@ function UserMenu() {
   const { logout } = useLogout();
   const [imageError, setImageError] = useState(false);
   
-  const userId = user?._id || user?.id;
   const userName = user?.name || "User";
   const userPhoto = getImageUrl(user?.picture);
   const userInitial = userName.charAt(0).toUpperCase();
@@ -289,6 +288,10 @@ export default function MainNavbar() {
             <span className="hidden lg:inline">{t("wallet")}</span>
           </Link>
 
+          <div className="h-6 w-px bg-white/20 hidden md:block" />
+
+          <LanguageSelector showLabel={true} />
+          
           <div className="h-6 w-px bg-white/20 hidden md:block" />
 
           <UserMenu />
