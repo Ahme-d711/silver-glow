@@ -62,7 +62,7 @@ export function HeroSection({ ads }: { ads: Ad[] }) {
 
               {/* Content Overlay */}
               <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-6 max-w-4xl">
-                <h1 className="text-5xl md:text-8xl font-bold tracking-widest animate-in fade-in slide-in-from-bottom-5 duration-700">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-widest animate-in fade-in slide-in-from-bottom-5 duration-700">
                   {isAr ? ad.nameAr : ad.nameEn}
                 </h1>
                 <p className="text-lg md:text-xl font-medium opacity-90 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700 delay-200">

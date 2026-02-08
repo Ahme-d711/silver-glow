@@ -38,12 +38,11 @@ export const BestsellerProductsSection: React.FC<BestsellerProductsSectionProps>
 
   return (
     <section className="py-16 border-t border-gray-100">
-      <div className="container mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4">
         <SectionHeader 
           title={title || t("best_seller") || "BESTSELLER PRODUCTS"} 
           leftOnMobile
           className="mb-12"
-          titleClassName="text-2xl uppercase tracking-wider"
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">

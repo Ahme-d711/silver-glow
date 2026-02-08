@@ -7,10 +7,8 @@ import { ReviewsTab } from "../components/ReviewsTab";
 import { BestsellerProductsSection } from "../components/BestsellerProductsSection";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
-import { ChevronRight } from "lucide-react";
-import MainFooter from "@/components/MainFooter";
+import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 import MainNavbar from "@/components/MainNavbar";
-import { cn } from "@/lib/utils";
 
 interface ProductDetailsTemplateProps {
   slug: string;
@@ -49,26 +47,22 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   }
 
   const images = [product.mainImage, ...product.images];
+  const productName = isRtl ? product.nameAr : product.nameEn;
 
   return (
     <>
       <MainNavbar />
-      <div className="min-h-screen bg-background pt-24 pb-20">
-        <div className="container mx-auto px-4">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
-            <Link href="/" className="hover:text-primary transition-colors">
-              {t("home") || "Home"}
-            </Link>
-            <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            <Link href="/shop" className="hover:text-primary transition-colors">
-              {t("title") || "Shop"}
-            </Link>
-            <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            <span className="text-primary font-medium truncate max-w-[200px]">
-              {isRtl ? product.nameAr : product.nameEn}
-            </span>
-          </nav>
+      <div className="min-h-screen bg-background pt-40 pb-20">
+        <div className="container max-w-7xl mx-auto px-4">
+          <StorefrontPageHeader
+            title={productName}
+            breadcrumbs={[
+              { label: t("home") || "Home", href: "/" },
+              { label: t("title") || "Shop", href: "/shop" },
+              { label: productName },
+            ]}
+            className="mb-10"
+          />
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
@@ -94,7 +88,6 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
         {/* Bestseller Products Section */}
         <BestsellerProductsSection />
       </div>
-      <MainFooter />
     </>
   );
 };

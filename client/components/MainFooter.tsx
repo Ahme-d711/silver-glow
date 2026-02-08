@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Twitter, 
   Facebook, 
@@ -61,6 +62,14 @@ const MainFooter = () => {
     },
   ];
 
+  const payments = [
+    { name: "Visa", src: "/footer/Visa.svg" },
+    { name: "Mastercard", src: "/footer/Mastercard.svg" },
+    { name: "PayPal", src: "/footer/Paypal.svg" },
+    { name: "ApplePay", src: "/footer/ Pay.svg" },
+    { name: "GooglePay", src: "/footer/G Pay.svg" },
+  ];
+
   return (
     <footer className="bg-white border-t border-divider pt-16 pb-8">
       <div className="container max-w-[1440px] mx-auto px-4">
@@ -118,14 +127,19 @@ const MainFooter = () => {
             {t("rights")}
           </p>
           
-          {/* Payment Icons (Simulated with simple containers for now to match design) */}
+          {/* Payment Icons */}
           <div className="flex items-center gap-3">
-            {["VISA", "Mastercard", "PayPal", "ApplePay", "GooglePay"].map((payment) => (
+            {payments.map((payment) => (
               <div 
-                key={payment}
-                className="px-3 py-1.5 rounded-md border border-divider bg-gray-50 text-[10px] font-bold text-primary grayscale hover:grayscale-0 transition-all cursor-default"
+                key={payment.name}
+                className="w-12 h-8 relative flex items-center justify-center rounded-md border border-divider bg-white p-1 transition-all cursor-default hover:shadow-sm"
               >
-                {payment}
+                <Image
+                  src={payment.src}
+                  alt={payment.name}
+                  fill
+                  className="object-contain p-1"
+                />
               </div>
             ))}
           </div>
