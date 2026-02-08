@@ -2,6 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { env } from "../config/env.js";
+import AppError from "../errors/AppError.js";
 
 // --------------------------------------------
 // Constant: Upload path outside dist
@@ -28,9 +29,11 @@ const imageFilter = (
   cb: multer.FileFilterCallback
 ) => {
   const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-  allowed.includes(file.mimetype)
-    ? cb(null, true)
-    : cb(new Error("File type not supported. Use JPEG, PNG, or WebP"));
+  if (allowed.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new AppError("File type not supported. Use JPEG, PNG, or WebP", 400));
+  }
 };
 
 // --------------------------------------------

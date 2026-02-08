@@ -25,16 +25,22 @@ export const globalErrorHandler = (
     });
   }
 
-  // Handle Multer errors
-  if (err.name === 'MulterError') {
+  // Handle Multer specific errors
+  if (err.name === 'MulterError' || (err as any).name === 'MulterError') {
     return res.status(400).json({
       success: false,
       message: `Upload Error: ${err.message}`,
     });
   }
 
-  res.status(500).json({
+  // Fallback for errors with status/statusCode but not AppError instances
+  const statusCode = (err as any).statusCode || (err as any).status || 500;
+  const message = statusCode === 500 && process.env.NODE_ENV !== "development" 
+    ? "Internal Server Error" 
+    : err.message;
+
+  res.status(statusCode).json({
     success: false,
-    message: process.env.NODE_ENV === "development" ? err.message : "Internal Server Error",
+    message,
   });
 };
