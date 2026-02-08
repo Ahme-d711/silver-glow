@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useHomeCategories } from "@/features/main/home/hooks/useHome";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ShopCategoryCard } from "../cards/ShopCategoryCard";
 
 export const ShopCategorySection = () => {
@@ -21,11 +22,11 @@ export const ShopCategorySection = () => {
   return (
     <div className="space-y-8">
       {/* Section Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl md:text-3xl font-bold text-content-primary">
-          {t("categoriesTitle")}
-        </h2>
-      </div>
+      <SectionHeader 
+        title={t("categoriesTitle")} 
+        className="mb-0"
+        titleClassName="text-2xl md:text-3xl"
+      />
 
       {/* Categories Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">

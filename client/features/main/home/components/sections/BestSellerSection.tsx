@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Product } from "@/features/dashboard/products/types";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ProductCard } from "../cards/ProductCard";
 
 interface BestSellerSectionProps {
@@ -26,11 +27,7 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
   return (
     <section className="py-16 container mx-auto px-4">
       {/* Section Title */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-primary">
-          {t("best_seller")}
-        </h2>
-      </div>
+      <SectionHeader title={t("best_seller")} />
 
       {/* Products Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

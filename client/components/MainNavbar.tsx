@@ -212,11 +212,11 @@ export default function MainNavbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-8 px-10 flex items-center",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-10 flex items-center",
         isScrolled || !isHome ? "bg-primary shadow-lg" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between gap-4">
+      <div className="container mx-auto px-4 md:px-6 flex items-center max-w-7xl justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="shrink-0">
           <Image
@@ -237,7 +237,7 @@ export default function MainNavbar() {
             <Input
               type="text"
               placeholder={t("search_placeholder")}
-              className="w-full h-18.5 bg-white rounded-2xl text-primary px-12 focus:outline-none shadow-sm"
+              className="w-full h-12 bg-white rounded-2xl text-primary px-12 focus:outline-none shadow-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}

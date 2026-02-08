@@ -4,8 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Category } from "@/features/dashboard/categories/services/category.service"; // Correct import
-import { CategoryCard } from "../cards/CategoryCard";
 import { useLocale, useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/shared/SectionHeader";
+import { CategoryCard } from "../cards/CategoryCard";
 
 interface CategorySectionProps {
   categories: Category[];
@@ -21,11 +22,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({ categories }) => {
   return (
     <section className="py-16 container mx-auto px-4">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-primary">
+        <SectionHeader className="mb-0">
           {t.rich("shop_by_category", {
             category: (chunks) => <span className="text-content-primary">{chunks}</span>,
           })}
-        </h2>
+        </SectionHeader>
         <Link
           href="/categories"
           className="text-primary hover:opacity-80 font-medium flex items-center gap-2 transition-all"

@@ -12,25 +12,26 @@ import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
 import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
 
+import { SectionHeader } from "@/components/shared/SectionHeader";
+
 export const CartTemplate: React.FC = () => {
   const t = useTranslations("Shop");
   const locale = useLocale();
   const isRtl = locale === "ar";
   const items = useCartStore((state) => state.items);
-  const { user } = useAuthStore();
 
   return (
     <>
       <MainNavbar />
-      <div className="min-h-screen bg-background pt-24 pb-20">
+      <div className="min-h-screen bg-background pt-40 pb-20">
         <div className="container mx-auto px-4">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
-            <Link href="/" className="hover:text-primary transition-colors">
+            <Link href="/" className="hover:text-primary text-lg transition-colors">
               {t("home") || "Home"}
             </Link>
             <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            <span className="text-primary font-medium">
+            <span className="text-primary font-medium text-lg">
               {t("cart") || "Cart"}
             </span>
           </nav>
@@ -43,9 +44,12 @@ export const CartTemplate: React.FC = () => {
                   <div className="bg-white p-6 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-sm">
                     <ShoppingBag className="h-10 w-10 text-neutral-300" />
                   </div>
-                  <h2 className="text-2xl font-bold text-primary mb-2">
-                    {t("empty_cart_title") || "Your cart is empty"}
-                  </h2>
+                  <SectionHeader 
+                    title={t("empty_cart_title") || "Your cart is empty"} 
+                    centered 
+                    className="mb-2"
+                    titleClassName="text-2xl"
+                  />
                   <p className="text-content-tertiary mb-8">
                     {t("empty_cart_desc") || "Looks like you haven't added anything yet."}
                   </p>
@@ -75,7 +79,6 @@ export const CartTemplate: React.FC = () => {
         {/* Bestseller Products Section */}
         <BestsellerProductsSection />
       </div>
-      <MainFooter />
     </>
   );
 };

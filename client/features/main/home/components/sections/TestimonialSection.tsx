@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { TestimonialCard } from "../cards/TestimonialCard";
 import { useHomeReviews } from "../../hooks/useHome";
 import { HomeReview } from "../../types/review.types";
@@ -16,13 +17,9 @@ import "swiper/css/navigation";
 export function TestimonialSection() {
   const t = useTranslations("Home");
   const { data: reviews = [], isLoading } = useHomeReviews();
-  
-  // Use mock data if server has no reviews yet for demo/empty state
-  const mockTestimonials = t.raw("testimonials") as { text: string; author: string; product: string }[];
-  
-  // If we have real reviews, we follow a different mapping or just use them
-  // For now, let's just use real reviews if they exist (limit top 6)
-  
+
+  // ... (rest of the logic remains same)
+
   if (isLoading) {
     return (
       <section className="py-20 bg-background">
@@ -49,9 +46,11 @@ export function TestimonialSection() {
       <div className="container mx-auto px-4">
         {/* Header with Title and Navigation */}
         <div className="flex items-center justify-between mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">
-            {t("customer_opinions")}
-          </h2>
+          <SectionHeader 
+            title={t("customer_opinions")} 
+            className="mb-0"
+            titleClassName="text-3xl md:text-4xl" 
+          />
           <div className="flex gap-4">
             <button className="testimonial-prev w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
               <ArrowLeft className="w-5 h-5" />

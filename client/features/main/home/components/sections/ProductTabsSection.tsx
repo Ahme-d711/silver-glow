@@ -3,10 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { useHomeProducts, useHomeSections } from "../../hooks/useHome";
 import { ProductCard } from "../cards/ProductCard";
-import { Section } from "@/features/dashboard/sections/types";
-import { Product } from "@/features/dashboard/products/types";
 
 interface ProductTabsSectionProps {
   onToggleWishlist?: (productId: string) => void;
@@ -36,11 +35,11 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
   return (
     <section className="py-16 container mx-auto px-4">
       {/* Section Title */}
-      <div className="mb-10 text-center md:text-start">
-        <h2 className="text-3xl font-bold text-primary">
-          {t("our_products")}
-        </h2>
-      </div>
+      <SectionHeader 
+        title={t("our_products")} 
+        className="mb-10" 
+        leftOnMobile 
+      />
 
       {/* Tabs Layout */}
       <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-10 overflow-x-auto pb-4 no-scrollbar">

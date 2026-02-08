@@ -8,6 +8,8 @@ import { ChevronRight, ShoppingBag, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+import { SectionHeader } from "@/components/shared/SectionHeader";
+
 export const OrdersTemplate: React.FC = () => {
   const t = useTranslations("Shop");
   const tOrders = useTranslations("Orders");
@@ -17,6 +19,8 @@ export const OrdersTemplate: React.FC = () => {
   
   const { data, isLoading } = useMyOrders();
   const orders = data?.data?.orders || [];
+
+  // ... (rest of the logic remains same)
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
@@ -46,9 +50,12 @@ export const OrdersTemplate: React.FC = () => {
             <div className="bg-white p-8 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-6 shadow-sm">
               <ShoppingBag className="h-12 w-12 text-neutral-300" />
             </div>
-            <h2 className="text-2xl font-bold text-primary mb-2">
-              {tOrders("no_orders_title") || "No orders yet"}
-            </h2>
+            <SectionHeader 
+              title={tOrders("no_orders_title") || "No orders yet"} 
+              centered 
+              className="mb-2"
+              titleClassName="text-2xl"
+            />
             <p className="text-content-tertiary mb-10 max-w-md mx-auto">
               {tOrders("no_orders_desc") || "Looks like you haven't placed any orders yet. Start exploring our premium collection!"}
             </p>

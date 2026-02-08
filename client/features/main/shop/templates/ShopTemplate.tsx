@@ -10,7 +10,7 @@ export const ShopTemplate = () => {
   const t = useTranslations("Shop");
 
   return (
-    <div className="min-h-screen bg-background py-10 md:py-16">
+    <div className="min-h-screen bg-background py-10 md:py-40">
       <div className="container mx-auto px-4">
         {/* Header & Breadcrumbs */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">

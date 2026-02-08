@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
+import { SectionHeader } from "@/components/shared/SectionHeader";
+
 export const WalletTemplate: React.FC = () => {
   const t = useTranslations("Wallet");
   const tShop = useTranslations("Shop");
@@ -45,15 +47,15 @@ export const WalletTemplate: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] pt-24 pb-24">
+    <div className="min-h-screen bg-[#F8F9FB] pt-40 pb-24">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-content-tertiary mb-10">
-          <Link href="/" className="hover:text-primary transition-colors">
+          <Link href="/" className="hover:text-primary text-lg transition-colors">
             {tShop("home")}
           </Link>
           <ChevronRight className={cn("w-4 h-4 opacity-30", isRtl && "rotate-180")} />
-          <span className="text-primary font-bold">
+          <span className="text-primary font-bold text-lg">
             {t("title")}
           </span>
         </nav>
@@ -172,10 +174,10 @@ export const WalletTemplate: React.FC = () => {
           {/* Transaction History Section */}
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4">
-              <h2 className="text-2xl font-black text-primary flex items-center gap-3">
+              <SectionHeader className="mb-0" titleClassName="text-2xl font-black flex items-center gap-3">
                 <div className="w-1.5 h-6 bg-primary rounded-full" />
                 {t("transactions")}
-              </h2>
+              </SectionHeader>
               <div className="h-10 w-10 rounded-full border border-divider flex items-center justify-center hover:bg-white cursor-pointer transition-colors shadow-sm">
                 <History className="w-4 h-4 text-content-tertiary" />
               </div>

@@ -9,6 +9,8 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import { SectionHeader } from "@/components/shared/SectionHeader";
+
 export const WishlistTemplate: React.FC = () => {
   const t = useTranslations("Navigation");
   const tShop = useTranslations("Shop");
@@ -19,7 +21,7 @@ export const WishlistTemplate: React.FC = () => {
   const products = wishlist?.products || [];
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] pt-32 pb-24">
+    <div className="min-h-screen bg-[#F8F9FB] pt-40 pb-24">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
@@ -64,7 +66,12 @@ export const WishlistTemplate: React.FC = () => {
             <div className="bg-neutral-50 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8">
               <Heart className="w-14 h-14 text-neutral-200" />
             </div>
-            <h2 className="text-2xl font-black text-primary mb-3">Your wishlist is empty</h2>
+            <SectionHeader 
+              title="Your wishlist is empty" 
+              centered 
+              className="mb-3"
+              titleClassName="text-2xl font-black"
+            />
             <p className="text-content-tertiary max-w-sm mx-auto mb-10 font-medium leading-relaxed">
               Looks like you haven't saved any items yet. Start exploring our premium collection.
             </p>
