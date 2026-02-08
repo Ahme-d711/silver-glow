@@ -35,6 +35,7 @@ interface UniSelectProps<TFieldValues extends FieldValues = FieldValues> {
   disabled?: boolean;
   required?: boolean;
   helperText?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
@@ -49,6 +50,7 @@ export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
   disabled = false,
   required = false,
   helperText,
+  onValueChange,
 }: UniSelectProps<TFieldValues>) {
   return (
     <FormField
@@ -62,7 +64,14 @@ export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
           )}
-          <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+          <Select 
+            onValueChange={(val) => {
+              field.onChange(val);
+              onValueChange?.(val);
+            }} 
+            defaultValue={field.value} 
+            value={field.value}
+          >
             <FormControl>
               <SelectTrigger
                 disabled={disabled}

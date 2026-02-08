@@ -18,6 +18,8 @@ interface InfoRowProps {
   value: React.ReactNode;
 }
 
+import { format } from "date-fns"
+
 function InfoRow({ icon: Icon, label, value }: InfoRowProps) {
   return (
     <div className="flex items-center justify-between">
@@ -44,16 +46,16 @@ interface MockOrder {
   shipping_address: string;
 }
 
-export function OrderDetailCards({ data }: { data: MockOrder | Order }) {
+export function OrderDetailCards({ data }: { data: Order }) {
   if (!data) return null;
 
-  const id = 'id' in data ? data.id : data._id;
+  const id = data._id;
   const status = data.status;
-  const date = 'date' in data ? data.date : data.createdAt;
-  const paymentMethod = 'payment_method' in data ? data.payment_method : data.paymentMethod;
-  const orderType = 'order_type' in data ? data.order_type : "Standard";
-  const customer = 'customer' in data ? data.customer : data.recipientName;
-  const phone = 'recipient_phone' in data ? data.recipient_phone : data.recipientPhone;
+  const date = data.createdAt ? format(new Date(data.createdAt), "dd MMM yyyy") : "N/A";
+  const paymentMethod = data.paymentMethod || "N/A";
+  const orderType = "Standard";
+  const customer = typeof data.userId === 'object' && data.userId?.name ? data.userId.name : data.recipientName;
+  const phone = data.recipientPhone;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

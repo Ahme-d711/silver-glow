@@ -10,39 +10,35 @@ import React from "react"
 import { useParams } from "next/navigation"
 import { OrderStatus } from "../types"
 import { exportToExcel } from "@/utils/excelExport"
-
-interface MockOrder {
-  id: string;
-  customer: string;
-  date: string;
-  status: OrderStatus;
-  order_type: string;
-  recipient_phone: string;
-  payment_method: string;
-  billing_address: string;
-  shipping_address: string;
-}
+import { useOrder } from "../hooks/useOrders"
 
 export default function OrderDetailsTemplate() {
   const params = useParams()
   const orderId = params.orderId as string
   const [isEditOpen, setIsEditOpen] = React.useState(false)
 
-  const orderData: MockOrder = {
-    id: orderId || "302011",
-    customer: "Josh Adam",
-    date: "12 Dec 2022",
-    status: "PROCESSING" as OrderStatus,
-    order_type: "Clothes",
-    recipient_phone: "909 427 2910",
-    payment_method: "Visa",
-    billing_address: "1833 Bel Meadow Drive, Fontana, California 92335, USA",
-    shipping_address: "1833 Bel Meadow Drive, Fontana, California 92335, USA"
+  const { data: order, isLoading, error } = useOrder(orderId);
+
+  if (isLoading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <p className="text-destructive font-semibold">Error loading order details</p>
+        <p className="text-content-tertiary">{(error as Error)?.message || "Order not found"}</p>
+      </div>
+    );
   }
 
   const handleExport = () => {
-    exportToExcel([orderData] as any[], {
-      filename: `Order_${orderData.id}.xlsx`,
+    exportToExcel([order] as any[], {
+      filename: `Order_${order._id}.xlsx`,
       sheetName: "Order Details",
     });
   };
@@ -74,18 +70,24 @@ export default function OrderDetailsTemplate() {
 
       <div className="space-y-6">
         {/* Info Cards Row */}
-        <OrderDetailCards data={orderData} />
+        <OrderDetailCards data={order} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Main Content: Order Table */}
           <div className="lg:col-span-2">
-            <OrderDetailTable />
+            <OrderDetailTable items={order.items} />
           </div>
 
           {/* Sidebar: Address & Status */}
-          <OrderDetailSidebar data={orderData} />
+          <OrderDetailSidebar data={order} />
         </div>
       </div>
+
+      <EditOrderTemplate 
+        isOpen={isEditOpen} 
+        onClose={() => setIsEditOpen(false)} 
+        orderData={order} 
+      />
     </div>
   )
 }

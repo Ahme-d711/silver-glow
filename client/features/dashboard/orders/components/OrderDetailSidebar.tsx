@@ -1,26 +1,16 @@
-"use client"
-
 import { MapPin, CheckCircle2, Clock, Package, Truck, CheckCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Order } from "../types"
+import { format } from "date-fns"
 
-interface MockOrder {
-  id: string;
-  status: string;
-  date: string;
-  payment_method: string;
-  order_type: string;
-  customer: string;
-  recipient_phone: string;
-  billing_address: string;
-  shipping_address: string;
-}
-
-export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
+export function OrderDetailSidebar({ data }: { data: Order }) {
   if (!data) return null;
 
-  const billingAddress = 'billing_address' in data ? data.billing_address : data.shippingAddress;
-  const shippingAddress = 'shipping_address' in data ? data.shipping_address : data.shippingAddress;
+  const billingAddress = data.shippingAddress;
+  const shippingAddress = data.shippingAddress;
+  const orderDate = data.createdAt ? format(new Date(data.createdAt), "dd/MM/yyyy, HH:mm") : "N/A";
+  const shippedDate = data.shippedAt ? format(new Date(data.shippedAt), "dd/MM/yyyy, HH:mm") : "DD/MM/YY, 00:00";
+  const deliveredDate = data.deliveredAt ? format(new Date(data.deliveredAt), "dd/MM/yyyy, HH:mm") : "DD/MM/YY, 00:00";
 
   return (
     <div className="space-y-6">
@@ -65,54 +55,46 @@ export function OrderDetailSidebar({ data }: { data: MockOrder | Order }) {
           <div className="absolute left-[35px] top-[40px] bottom-[40px] w-0.5 bg-gray-100 border-dashed border-l-2" />
           
           <div className="flex gap-4 relative z-10">
-            <div className="h-10 w-10 bg-secondary text-primary rounded-full flex items-center justify-center shrink-0">
+            <div className={`h-10 w-10 ${data.status !== "PENDING" ? "bg-secondary text-primary" : "bg-gray-100 text-content-tertiary"} rounded-full flex items-center justify-center shrink-0`}>
               <CheckCircle2 className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-semibold text-content-primary">Order Placed</span>
               <span className="text-sm text-content-tertiary">An order has been placed.</span>
-              <span className="text-sm text-content-tertiary mt-1">12/12/2022, 03:00</span>
+              <span className="text-sm text-content-tertiary mt-1">{orderDate}</span>
             </div>
           </div>
 
           <div className="flex gap-4 relative z-10">
-            <div className="h-10 w-10 bg-secondary text-primary rounded-full flex items-center justify-center shrink-0">
+            <div className={`h-10 w-10 ${["PROCESSING", "SHIPPED", "DELIVERED"].includes(data.status) ? "bg-secondary text-primary" : "bg-gray-100 text-content-tertiary"} rounded-full flex items-center justify-center shrink-0`}>
               <Clock className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-semibold text-content-primary">Processing</span>
               <span className="text-sm text-content-tertiary">Seller has processed your order.</span>
-              <span className="text-sm text-content-tertiary mt-1">12/12/2022, 03:15</span>
+              <span className="text-sm text-content-tertiary mt-1">{orderDate}</span>
             </div>
           </div>
 
           <div className="flex gap-4 relative z-10">
-            <div className="h-10 w-10 bg-gray-100 text-content-tertiary rounded-full flex items-center justify-center shrink-0">
-              <Package className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-semibold text-content-primary opacity-60">Packed</span>
-              <span className="text-sm text-content-tertiary opacity-60">DD/MM/YY, 00:00</span>
-            </div>
-          </div>
-
-          <div className="flex gap-4 relative z-10">
-            <div className="h-10 w-10 bg-gray-100 text-content-tertiary rounded-full flex items-center justify-center shrink-0">
+            <div className={`h-10 w-10 ${["SHIPPED", "DELIVERED"].includes(data.status) ? "bg-secondary text-primary" : "bg-gray-100 text-content-tertiary"} rounded-full flex items-center justify-center shrink-0`}>
               <Truck className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-semibold text-content-primary opacity-60">Shipping</span>
-              <span className="text-sm text-content-tertiary opacity-60">DD/MM/YY, 00:00</span>
+              <span className="text-base font-semibold text-content-primary">Shipping</span>
+              <span className="text-sm text-content-tertiary">{data.shippedAt ? "Order is on the way" : "Pending shipping"}</span>
+              <span className="text-sm text-content-tertiary mt-1">{shippedDate}</span>
             </div>
           </div>
 
           <div className="flex gap-4 relative z-10">
-            <div className="h-10 w-10 bg-gray-100 text-content-tertiary rounded-full flex items-center justify-center shrink-0">
+            <div className={`h-10 w-10 ${data.status === "DELIVERED" ? "bg-secondary text-primary" : "bg-gray-100 text-content-tertiary"} rounded-full flex items-center justify-center shrink-0`}>
               <CheckCircle className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-semibold text-content-primary opacity-60">Delivered</span>
-              <span className="text-sm text-content-tertiary opacity-60">DD/MM/YY, 00:00</span>
+              <span className="text-base font-semibold text-content-primary">Delivered</span>
+              <span className="text-sm text-content-tertiary">{data.deliveredAt ? "Order has been delivered" : "Pending delivery"}</span>
+              <span className="text-sm text-content-tertiary mt-1">{deliveredDate}</span>
             </div>
           </div>
         </CardContent>

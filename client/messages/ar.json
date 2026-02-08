@@ -388,6 +388,8 @@
     "enter_admin_notes": "أدخل ملاحظات الإدارة",
     "select_customer": "اختر العميل",
     "select_product": "اختر المنتج",
+    "size": "المقاس",
+    "select_size": "اختر المقاس",
     "governorate": "المحافظة",
     "select_governorate": "اختر المحافظة",
     "total_items": "ملخص المنتجات",

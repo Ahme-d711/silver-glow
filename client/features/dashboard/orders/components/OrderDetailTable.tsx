@@ -4,38 +4,26 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 
-// Mock data for the table
-const orderItems = [
-  {
-    productName: "Logic+ Wireless Mouse",
-    subtitle: "Black",
-    id: "302011",
-    total_pcs: "1 pcs",
-    price: "$121.00",
-    total: "$121.00",
-    productImage: ""
-  },
-  {
-    productName: "Smartwatch E2",
-    subtitle: "Black",
-    id: "302011",
-    total_pcs: "1 pcs",
-    price: "$590.00",
-    total: "$590.00",
-    productImage: ""
-  }
-]
+import { useParams } from "next/navigation"
+import { OrderStatus, OrderItem } from "../types"
+import { exportToExcel } from "@/utils/excelExport"
+import { useOrder } from "../hooks/useOrders"
+import { format } from "date-fns"
 
-export function OrderDetailTable() {
+interface OrderDetailTableProps {
+  items: OrderItem[]
+}
+
+export function OrderDetailTable({ items }: OrderDetailTableProps) {
   const columns = [
     {
       id: "product",
       header: "Product",
-      cell: (_: unknown, row: typeof orderItems[number]) => (
+      cell: (_: unknown, row: OrderItem) => (
         <ProductCell 
-          title={row.productName} 
-          subtitle={row.subtitle} 
-          image={row.productImage} 
+          title={row.name} 
+          subtitle={row.size ? `Size: ${row.size}` : ""} 
+          image={row.image || ""} 
         />
       )
     },
@@ -46,22 +34,24 @@ export function OrderDetailTable() {
       className: "font-semibold text-primary"
     },
     {
-      id: "total_pcs",
-      header: "Total",
-      accessorKey: "total_pcs",
+      id: "quantity",
+      header: "Quantity",
+      accessorKey: "quantity",
       className: "text-content-secondary"
     },
     {
       id: "price",
       header: "Price",
-      accessorKey: "price",
-      className: "text-content-secondary"
+      cell: (_: unknown, row: OrderItem) => (
+        <span className="text-content-secondary">${row.price.toFixed(2)}</span>
+      )
     },
     {
       id: "total_price",
       header: "Total",
-      accessorKey: "total",
-      className: "text-content-secondary"
+      cell: (_: unknown, row: OrderItem) => (
+        <span className="text-content-secondary">${(row.price * row.quantity).toFixed(2)}</span>
+      )
     }
   ]
 
@@ -73,7 +63,7 @@ export function OrderDetailTable() {
         </div>
       </CardHeader>
       <UniTable 
-        data={orderItems} 
+        data={items} 
         columns={columns} 
       />
     </Card>

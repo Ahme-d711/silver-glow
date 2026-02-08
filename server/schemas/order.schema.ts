@@ -19,6 +19,7 @@ export const orderItemSchema = z.object({
   price: z.number().min(0),
   quantity: z.number().int().min(1),
   image: z.string().optional(),
+  size: z.string().optional(),
 });
 
 export const createOrderSchema = z.object({

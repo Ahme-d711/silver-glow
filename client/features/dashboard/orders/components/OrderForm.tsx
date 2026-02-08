@@ -29,6 +29,7 @@ const orderFormSchema = z.object({
     price: z.coerce.number(),
     quantity: z.coerce.number().int().min(1),
     image: z.string().optional(),
+    size: z.string().optional(),
   })).min(1),
   recipientName: z.string().min(1),
   recipientPhone: z.string().min(1),
@@ -80,13 +81,15 @@ export function OrderForm({
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
+        size: item.size || "",
       })).length > 0 ? (defaultValues?.items || []).map((item) => ({
         productId: item.productId || "",
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
-      })) : [{ productId: "", name: "", price: 0, quantity: 1, image: "" }],
+        size: item.size || "",
+      })) : [{ productId: "", name: "", price: 0, quantity: 1, image: "", size: "" }],
       recipientName: defaultValues?.recipientName || "",
       recipientPhone: defaultValues?.recipientPhone || "",
       shippingAddress: defaultValues?.shippingAddress || "",
@@ -107,11 +110,56 @@ export function OrderForm({
     name: "items",
   });
 
+  const [selectedProducts, setSelectedProducts] = React.useState<Record<string, Product>>({});
+
+  // Populate selected products on mount (for edit mode)
+  React.useEffect(() => {
+    const loadInitialProducts = async () => {
+      const items = defaultValues?.items || [];
+      const productIds = items.map(item => item.productId).filter(Boolean);
+      
+      if (productIds.length > 0) {
+        // We could fetch them individually or all at once. 
+        // For now, let's fetch for each unique ID to ensure we have size data.
+        const uniqueIds = [...new Set(productIds)];
+        const fetchedProducts: Record<string, Product> = {};
+        
+        for (const id of uniqueIds) {
+          try {
+            const product = await getAllProducts({ limit: 10 }).then(prods => 
+              Array.isArray(prods) ? prods.find(p => p._id === id) : null
+            );
+            if (product) {
+              fetchedProducts[id] = product;
+            }
+          } catch (error) {
+            console.error(`Failed to fetch product ${id}`, error);
+          }
+        }
+        setSelectedProducts(prev => ({ ...prev, ...fetchedProducts }));
+      }
+    };
+    loadInitialProducts();
+  }, [defaultValues?.items]);
+
   const handleProductSelect = (index: number, product: Product) => {
     if (product) {
+      setSelectedProducts(prev => ({ ...prev, [product._id]: product }));
       form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
       form.setValue(`items.${index}.price`, product.price);
       form.setValue(`items.${index}.image`, product.mainImage);
+      form.setValue(`items.${index}.size`, ""); // Reset size on product change
+    }
+  };
+
+  const handleSizeSelect = (index: number, size: string) => {
+    const productId = form.getValues(`items.${index}.productId`);
+    const product = selectedProducts[productId];
+    if (product && product.sizes) {
+      const selectedSize = product.sizes.find(s => s.size === size);
+      if (selectedSize) {
+        form.setValue(`items.${index}.price`, selectedSize.price);
+      }
     }
   };
 
@@ -162,7 +210,7 @@ export function OrderForm({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "" })}
+                onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "", size: "" })}
                 className="rounded-xl border-primary text-primary hover:bg-primary/5"
               >
                 <Plus className="h-4 w-4 me-2" />
@@ -234,6 +282,24 @@ export function OrderForm({
                     disabled={isEdit}
                     required
                   />
+
+                  {/* Size Selection */}
+                  {(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length || 0) > 0 && (
+                    <UniSelect
+                      control={form.control}
+                      name={`items.${index}.size`}
+                      label={t("size") || "Size"}
+                      options={
+                        selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.map(s => ({
+                          label: `${s.size} (${s.price} ${tCommon("currency")})`,
+                          value: s.size
+                        })) || []
+                      }
+                      onValueChange={(val: string) => handleSizeSelect(index, val)}
+                      placeholder={t("select_size") || "Select Size"}
+                      required
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -395,11 +461,11 @@ export function OrderForm({
         </div>
 
         {/* Summary */}
-        <div className="p-8 bg-primary/5 border border-primary/10 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="p-4 bg-primary/5 border border-primary/10 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-lg text-content-secondary font-medium">
-            {t("total_items")}: <span className="text-primary font-bold text-2xl ml-2">{fields.length}</span>
+            {t("total_items")}: <span className="text-primary font-bold text-xl ml-2">{fields.length}</span>
           </div>
-          <div className="text-2xl font-bold text-primary">
+          <div className="text-lg font-bold text-primary">
             {t("total_amount")}: {((form.watch("items") || []).reduce((acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0), 0)).toFixed(2)} {tCommon("currency")}
           </div>
         </div>

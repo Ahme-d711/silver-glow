@@ -390,6 +390,8 @@
     "enter_admin_notes": "Enter admin notes",
     "select_customer": "Select Customer",
     "select_product": "Select Product",
+    "size": "Size",
+    "select_size": "Select Size",
     "governorate": "Governorate",
     "select_governorate": "Select Governorate",
     "total_items": "Items Summary",
