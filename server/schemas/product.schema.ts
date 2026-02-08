@@ -36,19 +36,31 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = createProductSchema.partial();
 
-export const queryProductSchema = z.object({
-  search: z.string().optional(),
-  categoryId: z.string().optional(),
-  subCategoryId: z.string().optional(),
-  brandId: z.string().optional(),
-  sectionIds: z.preprocess((val) => {
-    if (typeof val === "string") return val.split(",").filter(Boolean);
-    return val;
-  }, z.array(z.string())).optional(),
-  isDeleted: z.preprocess((val) => val === "true", z.boolean()).optional(),
-  isShow: z.preprocess((val) => val === "true", z.boolean()).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(12),
-  sort: z.string().optional(),
-  categorySlug: z.string().optional(),
-});
+export const queryProductSchema = z.preprocess(
+  (data: any) => {
+    // Handle Axios-style array parameters with []
+    if (data && typeof data === 'object') {
+      if (data['sectionIds[]'] !== undefined) {
+        data.sectionIds = data['sectionIds[]'];
+        delete data['sectionIds[]'];
+      }
+    }
+    return data;
+  },
+  z.object({
+    search: z.string().optional(),
+    categoryId: z.string().optional(),
+    subCategoryId: z.string().optional(),
+    brandId: z.string().optional(),
+    sectionIds: z.preprocess((val) => {
+      if (typeof val === "string") return val.split(",").filter(Boolean);
+      return val;
+    }, z.array(z.string())).optional(),
+    isDeleted: z.preprocess((val) => val === "true", z.boolean()).optional(),
+    isShow: z.preprocess((val) => val === "true", z.boolean()).optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(12),
+    sort: z.string().optional(),
+    categorySlug: z.string().optional(),
+  })
+);

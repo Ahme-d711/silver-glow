@@ -29,6 +29,23 @@ export const getAllProducts = async (req: Request, res: Response) => {
     .populate("brandId", "nameAr nameEn")
     .populate("sectionIds", "nameAr nameEn");
 
+  // Handle sectionIds filter with support for legacy sectionId field
+  if (validatedQuery.sectionIds && validatedQuery.sectionIds.length > 0) {
+    const sectionIds = Array.isArray(validatedQuery.sectionIds) 
+      ? validatedQuery.sectionIds 
+      : [validatedQuery.sectionIds];
+    
+    query.find({
+      $or: [
+        { sectionIds: { $in: sectionIds } },
+        { sectionId: { $in: sectionIds } }
+      ]
+    });
+    
+    // Remove from validatedQuery so ApiFeatures doesn't try to filter by it again
+    delete validatedQuery.sectionIds;
+  }
+
   const apiFeatures = new ApiFeatures(query, validatedQuery as any)
     .filter()
     .search(["nameAr", "nameEn", "sku"])

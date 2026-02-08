@@ -64,7 +64,12 @@ class ApiFeatures<T extends Document> {
         (filter[field] as Record<string, unknown>)[`$${operator}`] = value;
       } else {
         // Regular field
-        filter[key] = value;
+        // If value is an array, use $in operator (useful for multiple selections or array fields)
+        if (Array.isArray(value)) {
+          filter[key] = { $in: value };
+        } else {
+          filter[key] = value;
+        }
       }
     }
 
