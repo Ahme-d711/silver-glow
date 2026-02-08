@@ -14,7 +14,9 @@ interface TestimonialCardProps {
 export const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, index }) => {
   const locale = useLocale();
   const isEn = locale === "en";
-  const productName = isEn ? testimonial.productId.nameEn : testimonial.productId.nameAr;
+  const productName = isEn 
+    ? testimonial.productId?.nameEn || ""
+    : testimonial.productId?.nameAr || "";
   const userPhoto = getImageUrl(testimonial.userId.picture);
   const userInitial = testimonial.userId.name.charAt(0).toUpperCase();
 

@@ -10,6 +10,9 @@ import { useTranslations } from "next-intl";
 interface SizeStock {
   size: string;
   stock: number;
+  price: number;
+  oldPrice?: number;
+  costPrice?: number;
 }
 
 interface SizeStockListProps {
@@ -22,7 +25,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
   const items = value || [];
 
   const handleAdd = () => {
-    const newItems = [...items, { size: "", stock: 0 }];
+    const newItems = [...items, { size: "", stock: 0, price: 0, oldPrice: 0, costPrice: 0 }];
     onChange(newItems);
   };
 
@@ -55,35 +58,74 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {items.map((item, index) => (
-          <div key={index} className="flex items-end gap-3 p-3 border rounded-lg bg-neutral-50/50">
-            <div className="flex-1 space-y-1">
-              <Label className="text-xs text-muted-foreground">Size</Label>
-              <Input
-                value={item.size}
-                onChange={(e) => handleChange(index, "size", e.target.value)}
-                placeholder="e.g. 5.0, S, M"
-                className="h-9"
-              />
-            </div>
-            <div className="flex-1 space-y-1">
-              <Label className="text-xs text-muted-foreground">Stock</Label>
-              <Input
-                type="number"
-                min="0"
-                value={item.stock}
-                onChange={(e) => handleChange(index, "stock", parseInt(e.target.value) || 0)}
-                className="h-9"
-              />
-            </div>
+          <div key={index} className="space-y-4 p-4 border rounded-2xl bg-neutral-50/50 relative group">
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-white border shadow-sm text-destructive hover:text-white hover:bg-destructive opacity-0 group-hover:opacity-100 transition-opacity z-10"
               onClick={() => handleRemove(index)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Size</Label>
+                <Input
+                  value={item.size}
+                  onChange={(e) => handleChange(index, "size", e.target.value)}
+                  placeholder="e.g. S, M, L"
+                  className="h-10 rounded-xl border-divider focus:ring-primary/20"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Stock</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={item.stock}
+                  onChange={(e) => handleChange(index, "stock", parseInt(e.target.value) || 0)}
+                  className="h-10 rounded-xl border-divider focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Price</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={item.price}
+                  onChange={(e) => handleChange(index, "price", parseFloat(e.target.value) || 0)}
+                  placeholder="0.00"
+                  className="h-10 rounded-xl border-divider focus:ring-primary/20"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Old Price</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={item.oldPrice}
+                  onChange={(e) => handleChange(index, "oldPrice", parseFloat(e.target.value) || 0)}
+                  placeholder="0.00"
+                  className="h-10 rounded-xl border-divider focus:ring-primary/20"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cost</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={item.costPrice}
+                  onChange={(e) => handleChange(index, "costPrice", parseFloat(e.target.value) || 0)}
+                  placeholder="0.00"
+                  className="h-10 rounded-xl border-divider focus:ring-primary/20"
+                />
+              </div>
+            </div>
           </div>
         ))}
 

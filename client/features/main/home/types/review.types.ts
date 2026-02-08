@@ -5,7 +5,7 @@ export interface HomeReview {
     name: string;
     picture?: string;
   };
-  productId: {
+  productId?: {
     _id: string;
     nameEn: string;
     nameAr: string;

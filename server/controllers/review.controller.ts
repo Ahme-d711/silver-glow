@@ -25,11 +25,15 @@ export const getProductReviews = async (req: Request, res: Response) => {
  * Get top reviews for homepage
  */
 export const getTopReviews = async (req: Request, res: Response) => {
-  const reviews = await ReviewModel.find({ rating: 5 })
+  let reviews = await ReviewModel.find({ rating: 5 })
     .populate("userId", "name picture")
-    .populate("productId", "nameEn nameAr")
-    .sort({ createdAt: -1 })
-    .limit(6);
+    .populate("productId", "nameEn nameAr isShow isDeleted")
+    .sort({ createdAt: -1 });
+
+  // Filter out reviews where product is missing, deleted, or hidden
+  reviews = reviews.filter(
+    (review: any) => review.productId && review.productId.isShow && !review.productId.isDeleted
+  ).slice(0, 6);
 
   res.status(200).json({
     success: true,

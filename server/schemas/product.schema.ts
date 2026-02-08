@@ -22,6 +22,9 @@ export const createProductSchema = z.object({
   }, z.array(z.object({
     size: z.string().min(1),
     stock: z.coerce.number().min(0),
+    price: z.coerce.number().min(0),
+    oldPrice: z.coerce.number().min(0).optional(),
+    costPrice: z.coerce.number().min(0).optional(),
   }))).optional().default([]),
   categoryId: z.string().min(1, "Category is required"),
   subCategoryId: z.string().optional(),

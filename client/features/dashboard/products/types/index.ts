@@ -14,7 +14,13 @@ export interface Product {
     slug: string;
     mainImage: string;
     images: string[];
-    sizes?: { size: string; stock: number }[];
+    sizes?: { 
+        size: string; 
+        stock: number;
+        price: number;
+        oldPrice?: number;
+        costPrice?: number;
+    }[];
     categoryId: PopulatedField<CategoryReference>;
     subCategoryId?: PopulatedField<SubCategoryReference>;
     brandId?: PopulatedField<BrandReference>;
@@ -38,7 +44,13 @@ export interface CreateProductPayload {
     costPrice?: number;
     stock?: number;
     sku?: string;
-    sizes?: { size: string; stock: number }[];
+    sizes?: { 
+        size: string; 
+        stock: number;
+        price: number;
+        oldPrice?: number;
+        costPrice?: number;
+    }[];
     categoryId: string;
     subCategoryId?: string;
     brandId?: string;

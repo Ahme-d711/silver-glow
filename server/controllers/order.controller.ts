@@ -256,13 +256,23 @@ export const checkout = async (req: Request, res: Response) => {
       throw new AppError(`Product ${product.nameEn} only has ${product.stock} items in stock`, 400);
     }
 
-    subtotal += product.price * item.quantity;
+    // Determine price based on size if size is selected
+    let unitPrice = product.price;
+    if (item.size && product.sizes && product.sizes.length > 0) {
+      const sizeObj = product.sizes.find((s: any) => s.size === item.size);
+      if (sizeObj) {
+        unitPrice = sizeObj.price;
+      }
+    }
+
+    subtotal += unitPrice * item.quantity;
     orderItems.push({
       productId: product._id,
       name: product.nameEn, // Using English name for order record
-      price: product.price,
+      price: unitPrice,
       quantity: item.quantity,
       image: product.mainImage,
+      size: item.size,
     });
   }
 

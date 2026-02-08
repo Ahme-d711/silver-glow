@@ -131,6 +131,9 @@ const ProductSchema = new Schema<IProduct>(
         {
           size: { type: String, required: true },
           stock: { type: Number, required: true, min: 0, default: 0 },
+          price: { type: Number, required: true, min: 0 },
+          oldPrice: { type: Number, required: false, min: 0 },
+          costPrice: { type: Number, required: false, min: 0 },
         },
       ],
       default: [],

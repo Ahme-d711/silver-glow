@@ -16,6 +16,9 @@ export const productFormSchema = z.object({
   sizes: z.array(z.object({
     size: z.string().min(1),
     stock: z.coerce.number().min(0),
+    price: z.coerce.number().min(0),
+    oldPrice: z.coerce.number().min(0).optional(),
+    costPrice: z.coerce.number().min(0).optional(),
   })).optional().default([]),
   priority: z.coerce.number().int().min(0),
   isShow: z.boolean(),

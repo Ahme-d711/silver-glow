@@ -39,6 +39,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   // Format sizes if they exist
   const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
 
+  // Get currently selected size object if any
+  const selectedSizeData = selectedSize ? sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) : null;
+  const currentPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.price) || product.price;
+  const currentOldPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.oldPrice) || product.oldPrice;
+
   const handleAddToCart = () => {
     if (sizes.length > 0 && !selectedSize) {
       toast.error(t("select_size_first"));
@@ -59,7 +64,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         productId: product._id,
         nameEn: product.nameEn,
         nameAr: product.nameAr,
-        price: product.price,
+        price: currentPrice, // Use size-specific price
         mainImage: product.mainImage,
         size: selectedSize || "N/A",
         quantity: quantity,
@@ -111,12 +116,12 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       </div>
 
       <div className="flex items-end gap-4 py-2">
-        <div className="text-4xl font-extrabold text-primary">
-          {currency} {product.price.toFixed(2)}
+        <div className="text-4xl font-extrabold text-primary animate-in fade-in slide-in-from-bottom-1 duration-300">
+          {currency} {currentPrice.toFixed(2)}
         </div>
-        {product.oldPrice && product.oldPrice > product.price && (
-          <div className="text-xl text-content-tertiary line-through font-medium mb-1">
-            {currency} {product.oldPrice.toFixed(2)}
+        {currentOldPrice && currentOldPrice > currentPrice && (
+          <div className="text-xl text-content-tertiary line-through font-medium mb-1 opacity-60">
+            {currency} {currentOldPrice.toFixed(2)}
           </div>
         )}
       </div>
