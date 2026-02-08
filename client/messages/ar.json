@@ -17,7 +17,8 @@
     "log_in": "دخول",
     "create_account": "حساب جديد",
     "search_placeholder": "هناك هدية تنتظرك...",
-    "my_orders": "طلباتي"
+    "my_orders": "طلباتي",
+    "categories": "الأقسام"
   },
   "Auth": {
     "login": "تسجيل الدخول",

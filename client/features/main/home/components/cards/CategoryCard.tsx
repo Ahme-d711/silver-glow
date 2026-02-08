@@ -20,7 +20,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 
   return (
     <Link
-      href={`/categories/${category._id}`}
+      href={`/categories/${category.slug}`}
       className="group relative block aspect-4/5 w-full overflow-hidden rounded-[2.5rem] bg-secondary"
     >
       <Image

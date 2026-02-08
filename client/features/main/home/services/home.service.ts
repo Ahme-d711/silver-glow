@@ -1,6 +1,7 @@
 import clientAxios from "@/lib/axios/clientAxios";
 import { Ad } from "@/features/dashboard/ads/types";
 import { Category } from "@/features/dashboard/categories/services/category.service";
+import { Subcategory } from "@/features/dashboard/subcategories/services/subcategory.service";
 import { Product, GetProductsParams, Pagination } from "@/features/dashboard/products/types";
 import { Section } from "@/features/dashboard/sections/types";
 import { HomeReview } from "../types/review.types";
@@ -37,6 +38,37 @@ export async function getPublicCategories(): Promise<Category[]> {
     return response.data?.data?.categories || [];
   } catch (error) {
     console.error("Failed to fetch categories:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch single category by slug for public view
+ */
+export async function getPublicCategoryBySlug(slug: string): Promise<Category | null> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ category: Category }>>(`/categories/slug/${slug}`);
+    return response.data?.data?.category || null;
+  } catch (error) {
+    console.error(`Failed to fetch category ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Fetch active subcategories for a category
+ */
+export async function getPublicSubcategories(categoryId: string): Promise<Subcategory[]> {
+  try {
+    const response = await clientAxios.get<ApiResponse<{ subcategories: Subcategory[] }>>("/subcategories", {
+      params: { 
+        categoryId,
+        isShow: true 
+      }
+    });
+    return response.data?.data?.subcategories || [];
+  } catch (error) {
+    console.error("Failed to fetch subcategories:", error);
     return [];
   }
 }

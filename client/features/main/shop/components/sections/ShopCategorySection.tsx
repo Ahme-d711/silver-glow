@@ -22,11 +22,10 @@ export const ShopCategorySection = () => {
   return (
     <div className="space-y-8">
       {/* Section Header */}
-      <SectionHeader 
+      {/* <SectionHeader 
         title={t("categoriesTitle")} 
         className="mb-0"
-        titleClassName="text-2xl md:text-3xl"
-      />
+      /> */}
 
       {/* Categories Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
