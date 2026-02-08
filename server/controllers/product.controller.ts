@@ -165,12 +165,30 @@ export const updateProduct = async (req: Request, res: Response) => {
       updateData.mainImage = `/uploads/products/${files.mainImage[0].filename}`;
     }
 
-    if (files.images && files.images.length > 0) {
-      // Options: Append or Replace? Usually Replace for simplicity in dashboard
-      // If append logic is needed, it should be handled differently
-      const newImages = files.images.map(file => `/uploads/products/${file.filename}`);
-      updateData.images = [...(product.images || []), ...newImages];
     }
+
+  // Handle images deletion and new uploads
+  if (req.body.existingImages !== undefined || (files && files.images)) {
+    let imagesToKeep: string[] = [];
+    
+    // 1. Determine base images (existing ones to keep)
+    if (req.body.existingImages !== undefined) {
+      // Use what frontend sent
+      imagesToKeep = Array.isArray(req.body.existingImages) 
+        ? req.body.existingImages 
+        : [req.body.existingImages];
+    } else {
+      // If NOT sent, keep current images as base
+      imagesToKeep = [...(product.images || [])];
+    }
+
+    // 2. Append new uploads if any
+    if (files && files.images && files.images.length > 0) {
+      const newImages = files.images.map(file => `/uploads/products/${file.filename}`);
+      imagesToKeep = [...imagesToKeep, ...newImages];
+    }
+
+    updateData.images = imagesToKeep;
   }
 
   // Calculate total stock from sizes if sizes are provided

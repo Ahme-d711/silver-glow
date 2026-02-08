@@ -55,7 +55,7 @@ export function UniAsyncMultiCombobox<TItem = object, TFieldValues extends Field
       render={({ field }) => (
         <FormItem className={cn("space-y-1.5 flex flex-col", className)} id={name}>
           {label && (
-            <FormLabel className={cn("text-base text-content-secondary cursor-pointer", labelClassName)}>
+            <FormLabel className={cn("text-base text-content-secondary mb-0 cursor-pointer", labelClassName)}>
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>

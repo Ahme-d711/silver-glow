@@ -34,7 +34,12 @@ export const createProductSchema = z.object({
   isShow: z.preprocess((val) => val === "true" || val === true, z.boolean()).default(true),
 });
 
-export const updateProductSchema = createProductSchema.partial();
+export const updateProductSchema = createProductSchema.partial().extend({
+  existingImages: z.preprocess((val) => {
+    if (typeof val === "string") return [val];
+    return val;
+  }, z.array(z.string())).optional(),
+});
 
 export const queryProductSchema = z.preprocess(
   (data: any) => {

@@ -90,13 +90,6 @@ export default function AdsTemplate() {
     const originalAd = adsData?.find((a) => (a._id || a.id) === id)
     if (!originalAd) return
 
-    // Limit check for home screen
-    const currentlyShownCount = adsData?.filter(a => a.isShown).length || 0
-    if (isShown && currentlyShownCount >= 3) {
-      toast.error(tCommon("max_3_ads") || "Maximum 3 ads allowed on home screen")
-      return
-    }
-
     const formData = new FormData()
     formData.append("isShown", String(isShown))
     
