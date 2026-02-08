@@ -45,11 +45,10 @@ export function TestimonialSection() {
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         {/* Header with Title and Navigation */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-10">
           <SectionHeader 
             title={t("customer_opinions")} 
             className="mb-0"
-            titleClassName="text-3xl md:text-4xl" 
           />
           <div className="flex gap-4">
             <button className="testimonial-prev w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">

@@ -63,7 +63,7 @@ const MainFooter = () => {
 
   return (
     <footer className="bg-white border-t border-divider pt-16 pb-8">
-      <div className="container mx-auto px-4">
+      <div className="container max-w-[1440px] mx-auto px-4">
         {/* Top Section: Branding and Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
           {/* Brand Info */}
