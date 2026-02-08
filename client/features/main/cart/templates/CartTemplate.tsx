@@ -19,7 +19,7 @@ export const CartTemplate: React.FC = () => {
     <>
       <MainNavbar />
       <div className="min-h-screen bg-background pt-38 pb-20">
-        <div className="container mx-auto px-4">
+        <div className="container max-w-7xl mx-auto px-4">
           <StorefrontPageHeader
             title={t("my_cart") || "My Cart"}
             breadcrumbs={[

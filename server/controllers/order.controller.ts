@@ -234,7 +234,7 @@ export const checkout = async (req: Request, res: Response) => {
   // 1. Get User Cart
   const cart = await CartModel.findOne({ userId }).populate({
     path: "items.productId",
-    select: "nameAr nameEn price stock isShow isDeleted mainImage",
+    select: "nameAr nameEn price stock isShow isDeleted mainImage sizes",
   });
 
   if (!cart || cart.items.length === 0) {
@@ -315,11 +315,26 @@ export const checkout = async (req: Request, res: Response) => {
 
   // User balance is updated via TransactionModel middleware
 
-  // Deduct Stock
+  // 6. Deduct Stock
   for (const item of cart.items) {
-    await ProductModel.findByIdAndUpdate(item.productId, {
-      $inc: { stock: -item.quantity }
-    });
+    const product = item.productId as any;
+    if (item.size && product.sizes && product.sizes.length > 0) {
+      // Deduct from specific size AND total stock
+      await ProductModel.updateOne(
+        { _id: product._id, "sizes.size": item.size },
+        { 
+          $inc: { 
+            "sizes.$.stock": -item.quantity,
+            stock: -item.quantity 
+          } 
+        }
+      );
+    } else {
+      // Just total stock
+      await ProductModel.findByIdAndUpdate(product._id, {
+        $inc: { stock: -item.quantity }
+      });
+    }
   }
 
   // Clear Cart

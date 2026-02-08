@@ -86,12 +86,6 @@ export default function OrderDetailsTemplate() {
           <OrderDetailSidebar data={orderData} />
         </div>
       </div>
-
-      <EditOrderTemplate 
-        isOpen={isEditOpen} 
-        onClose={() => setIsEditOpen(false)} 
-        orderData={orderData} 
-      />
     </div>
   )
 }

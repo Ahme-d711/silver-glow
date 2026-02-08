@@ -129,18 +129,24 @@ export default function MainNavbar() {
     if (user && cartData?.data?.cart?.items) {
       const backendItems = cartData.data.cart.items
         .filter((item: any) => item.productId) // Safety check: productId might be null if product deleted
-        .map((item: any) => ({
-          id: `${item.productId._id}-${item.size || "nosize"}`,
-          productId: item.productId._id,
-          nameEn: item.productId.nameEn,
-          nameAr: item.productId.nameAr,
-          price: item.productId.price,
-          mainImage: item.productId.mainImage,
-          size: item.size || "N/A",
-          quantity: item.quantity,
-          stock: item.productId.stock, 
-          isSynced: true,
-        }));
+        .map((item: any) => {
+          const selectedSizeData = item.size && item.productId.sizes 
+            ? item.productId.sizes.find((s: any) => s.size === item.size)
+            : null;
+
+          return {
+            id: `${item.productId._id}-${item.size || "nosize"}`,
+            productId: item.productId._id,
+            nameEn: item.productId.nameEn,
+            nameAr: item.productId.nameAr,
+            price: selectedSizeData?.price || item.productId.price, // Use size-specific price
+            mainImage: item.productId.mainImage,
+            size: item.size || "N/A",
+            quantity: item.quantity,
+            stock: selectedSizeData?.stock || item.productId.stock, 
+            isSynced: true,
+          };
+        });
       setItems(backendItems);
     }
   }, [user, cartData, setItems]);

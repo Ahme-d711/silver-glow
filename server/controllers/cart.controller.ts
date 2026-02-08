@@ -4,16 +4,16 @@ import { addToCartSchema, updateCartItemSchema } from "../schemas/cart.schema.js
 import AppError from "../errors/AppError.js";
 import { ProductModel } from "../models/product.model.js";
 
-/**
- * Get user cart
- */
-export const getCart = async (req: Request, res: Response) => {
-  const userId = req.user?._id;
+const POPULATE_PRODUCT_CONFIG = {
+  path: "items.productId",
+  select: "nameAr nameEn price mainImage slug stock sizes",
+};
 
-  let cart = await CartModel.findOne({ userId }).populate({
-    path: "items.productId",
-    select: "nameAr nameEn price mainImage slug stock",
-  });
+/**
+ * Helper to get fully populated cart
+ */
+const getPopulatedCartResponse = async (userId: string) => {
+  let cart = await CartModel.findOne({ userId }).populate(POPULATE_PRODUCT_CONFIG);
 
   if (!cart) {
     cart = await CartModel.create({ userId, items: [] });
@@ -25,8 +25,19 @@ export const getCart = async (req: Request, res: Response) => {
     // If we removed items, we should save the cart to clean it up in DB
     if (cart.items.length !== originalLength) {
       await cart.save();
+      // Re-populate after save to ensure sync
+      await cart.populate(POPULATE_PRODUCT_CONFIG);
     }
   }
+  return cart;
+};
+
+/**
+ * Get user cart
+ */
+export const getCart = async (req: Request, res: Response) => {
+  const userId = req.user?._id as string;
+  const cart = await getPopulatedCartResponse(userId);
 
   res.status(200).json({
     success: true,
@@ -39,7 +50,7 @@ export const getCart = async (req: Request, res: Response) => {
  * Add item to cart
  */
 export const addItemToCart = async (req: Request, res: Response) => {
-  const userId = req.user?._id;
+  const userId = req.user?._id as string;
   const { productId, quantity, size } = addToCartSchema.parse(req.body);
 
   // Check if product exists
@@ -81,11 +92,12 @@ export const addItemToCart = async (req: Request, res: Response) => {
   }
 
   await cart.save();
+  const populatedCart = await getPopulatedCartResponse(userId);
 
   res.status(200).json({
     success: true,
     message: "Item added to cart successfully",
-    data: { cart },
+    data: { cart: populatedCart },
   });
 };
 
@@ -129,11 +141,12 @@ export const updateCartItemQuantity = async (req: Request, res: Response) => {
 
   cart.items[itemIndex].quantity = quantity;
   await cart.save();
+  const populatedCart = await getPopulatedCartResponse(userId as string);
 
   res.status(200).json({
     success: true,
     message: "Cart updated successfully",
-    data: { cart },
+    data: { cart: populatedCart },
   });
 };
 
@@ -154,11 +167,12 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
     (item) => !(item.productId.toString() === productId && (!size || item.size === size))
   );
   await cart.save();
+  const populatedCart = await getPopulatedCartResponse(userId as string);
 
   res.status(200).json({
     success: true,
     message: "Item removed from cart successfully",
-    data: { cart },
+    data: { cart: populatedCart },
   });
 };
 
