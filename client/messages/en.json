@@ -191,7 +191,8 @@
     "success_delete": "Deleted successfully",
     "phone": "Phone",
     "address": "Address",
-    "no_data_to_export": "No data selected for export"
+    "no_data_to_export": "No data selected for export",
+    "show_less": "Show Less"
   },
   "Users": {
     "title": "Users",
@@ -401,7 +402,8 @@
     "order_date": "Order Date",
     "no_orders_title": "No orders yet",
     "no_orders_desc": "Looks like you haven't placed any orders yet. Start exploring our premium collection!",
-    "more_items": "more items"
+    "more_items": "more items",
+    "show_less": "Show Less"
   },
   "Ads": {
     "title": "Advertisements",

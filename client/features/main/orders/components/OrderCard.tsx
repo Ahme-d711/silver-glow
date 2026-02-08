@@ -4,7 +4,7 @@ import React from "react";
 import { Order } from "@/features/dashboard/orders/types";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Package, Clock, CheckCircle2, Truck, XCircle, ChevronDown } from "lucide-react";
+import { Package, Clock, CheckCircle2, Truck, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getImageUrl } from "@/utils/image.utils";
 import Image from "next/image";
@@ -24,11 +24,14 @@ const statusConfig = {
 };
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+  const [showAll, setShowAll] = React.useState(false);
   const t = useTranslations("Shop");
   const tOrders = useTranslations("Orders");
   const locale = useLocale();
   const config = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.PENDING;
   const StatusIcon = config.icon;
+
+  const displayedItems = showAll ? order.items : order.items.slice(0, 2);
 
   return (
     <div className="bg-white border border-divider rounded-3xl overflow-hidden hover:shadow-md transition-shadow">
@@ -58,13 +61,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
       {/* Items */}
       <div className="p-6 space-y-4">
-        {order.items.slice(0, 2).map((item, idx) => {
+        {displayedItems.map((item, idx) => {
           const product = item.productId as any;
           const image = item.image || product?.mainImage;
           const name = (locale === "ar" ? product?.nameAr : product?.nameEn) || item.name;
           
           return (
-            <div key={idx} className="flex gap-4">
+            <div key={idx} className="flex gap-4 animate-in fade-in slide-in-from-top-1 duration-300">
               <div className="relative h-16 w-16 shrink-0 bg-neutral-100 rounded-xl overflow-hidden border border-divider">
                 <Image
                   src={getImageUrl(image) || "/placeholder.png"}
@@ -83,9 +86,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           );
         })}
         {order.items.length > 2 && (
-          <p className="text-sm text-content-tertiary font-medium ps-20">
-            + {order.items.length - 2} {t("more_items") || "more items"}
-          </p>
+          <button 
+            onClick={() => setShowAll(!showAll)}
+            className="text-sm text-primary font-bold ps-20 hover:underline transition-all flex items-center mx-auto gap-1 group w-fit"
+          >
+            {showAll ? (
+              <>
+                {tOrders("show_less") || "Show Less"}
+                <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+              </>
+            ) : (
+              <>
+                + {order.items.length - 2} {tOrders("more_items") || "more items"}
+                <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+              </>
+            )}
+          </button>
         )}
       </div>
 
