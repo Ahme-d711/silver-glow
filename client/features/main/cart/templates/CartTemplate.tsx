@@ -1,9 +1,8 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
-import { ChevronRight, ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ShoppingBag } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 import MainNavbar from "@/components/MainNavbar";
 import MainFooter from "@/components/MainFooter";
 import { useCartStore } from "../stores/useCartStore";
@@ -11,13 +10,11 @@ import { useAuthStore } from "@/features/auth/stores/authStore";
 import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
 import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
-
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 
 export const CartTemplate: React.FC = () => {
   const t = useTranslations("Shop");
-  const locale = useLocale();
-  const isRtl = locale === "ar";
   const items = useCartStore((state) => state.items);
 
   return (
@@ -25,16 +22,13 @@ export const CartTemplate: React.FC = () => {
       <MainNavbar />
       <div className="min-h-screen bg-background pt-40 pb-20">
         <div className="container mx-auto px-4">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
-            <Link href="/" className="hover:text-primary text-lg transition-colors">
-              {t("home") || "Home"}
-            </Link>
-            <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            <span className="text-primary font-medium text-lg">
-              {t("cart") || "Cart"}
-            </span>
-          </nav>
+          <StorefrontPageHeader
+            title={t("my_cart") || "My Cart"}
+            breadcrumbs={[
+              { label: t("home") || "Home", href: "/" },
+              { label: t("my_cart") || "My Cart" },
+            ]}
+          />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
             {/* Cart Items List */}

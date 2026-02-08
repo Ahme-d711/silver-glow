@@ -4,9 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
-import { ChevronRight, ChevronLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { SectionHeader } from "@/components/shared/SectionHeader";
+import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 import { useHomeSubcategories } from "@/features/main/home/hooks/useHome";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { getImageUrl } from "@/utils/image.utils";
@@ -29,25 +27,14 @@ export const CategoryDetailsTemplate: React.FC<CategoryDetailsTemplateProps> = (
   return (
     <div className="min-h-screen bg-background pt-40 pb-20">
       <div className="container max-w-7xl mx-auto px-4">
-
-        <SectionHeader 
-            title={categoryName} 
-            className="mb-2"
+        <StorefrontPageHeader
+          title={categoryName}
+          breadcrumbs={[
+            { label: tShop("home"), href: "/" },
+            { label: t("categories"), href: "/categories" },
+            { label: categoryName },
+          ]}
         />
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
-          <Link href="/" className="hover:text-primary transition-colors">
-            {tShop("home")}
-          </Link>
-          <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-          <Link href="/categories" className="hover:text-primary transition-colors">
-            {t("categories")}
-          </Link>
-          <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-          <span className="text-primary font-bold">
-            {categoryName}
-          </span>
-        </nav>
 
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-pulse">

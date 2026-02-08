@@ -42,7 +42,7 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
       />
 
       {/* Tabs Layout */}
-      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-10 overflow-x-auto pb-4 no-scrollbar">
+      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-4 overflow-x-auto pb-4 no-scrollbar">
         {tabs.map((tab) => {
           const name = isRtl ? tab.nameAr : tab.nameEn;
           const isActive = activeSectionId === tab._id;
@@ -51,7 +51,7 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
             <button
               key={tab._id || "all"}
               onClick={() => setActiveSectionId(tab._id)}
-              className={`px-8 py-3 rounded-xl font-bold uppercase tracking-wider transition-all duration-300 border-2 ${
+              className={`px-8 py-3 text-lg rounded-xl font-medium uppercase tracking-wider transition-all duration-300 border-2 ${
                 isActive
                   ? "bg-primary border-primary text-white shadow-lg"
                   : "bg-secondary border-divider text-content-tertiary hover:border-primary hover:text-primary"

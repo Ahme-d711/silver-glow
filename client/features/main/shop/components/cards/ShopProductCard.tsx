@@ -96,7 +96,7 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           <Link href={`/products/${product.slug}`}>
-            <h3 className="text-secondary font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors duration-300">
+            <h3 className="text-primary font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors duration-300">
               {name}
             </h3>
           </Link>

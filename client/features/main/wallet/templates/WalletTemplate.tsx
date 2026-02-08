@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 
 export const WalletTemplate: React.FC = () => {
   const t = useTranslations("Wallet");
@@ -48,17 +49,15 @@ export const WalletTemplate: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F9FB] pt-40 pb-24">
-      <div className="container mx-auto px-4 max-w-4xl">
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-content-tertiary mb-10">
-          <Link href="/" className="hover:text-primary text-lg transition-colors">
-            {tShop("home")}
-          </Link>
-          <ChevronRight className={cn("w-4 h-4 opacity-30", isRtl && "rotate-180")} />
-          <span className="text-primary font-bold text-lg">
-            {t("title")}
-          </span>
-        </nav>
+      <div className="container mx-auto px-4 max-w-7xl">
+        <StorefrontPageHeader
+          title={t("title")}
+          breadcrumbs={[
+            { label: tShop("home"), href: "/" },
+            { label: t("title") },
+          ]}
+          className="mb-10"
+        />
 
         <div className="space-y-12">
           {/* Main Hero Section / Balance Card */}
@@ -91,10 +90,10 @@ export const WalletTemplate: React.FC = () => {
 
                   <div className="mt-8">
                     <div className="flex items-baseline gap-3">
-                      <span className="text-5xl md:text-6xl font-black tracking-tightest">
+                      <span className="text-5xl md:text-4xl font-black tracking-tightest">
                         {balance.toFixed(2)}
                       </span>
-                      <span className="text-xl font-bold opacity-40 font-sans tracking-tight">
+                      <span className="text-lg font-bold opacity-40 font-sans tracking-tight">
                         {tShop("currency")}
                       </span>
                     </div>

@@ -19,7 +19,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, i
   const userInitial = testimonial.userId.name.charAt(0).toUpperCase();
 
   return (
-    <div className="bg-card p-8 md:p-10 rounded-[32px] border border-divider shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col justify-between">
+    <div className="bg-card p-4 md:p-6 rounded-[32px] border border-divider shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col justify-between">
       <div className="space-y-6">
         <p className="text-lg md:text-xl text-content-primary leading-relaxed font-medium italic">
           {testimonial.comment}

@@ -41,11 +41,11 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
         ))}
       </div>
 
-      {/* More Products Button */}
-      <div className="flex justify-center mt-10">
+      {/* View All Button */}
+      <div className="flex justify-center mt-12">
         <Link
-          href="/products"
-          className="px-8 py-3 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary hover:text-white transition-all duration-300"
+          href="/shop"
+          className="px-10 py-4 rounded-2xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all duration-300"
         >
           {t("more_products")}
         </Link>
