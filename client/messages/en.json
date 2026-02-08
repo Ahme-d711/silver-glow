@@ -544,5 +544,10 @@
     "status_pending": "Pending",
     "status_completed": "Completed",
     "status_failed": "Failed"
+  },
+  "Errors": {
+    "server_error_title": "Connection Interrupted",
+    "server_error_desc": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
+    "retry_button": "Retry Now"
   }
 }

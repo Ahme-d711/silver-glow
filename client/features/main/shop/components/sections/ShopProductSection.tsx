@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
+import { StorefrontError } from "@/components/shared/StorefrontError";
 
 export const ShopProductSection = () => {
   const t = useTranslations("Shop");
@@ -68,7 +69,7 @@ export const ShopProductSection = () => {
     setCurrentPage(1);
   }, [searchQuery, sortValue, categorySlug]);
 
-  const { data, isLoading } = useShopProducts({
+  const { data, isLoading, isError, refetch } = useShopProducts({
     search: searchQuery,
     sort: sortValue,
     page: currentPage,
@@ -77,6 +78,10 @@ export const ShopProductSection = () => {
   });
 
   const { products = [], pagination = undefined } = (data as { products: any[], pagination: any }) || {};
+
+  if (isError) {
+    return <StorefrontError fullPage={false} onRetry={() => refetch()} />;
+  }
 
   if (isLoading) {
     return (

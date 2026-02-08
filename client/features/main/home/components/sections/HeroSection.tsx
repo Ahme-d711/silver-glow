@@ -16,9 +16,22 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 
-export function HeroSection({ ads }: { ads: Ad[] }) {
+export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean }) {
   const locale = useLocale();
   const isAr = locale === "ar";
+
+  if (isLoading) {
+    return (
+      <div className="relative w-full h-[64vh] bg-secondary/20 animate-pulse flex items-center justify-center">
+        <div className="container mx-auto px-4 max-w-4xl space-y-6 flex flex-col items-center">
+          <div className="h-4 w-32 bg-secondary/40 rounded-full" />
+          <div className="h-12 w-full md:w-3/4 bg-secondary/40 rounded-3xl" />
+          <div className="h-4 w-1/2 bg-secondary/40 rounded-full" />
+          <div className="h-14 w-40 bg-secondary/40 rounded-2xl mt-4" />
+        </div>
+      </div>
+    );
+  }
 
   // Fallback slides if no ads found
   const displayAds = ads.length > 0 ? ads : [];

@@ -8,6 +8,7 @@ import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 import { useHomeSubcategories } from "@/features/main/home/hooks/useHome";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { getImageUrl } from "@/utils/image.utils";
+import { StorefrontError } from "@/components/shared/StorefrontError";
 
 interface CategoryDetailsTemplateProps {
   category: Category;
@@ -20,7 +21,17 @@ export const CategoryDetailsTemplate: React.FC<CategoryDetailsTemplateProps> = (
   const isRtl = locale === "ar";
   
   // Use category ID to fetch subcategories
-  const { data: subcategories = [], isLoading } = useHomeSubcategories(category._id);
+  const { data: subcategories = [], isLoading, isError, refetch } = useHomeSubcategories(category._id);
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-background pt-40 pb-20">
+        <div className="container max-w-7xl mx-auto px-4">
+          <StorefrontError onRetry={() => refetch()} />
+        </div>
+      </div>
+    );
+  }
 
   const categoryName = isRtl ? category.nameAr : category.nameEn;
 

@@ -151,7 +151,7 @@
     "price": "السعر",
     "stock": "المخزون",
     "status": "الحالة",
-    "currency": "درهم",
+    "currency": "$",
     "inactive": "غير نشط",
     "subcategory": "القسم الفرعي",
     "subCategory": "الفئة الفرعية",
@@ -483,7 +483,7 @@
     "priceLowHigh": "السعر: من الأقل للأعلى",
     "priceHighLow": "السعر: من الأعلى للأقل",
     "filter": "تصفية",
-    "currency": "د.إ",
+    "currency": "$",
     "ring_size_chart": "جدول مقاسات الخواتم",
     "size_guide_desc": "اعثر على مقاسك المثالي باستخدام جدول المقاسات القياسي.",
     "Selected size is out of stock": "المقاس المختار غير متوفر حالياً",
@@ -541,5 +541,10 @@
     "status_pending": "قيد الانتظار",
     "status_completed": "مكتمل",
     "status_failed": "فاشل"
+  },
+  "Errors": {
+    "server_error_title": "انقطع الاتصال بالخادم",
+    "server_error_desc": "نواجه صعوبة في الوصول إلى خوادمنا حالياً. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
+    "retry_button": "إعادة المحاولة الآن"
   }
 }

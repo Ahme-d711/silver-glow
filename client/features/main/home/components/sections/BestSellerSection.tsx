@@ -9,18 +9,33 @@ import { ProductCard } from "../cards/ProductCard";
 
 interface BestSellerSectionProps {
   products: Product[];
+  isLoading?: boolean;
   onToggleWishlist?: (productId: string) => void;
   isInWishlist?: (productId: string) => boolean;
 }
 
 export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
   products,
+  isLoading,
   onToggleWishlist,
   isInWishlist,
 }) => {
   const t = useTranslations("Home");
   const locale = useLocale();
   const isRtl = locale === "ar";
+
+  if (isLoading) {
+    return (
+      <section className="py-16 container mx-auto px-4">
+        <div className="h-8 w-48 bg-secondary/30 rounded-lg animate-pulse mb-10 mx-auto md:mx-0" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="aspect-3/4 bg-secondary/20 rounded-3xl animate-pulse" />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (!products || products.length === 0) return null;
 
