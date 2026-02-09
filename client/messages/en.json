@@ -354,6 +354,7 @@
     "payment_cod": "Cash on Delivery",
     "payment_card": "Credit Card",
     "payment_paypal": "PayPal",
+    "payment_wallet": "Wallet",
     "add_order": "Add Order",
     "edit_order": "Edit Order",
     "create_order": "Create Order",

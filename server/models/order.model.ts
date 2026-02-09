@@ -139,7 +139,7 @@ const OrderSchema = new Schema<IOrder>(
     },
     paymentMethod: {
       type: String,
-      enum: ["COD", "CARD", "PAYPAL"],
+      enum: ["COD", "CARD", "PAYPAL", "WALLET"],
       required: true,
       default: "COD",
     },

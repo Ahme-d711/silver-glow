@@ -152,11 +152,13 @@ export const createOrder = async (req: Request, res: Response) => {
   const discountAmount = 0; 
   const totalAmount = subtotal + shippingCost - discountAmount;
 
-  // Balance deduction logic if Payment Method is WALLET (implied if not COD/CARD externally handling)
-  // For Dashboard creation, we might assume manual payment, but let's keep balance check if relevant.
-  // Skipping strict balance check for Admin created orders unless specified.
-  if (req.user?.role !== "admin" && req.user?.role !== "super_admin" && (user.totalBalance || 0) < totalAmount && validatedBody.paymentMethod === "COD") {
-     // NOTE: Usually COD doesn't require balance check. Logic preserved from original but relaxed for admins.
+  // Balance deduction logic if Payment Method is WALLET
+  if (validatedBody.paymentMethod === "WALLET") {
+     if ((user.totalBalance || 0) < totalAmount) {
+        throw new AppError(`Insufficient balance. Current balance: ${user.totalBalance}`, 400);
+     }
+     // Set payment status to PAID for wallet transactions
+     validatedBody.paymentStatus = "PAID";
   }
 
   // Generate tracking number
@@ -172,6 +174,18 @@ export const createOrder = async (req: Request, res: Response) => {
     totalAmount,
     trackingNumber,
   });
+
+  // Create Transaction Record if Payment Method is WALLET
+  if (validatedBody.paymentMethod === "WALLET") {
+    await TransactionModel.create({
+      userId,
+      amount: -totalAmount, // Negative for deduction
+      type: "PURCHASE",
+      status: "COMPLETED",
+      description: `Purchase of order ${trackingNumber}`,
+      referenceId: order._id.toString(),
+    });
+  }
 
   // Deduct Stock
   for (const item of orderItems) {

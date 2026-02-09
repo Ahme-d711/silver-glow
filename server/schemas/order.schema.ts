@@ -10,7 +10,7 @@ export const orderStatusSchema = z.enum([
   "RETURNED",
 ]);
 
-export const paymentMethodSchema = z.enum(["COD", "CARD", "PAYPAL"]);
+export const paymentMethodSchema = z.enum(["COD", "CARD", "PAYPAL", "WALLET"]);
 export const paymentStatusSchema = z.enum(["PENDING", "PAID", "FAILED"]);
 
 export const orderItemSchema = z.object({

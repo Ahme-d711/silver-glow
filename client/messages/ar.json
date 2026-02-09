@@ -352,6 +352,7 @@
     "payment_cod": "الدفع عند الاستلام",
     "payment_card": "بطاقة ائتمان",
     "payment_paypal": "باي بال",
+    "payment_wallet": "محفظة",
     "add_order": "إضافة طلب",
     "edit_order": "تعديل الطلب",
     "create_order": "إنشاء الطلب",

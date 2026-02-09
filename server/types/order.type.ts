@@ -9,7 +9,7 @@ export type OrderStatus =
   | "CANCELLED"
   | "RETURNED";
 
-export type PaymentMethod = "COD" | "CARD" | "PAYPAL";
+export type PaymentMethod = "COD" | "CARD" | "PAYPAL" | "WALLET";
 export type PaymentStatus = "PENDING" | "PAID" | "FAILED";
 
 export interface IOrderItem {

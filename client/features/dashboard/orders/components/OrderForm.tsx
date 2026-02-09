@@ -287,7 +287,7 @@ export function OrderForm({
                       onValueChange={(val: string) => handleSizeSelect(index, val)}
                       placeholder={t("select_size") || "Select Size"}
                       required={!!(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
-                      disabled={!(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
+                      disabled={isEdit || !(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
                     />
                   ) : (
                     <div className="hidden lg:block"></div>
@@ -415,6 +415,7 @@ export function OrderForm({
                 { label: t("payment_cod"), value: "COD" },
                 { label: t("payment_card"), value: "CARD" },
                 { label: t("payment_paypal"), value: "PAYPAL" },
+                { label: t("payment_wallet"), value: "WALLET" },
               ]}
               required
             />
