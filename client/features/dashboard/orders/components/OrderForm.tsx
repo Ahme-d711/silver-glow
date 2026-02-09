@@ -17,7 +17,7 @@ import { Product } from "@/features/dashboard/products/types";
 import { User } from "@/features/auth/types"; 
 import { UserReference } from "@/types";
 
-import { getAllProducts } from "@/features/dashboard/products/services/product.service";
+import { getAllProducts, getProductById } from "@/features/dashboard/products/services/product.service";
 import { getAllUsers } from "@/features/dashboard/users/services/user.service";
 
 // Form Schema
@@ -76,14 +76,14 @@ export function OrderForm({
     defaultValues: {
       userId: initialUserId,
       items: (defaultValues?.items || []).map((item) => ({
-        productId: item.productId || "",
+        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as any)._id : (item.productId || ""),
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
         size: item.size || "",
       })).length > 0 ? (defaultValues?.items || []).map((item) => ({
-        productId: item.productId || "",
+        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as any)._id : (item.productId || ""),
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
@@ -116,7 +116,12 @@ export function OrderForm({
   React.useEffect(() => {
     const loadInitialProducts = async () => {
       const items = defaultValues?.items || [];
-      const productIds = items.map(item => item.productId).filter(Boolean);
+      const productIds = items.map(item => {
+        if (typeof item.productId === 'object' && item.productId !== null) {
+          return (item.productId as any)._id;
+        }
+        return item.productId;
+      }).filter(Boolean);
       
       if (productIds.length > 0) {
         // We could fetch them individually or all at once. 
@@ -126,9 +131,7 @@ export function OrderForm({
         
         for (const id of uniqueIds) {
           try {
-            const product = await getAllProducts({ limit: 10 }).then(prods => 
-              Array.isArray(prods) ? prods.find(p => p._id === id) : null
-            );
+            const product = await getProductById(id);
             if (product) {
               fetchedProducts[id] = product;
             }
@@ -146,9 +149,17 @@ export function OrderForm({
     if (product) {
       setSelectedProducts(prev => ({ ...prev, [product._id]: product }));
       form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
-      form.setValue(`items.${index}.price`, product.price);
       form.setValue(`items.${index}.image`, product.mainImage);
-      form.setValue(`items.${index}.size`, ""); // Reset size on product change
+      
+      // Auto-select first size if available
+      if (product.sizes && product.sizes.length > 0) {
+        const firstSize = product.sizes[0];
+        form.setValue(`items.${index}.size`, firstSize.size);
+        form.setValue(`items.${index}.price`, firstSize.price);
+      } else {
+        form.setValue(`items.${index}.size`, "");
+        form.setValue(`items.${index}.price`, product.price);
+      }
     }
   };
 
@@ -237,7 +248,7 @@ export function OrderForm({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                   <UniAsyncCombobox
                     control={form.control}
                     name={`items.${index}.productId`}
@@ -261,6 +272,27 @@ export function OrderForm({
                     required
                   />
 
+                  {/* Size Selection */}
+                  {(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length || 0) > 0 || form.watch(`items.${index}.size`) ? (
+                    <UniSelect
+                      control={form.control}
+                      name={`items.${index}.size`}
+                      label={t("size") || "Size"}
+                      options={
+                        selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.map(s => ({
+                          label: `${s.size} (${s.price} ${tCommon("currency")})`,
+                          value: s.size
+                        })) || (form.watch(`items.${index}.size`) ? [{ label: form.watch(`items.${index}.size`)!, value: form.watch(`items.${index}.size`)! }] : [])
+                      }
+                      onValueChange={(val: string) => handleSizeSelect(index, val)}
+                      placeholder={t("select_size") || "Select Size"}
+                      required={!!(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
+                      disabled={!(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
+                    />
+                  ) : (
+                    <div className="hidden lg:block"></div>
+                  )}
+
                   <UniInput
                     control={form.control}
                     name={`items.${index}.price`}
@@ -282,24 +314,6 @@ export function OrderForm({
                     disabled={isEdit}
                     required
                   />
-
-                  {/* Size Selection */}
-                  {(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length || 0) > 0 && (
-                    <UniSelect
-                      control={form.control}
-                      name={`items.${index}.size`}
-                      label={t("size") || "Size"}
-                      options={
-                        selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.map(s => ({
-                          label: `${s.size} (${s.price} ${tCommon("currency")})`,
-                          value: s.size
-                        })) || []
-                      }
-                      onValueChange={(val: string) => handleSizeSelect(index, val)}
-                      placeholder={t("select_size") || "Select Size"}
-                      required
-                    />
-                  )}
                 </div>
               </div>
             ))}

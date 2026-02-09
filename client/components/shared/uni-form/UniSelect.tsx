@@ -76,14 +76,14 @@ export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
               <SelectTrigger
                 disabled={disabled}
                 className={cn(
-                  "h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white",
+                  "h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white w-full",
                   triggerClassName
                 )}
               >
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="rounded-xl border-divider">
+            <SelectContent className="rounded-xl border-divider" position="popper">
               {options.map((option) => (
                 <SelectItem key={option.value} value={option.value} className="rounded-lg">
                   {option.label}
