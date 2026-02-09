@@ -95,7 +95,7 @@ export default function ProductsTable({
   const columns: UniTableColumn<Product>[] = [
     {
       id: "selection",
-      header: (props: HeaderContext<Product, any>) => (
+      header: (props: HeaderContext<Product, unknown>) => (
         <SelectionHeader 
           label={t("product_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -103,7 +103,7 @@ export default function ProductsTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (_, row, props: CellContext<Product, any>) => (
+      cell: (_, row, props: CellContext<Product, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}
@@ -189,7 +189,7 @@ export default function ProductsTable({
             </HoverCardTrigger>
             <HoverCardContent className="w-80">
               <div className="flex flex-wrap gap-1">
-                {sections.map((section: any, index) => {
+                {sections.map((section, index) => {
                   const name = typeof section === 'object' && section !== null
                     ? (locale === "ar" ? section.nameAr : section.nameEn)
                     : section;

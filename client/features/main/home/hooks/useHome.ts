@@ -18,7 +18,7 @@ export const homeKeys = {
   categories: () => [...homeKeys.all, "categories"] as const,
   subcategories: (categoryId: string) => [...homeKeys.all, "subcategories", categoryId] as const,
   sections: () => [...homeKeys.all, "sections"] as const,
-  products: (filters?: Record<string, any>) => [...homeKeys.all, "products", { ...filters }] as const,
+  products: (filters?: GetProductsParams) => [...homeKeys.all, "products", { ...filters }] as const,
   product: (id: string) => [...homeKeys.all, "product", id] as const,
   reviews: () => [...homeKeys.all, "reviews"] as const,
 };

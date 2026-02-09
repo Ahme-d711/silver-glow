@@ -37,7 +37,7 @@ export default function OrderDetailsTemplate() {
   }
 
   const handleExport = () => {
-    exportToExcel([order] as any[], {
+    exportToExcel([order as unknown as Record<string, unknown>], {
       filename: `Order_${order._id}.xlsx`,
       sheetName: "Order Details",
     });

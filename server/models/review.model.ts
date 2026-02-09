@@ -1,6 +1,10 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Model } from "mongoose";
 import { IReview } from "../types/review.type.js";
 import { ProductModel } from "./product.model.js";
+
+interface IReviewModel extends Model<IReview> {
+  calculateAverageRating(productId: Types.ObjectId): Promise<void>;
+}
 
 /**
  * @swagger
@@ -20,7 +24,7 @@ import { ProductModel } from "./product.model.js";
  *         comment: { type: string, maxLength: 300 }
  */
 
-const ReviewSchema = new Schema<IReview>(
+const ReviewSchema = new Schema<IReview, IReviewModel>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -83,21 +87,21 @@ ReviewSchema.statics.calculateAverageRating = async function (productId: Types.O
 
 // Call calculateAverageRating after save
 ReviewSchema.post("save", async function () {
-  await (this.constructor as any).calculateAverageRating(this.productId);
+  await (this.constructor as IReviewModel).calculateAverageRating(this.productId);
 });
 
 // Call calculateAverageRating before remove (using findOneAndDelete)
 ReviewSchema.post("findOneAndDelete", async function (doc) {
   if (doc) {
-    await (model("reviews") as any).calculateAverageRating(doc.productId);
+    await (model<IReview, IReviewModel>("reviews")).calculateAverageRating(doc.productId);
   }
 });
 
 // For updates (findOneAndUpdate)
 ReviewSchema.post("findOneAndUpdate", async function (doc) {
     if (doc) {
-      await (model("reviews") as any).calculateAverageRating(doc.productId);
+      await (model<IReview, IReviewModel>("reviews")).calculateAverageRating(doc.productId);
     }
 });
 
-export const ReviewModel = model<IReview>("reviews", ReviewSchema);
+export const ReviewModel = model<IReview, IReviewModel>("reviews", ReviewSchema);

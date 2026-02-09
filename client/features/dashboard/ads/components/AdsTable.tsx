@@ -62,7 +62,7 @@ export function AdsTable({
   const columns: UniTableColumn<Ad>[] = [
     {
       id: "select_id",
-      header: (props: HeaderContext<Ad, any>) => (
+      header: (props: HeaderContext<Ad, unknown>) => (
         <SelectionHeader 
           label={tAds("adId")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -70,7 +70,7 @@ export function AdsTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (_: unknown, row: Ad, props: CellContext<Ad, any>) => (
+      cell: (_: unknown, row: Ad, props: CellContext<Ad, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}
@@ -111,7 +111,7 @@ export function AdsTable({
         // Handle if product is populated (object) or just an ID (string)
         // Based on controller it is populated with nameAr and nameEn
         if (typeof product === 'object' && product !== null) {
-             return <span className="text-gray-600 text-sm">{(product as any)[locale === 'ar' ? 'nameAr' : 'nameEn']}</span>
+             return <span className="text-gray-600 text-sm">{(product as { nameAr?: string; nameEn?: string })[locale === 'ar' ? 'nameAr' : 'nameEn']}</span>
         }
         return <span className="text-gray-400 text-sm">-</span>
       },

@@ -25,7 +25,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   
   const [selectedSize, setSelectedSize] = useState<string | null>(
     product.sizes && product.sizes.length > 0 
-      ? (typeof product.sizes[0] === 'string' ? product.sizes[0] : (product.sizes[0] as any).size) 
+      ? product.sizes[0].size 
       : null
   );
   const [quantity, setQuantity] = useState(1);
@@ -41,12 +41,10 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : [];
 
   // Get currently selected size object if any
-  const selectedSizeData = selectedSize ? sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) : null;
-  const currentPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.price) || product.price;
-  const currentOldPrice = (typeof selectedSizeData === 'object' && selectedSizeData?.oldPrice) || product.oldPrice;
-  const currentStock = (selectedSizeData && typeof selectedSizeData === 'object' && 'stock' in selectedSizeData) 
-    ? selectedSizeData.stock 
-    : product.stock;
+  const selectedSizeData = selectedSize ? sizes.find((s) => s.size === selectedSize) : null;
+  const currentPrice = selectedSizeData?.price || product.price;
+  const currentOldPrice = selectedSizeData?.oldPrice || product.oldPrice;
+  const currentStock = selectedSizeData ? selectedSizeData.stock : product.stock;
 
   // Check availability
   const isInStock = currentStock > 0;
@@ -76,7 +74,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         size: selectedSize || "N/A",
         quantity: quantity,
         stock: sizes.length > 0 
-          ? (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock 
+          ? sizes.find((s) => s.size === selectedSize)?.stock || 0
           : product.stock
       };
 
@@ -162,9 +160,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             </button>
           </div>
           <div className="flex flex-wrap gap-3">
-            {sizes.map((sizeObj: any) => {
-              const sizeName = typeof sizeObj === 'string' ? sizeObj : sizeObj.size;
-              const stock = typeof sizeObj === 'string' ? 10 : sizeObj.stock;
+            {sizes.map((sizeObj) => {
+              const sizeName = sizeObj.size;
+              const stock = sizeObj.stock;
               const isAvailable = stock > 0;
 
               return (
@@ -192,7 +190,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
               );
             })}
           </div>
-          {selectedSize && (sizes.find((s: any) => (typeof s === 'string' ? s : s.size) === selectedSize) as any)?.stock === 0 && (
+          {selectedSize && sizes.find((s) => s.size === selectedSize)?.stock === 0 && (
              <p className="text-red-500 text-sm font-medium">{t("Selected size is out of stock")}</p>
           )}
         </div>

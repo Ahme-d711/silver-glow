@@ -85,7 +85,7 @@ export default function BrandsTable({
   const columns: UniTableColumn<Brand>[] = [
     {
       id: "selection",
-      header: (props: HeaderContext<Brand, any>) => (
+      header: (props: HeaderContext<Brand, unknown>) => (
         <SelectionHeader 
           label={t("brand_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -93,7 +93,7 @@ export default function BrandsTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (value, row, props: CellContext<Brand, any>) => (
+      cell: (_: unknown, row: Brand, props: CellContext<Brand, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}
@@ -104,7 +104,7 @@ export default function BrandsTable({
     {
       id: "logo",
       header: t("logo"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Brand) => (
         <ProductCell 
           image={row.logo} 
           title={locale === "ar" ? row.nameAr : row.nameEn} 
@@ -116,7 +116,7 @@ export default function BrandsTable({
     {
       id: "name",
       header: t("name"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Brand) => (
         <div className="flex items-center gap-2">
           <span className="text-content-secondary font-medium">
             {locale === "ar" ? row.nameAr : row.nameEn}
@@ -144,7 +144,7 @@ export default function BrandsTable({
     {
       id: "status",
       header: t("status"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Brand) => (
         <div className="flex items-center gap-2">
           <Switch 
             checked={row.isShow}
@@ -159,7 +159,7 @@ export default function BrandsTable({
     {
       id: "actions",
       header: t("action"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Brand) => (
         <ActionCell>
           {row.isDeleted ? (
             <div className={cn(isRestoring && "opacity-50 pointer-events-none")}>

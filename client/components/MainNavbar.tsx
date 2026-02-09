@@ -127,23 +127,38 @@ export default function MainNavbar() {
   // Sync backend cart with store for authenticated users
   useEffect(() => {
     if (user && cartData?.data?.cart?.items) {
-      const backendItems = cartData.data.cart.items
-        .filter((item: any) => item.productId) // Safety check: productId might be null if product deleted
-        .map((item: any) => {
-          const selectedSizeData = item.size && item.productId.sizes 
-            ? item.productId.sizes.find((s: any) => s.size === item.size)
+      // Type for populated cart item from backend
+      type PopulatedCartItem = {
+        productId: {
+          _id: string;
+          nameEn: string;
+          nameAr: string;
+          price: number;
+          mainImage: string;
+          stock: number;
+          sizes?: Array<{ size: string; stock: number; price: number }>;
+        } | null;
+        size?: string;
+        quantity: number;
+      };
+
+      const backendItems = (cartData.data.cart.items as PopulatedCartItem[])
+        .filter((item) => item.productId) // Safety check: productId might be null if product deleted
+        .map((item) => {
+          const selectedSizeData = item.size && item.productId!.sizes 
+            ? item.productId!.sizes.find((s) => s.size === item.size)
             : null;
 
           return {
-            id: `${item.productId._id}-${item.size || "nosize"}`,
-            productId: item.productId._id,
-            nameEn: item.productId.nameEn,
-            nameAr: item.productId.nameAr,
-            price: selectedSizeData?.price || item.productId.price, // Use size-specific price
-            mainImage: item.productId.mainImage,
+            id: `${item.productId!._id}-${item.size || "nosize"}`,
+            productId: item.productId!._id,
+            nameEn: item.productId!.nameEn,
+            nameAr: item.productId!.nameAr,
+            price: selectedSizeData?.price || item.productId!.price, // Use size-specific price
+            mainImage: item.productId!.mainImage,
             size: item.size || "N/A",
             quantity: item.quantity,
-            stock: selectedSizeData?.stock || item.productId.stock, 
+            stock: selectedSizeData?.stock || item.productId!.stock, 
             isSynced: true,
           };
         });

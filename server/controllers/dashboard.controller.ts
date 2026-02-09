@@ -81,7 +81,7 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
     RETURNED: 0,
   };
   
-  ordersByStatus.forEach((item: any) => {
+  ordersByStatus.forEach((item: { _id: string; count: number }) => {
     if (item._id in statusCounts) {
       statusCounts[item._id] = item.count;
     }

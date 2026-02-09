@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useShopProducts } from "@/features/main/home/hooks/useHome";
 import { ShopProductCard } from "../cards/ShopProductCard";
 import { ShopPagination } from "../ShopPagination";
+import { Product } from "@/features/dashboard/products/types";
 import { LayoutGrid, List, Filter } from "lucide-react";
 import { 
   Select, 
@@ -77,7 +78,7 @@ export const ShopProductSection = () => {
     categorySlug: categorySlug || undefined,
   });
 
-  const { products = [], pagination = undefined } = (data as { products: any[], pagination: any }) || {};
+  const { products = [], pagination = undefined } = (data as { products: Product[]; pagination: { total: number; pages: number } } | undefined) || {};
 
   if (isError) {
     return <StorefrontError fullPage={false} onRetry={() => refetch()} />;
@@ -152,7 +153,7 @@ export const ShopProductSection = () => {
           ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
           : "grid-cols-1"
       }`}>
-        {products.map((product: any) => (
+        {products.map((product) => (
           <ShopProductCard key={product._id} product={product} />
         ))}
       </div>

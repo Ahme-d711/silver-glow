@@ -46,7 +46,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
     delete validatedQuery.sectionIds;
   }
 
-  const apiFeatures = new ApiFeatures(query, validatedQuery as any)
+  const apiFeatures = new ApiFeatures(query, validatedQuery)
     .filter()
     .search(["nameAr", "nameEn", "sku"])
     .sort()

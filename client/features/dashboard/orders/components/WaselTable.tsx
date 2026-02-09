@@ -93,7 +93,7 @@ export function WaselTable() {
   const columns = [
     {
       id: "id",
-      header: (props: any) => (
+      header: (props: { table: { getIsAllPageRowsSelected: () => boolean; getIsSomePageRowsSelected: () => boolean; toggleAllPageRowsSelected: (val: boolean) => void } }) => (
         <SelectionHeader 
           label="Order ID" 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -101,7 +101,7 @@ export function WaselTable() {
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (_: unknown, row: WaselOrder, props: any) => (
+      cell: (_: unknown, row: WaselOrder, props: { row: { getIsSelected: () => boolean; toggleSelected: (val: boolean) => void } }) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}

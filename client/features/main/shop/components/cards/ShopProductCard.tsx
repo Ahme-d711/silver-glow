@@ -46,7 +46,7 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   };
 
   const hasSizes = product.sizes && product.sizes.length > 0;
-  const firstSize = hasSizes ? (product.sizes![0] as any) : null;
+  const firstSize = hasSizes ? product.sizes![0] : null;
   const displayPrice = firstSize?.price || product.price;
   const displayOldPrice = firstSize?.oldPrice || product.oldPrice;
   const sizeLabel = firstSize?.size ? `${t("Size") || "Size"}: ${firstSize.size}` : null;

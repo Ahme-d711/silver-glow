@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cartService } from "../services/cart.service";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { AxiosError } from "axios";
+
+type ErrorResponse = { message?: string };
 
 export const useCart = () => {
   return useQuery({
@@ -21,7 +24,7 @@ export const useAddToCart = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast.success(t("item_added"));
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Failed to add item to cart");
     },
   });
@@ -35,7 +38,7 @@ export const useUpdateCartQuantity = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Failed to update quantity");
     },
   });
@@ -50,7 +53,7 @@ export const useRemoveFromCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Failed to remove item");
     },
   });
@@ -64,7 +67,7 @@ export const useClearCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Failed to clear cart");
     },
   });
@@ -79,7 +82,7 @@ export const useCheckout = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Checkout failed");
     },
   });

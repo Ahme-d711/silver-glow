@@ -19,7 +19,7 @@ export const useTopup = () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["auth-user"] }); // Invalidating user to refresh balance
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to top up balance");
     },
   });

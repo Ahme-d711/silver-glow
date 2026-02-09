@@ -113,7 +113,7 @@ class ApiFeatures<T extends Document> {
   /**
    * Apply sorting
    */
-  sort(defaultSort: any = { priority: -1, createdAt: -1 }): this {
+  sort(defaultSort: Record<string, 1 | -1> | string = { priority: -1, createdAt: -1 }): this {
     if (this.queryParams.sort) {
       let sortBy = String(this.queryParams.sort);
       

@@ -37,8 +37,14 @@ export function AsyncMultiCombobox<TItem = object>({
   searchPlaceholder = "Search...",
   emptyMessage = "No items found.",
   renderItem,
-  getItemLabel = (item) => (item as any).name || (item as any).title || (item as any).nameEn || "",
-  getItemValue = (item) => (item as any)._id || (item as any).id || "",
+  getItemLabel = (item) => {
+    const record = item as Record<string, unknown>;
+    return (record.name as string) || (record.title as string) || (record.nameEn as string) || "";
+  },
+  getItemValue = (item) => {
+    const record = item as Record<string, unknown>;
+    return (record._id as string) || (record.id as string) || "";
+  },
   className,
   disabled,
 }: AsyncMultiComboboxProps<TItem>) {

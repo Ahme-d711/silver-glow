@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Control, FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
-import { UniSelect } from "@/components/shared/uni-form/UniSelect";
 import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
 import { UniAsyncMultiCombobox } from "@/components/shared/uni-form/UniAsyncMultiCombobox";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
@@ -25,10 +24,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { getAllCategories as getAllCategoriesApi } from "../../categories/services/category.service";
-import { getAllSubcategories as getAllSubcategoriesApi } from "../../subcategories/services/subcategory.service";
-import { getAllBrands as getAllBrandsApi } from "../../brands/services/brand.service";
-import { getAllSections as getAllSectionsApi } from "../../sections/services/section.service";
+import { getAllCategories as getAllCategoriesApi } from "@/features/dashboard/categories/services/category.service";
+import { getAllSubcategories as getAllSubcategoriesApi } from "@/features/dashboard/subcategories/services/subcategory.service";
+import { getAllBrands as getAllBrandsApi } from "@/features/dashboard/brands/services/brand.service";
+import { getAllSections as getAllSectionsApi } from "@/features/dashboard/sections/services/section.service";
+import { BilingualItemWithId } from "@/types";
 
 interface ProductFormProps {
   defaultValues?: Partial<ProductFormData>;
@@ -81,6 +81,8 @@ export function ProductForm({
   const imagesRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProductFormData>({
+    // Note: 'as any' is required here due to type incompatibility between Zod's inferred types
+    // and react-hook-form's Resolver type. Zod infers some fields as 'unknown' while we need specific types.
     resolver: zodResolver(productFormSchema) as any,
     defaultValues: {
       nameAr: "",
@@ -185,7 +187,7 @@ export function ProductForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit as any)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Main Info */}
           <div className="space-y-6">
@@ -193,7 +195,7 @@ export function ProductForm({
             
             <div className="space-y-6">
               <UniInput
-                control={form.control as any}
+                control={form.control as unknown as Control<FieldValues>}
                 name="nameAr"
                 label={t("name_ar")}
                 placeholder={t("name_ar_placeholder")}
@@ -201,7 +203,7 @@ export function ProductForm({
               />
 
               <UniInput
-                control={form.control as any}
+                control={form.control as unknown as Control<FieldValues>}
                 name="nameEn"
                 label={t("name_en")}
                 placeholder={t("name_en_placeholder")}
@@ -210,14 +212,14 @@ export function ProductForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="price"
                   label={t("price")}
                   type="number"
                   required
                 />
                 <UniInput
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="oldPrice"
                   label={t("old_price")}
                   type="number"
@@ -226,13 +228,13 @@ export function ProductForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="costPrice"
                   label={t("cost_price")}
                   type="number"
                 />
                 <UniInput
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="stock"
                   label={t("stock")}
                   type="number"
@@ -248,7 +250,7 @@ export function ProductForm({
             
             <div className="space-y-6">
               <UniAsyncCombobox
-                control={form.control as any}
+                control={form.control as unknown as Control<FieldValues>}
                 name="categoryId"
                 label={tCommon("category")}
                 placeholder={tCommon("select_category")}
@@ -257,13 +259,13 @@ export function ProductForm({
                   const res = await getAllCategoriesApi({ search });
                   return res.data?.categories || [];
                 }}
-                getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
-                getItemValue={(item: any) => item._id}
+                getItemLabel={(item: BilingualItemWithId) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item: BilingualItemWithId) => item._id}
                 required
               />
 
               <UniAsyncCombobox
-                control={form.control as any}
+                control={form.control as unknown as Control<FieldValues>}
                 name="subCategoryId"
                 label={tCommon("subcategory")}
                 placeholder={tCommon("select_subcategory")}
@@ -272,14 +274,14 @@ export function ProductForm({
                   const res = await getAllSubcategoriesApi({ search, categoryId: selectedCategoryId });
                   return res.data?.subcategories || [];
                 }}
-                getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
-                getItemValue={(item: any) => item._id}
+                getItemLabel={(item: BilingualItemWithId) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item: BilingualItemWithId) => item._id}
                 disabled={!selectedCategoryId}
               />
 
               <div className="grid grid-cols-2 gap-4">
                 <UniAsyncCombobox
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="brandId"
                   label={tCommon("brand")}
                   placeholder={tCommon("select_brand")}
@@ -288,11 +290,11 @@ export function ProductForm({
                     const res = await getAllBrandsApi({ search });
                     return res.data?.brands || [];
                   }}
-                  getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
-                  getItemValue={(item: any) => item._id}
+                  getItemLabel={(item: BilingualItemWithId) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item: BilingualItemWithId) => item._id}
                 />
                 <UniAsyncMultiCombobox
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="sectionIds"
                   label={tCommon("section")}
                   placeholder={tCommon("select_section")}
@@ -301,20 +303,20 @@ export function ProductForm({
                     const res = await getAllSectionsApi({ search });
                     return res.data?.sections || [];
                   }}
-                  getItemLabel={(item: any) => locale === "ar" ? item.nameAr : item.nameEn}
-                  getItemValue={(item: any) => item._id}
+                  getItemLabel={(item: BilingualItemWithId) => locale === "ar" ? item.nameAr : item.nameEn}
+                  getItemValue={(item: BilingualItemWithId) => item._id}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <UniInput
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="priority"
                   label={tCommon("priority")}
                   type="number"
                 />
                 <UniSwitch
-                  control={form.control as any}
+                  control={form.control as unknown as Control<FieldValues>}
                   name="isShow"
                   label={tCommon("show_on_store")}
                   className="p-3 border-none bg-transparent"
@@ -327,7 +329,7 @@ export function ProductForm({
         {/* Sizes & Stock - Full Width */}
         <div className="space-y-2">
           <FormField
-            control={form.control}
+            control={form.control as unknown as Control<FieldValues>}
             name="sizes"
             render={({ field }) => (
               <FormItem>
@@ -346,7 +348,7 @@ export function ProductForm({
         {/* Descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <UniTextarea
-            control={form.control as any}
+            control={form.control as unknown as Control<FieldValues>}
             name="descriptionAr"
             label={t("description_ar")}
             placeholder={t("description_ar_placeholder")}
@@ -354,7 +356,7 @@ export function ProductForm({
           />
 
           <UniTextarea
-            control={form.control as any}
+            control={form.control as unknown as Control<FieldValues>}
             name="descriptionEn"
             label={t("description_en")}
             placeholder={t("description_en_placeholder")}

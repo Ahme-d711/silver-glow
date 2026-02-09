@@ -67,17 +67,17 @@ export default function EditProductTemplate() {
           categoryId: typeof product.categoryId === 'object' && product.categoryId !== null ? product.categoryId._id : product.categoryId,
           subCategoryId: typeof product.subCategoryId === 'object' && product.subCategoryId !== null ? product.subCategoryId._id : product.subCategoryId,
           brandId: typeof product.brandId === 'object' && product.brandId !== null ? product.brandId._id : product.brandId,
-          sectionIds: Array.isArray(product.sectionIds) 
-            ? product.sectionIds.map((s: any) => typeof s === 'object' && s !== null ? s._id : s)
+          sectionIds: product.sectionIds
+            ? product.sectionIds.map((s) => typeof s === 'object' && s !== null ? s._id : s)
             : [],
           mainImage: product.mainImage,
           images: product.images,
-          sizes: product.sizes?.map((s: any) => ({ 
-            size: s.size, 
+          sizes: product.sizes?.map((s) => ({ 
+            size: s.size,
             stock: s.stock,
             price: s.price,
             oldPrice: s.oldPrice,
-            costPrice: s.costPrice
+            costPrice: s.costPrice,
           })) || [],
         }}
         onSubmit={handleSubmit}

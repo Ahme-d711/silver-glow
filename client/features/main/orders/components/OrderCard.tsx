@@ -62,7 +62,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       {/* Items */}
       <div className="p-6 space-y-4">
         {displayedItems.map((item, idx) => {
-          const product = item.productId as any;
+          const product = item.productId as { nameAr?: string; nameEn?: string; mainImage?: string } | null;
           const image = item.image || product?.mainImage;
           const name = (locale === "ar" ? product?.nameAr : product?.nameEn) || item.name;
           

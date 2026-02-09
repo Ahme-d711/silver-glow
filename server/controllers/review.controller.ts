@@ -31,8 +31,12 @@ export const getTopReviews = async (req: Request, res: Response) => {
     .sort({ createdAt: -1 });
 
   // Filter out reviews where product is missing, deleted, or hidden
+  // We need to cast check because populate replaces ObjectId with Document
   reviews = reviews.filter(
-    (review: any) => review.productId && review.productId.isShow && !review.productId.isDeleted
+    (review) => {
+      const product = review.productId as unknown as { isShow: boolean; isDeleted: boolean } | null;
+      return product && product.isShow && !product.isDeleted;
+    }
   ).slice(0, 6);
 
   res.status(200).json({

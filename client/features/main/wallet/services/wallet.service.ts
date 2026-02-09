@@ -1,5 +1,5 @@
 import clientAxios from "@/lib/axios/clientAxios";
-import { WalletData } from "../types";
+import { WalletData, Transaction } from "../types";
 import { ApiResponse } from "@/types";
 
 export interface GetTransactionsParams {
@@ -16,7 +16,7 @@ export const walletService = {
   },
 
   topup: async (amount: number, description?: string) => {
-    const response = await clientAxios.post<ApiResponse<{ transaction: any }>>(
+    const response = await clientAxios.post<ApiResponse<{ transaction: Transaction }>>(
       "/transactions/topup",
       { amount, description }
     );

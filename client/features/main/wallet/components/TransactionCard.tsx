@@ -48,7 +48,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({ transaction })
             <span className="w-1 h-1 rounded-full bg-divider" />
             <div className="flex items-center gap-1">
               <span className={cn("text-[10px] font-black uppercase tracking-widest", statusColor)}>
-                {t(`status_${transaction.status.toLowerCase()}` as any)}
+                {t(`status_${transaction.status.toLowerCase()}` as `status_${string}`)}
               </span>
             </div>
           </div>

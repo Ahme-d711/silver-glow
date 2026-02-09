@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import { CartModel } from "../models/cart.model.js";
 import { addToCartSchema, updateCartItemSchema } from "../schemas/cart.schema.js";
 import AppError from "../errors/AppError.js";
 import { ProductModel } from "../models/product.model.js";
+import { ICartPopulated, ICartItemPopulated } from "../types/cart.type.js";
 
 const POPULATE_PRODUCT_CONFIG = {
   path: "items.productId",
@@ -12,21 +14,21 @@ const POPULATE_PRODUCT_CONFIG = {
 /**
  * Helper to get fully populated cart
  */
-const getPopulatedCartResponse = async (userId: string) => {
-  let cart = await CartModel.findOne({ userId }).populate(POPULATE_PRODUCT_CONFIG);
+const getPopulatedCartResponse = async (userId: string): Promise<ICartPopulated> => {
+  let cart = await CartModel.findOne({ userId }).populate(POPULATE_PRODUCT_CONFIG) as unknown as ICartPopulated;
 
   if (!cart) {
-    cart = await CartModel.create({ userId, items: [] });
+    cart = await CartModel.create({ userId, items: [] }) as unknown as ICartPopulated;
   } else {
     // Filter out items where productId is null (e.g., product deleted)
     const originalLength = cart.items.length;
-    cart.items = cart.items.filter(item => item.productId !== null) as any;
+    cart.items = cart.items.filter((item) => item.productId !== null);
     
     // If we removed items, we should save the cart to clean it up in DB
     if (cart.items.length !== originalLength) {
       await cart.save();
       // Re-populate after save to ensure sync
-      await cart.populate(POPULATE_PRODUCT_CONFIG);
+      cart = await CartModel.findOne({ userId }).populate(POPULATE_PRODUCT_CONFIG) as unknown as ICartPopulated;
     }
   }
   return cart;
@@ -88,7 +90,11 @@ export const addItemToCart = async (req: Request, res: Response) => {
     cart.items[itemIndex].quantity += quantity;
   } else {
     // Add new item
-    cart.items.push({ productId: productId as any, quantity, size });
+    cart.items.push({ 
+      productId: new Types.ObjectId(productId), 
+      quantity, 
+      size 
+    });
   }
 
   await cart.save();

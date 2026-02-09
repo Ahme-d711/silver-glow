@@ -7,6 +7,7 @@ import { CartModel } from "../models/cart.model.js";
 import { ProductModel } from "../models/product.model.js";
 import { TransactionModel } from "../models/transaction.model.js";
 import AppError from "../errors/AppError.js";
+import { IProduct } from "../types/product.type.js";
 
 /**
  * Get all orders with filtering and pagination
@@ -125,7 +126,7 @@ export const createOrder = async (req: Request, res: Response) => {
     let stockAvailable = product.stock;
 
     if (item.size) {
-      const sizeObj = product.sizes?.find((s: any) => s.size === item.size);
+      const sizeObj = product.sizes?.find((s) => s.size === item.size);
       if (!sizeObj) {
         throw new AppError(`Size ${item.size} not found for product ${product.nameEn}`, 400);
       }
@@ -324,7 +325,7 @@ export const checkout = async (req: Request, res: Response) => {
   const orderItems = [];
 
   for (const item of cart.items) {
-    const product = item.productId as any; // Populated product
+    const product = item.productId as unknown as IProduct; // Populated product
 
     if (!product || product.isDeleted || !product.isShow) {
       throw new AppError(`Product ${product?.nameEn || "unknown"} is no longer available`, 400);
@@ -337,7 +338,7 @@ export const checkout = async (req: Request, res: Response) => {
     // Determine price based on size if size is selected
     let unitPrice = product.price;
     if (item.size && product.sizes && product.sizes.length > 0) {
-      const sizeObj = product.sizes.find((s: any) => s.size === item.size);
+      const sizeObj = product.sizes.find((s) => s.size === item.size);
       if (sizeObj) {
         unitPrice = sizeObj.price;
       }
@@ -395,7 +396,7 @@ export const checkout = async (req: Request, res: Response) => {
 
   // 6. Deduct Stock
   for (const item of cart.items) {
-    const product = item.productId as any;
+    const product = item.productId as unknown as IProduct;
     if (item.size && product.sizes && product.sizes.length > 0) {
       // Deduct from specific size AND total stock
       await ProductModel.updateOne(

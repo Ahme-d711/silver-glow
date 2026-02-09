@@ -87,7 +87,7 @@ export default function SubCategoriesTable({
   const columns: UniTableColumn<Subcategory>[] = [
     {
       id: "selection",
-      header: (props: HeaderContext<Subcategory, any>) => (
+      header: (props: HeaderContext<Subcategory, unknown>) => (
         <SelectionHeader 
           label={t("subcategory_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -95,7 +95,7 @@ export default function SubCategoriesTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (value, row, props: CellContext<Subcategory, any>) => (
+      cell: (value, row, props: CellContext<Subcategory, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}

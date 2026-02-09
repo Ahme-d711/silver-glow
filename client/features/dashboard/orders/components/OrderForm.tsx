@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 import { Order } from "../types";
 import { Product } from "@/features/dashboard/products/types";
 import { User } from "@/features/auth/types"; 
-import { UserReference } from "@/types";
+import { UserReference, BilingualItem } from "@/types";
 
 import { getAllProducts, getProductById } from "@/features/dashboard/products/services/product.service";
 import { getAllUsers } from "@/features/dashboard/users/services/user.service";
@@ -76,14 +76,14 @@ export function OrderForm({
     defaultValues: {
       userId: initialUserId,
       items: (defaultValues?.items || []).map((item) => ({
-        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as any)._id : (item.productId || ""),
+        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as { _id: string })._id : (item.productId || ""),
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
         image: item.image || "",
         size: item.size || "",
       })).length > 0 ? (defaultValues?.items || []).map((item) => ({
-        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as any)._id : (item.productId || ""),
+        productId: typeof item.productId === 'object' && item.productId !== null ? (item.productId as { _id: string })._id : (item.productId || ""),
         name: item.name || "",
         price: item.price || 0,
         quantity: item.quantity || 1,
@@ -118,7 +118,7 @@ export function OrderForm({
       const items = defaultValues?.items || [];
       const productIds = items.map(item => {
         if (typeof item.productId === 'object' && item.productId !== null) {
-          return (item.productId as any)._id;
+          return (item.productId as { _id: string })._id;
         }
         return item.productId;
       }).filter(Boolean);
@@ -375,11 +375,11 @@ export function OrderForm({
               placeholder={t("select_governorate") || "Select Governorate"}
               searchPlaceholder={tCommon("search")}
               emptyMessage={tCommon("no_data")}
-              getItemLabel={(g: any) => {
+              getItemLabel={(g: BilingualItem) => {
                 const locale = typeof window !== 'undefined' ? window.localStorage.getItem("NEXT_LOCALE") || "ar" : "ar";
                 return locale === "ar" ? g.nameAr : g.nameEn;
               }}
-              getItemValue={(g: any) => g.nameEn}
+              getItemValue={(g: BilingualItem) => g.nameEn}
               required
             />
           </div>

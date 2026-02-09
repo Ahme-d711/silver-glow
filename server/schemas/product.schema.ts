@@ -45,12 +45,13 @@ export const updateProductSchema = createProductSchema.partial().extend({
 });
 
 export const queryProductSchema = z.preprocess(
-  (data: any) => {
+  (data: unknown) => {
     // Handle Axios-style array parameters with []
     if (data && typeof data === 'object') {
-      if (data['sectionIds[]'] !== undefined) {
-        data.sectionIds = data['sectionIds[]'];
-        delete data['sectionIds[]'];
+      const record = data as Record<string, unknown>;
+      if (record['sectionIds[]'] !== undefined) {
+        record.sectionIds = record['sectionIds[]'];
+        delete record['sectionIds[]'];
       }
     }
     return data;

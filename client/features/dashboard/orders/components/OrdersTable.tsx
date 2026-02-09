@@ -115,7 +115,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   const columns = [
     {
       id: "id",
-      header: (props: HeaderContext<TableRowData, any>) => (
+      header: (props: HeaderContext<TableRowData, unknown>) => (
         <SelectionHeader 
           label={t("order_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -123,7 +123,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (_: unknown, row: TableRowData, props: CellContext<TableRowData, any>) => (
+      cell: (_: unknown, row: TableRowData, props: CellContext<TableRowData, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}

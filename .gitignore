@@ -4,5 +4,7 @@ client/build
 server/target
 server/.idea
 server/uploads
+server/dist
+server/node_modules
 .env
 .cursor

@@ -86,7 +86,7 @@ export default function SectionsTable({
   const columns: UniTableColumn<Section>[] = [
     {
       id: "selection",
-      header: (props: HeaderContext<Section, any>) => (
+      header: (props: HeaderContext<Section, unknown>) => (
         <SelectionHeader 
           label={t("section_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -94,7 +94,7 @@ export default function SectionsTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (value, row, props: CellContext<Section, any>) => (
+      cell: (value, row, props: CellContext<Section, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}

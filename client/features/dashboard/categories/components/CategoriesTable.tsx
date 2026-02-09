@@ -87,7 +87,7 @@ export default function CategoriesTable({
   const columns: UniTableColumn<Category>[] = [
     {
       id: "selection",
-      header: (props: HeaderContext<Category, any>) => (
+      header: (props: HeaderContext<Category, unknown>) => (
         <SelectionHeader 
           label={t("category_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
@@ -95,7 +95,7 @@ export default function CategoriesTable({
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
         />
       ),
-      cell: (value, row, props: CellContext<Category, any>) => (
+      cell: (_: unknown, row: Category, props: CellContext<Category, unknown>) => (
         <SelectionCell 
           checked={props.row.getIsSelected()} 
           onChange={(val) => props.row.toggleSelected(val)}
@@ -106,7 +106,7 @@ export default function CategoriesTable({
     {
       id: "image",
       header: t("image"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Category) => (
         <ProductCell 
           image={row.image} 
           title={locale === "ar" ? row.nameAr : row.nameEn} 
@@ -118,7 +118,7 @@ export default function CategoriesTable({
     {
       id: "name",
       header: t("name"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Category) => (
         <div className="flex items-center gap-2">
           <span className="text-content-secondary font-medium">
             {locale === "ar" ? row.nameAr : row.nameEn}
@@ -146,7 +146,7 @@ export default function CategoriesTable({
     {
       id: "subcategories",
       header: t("subcategories_count"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Category) => (
         <span className="text-content-secondary font-medium block text-center">
           {row.subcategoriesCount || 0}
         </span>
@@ -155,7 +155,7 @@ export default function CategoriesTable({
     {
       id: "status",
       header: t("status"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Category) => (
         <div className="flex items-center gap-2">
           <Switch 
             checked={row.isShow}
@@ -170,7 +170,7 @@ export default function CategoriesTable({
     {
       id: "actions",
       header: t("action"),
-      cell: (value, row) => (
+      cell: (_: unknown, row: Category) => (
         <ActionCell>
           {row.isDeleted ? (
             <div className={cn(isRestoring && "opacity-50 pointer-events-none")}>

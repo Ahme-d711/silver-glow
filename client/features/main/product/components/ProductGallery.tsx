@@ -7,6 +7,7 @@ import { Navigation, Thumbs } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getImageUrl } from "@/utils/image.utils";
 import { cn } from "@/lib/utils";
+import type { Swiper as SwiperCore } from "swiper";
 
 // Swiper styles
 import "swiper/css";
@@ -19,7 +20,7 @@ interface ProductGalleryProps {
 }
 
 export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, name }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
   if (!images || images.length === 0) return null;
 

@@ -21,7 +21,7 @@ export default async function middleware(request: NextRequest) {
   
   // Detect locale from path or fallback to default
   const pathSegments = pathname.split('/');
-  const detectedLocale = routing.locales.includes(pathSegments[1] as any) 
+  const detectedLocale = routing.locales.includes(pathSegments[1] as (typeof routing.locales)[number]) 
     ? pathSegments[1] 
     : routing.defaultLocale;
   
@@ -31,7 +31,7 @@ export default async function middleware(request: NextRequest) {
   // 1. Unauthenticated users
   if (!token) {
     if (!isAuthPage) {
-      // Redirect to login if trying to access any page while unauthenticated
+      // Redirect to login if trying to access page while unauthenticated
       const url = new URL(`/${detectedLocale}/login`, request.url);
       return NextResponse.redirect(url);
     }

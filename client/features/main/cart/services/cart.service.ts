@@ -28,7 +28,7 @@ export const cartService = {
     return response.data;
   },
 
-  checkout: async (payload: any) => {
+  checkout: async (payload: Record<string, unknown>) => {
     const response = await clientAxios.post("/orders/checkout", payload);
     return response.data;
   },

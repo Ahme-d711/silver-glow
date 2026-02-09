@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { wishlistService } from "../services/wishlist.service";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/stores/authStore";
+import { AxiosError } from "axios";
 
 export const useWishlist = () => {
   const queryClient = useQueryClient();
@@ -19,7 +20,7 @@ export const useWishlist = () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       toast.success(response.message);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
   });
@@ -33,7 +34,7 @@ export const useWishlist = () => {
   });
 
   const isInWishlist = (productId: string) => {
-    return data?.data?.wishlist?.products?.some((p: any) => {
+    return data?.data?.wishlist?.products?.some((p: string | { _id: string }) => {
       if (typeof p === 'string') return p === productId;
       return p._id === productId;
     }) || false;
