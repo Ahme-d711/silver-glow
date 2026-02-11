@@ -12,11 +12,13 @@ import {
   verifyPhoneSchema,
   resendVerificationSchema,
   validateAuthData,
+  safeValidateAuthData,
 } from "../schemas/auth-schema.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import type { IUser } from "../types/user.type.js";
 import { generateToken, extractTokenFromRequest, verifyToken } from "../utils/jwt.utils.js";
 import { sendVerificationWhatsApp } from "../utils/whatsapp.service.js";
+import { getRelativePath } from "../utils/upload.js";
 
 /**
  * Helper function to generate JWT token, set cookie, and send authentication response
@@ -253,9 +255,17 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
  */
 export const updateProfile = asyncHandler(async (req: Request, res: Response) => {
   requireAuth(req);
+  // Clean empty picture object if present (happens with some multipart parsers)
+  if (req.body.picture && typeof req.body.picture !== "string") {
+    delete req.body.picture;
+  }
 
   // Validate input data
-  const validatedData = validateAuthData(updateProfileSchema, req.body);
+  const result = safeValidateAuthData(updateProfileSchema, req.body);
+  if (!result.success) {
+    throw new AppError("Invalid input", 400);
+  }
+  const validatedData = result.data;
 
   // Note: Email update is not included in updateProfileSchema for security reasons
   // If email update is needed, it should be a separate endpoint with additional verification
@@ -263,7 +273,10 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
   // Update user (only if active)
   const user = await UserModel.findOneAndUpdate(
     { _id: req.user!._id, isActive: true },
-    validatedData,
+    {
+      ...validatedData,
+      picture: req.file ? getRelativePath(req.file.path) : validatedData.picture,
+    },
     { new: true, runValidators: true }
   ).select("-password");
 

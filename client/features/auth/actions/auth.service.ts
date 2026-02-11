@@ -209,15 +209,27 @@ export async function getProfile(): Promise<{
 /**
  * Update user profile
  */
-export async function updateProfile(payload: {
+export async function updateProfile(payload: FormData | {
   name?: string;
   phone?: string;
   picture?: string;
 }): Promise<AuthActionResponse> {
   try {
+    const headers: Record<string, string> = {};
+    let data: FormData | string;
+
+    if (payload instanceof FormData) {
+      // Axios will set boundary automatically with FormData
+      data = payload;
+    } else {
+      headers["Content-Type"] = "application/json";
+      data = JSON.stringify(payload);
+    }
+
     const response = await serverAxios.put<ApiResponse<{ user: User }>>(
       "/auth/profile",
-      payload
+      data,
+      { headers }
     );
 
     const user = response.data.data?.user;
@@ -229,6 +241,8 @@ export async function updateProfile(payload: {
         message: "Failed to update profile",
       };
     }
+
+    revalidatePath("/profile");
 
     return {
       success: response.data.success,

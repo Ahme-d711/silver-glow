@@ -56,6 +56,7 @@
     "male": "Male",
     "female": "Female",
     "register_success": "Account created successfully!",
+    "name_required": "Name is required",
     "register_error": "An error occurred during registration.",
     "verify_success": "Phone verified successfully!",
     "code_resent": "Verification code sent again!",

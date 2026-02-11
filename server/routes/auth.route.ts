@@ -12,6 +12,7 @@ import {
   deleteUser,
 } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
+import { uploadUser } from "../utils/upload.js";
 
 export const router = Router();
 
@@ -185,7 +186,7 @@ router.get("/user-data", authenticate, getCurrentUser);
  *       200:
  *         description: Profile updated
  */
-router.put("/profile", authenticate, updateProfile);
+router.put("/profile", authenticate, uploadUser.single("picture"), updateProfile);
 
 /**
  * @swagger

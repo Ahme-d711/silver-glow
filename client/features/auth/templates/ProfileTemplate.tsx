@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { getImageUrl } from "@/utils/image.utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,34 +8,76 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { User, Phone, Mail, Camera, Save, ArrowLeft } from "lucide-react";
+import { User, Phone, Mail, Camera, Save, ArrowLeft, Loader } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { updateProfile } from "@/features/auth/actions/auth.service";
 
 export default function ProfileTemplate() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const t = useTranslations("Auth");
   const tNav = useTranslations("Navigation");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [imageError, setImageError] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const userName = user?.name || "User";
-  const userPhoto = getImageUrl(user?.picture);
+  const userPhoto = previewUrl || getImageUrl(user?.picture);
   const userInitial = userName.charAt(0).toUpperCase();
+
+  console.log(user);
+  
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(t("file_too_large") || "Image must be less than 5MB");
+        return;
+      }
+      setSelectedImage(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setImageError(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim()) {
+      toast.error(t("name_required") || "Name is required");
+      return;
+    }
+
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      if (phone) formData.append("phone", phone);
+      if (selectedImage) formData.append("picture", selectedImage);
+
+      const res = await updateProfile(formData);
+      
+      if (res.success && res.data?.user) {
+        setUser(res.data.user);
+        setSelectedImage(null);
+        setPreviewUrl(null); 
+        toast.success(res.message || "Profile updated successfully!");
+      } else {
+        toast.error(res.message || "Failed to update profile");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+      console.error(error);
+    } finally {
       setIsLoading(false);
-      toast.success("Profile updated successfully!");
-    }, 1000);
+    }
   };
 
   return (
@@ -49,8 +91,15 @@ export default function ProfileTemplate() {
           {tNav("back_home") || "Back to Home"}
         </Link>
 
+        <input 
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Profile Summary */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="bg-white/10 border-white/20 backdrop-blur-md text-white">
               <CardContent className="pt-10 pb-10 flex flex-col items-center">
@@ -68,7 +117,11 @@ export default function ProfileTemplate() {
                       {userInitial}
                     </AvatarFallback>
                   </Avatar>
-                  <button className="absolute bottom-0 right-0 bg-white text-primary p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                  <button 
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 bg-white text-primary p-2 rounded-full shadow-lg hover:scale-110 transition-transform cursor-pointer"
+                  >
                     <Camera className="h-5 w-5" />
                   </button>
                 </div>
@@ -91,7 +144,6 @@ export default function ProfileTemplate() {
             </Card>
           </div>
 
-          {/* Right Column - Edit Form */}
           <div className="lg:col-span-2">
             <Card className="bg-white border-none shadow-2xl overflow-hidden">
               <div className="h-2 bg-linear-to-r from-primary-light to-primary" />
@@ -149,14 +201,12 @@ export default function ProfileTemplate() {
                       type="submit" 
                       className="bg-primary hover:bg-primary/90 text-white px-8 h-11 rounded-xl shadow-lg transition-all hover:scale-[1.02]"
                       disabled={isLoading}
-                    >
+                      >
+                      {t("save_changes")}
                       {isLoading ? (
-                        <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <Loader className="h-4 w-4 mr-2 animate-spin" />
                       ) : (
-                        <>
-                          <Save className="h-4 w-4 mr-2" />
-                          {t("save_changes")}
-                        </>
+                        <Save className="h-4 w-4 mr-2" />
                       )}
                     </Button>
                   </div>

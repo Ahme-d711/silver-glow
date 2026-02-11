@@ -56,6 +56,7 @@
     "male": "ذكر",
     "female": "أنثى",
     "register_success": "تم إنشاء الحساب بنجاح!",
+    "name_required": "الاسم مطلوب",
     "register_error": "حدث خطأ أثناء إنشاء الحساب.",
     "verify_success": "تم التحقق من رقم الهاتف بنجاح!",
     "code_resent": "تم إعادة إرسال رمز التحقق.",
