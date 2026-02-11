@@ -18,6 +18,7 @@
     "create_account": "Create an account",
     "search_placeholder": "Here's a gift for you...",
     "my_orders": "My Orders",
+    "profile": "Profile",
     "categories": "Categories"
   },
   "Auth": {

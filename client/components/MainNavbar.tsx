@@ -42,6 +42,9 @@ function UserMenu() {
     );
   }
 
+  console.log(user);
+  
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -67,18 +70,34 @@ function UserMenu() {
       </PopoverTrigger>
       <PopoverContent className="w-56 mt-2 mr-4" align="end">
         <div className="flex flex-col gap-1">
-          <div className="px-2 py-1.5 text-sm font-semibold border-b mb-1">
-            {tAuth("welcome_back")}, {userName.split(" ")[0]}
-          </div>
-          <Link href="/dashboard" className="w-full">
+          <Link href="/profile" className="w-full">
             <Button
               variant="ghost"
               className="w-full justify-start cursor-pointer h-9 px-2"
             >
+            <div className="h-4 w-4 mr-2 rounded-full overflow-hidden shrink-0 border border-primary/10">
+              <Image 
+                src={getImageUrl(user?.picture) || "/logo.svg"} 
+                alt="Profile" 
+                width={16} 
+                height={16} 
+                className="object-cover h-full w-full" 
+              />
+            </div>
+               {t("profile") || "Profile"}
+            </Button>
+          </Link>
+          {user?.role === "admin" && (
+            <Link href="/dashboard" className="w-full">
+              <Button
+                variant="ghost"
+                className="w-full justify-start cursor-pointer h-9 px-2"
+              >
               <User className="h-4 w-4 mr-2" />
                Dashboard
             </Button>
           </Link>
+          )}
           <Link href="/orders" className="w-full">
             <Button
               variant="ghost"

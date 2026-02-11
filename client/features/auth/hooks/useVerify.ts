@@ -53,8 +53,8 @@ export function useVerify(): UseVerifyReturn {
 
       toast.success(t("verify_success") || "Phone verified successfully!");
       
-      // Redirect to home or dashboard after successful verification
-      router.push("/");
+      // Redirect to login page after successful verification
+      router.push("/login");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Invalid verification code";
       toast.error(errorMessage);

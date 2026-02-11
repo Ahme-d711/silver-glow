@@ -9,7 +9,7 @@ import { sendVerificationWhatsApp } from '../utils/whatsapp.service.js';
 // Load .env from current directory or parent
 config({ path: join(process.cwd(), '.env') });
 
-const TEST_PHONE = '201111677731'; // From the user's screenshot
+const TEST_PHONE = '201018939831'; // From the user's screenshot
 const TEST_CODE = '123456';
 
 async function testSendMessage() {
