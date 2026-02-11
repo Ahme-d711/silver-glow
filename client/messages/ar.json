@@ -19,12 +19,14 @@
     "search_placeholder": "هناك هدية تنتظرك...",
     "my_orders": "طلباتي",
     "profile": "الملف الشخصي",
+    "back_home": "العودة للرئيسية",
     "categories": "الأقسام"
   },
   "Auth": {
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
     "email": "البريد الإلكتروني",
+    "email_address_readonly": "البريد الإلكتروني (للقراءة فقط)",
     "phone": "رقم الهاتف",
     "profile": "الملف الشخصي",
     "password": "كلمة المرور",
@@ -64,7 +66,13 @@
     "verify_phone": "تحقق من رقم الهاتف",
     "verification_code": "رمز التحقق",
     "verify": "تحقق",
-    "resend_code": "إعادة إرسال الرمز"
+    "resend_code": "إعادة إرسال الرمز",
+    "edit_profile": "تعديل الملف الشخصي",
+    "edit_profile_desc": "قم بتحديث معلوماتك الشخصية وتفضيلاتك.",
+    "orders": "الطلبات",
+    "wallet": "المحفظة",
+    "save_changes": "حفظ التغييرات",
+    "updating": "جاري التحديث..."
   },
   "Sidebar": {
     "title": "لوحة التحكم",

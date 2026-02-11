@@ -19,12 +19,14 @@
     "search_placeholder": "Here's a gift for you...",
     "my_orders": "My Orders",
     "profile": "Profile",
+    "back_home": "Back to Home",
     "categories": "Categories"
   },
   "Auth": {
     "login": "Login",
     "register": "Sign Up",
     "email": "Email",
+    "email_address_readonly": "Email Address (Read-only)",
     "phone": "Phone Number",
     "profile": "Profile",
     "password": "Password",
@@ -64,7 +66,13 @@
     "verify_phone": "Verify Phone Number",
     "verification_code": "Verification Code",
     "verify": "Verify",
-    "resend_code": "Resend Code"
+    "resend_code": "Resend Code",
+    "edit_profile": "Edit Profile",
+    "edit_profile_desc": "Update your personal information and preferences.",
+    "orders": "Orders",
+    "wallet": "Wallet",
+    "save_changes": "Save Changes",
+    "updating": "Updating..."
   },
   "Sidebar": {
     "title": "Dashboard",

@@ -79,12 +79,12 @@ export default function ProfileTemplate() {
                 <div className="w-full pt-6 border-t border-white/10 flex justify-center gap-4">
                    <div className="text-center">
                       <p className="text-lg font-bold">0</p>
-                      <p className="text-xs text-white/60">Orders</p>
+                      <p className="text-xs text-white/60">{t("orders")}</p>
                    </div>
                    <div className="h-8 w-px bg-white/10" />
                    <div className="text-center">
                       <p className="text-lg font-bold">0</p>
-                      <p className="text-xs text-white/60">Wallet</p>
+                      <p className="text-xs text-white/60">{t("wallet")}</p>
                    </div>
                 </div>
               </CardContent>
@@ -96,14 +96,14 @@ export default function ProfileTemplate() {
             <Card className="bg-white border-none shadow-2xl overflow-hidden">
               <div className="h-2 bg-linear-to-r from-primary-light to-primary" />
               <CardHeader className="pb-2">
-                <CardTitle className="text-2xl text-primary">Edit Profile</CardTitle>
-                <CardDescription>Update your personal information and preferences.</CardDescription>
+                <CardTitle className="text-2xl text-primary">{t("edit_profile")}</CardTitle>
+                <CardDescription>{t("edit_profile_desc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSave} className="space-y-6 pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-primary/70">Full Name</Label>
+                      <Label htmlFor="name" className="text-primary/70">{t("full_name")}</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
                         <Input 
@@ -111,13 +111,13 @@ export default function ProfileTemplate() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           className="pl-10 h-11 border-primary/10 focus:border-primary/30" 
-                          placeholder="Your full name"
+                          placeholder={t("name_placeholder")}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-primary/70">Phone Number</Label>
+                      <Label htmlFor="phone" className="text-primary/70">{t("phone")}</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
                         <Input 
@@ -125,14 +125,14 @@ export default function ProfileTemplate() {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           className="pl-10 h-11 border-primary/10 focus:border-primary/30" 
-                          placeholder="Your phone number"
+                          placeholder={t("phone_placeholder")}
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-primary/70">Email Address (Read-only)</Label>
+                    <Label htmlFor="email" className="text-primary/70">{t("email_address_readonly") || "Email Address (Read-only)"}</Label>
                     <div className="relative opacity-60">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
                       <Input 
@@ -155,7 +155,7 @@ export default function ProfileTemplate() {
                       ) : (
                         <>
                           <Save className="h-4 w-4 mr-2" />
-                          Save Changes
+                          {t("save_changes")}
                         </>
                       )}
                     </Button>
