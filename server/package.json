@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^9.3.0",
+    "axios": "^1.13.5",
     "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
     "connect-mongo": "^6.0.0",

@@ -16,6 +16,7 @@ import {
 import { asyncHandler } from "../utils/asyncHandler.js";
 import type { IUser } from "../types/user.type.js";
 import { generateToken, extractTokenFromRequest, verifyToken } from "../utils/jwt.utils.js";
+import { sendVerificationWhatsApp } from "../utils/whatsapp.service.js";
 
 /**
  * Helper function to generate JWT token, set cookie, and send authentication response
@@ -94,20 +95,31 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     }
   }
 
-  // Create user (isActive: true, isVerified: false by default)
+  // Generate verification code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+  // Create user
   const user = await UserModel.create({
     name: validatedData.name,
     email: validatedData.email,
     password: hashedPassword,
-    phone: validatedData.phone,
+    phone: validatedData.phone ? validatedData.phone.replace(/^\+/, "") : undefined,
     picture: validatedData.picture,
     role: validatedData.role,
     isActive: true,
-    isVerified: false, // User needs to verify phone
+    isVerified: false,
+    verificationCode,
+    verificationCodeExpires,
   });
 
+  // Send verification code via WhatsApp if phone exists
+  if (user.phone) {
+    await sendVerificationWhatsApp(user.phone, verificationCode);
+  }
+
   // Send authentication response
-  sendAuthResponse(user, res, 201, "Registration successful. Please verify your phone number.");
+  sendAuthResponse(user, res, 201, "Registration successful. Please verify your phone number via WhatsApp.");
 });
 
 /**
@@ -115,7 +127,10 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
  */
 export const login = asyncHandler(async (req: Request, res: Response) => {
   // Validate input data
-  const { phone, password } = validateAuthData(loginSchema, req.body);
+  let { phone, password } = validateAuthData(loginSchema, req.body);
+
+  // Strip + if exists
+  phone = phone.replace(/^\+/, "");
 
   // Find user with password field included (only active users)
   const user = await UserModel.findOne({ 
@@ -339,9 +354,18 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
  */
 export const verifyPhone = asyncHandler(async (req: Request, res: Response) => {
   // Validate input data
-  const { phone, code } = validateAuthData(verifyPhoneSchema, req.body);
+  let { phone, code } = validateAuthData(verifyPhoneSchema, req.body);
+
+  // Strip + if exists
+  if (phone) {
+    phone = phone.replace(/^\+/, "");
+  }
 
   // Find user by phone
+  if (!phone) {
+    throw new AppError("Phone number is required", 400);
+  }
+
   const user = await UserModel.findOne({ phone, isActive: true });
 
   if (!user) {
@@ -352,16 +376,20 @@ export const verifyPhone = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Phone number already verified", 400);
   }
 
-  // TODO: In production, verify the code against stored verification code
-  // For now, we'll accept any 4-6 digit code as valid
-  // In real implementation, you would:
-  // 1. Store verification code in database with expiration
-  // 2. Compare provided code with stored code
-  // 3. Check if code is expired
-  // Example: const isValid = await verifySMSCode(phone, code);
+  // Verify the code
+  if (!user.verificationCode || user.verificationCode !== code) {
+    throw new AppError("Invalid verification code", 400);
+  }
 
-  // Mark phone as verified
+  // Check if code is expired
+  if (!user.verificationCodeExpires || user.verificationCodeExpires < new Date()) {
+    throw new AppError("Verification code has expired", 400);
+  }
+
+  // Mark phone as verified and clear the code
   user.isVerified = true;
+  user.verificationCode = undefined;
+  user.verificationCodeExpires = undefined;
   await user.save();
 
   sendResponse(res, 200, {
@@ -376,30 +404,38 @@ export const verifyPhone = asyncHandler(async (req: Request, res: Response) => {
  */
 export const resendVerification = asyncHandler(async (req: Request, res: Response) => {
   // Validate input data
-  const { phone } = validateAuthData(resendVerificationSchema, req.body);
+  let { phone } = validateAuthData(resendVerificationSchema, req.body);
+
+  // Strip + if exists
+  if (phone) {
+    phone = phone.replace(/^\+/, "");
+  }
 
   const user = await UserModel.findOne({ phone, isActive: true });
 
   if (!user) {
-    // Don't reveal if user exists for security
-    return sendResponse(res, 200, {
-      success: true,
-      message: "If the phone number exists, a verification code has been sent",
-    });
+    throw new AppError("Invalid phone number or account not found", 404);
   }
 
   if (user.isVerified) {
     throw new AppError("Phone number is already verified", 400);
   }
 
-  // TODO: In production, generate and send SMS verification code
-  // Example: const code = generateVerificationCode();
-  // await sendSMS(phone, `Your verification code is: ${code}`);
-  // await storeVerificationCode(phone, code, expirationTime);
+  // Generate new verification code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+  // Update user with new code
+  user.verificationCode = verificationCode;
+  user.verificationCodeExpires = verificationCodeExpires;
+  await user.save();
+
+  // Send verification code via WhatsApp
+  await sendVerificationWhatsApp(phone as string, verificationCode);
 
   sendResponse(res, 200, {
     success: true,
-    message: "If the phone number exists, a verification code has been sent",
+    message: "Verification code has been sent via WhatsApp",
   });
 });
 

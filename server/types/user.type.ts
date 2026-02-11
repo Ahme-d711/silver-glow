@@ -19,6 +19,8 @@ export interface IUser extends Document {
   totalBalance?: number;
   lastLoginAt?: Date;
   lastTransactionAt?: Date;
+  verificationCode?: string;
+  verificationCodeExpires?: Date;
   createdAt?: Date;
   updatedAt?: Date;
-  }
+}

@@ -52,6 +52,12 @@ export function useLogin(): UseLoginReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);
+      
+      // If error is about verification, redirect to verify page
+      if (errorMessage.toLowerCase().includes("verify") && phone) {
+        router.push(`/verify?phone=${phone}`);
+      }
+      
       throw err;
     } finally {
       setLoading(false);

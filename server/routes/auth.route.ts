@@ -50,7 +50,7 @@ export const router = Router();
  *                 type: string
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: User registered successfully. A verification code has been sent via WhatsApp.
  *       400:
  *         description: Invalid input
  */
@@ -100,7 +100,7 @@ router.get("/check-auth", checkAuth);
  * @swagger
  * /auth/verify-phone:
  *   post:
- *     summary: Verify user phone number
+ *     summary: Verify user phone number via WhatsApp OTP
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -126,7 +126,7 @@ router.post("/verify-phone", verifyPhone);
  * @swagger
  * /auth/resend-verification:
  *   post:
- *     summary: Resend phone verification code
+ *     summary: Resend phone verification code via WhatsApp
  *     tags: [Auth]
  *     requestBody:
  *       required: true

@@ -46,9 +46,8 @@ export function useRegister(): UseRegisterReturn {
         setToken(response.data?.accessToken || response.accessToken || "");
       }
 
-      // After registration, redirect to home or verification page if needed
-      // For now, redirect home as per user requirement (like login)
-      router.push("/");
+      // After registration, redirect to verification page
+      router.push(`/verify?phone=${values.phone}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during registration";
       setError(errorMessage);
