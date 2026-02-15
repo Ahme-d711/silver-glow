@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { LucideIcon, User, MapPin, Phone, ShoppingCart, Clock } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -30,7 +31,7 @@ export function UserInfoSidebar({
   onDelete,
   disableActions,
 }: UserInfoSidebarProps) {
-  console.log(user.profileImage);
+  const t = useTranslations("Users")
   
   return (
     <div className="bg-white rounded-[32px] border border-divider overflow-hidden flex flex-col items-center p-6 pb-8 relative">
@@ -52,26 +53,26 @@ export function UserInfoSidebar({
           <AvatarFallback className="bg-gray-100 text-3xl font-bold uppercase">{user.name.charAt(0)}</AvatarFallback>
         </Avatar>
       </div>
-
+ 
       <h2 className="text-xl font-semibold text-content-primary mb-1">{user.name}</h2>
       <Badge 
         className={`text-sm border-none px-4 py-1 rounded-xl mb-8 shadow-none ${
-          user.status === "Active" 
+          user.status === "active" 
             ? "bg-green-100/50 text-green-600 hover:bg-green-100/50" 
             : "bg-red-100/50 text-red-600 hover:bg-red-100/50"
         }`}
       >
-        {user.status}
+        {t(user.status)}
       </Badge>
-
+ 
       <div className="w-full space-y-6 border-t border-divider pt-8">
-        <DetailItem icon={User} label="User ID" value={user.id.slice(0,6)} />
-        <DetailItem icon={MapPin} label="Address" value={user.address} />
-        <DetailItem icon={Phone} label="Phone Number" value={user.phone} />
-        <DetailItem icon={ShoppingCart} label="Last Transaction" value={user.lastTransaction} />
-        <DetailItem icon={Clock} label="Last Online" value={user.lastOnline} />
+        <DetailItem icon={User} label={t("user_id_label")} value={user.id.slice(0,6)} />
+        <DetailItem icon={MapPin} label={t("address_label")} value={user.address} />
+        <DetailItem icon={Phone} label={t("phone_label")} value={user.phone} />
+        <DetailItem icon={ShoppingCart} label={t("last_transaction")} value={user.lastTransaction} />
+        <DetailItem icon={Clock} label={t("last_online")} value={user.lastOnline} />
       </div>
-
+ 
       <div className="w-full pt-8 space-y-3">
         <Button
           variant="destructive"
@@ -79,7 +80,7 @@ export function UserInfoSidebar({
           onClick={onBlockToggle}
           disabled={disableActions}
         >
-          {user.isBlocked ? "Unblock User" : "Block User"}
+          {user.isBlocked ? t("unblock_user") : t("block_user")}
         </Button>
         <Button
           variant="destructive"
@@ -87,7 +88,7 @@ export function UserInfoSidebar({
           onClick={onDelete}
           disabled={disableActions}
         >
-          {user.isActive === false ? "Activate User" : "Delete User"}
+          {user.isActive === false ? t("activate_user") : t("delete_user")}
         </Button>
       </div>
     </div>

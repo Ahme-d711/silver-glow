@@ -35,13 +35,13 @@ export default function SectionsTemplate() {
       [tCommon("name_en")]: section.nameEn,
       [tCommon("priority")]: section.priority,
       [tCommon("status")]: section.isDeleted ? tCommon("deleted") : tCommon("active"),
-      "Slug": section.slug,
+      [t("slug")]: section.slug,
       [tCommon("date")]: section.createdAt ? format(new Date(section.createdAt), "dd MMM yyyy") : "-",
     }));
 
     exportToExcel(dataToExport, {
-      filename: `Sections_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
-      sheetName: "Sections",
+      filename: `${t("title")}_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: t("title"),
     });
   };
 

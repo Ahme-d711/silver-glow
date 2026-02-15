@@ -9,7 +9,7 @@ import { UniSelect } from "@/components/shared/uni-form/UniSelect";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
-import { subcategorySchema, SubcategoryFormValues } from "../schemas/subcategory.schema";
+import { getSubcategorySchema, SubcategoryFormValues } from "../schemas/subcategory.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
@@ -35,6 +35,7 @@ export function SubCategoryForm({
 }: SubCategoryFormProps) {
   const t = useTranslations("SubCategories");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   const locale = useLocale();
   
   const { data: categories = [] } = useCategories();
@@ -46,7 +47,7 @@ export function SubCategoryForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<SubcategoryFormValues>({
-    resolver: zodResolver(subcategorySchema) as unknown as Resolver<SubcategoryFormValues>,
+    resolver: zodResolver(getSubcategorySchema(tValidation)) as unknown as Resolver<SubcategoryFormValues>,
     defaultValues: {
       nameAr: defaultValues?.nameAr || "",
       nameEn: defaultValues?.nameEn || "",

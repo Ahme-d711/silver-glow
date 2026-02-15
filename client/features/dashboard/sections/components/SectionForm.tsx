@@ -8,8 +8,7 @@ import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
-import { sectionFormSchema } from "../schemas/sections.schema";
-import { SectionFormData } from "../types";
+import { getSectionFormSchema, SectionFormData } from "../schemas/sections.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
@@ -34,6 +33,7 @@ export function SectionForm({
 }: SectionFormProps) {
   const t = useTranslations("Sections");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   
   const initialPreview = getImageUrl(defaultValues?.image);
 
@@ -42,7 +42,7 @@ export function SectionForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<SectionFormData>({
-    resolver: zodResolver(sectionFormSchema) as unknown as Resolver<SectionFormData>,
+    resolver: zodResolver(getSectionFormSchema(tValidation)) as unknown as Resolver<SectionFormData>,
     defaultValues: {
       nameAr: defaultValues?.nameAr || "",
       nameEn: defaultValues?.nameEn || "",

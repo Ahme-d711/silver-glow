@@ -1,20 +1,20 @@
 import { z } from "zod";
 
-export const productFormSchema = z.object({
-  nameAr: z.string().min(1, "الاسم بالعربية مطلوب").max(200),
-  nameEn: z.string().min(1, "English name is required").max(200),
+export const getProductFormSchema = (t: (key: string) => string) => z.object({
+  nameAr: z.string().min(1, t("name_ar_required")).max(200),
+  nameEn: z.string().min(1, t("name_en_required")).max(200),
   descriptionAr: z.string().optional(),
   descriptionEn: z.string().optional(),
-  price: z.coerce.number().min(0, "Price must be positive"),
+  price: z.coerce.number().min(0, t("price_positive")),
   oldPrice: z.coerce.number().min(0).optional(),
   costPrice: z.coerce.number().min(0).optional(),
   stock: z.coerce.number().int().min(0).optional(),
-  categoryId: z.string().min(1, "Category is required"),
+  categoryId: z.string().min(1, t("category_required")),
   subCategoryId: z.string().optional(),
   brandId: z.string().optional(),
   sectionIds: z.array(z.string()).default([]),
   sizes: z.array(z.object({
-    size: z.string().min(1),
+    size: z.string().min(1, t("size_required")),
     stock: z.coerce.number().min(0),
     price: z.coerce.number().min(0),
     oldPrice: z.coerce.number().min(0).optional(),
@@ -26,4 +26,7 @@ export const productFormSchema = z.object({
   images: z.array(z.union([z.instanceof(File), z.string()])).optional(),
 });
 
+// For type inference, we use a version without translations
+const staticT = (key: string) => key;
+export const productFormSchema = getProductFormSchema(staticT);
 export type ProductFormData = z.infer<typeof productFormSchema>;

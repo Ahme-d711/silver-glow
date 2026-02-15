@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const categorySchema = z.object({
-  nameAr: z.string().min(1, "Arabic name is required").max(100),
-  nameEn: z.string().min(1, "English name is required").max(100),
+export const getCategorySchema = (t: (key: string) => string) => z.object({
+  nameAr: z.string().min(1, t("name_ar_required")).max(100),
+  nameEn: z.string().min(1, t("name_en_required")).max(100),
   descriptionAr: z.string().optional().or(z.literal("")),
   descriptionEn: z.string().optional().or(z.literal("")),
   priority: z.coerce.number().int().optional().default(0),
@@ -10,8 +10,8 @@ export const categorySchema = z.object({
   isShow: z.boolean().default(true),
 });
 
-export const updateCategorySchema = categorySchema.partial();
-
+const staticT = (key: string) => key;
+export const categorySchema = getCategorySchema(staticT);
 export type CategoryFormValues = z.infer<typeof categorySchema>;
 
 export interface Category {

@@ -36,7 +36,7 @@ export default function EditProductTemplate() {
   if (!product) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-content-tertiary">Product not found</p>
+        <p className="text-content-tertiary">{t("product_not_found")}</p>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { DashboardStats } from "../types/dashboard.types";
 
 interface LabelProps {
@@ -31,17 +31,20 @@ const renderCustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, 
 export function OrderStatisticsChart({ stats }: { stats: DashboardStats | undefined }) {
   const t = useTranslations("Dashboard");
 
+  const locale = useLocale();
+  const isAr = locale === "ar";
+  
   // Colors for categories
   const COLORS = ["#192C56", "#3B4758", "#6F7895", "#A0AEC0", "#CBD5E0", "#EDF2F7"];
 
   const data = stats?.charts?.ordersByCategory?.map((item, index) => ({
-    name: item.name,
+    name: isAr ? item.nameAr : item.nameEn,
     value: item.value,
     color: COLORS[index % COLORS.length]
   })) || [];
 
   // Fallback if no data
-  const chartData = data.length > 0 ? data : [{ name: "No Data", value: 1, color: "#E5E7EB" }];
+  const chartData = data.length > 0 ? data : [{ name: t("no_data"), value: 1, color: "#E5E7EB" }];
 
   return (
     <div className="flex flex-col h-full bg-white p-6 rounded-[24px] shadow-sm border border-divider">

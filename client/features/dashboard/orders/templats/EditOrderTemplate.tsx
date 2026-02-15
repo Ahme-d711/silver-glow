@@ -87,7 +87,7 @@ export default function EditOrderTemplate({ isOpen, onClose, orderData }: EditOr
           <FormPageSkeleton />
         ) : !order ? (
           <div className="flex items-center justify-center min-h-[400px]">
-            <p className="text-content-tertiary">Order not found</p>
+            <p className="text-content-tertiary">{t("order_not_found")}</p>
           </div>
         ) : (
           <OrderForm

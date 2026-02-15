@@ -47,8 +47,8 @@ export default function ProductsTemplate() {
     });
 
     exportToExcel(dataToExport, {
-      filename: `Products_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
-      sheetName: "Products",
+      filename: `${t("title")}_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: t("title"),
     });
   };
 

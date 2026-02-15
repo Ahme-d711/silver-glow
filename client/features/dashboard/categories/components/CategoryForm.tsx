@@ -8,7 +8,7 @@ import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
-import { categorySchema, CategoryFormValues } from "../schemas/category.schema";
+import { getCategorySchema, CategoryFormValues } from "../schemas/category.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
@@ -33,6 +33,7 @@ export function CategoryForm({
 }: CategoryFormProps) {
   const t = useTranslations("Categories");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   
   const initialPreview = getImageUrl(defaultValues?.image);
 
@@ -41,7 +42,7 @@ export function CategoryForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema) as unknown as Resolver<CategoryFormValues>,
+    resolver: zodResolver(getCategorySchema(tValidation)) as unknown as Resolver<CategoryFormValues>,
     defaultValues: {
       nameAr: defaultValues?.nameAr || "",
       nameEn: defaultValues?.nameEn || "",

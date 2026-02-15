@@ -35,13 +35,13 @@ export default function BrandsTemplate() {
       [tCommon("name_en")]: brand.nameEn,
       [tCommon("priority")]: brand.priority,
       [tCommon("status")]: brand.isDeleted ? tCommon("deleted") : tCommon("active"),
-      "Slug": brand.slug,
+      [t("slug")]: brand.slug,
       [tCommon("date")]: brand.createdAt ? format(new Date(brand.createdAt), "dd MMM yyyy") : "-",
     }));
 
     exportToExcel(dataToExport, {
-      filename: `Brands_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
-      sheetName: "Brands",
+      filename: `${t("title")}_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: t("title"),
     });
   };
 

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 import { TableFilters } from "@/components/shared/TableFilters"
 import { useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 interface Transaction {
   id: string
@@ -22,32 +23,35 @@ interface UserTransactionsTableProps {
   transactions: Transaction[]
 }
 
-const filterOptions = [
-  { label: "All Status", value: "all" },
-  { label: "Completed", value: "completed" },
-  { label: "Processing", value: "processing" },
-  { label: "Cancelled", value: "cancelled" },
-]
-
 export function UserTransactionsTable({ transactions }: UserTransactionsTableProps) {
+  const t = useTranslations("Users")
+  const tCommon = useTranslations("Common")
+  const tOrders = useTranslations("Orders")
   const searchParams = useSearchParams()
   const search = searchParams.get("search") || ""
   
   const [date, setDate] = React.useState<Date | undefined>()
   const [filter, setFilter] = React.useState("all")
 
+  const filterOptions = [
+    { label: t("all_status"), value: "all" },
+    { label: tOrders("completed"), value: "completed" },
+    { label: tOrders("processing"), value: "processing" },
+    { label: tOrders("cancelled"), value: "cancelled" },
+  ]
+
   // Assuming isLoading is defined elsewhere, e.g., from a data fetching hook
   const isLoading = false; // Placeholder for demonstration
-
+ 
   const columns = [
     {
       id: "orderId",
-      header: "Order ID",
+      header: t("order_id"),
       cell: (_: unknown, row: Transaction) => <span className="text-primary font-semibold">{row.id}</span>
     },
     {
       id: "product",
-      header: "Product",
+      header: t("product"),
       cell: (_: unknown, row: Transaction) => (
         <ProductCell 
           title={row.product}
@@ -58,13 +62,13 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
     },
     {
       id: "total",
-      header: "Total",
+      header: t("total"),
       accessorKey: "total",
       className: "font-medium text-content-secondary"
     },
     {
       id: "status",
-      header: "Status",
+      header: t("status"),
       cell: (_: unknown, row: Transaction) => (
         <Badge className="bg-purple-100/50 text-primary border-none px-4 py-1.5 rounded-xl font-semibold shadow-none hover:bg-purple-100/50">
           {row.status}
@@ -73,20 +77,20 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
     },
     {
       id: "date",
-      header: "Date",
+      header: t("date"),
       accessorKey: "date",
       className: "text-content-tertiary font-medium"
     }
   ]
-
+ 
   if (isLoading) {
     return <UniTableSkeleton columnCount={5} rowCount={5} />;
   }
-
+ 
   return (
     <div className="bg-white rounded-[32px] border border-divider">
       <div className="p-6 pb-0 flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-content-primary">Transaction History</h3>
+        <h3 className="text-xl font-semibold text-content-primary">{t("transaction_history")}</h3>
       <TableFilters
         date={date}
         setDate={setDate}
@@ -102,7 +106,7 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
           data={transactions}
           enablePagination={true}
           pageSize={5}
-          itemLabel="Orders"
+          itemLabel={tOrders("title")}
         />
       </div>
     </div>

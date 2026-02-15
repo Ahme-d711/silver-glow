@@ -47,7 +47,7 @@ export function VerifyForm() {
 
   const handleResend = async () => {
     if (!phone) {
-        toast.error("Phone number missing");
+        toast.error(t("phone_missing"));
         return;
     }
     await resend(phone);

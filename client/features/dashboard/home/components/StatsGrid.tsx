@@ -16,30 +16,32 @@ export function StatsGrid({ stats, isLoading }: StatsGridProps) {
 
   const statistics = [
     {
-      title: "Total Users",
+      title: t("total_users"),
       value: stats?.summary?.totalUsers?.toLocaleString() || "0",
-      trend: stats?.summary?.newUsersLast30Days ? `+${stats.summary.newUsersLast30Days} new` : "0 new",
+      trend: stats?.summary?.newUsersLast30Days 
+        ? t("new_users_trend", { count: stats.summary.newUsersLast30Days })
+        : t("new_users_trend", { count: 0 }),
       isUp: true,
       variant: "secondary" as const,
     },
     {
-      title: "Total Products",
+      title: t("total_products"),
       value: stats?.summary?.totalProducts?.toLocaleString() || "0",
-      trend: "Available",
+      trend: t("available"),
       isUp: true,
       variant: "primary" as const,
     },
     {
-      title: "Total Orders",
+      title: t("total_orders"),
       value: stats?.summary?.totalOrders?.toLocaleString() || "0",
-      trend: "Cumulative",
+      trend: t("cumulative"),
       isUp: true,
       variant: "secondary" as const,
     },
     {
-      title: "Total Revenue",
+      title: t("total_revenue"),
       value: `${stats?.summary?.totalRevenue?.toLocaleString() || "0"}`,
-      trend: "Delivered",
+      trend: t("delivered"),
       isUp: true,
       variant: "primary" as const,
     },
@@ -47,33 +49,33 @@ export function StatsGrid({ stats, isLoading }: StatsGridProps) {
 
   const orders = [
     {
-      title: "Pending",
+      title: t("pending"),
       value: stats?.ordersByStatus?.PENDING?.toLocaleString() || "0",
-      trend: "Awaiting",
+      trend: t("awaiting"),
       isUp: true,
       variant: "primary" as const,
     },
     {
-      title: "Processing",
+      title: t("processing"),
       value: (
         (stats?.ordersByStatus?.CONFIRMED || 0) + 
         (stats?.ordersByStatus?.PROCESSING || 0)
       ).toLocaleString(),
-      trend: "In progress",
+      trend: t("in_progress"),
       isUp: true,
       variant: "secondary" as const,
     },
     {
-      title: "Cancelled",
+      title: t("cancelled"),
       value: stats?.ordersByStatus?.CANCELLED?.toLocaleString() || "0",
-      trend: "Failed",
+      trend: t("failed"),
       isUp: false,
       variant: "primary" as const,
     },
     {
-      title: "Completed",
+      title: t("completed"),
       value: stats?.ordersByStatus?.DELIVERED?.toLocaleString() || "0",
-      trend: "Delivered",
+      trend: t("delivered"),
       isUp: true,
       variant: "secondary" as const,
     },

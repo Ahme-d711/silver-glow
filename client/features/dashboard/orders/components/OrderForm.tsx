@@ -21,11 +21,11 @@ import { getAllProducts, getProductById } from "@/features/dashboard/products/se
 import { getAllUsers } from "@/features/dashboard/users/services/user.service";
 
 // Form Schema
-const orderFormSchema = z.object({
-  userId: z.string().min(1, "Customer is required"),
+export const getOrderFormSchema = (t: (key: string) => string) => z.object({
+  userId: z.string().min(1, t("customer_required")),
   items: z.array(z.object({
-    productId: z.string().min(1, "Product is required"),
-    name: z.string().min(1, "Product name is required"),
+    productId: z.string().min(1, t("product_required")),
+    name: z.string().min(1),
     price: z.coerce.number(),
     quantity: z.coerce.number().int().min(1),
     image: z.string().optional(),
@@ -35,7 +35,7 @@ const orderFormSchema = z.object({
   recipientPhone: z.string().min(1),
   shippingAddress: z.string().min(1),
   city: z.string().min(1),
-  governorate: z.string().min(1, "Governorate is required"),
+  governorate: z.string().min(1, t("governorate_required")),
   country: z.string().min(1),
   postalCode: z.string().optional(),
   paymentMethod: z.string(),
@@ -45,6 +45,8 @@ const orderFormSchema = z.object({
   paymentStatus: z.string().optional(),
 });
 
+const staticT = (key: string) => key;
+export const orderFormSchema = getOrderFormSchema(staticT);
 export type OrderFormData = z.infer<typeof orderFormSchema>;
 
 interface OrderFormProps {
@@ -67,12 +69,14 @@ export function OrderForm({
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
 
+  const tValidation = useTranslations("Validation");
+
   const initialUserId = typeof defaultValues?.userId === 'object' && defaultValues?.userId !== null 
     ? (defaultValues.userId as UserReference)._id 
     : (defaultValues?.userId as string) || "";
 
   const form = useForm<OrderFormData>({
-    resolver: zodResolver(orderFormSchema) as Resolver<OrderFormData>,
+    resolver: zodResolver(getOrderFormSchema(tValidation)) as Resolver<OrderFormData>,
     defaultValues: {
       userId: initialUserId,
       items: (defaultValues?.items || []).map((item) => ({
@@ -299,7 +303,7 @@ export function OrderForm({
                     label={t("price")}
                     type="number"
                     step="0.01"
-                    placeholder="0.00"
+                    placeholder={`0.00 ${tCommon("currency")}`}
                     readOnly
                     required
                   />
@@ -337,7 +341,7 @@ export function OrderForm({
               control={form.control}
               name="recipientPhone"
               label={t("recipient_phone")}
-              placeholder="+1234567890"
+              placeholder={tCommon("phone_placeholder") || "+1234567890"}
               required
             />
           </div>
@@ -363,7 +367,7 @@ export function OrderForm({
             <UniAsyncCombobox
               control={form.control}
               name="governorate"
-              label={t("governorate") || "Governorate"}
+              label={t("governorate")}
               fetchData={async (search) => {
                 const { EGYPT_GOVERNORATES } = await import("@/constants/governorates");
                 const locale = window.localStorage.getItem("NEXT_LOCALE") || "ar";
@@ -372,7 +376,7 @@ export function OrderForm({
                   g.nameEn.toLowerCase().includes(search.toLowerCase())
                 );
               }}
-              placeholder={t("select_governorate") || "Select Governorate"}
+              placeholder={t("select_governorate")}
               searchPlaceholder={tCommon("search")}
               emptyMessage={tCommon("no_data")}
               getItemLabel={(g: BilingualItem) => {
@@ -397,7 +401,7 @@ export function OrderForm({
               control={form.control}
               name="postalCode"
               label={t("postal_code")}
-              placeholder="12345"
+              placeholder={tCommon("postal_code_placeholder") || "12345"}
             />
           </div>
         </div>

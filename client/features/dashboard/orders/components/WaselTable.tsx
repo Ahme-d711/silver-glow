@@ -15,6 +15,7 @@ import UniTable, {
 import { cn } from "@/lib/utils"
 // import { EditOrderTemplate } from "../templats/EditOrderTemplate"
 import React from "react"
+import { useTranslations } from "next-intl"
 
 interface WaselOrder {
   id: string;
@@ -82,6 +83,8 @@ const waselData = [
 ]
 
 export function WaselTable() {
+  const t = useTranslations("Orders");
+  const tCommon = useTranslations("Common");
   const [editingOrder, setEditingOrder] = React.useState<WaselOrder | null>(null)
   const [isEditOpen, setIsEditOpen] = React.useState(false)
 
@@ -95,7 +98,7 @@ export function WaselTable() {
       id: "id",
       header: (props: { table: { getIsAllPageRowsSelected: () => boolean; getIsSomePageRowsSelected: () => boolean; toggleAllPageRowsSelected: (val: boolean) => void } }) => (
         <SelectionHeader 
-          label="Order ID" 
+          label={t("order_id")} 
           checked={props.table.getIsAllPageRowsSelected()}
           indeterminate={props.table.getIsSomePageRowsSelected()}
           onChange={(val) => props.table.toggleAllPageRowsSelected(val)}
@@ -111,7 +114,7 @@ export function WaselTable() {
     },
     {
       id: "product",
-      header: "Product",
+      header: t("product"),
       cell: (_: unknown, row: WaselOrder) => (
         <ProductCell
           title={row.productName}
@@ -122,19 +125,19 @@ export function WaselTable() {
     },
     {
       id: "date",
-      header: "Date",
+      header: t("date"),
       accessorKey: "date",
       className: "text-content-secondary",
     },
     {
       id: "recipientsLocation",
-      header: "Recipients Location",
+      header: t("shipping_address"),
       accessorKey: "recipientsLocation",
       className: "font-medium text-content-primary",
     },
     {
       id: "status",
-      header: "Status",
+      header: t("status"),
       cell: (_: unknown, row: WaselOrder) => {
         const statusColors: Record<string, string> = {
           Processing: "bg-purple-100 text-purple-600",
@@ -146,14 +149,14 @@ export function WaselTable() {
             "border-none px-3 py-1 rounded-lg font-medium shadow-none",
             statusColors[row.status] || "bg-gray-100 text-gray-600"
           )}>
-            {row.status}
+            {t(row.status.toLowerCase() as Parameters<typeof t>[0]) || row.status}
           </Badge>
         )
       },
     },
     {
       id: "action",
-      header: "Action",
+      header: t("action"),
       className: "flex justify-center gap-2",
       headerClassName: "flex justify-center",
       cell: (_: unknown, row: WaselOrder) => {
@@ -162,7 +165,7 @@ export function WaselTable() {
           <ActionCell>
             <ActionButton 
               icon={Eye} 
-              onClick={() => router.push(`/orders/${row.id}`)} 
+              onClick={() => router.push(`/dashboard/orders/${row.id}`)} 
             />
             <ActionButton 
               icon={Pencil} 
@@ -186,7 +189,7 @@ export function WaselTable() {
         columns={columns}
         enablePagination={true}
         pageSize={10}
-        itemLabel="Orders"
+        itemLabel={t("title")}
         showSelection={true}
       />
       {/* <EditOrderTemplate 

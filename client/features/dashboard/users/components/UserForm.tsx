@@ -8,14 +8,13 @@ import { UniSelect } from "@/components/shared/uni-form/UniSelect";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Camera, X } from "lucide-react";
-import { createUserSchema, updateUserSchema } from "../schemas/user.schema";
+import { getCreateUserSchema, getUpdateUserSchema, UserFormValues } from "../schemas/user.schema";
 import { z } from "zod";
 import React, { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
-
-type UserFormValues = z.infer<typeof createUserSchema>;
+import { motion } from "framer-motion";
 
 interface UserFormProps {
   defaultValues?: Partial<UserFormValues>;
@@ -25,8 +24,6 @@ interface UserFormProps {
   submitLabel?: string;
   isEdit?: boolean;
 }
-
-import { motion } from "framer-motion";
 
 const container = {
   hidden: { opacity: 0 },
@@ -51,6 +48,7 @@ export function UserForm({
 }: UserFormProps) {
   const t = useTranslations("Users");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   
   const initialPreview = getImageUrl(defaultValues?.picture);
 
@@ -59,7 +57,7 @@ export function UserForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<UserFormValues>({
-    resolver: zodResolver(isEdit ? updateUserSchema : createUserSchema) as unknown as Resolver<UserFormValues>,
+    resolver: zodResolver(isEdit ? getUpdateUserSchema(tValidation) : getCreateUserSchema(tValidation)) as unknown as Resolver<UserFormValues>,
     defaultValues: {
       name: defaultValues?.name || "",
       email: defaultValues?.email || "",
@@ -217,7 +215,7 @@ export function UserForm({
               control={form.control}
               name="phone"
               label={t("phone")}
-              placeholder="+20..."
+              placeholder={t("phone")}
               type="tel"
               required
             />

@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model.js";
 import { ProductModel } from "../models/product.model.js";
 import { UserModel } from "../models/user.model.js";
-import { CategoryModel } from "../models/category.model.js";
-import { BrandModel } from "../models/brand.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendResponse } from "../utils/sendResponse.js";
 
@@ -50,11 +48,11 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
       { $unwind: "$category" },
       {
         $group: {
-          _id: "$category.nameAr",
+          _id: { nameAr: "$category.nameAr", nameEn: "$category.nameEn" },
           value: { $sum: 1 },
         },
       },
-      { $project: { _id: 0, name: "$_id", value: 1 } },
+      { $project: { _id: 0, nameAr: "$_id.nameAr", nameEn: "$_id.nameEn", value: 1 } },
       { $sort: { value: -1 } },
     ]),
     OrderModel.aggregate([

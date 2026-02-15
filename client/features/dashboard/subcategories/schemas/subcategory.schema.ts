@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const subcategorySchema = z.object({
-  nameAr: z.string().min(1, "Arabic name is required").max(100),
-  nameEn: z.string().min(1, "English name is required").max(100),
-  categoryId: z.string().min(1, "Parent category is required"),
+export const getSubcategorySchema = (t: (key: string) => string) => z.object({
+  nameAr: z.string().min(1, t("name_ar_required")).max(100),
+  nameEn: z.string().min(1, t("name_en_required")).max(100),
+  categoryId: z.string().min(1, t("category_required")),
   descriptionAr: z.string().optional().or(z.literal("")),
   descriptionEn: z.string().optional().or(z.literal("")),
   priority: z.coerce.number().int().optional().default(0),
@@ -11,8 +11,8 @@ export const subcategorySchema = z.object({
   isShow: z.boolean().default(true),
 });
 
-export const updateSubcategorySchema = subcategorySchema.partial();
-
+const staticT = (key: string) => key;
+export const subcategorySchema = getSubcategorySchema(staticT);
 export type SubcategoryFormValues = z.infer<typeof subcategorySchema>;
 
 export interface Subcategory {

@@ -18,13 +18,16 @@ import { exportToExcel } from "@/utils/excelExport";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 
-const categoryTabs = [
-  { label: "All Status", value: "all" },
-  { label: "Active", value: "active" },
-  { label: "Not Active", value: "deactivated" },
-  { label: "Blocked", value: "blocked" },
-  { label: "Not Blocked", value: "not_blocked" },
-];
+const getCategoryTabs = (t: { [key: string]: string }) => {
+  const { all_status, active, not_active, blocked, not_blocked } = t;
+  return [
+    { label: all_status, value: "all" },
+    { label: active, value: "active" },
+    { label: not_active, value: "deactivated" },
+    { label: blocked, value: "blocked" },
+    { label: not_blocked, value: "not_blocked" },
+  ];
+};
 
 // Convert API User to UserCard format
 function convertUserToCardFormat(user: User) {
@@ -38,27 +41,36 @@ function convertUserToCardFormat(user: User) {
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   
   const status = user.isBlocked === true
-    ? "Blocked"
+    ? "blocked"
     : user.isActive === false
-    ? "Deactivated"
-    : "Active";
+    ? "deactivated"
+    : "active";
 
   return {
     id,
     name: user.name ?? "Unknown",
     avatar: profileImageUrl,
-    status: (status === "Active" ? "Active" : status === "Blocked" ? "Blocked" : "Blocked") as "Active" | "Blocked",
+    status: status as "active" | "blocked" | "deactivated",
     orders: "0", // TODO: Get from orders API when available
     balance: `${walletBalance.toFixed(2)}`, // Format wallet balance
   };
 }
 
 export default function UserTemplate() {
-  const searchParams = useSearchParams();
+  const t = useTranslations("Users");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
+  const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   
+  const translatedTabs = getCategoryTabs({
+    all_status: t("all_status"),
+    active: t("active"),
+    not_active: t("not_active"),
+    blocked: t("blocked"),
+    not_blocked: t("not_blocked"),
+  });
+
   const [activeTab, setActiveTab] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [addUserOpen, setAddUserOpen] = useState(false);
@@ -108,7 +120,7 @@ export default function UserTemplate() {
   return (
     <div className="space-y-6 min-h-screen">
       <PageHeader
-        title={tCommon("view")}
+        title={t("title")}
         breadcrumbs={[
           { label: tNav("dashboard"), href: "/dashboard" },
           { label: tCommon("all") },
@@ -122,7 +134,7 @@ export default function UserTemplate() {
             onClick: handleExport
           },
           {
-            label: "Add User",
+            label: t("add_user"),
             icon: Plus,
             className: "bg-primary text-white hover:bg-primary/90",
             onClick: () => setAddUserOpen(true)
@@ -134,7 +146,7 @@ export default function UserTemplate() {
 
       <div className="bg-white rounded-[24px] border border-divider">
         <TableFilters
-          tabs={categoryTabs}
+          tabs={translatedTabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -143,8 +155,8 @@ export default function UserTemplate() {
           <UserGridSkeleton />
         ) : filteredUsers.length === 0 ? (
           <NoDataMsg
-            title="No users found"
-            description={search || activeTab !== "all" ? "Try adjusting your filters" : "No users available"}
+            title={t("no_users_found")}
+            description={search || activeTab !== "all" ? t("adjust_filters") : t("no_users_available")}
           />
         ) : (
           <div className="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">

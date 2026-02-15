@@ -75,12 +75,12 @@ export default function ProfileTemplate() {
         setUser(res.data.user);
         setSelectedImage(null);
         setPreviewUrl(null); 
-        toast.success(res.message || "Profile updated successfully!");
+        toast.success(res.message || t("profile_update_success"));
       } else {
-        toast.error(res.message || "Failed to update profile");
+        toast.error(res.message || t("profile_update_failed"));
       }
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      toast.error(t("unexpected_error"));
       console.error(error);
     } finally {
       setIsLoading(false);

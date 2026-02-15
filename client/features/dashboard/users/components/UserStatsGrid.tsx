@@ -2,6 +2,7 @@
 
 import { ShoppingCart, Wallet } from "lucide-react"
 import { UserStatCard } from "./UserStatCard"
+import { useTranslations } from "next-intl"
 
 interface UserStatsGridProps {
   totalOrders: string
@@ -16,10 +17,11 @@ export function UserStatsGrid({
   orderTrend,
   balanceTrend,
 }: UserStatsGridProps) {
+  const t = useTranslations("Users")
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <UserStatCard
-        title="Total Orders"
+        title={t("total_orders")}
         value={totalOrders}
         trend={orderTrend}
         icon={ShoppingCart}
@@ -27,7 +29,7 @@ export function UserStatsGrid({
         iconColor="text-orange-500"
       />
       <UserStatCard
-        title="Total Balance"
+        title={t("total_balance")}
         value={totalBalance}
         trend={balanceTrend}
         icon={Wallet}

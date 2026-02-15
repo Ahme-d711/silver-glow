@@ -36,13 +36,13 @@ export default function SubCategoriesTemplate() {
       [tCommon("priority")]: sub.priority,
       [t("category")]: typeof sub.categoryId === "object" ? (sub.categoryId as { nameEn: string }).nameEn : "-",
       [tCommon("status")]: sub.isDeleted ? tCommon("deleted") : tCommon("active"),
-      "Slug": sub.slug,
+      [t("slug")]: sub.slug,
       [tCommon("date")]: sub.createdAt ? format(new Date(sub.createdAt), "dd MMM yyyy") : "-",
     }));
 
     exportToExcel(dataToExport, {
-      filename: `SubCategories_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
-      sheetName: "SubCategories",
+      filename: `${t("title")}_${format(new Date(), "yyyy-MM-dd")}.xlsx`,
+      sheetName: t("title"),
     });
   };
 

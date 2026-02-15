@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export type TimePeriod = "Today" | "Yesterday" | "Week" | "Month";
 
@@ -12,6 +13,7 @@ interface TimePeriodTabsProps {
 }
 
 export function TimePeriodTabs({ value, onChange }: TimePeriodTabsProps) {
+  const t = useTranslations("Dashboard");
   return (
     <div className="bg-white rounded-[16px] inline-flex gap-1 shadow-sm border border-divider">
       {periods.map((period) => (
@@ -25,7 +27,7 @@ export function TimePeriodTabs({ value, onChange }: TimePeriodTabsProps) {
               : "text-content-secondary hover:bg-secondary/30 hover:text-primary"
           )}
         >
-          {period}
+          {t(period.toLowerCase())}
         </button>
       ))}
     </div>

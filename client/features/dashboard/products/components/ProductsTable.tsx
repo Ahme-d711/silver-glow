@@ -118,7 +118,7 @@ export default function ProductsTable({
         <ProductCell
           image={row.mainImage}
           title={locale === "ar" ? row.nameAr : row.nameEn}
-          subtitle={row.sku || "No SKU"}
+          subtitle={row.sku || t("no_sku")}
           className={cn(row.isDeleted && "opacity-50 grayscale")}
         />
       ),

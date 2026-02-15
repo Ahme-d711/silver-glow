@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
+import { useTranslations } from "next-intl"
+
 interface UserCardProps {
   id: string
   name: string
   avatar?: string
-  status: "Active" | "Blocked"
+  status: "active" | "blocked" | "deactivated"
   orders: string
   balance: string
   selected?: boolean
@@ -30,6 +32,7 @@ export function UserCard({
   onSelect,
 }: UserCardProps) {
   const router = useRouter()
+  const t = useTranslations("Users")
 
   return (
     <motion.div 
@@ -57,7 +60,7 @@ export function UserCard({
       >
         <MoreVertical className="h-5 w-5" />
       </button>
-
+ 
       <Avatar className="h-20 w-20 mb-4 bg-gray-200">
         <AvatarImage src={avatar} className="object-cover" />
         <AvatarFallback className="bg-gray-200 text-content-tertiary text-xl font-bold uppercase">{name.charAt(0)}</AvatarFallback>
@@ -68,21 +71,25 @@ export function UserCard({
       <Badge 
         className={cn(
           "px-3 py-1 rounded-xl text-sm border-none mb-6 shadow-none",
-          status === "Active" 
+          status === "active" 
             ? "bg-green-100/50 text-green-600 hover:bg-green-100/50" 
             : "bg-red-100/50 text-red-600 hover:bg-red-100/50"
         )}
       >
-        {status}
+        {t(status)}
       </Badge>
 
       <div className="w-full border-t border-dashed border-divider pt-6 flex justify-between px-2">
         <div className="flex flex-col items-center">
-          <span className="text-[10px] text-content-tertiary font-bold uppercase tracking-wider mb-1 opacity-60">Orders</span>
+          <span className="text-[10px] text-content-tertiary font-bold uppercase tracking-wider mb-1 opacity-60">
+            {t("orders_label")}
+          </span>
           <span className="text-sm font-bold text-content-primary">{orders}</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] text-content-tertiary font-bold uppercase tracking-wider mb-1 opacity-60">Balance</span>
+          <span className="text-[10px] text-content-tertiary font-bold uppercase tracking-wider mb-1 opacity-60">
+            {t("balance_label")}
+          </span>
           <span className="text-sm font-bold text-content-primary">{balance}</span>
         </div>
       </div>

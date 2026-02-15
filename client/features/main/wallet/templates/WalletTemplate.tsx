@@ -112,60 +112,41 @@ export const WalletTemplate: React.FC = () => {
 
               {/* Action Side Card */}
               <div className="bg-white p-8 md:p-10 rounded-[48px] border border-divider/50 shadow-sm flex flex-col justify-between">
-                <div>
-                  <h3 className="text-2xl font-black text-primary mb-3">
-                    {t("topup")}
-                  </h3>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-2xl font-black text-primary">
+                      {t("topup")}
+                    </h3>
+                    <div className="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                      {t("coming_soon")}
+                    </div>
+                  </div>
                   <p className="text-sm text-content-tertiary leading-relaxed mb-8">
-                    {t("topup_desc")} You can use your wallet balance for instantaneous, one-click checkout experience.
+                    {t("topup_unavailable")}
                   </p>
                 </div>
 
-                {!isTopupOpen ? (
-                  <Button 
-                    onClick={() => setIsTopupOpen(true)}
-                    className="h-16 w-full rounded-2xl bg-primary text-white font-black hover:bg-primary/95 transition-all shadow-xl shadow-primary/10 group active:scale-[0.98]"
-                  >
-                    <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                    Add Funds Now
-                  </Button>
-                ) : (
-                  <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                    <div className="relative">
-                      <Input
-                        type="number"
-                        placeholder="0.00"
-                        className="h-16 rounded-2xl bg-neutral-50 border-divider ps-6 pe-16 font-bold text-lg focus:ring-primary/10"
-                        value={topupAmount}
-                        onChange={(e) => setTopupAmount(e.target.value)}
-                        autoFocus
-                      />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 font-black text-primary opacity-30 text-xs">
-                        {tShop("currency")}
-                      </span>
-                    </div>
-                    <div className="flex gap-3">
-                      <Button
-                        variant="ghost"
-                        onClick={() => setIsTopupOpen(false)}
-                        className="h-16 flex-1 rounded-2xl font-bold text-primary hover:bg-neutral-100"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleTopup}
-                        disabled={topupMutation.isPending}
-                        className="h-16 flex-[2] rounded-2xl bg-primary text-white font-black shadow-lg shadow-primary/20"
-                      >
-                        {topupMutation.isPending ? (
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                          "Confirm Top Up"
-                        )}
-                      </Button>
-                    </div>
+                <div className="space-y-4 opacity-50 pointer-events-none grayscale-[0.5]">
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      disabled
+                      className="h-16 rounded-2xl bg-neutral-50 border-divider ps-6 pe-16 font-bold text-lg"
+                      value={topupAmount}
+                      readOnly
+                    />
+                    <span className="absolute right-6 top-1/2 -translate-y-1/2 font-black text-primary opacity-30 text-xs">
+                      {tShop("currency")}
+                    </span>
                   </div>
-                )}
+                  <Button
+                    disabled
+                    className="h-16 w-full rounded-2xl bg-primary/20 text-primary/40 font-black"
+                  >
+                    {t("coming_soon")}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

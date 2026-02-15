@@ -8,8 +8,7 @@ import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
-import { brandFormSchema } from "../schemas/brands.schema";
-import { BrandFormData } from "../types";
+import { getBrandFormSchema, BrandFormData } from "../schemas/brands.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
@@ -34,6 +33,7 @@ export function BrandForm({
 }: BrandFormProps) {
   const t = useTranslations("Brands");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   
   const initialPreview = getImageUrl(defaultValues?.logo);
 
@@ -42,7 +42,7 @@ export function BrandForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<BrandFormData>({
-    resolver: zodResolver(brandFormSchema) as unknown as Resolver<BrandFormData>,
+    resolver: zodResolver(getBrandFormSchema(tValidation)) as unknown as Resolver<BrandFormData>,
     defaultValues: {
       nameAr: defaultValues?.nameAr || "",
       nameEn: defaultValues?.nameEn || "",

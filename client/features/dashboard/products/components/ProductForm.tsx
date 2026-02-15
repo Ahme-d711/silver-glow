@@ -18,7 +18,7 @@ import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { productFormSchema, ProductFormData } from "../schemas/products.schema";
+import { getProductFormSchema, ProductFormData } from "../schemas/products.schema";
 import { SizeStockList } from "./SizeStockList";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
@@ -49,6 +49,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const t = useTranslations("Products");
   const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Validation");
   const locale = useLocale();
   
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
@@ -83,7 +84,7 @@ export function ProductForm({
   const form = useForm<ProductFormData>({
     // Note: 'as any' is required here due to type incompatibility between Zod's inferred types
     // and react-hook-form's Resolver type. Zod infers some fields as 'unknown' while we need specific types.
-    resolver: zodResolver(productFormSchema) as any,
+    resolver: zodResolver(getProductFormSchema(tValidation)) as any,
     defaultValues: {
       nameAr: "",
       nameEn: "",
@@ -120,13 +121,13 @@ export function ProductForm({
       const remainingQuota = 4 - currentImages.length;
 
       if (remainingQuota <= 0) {
-        toast.error("Maximum 4 additional images allowed");
+        toast.error(t("max_images_reached"));
         return;
       }
 
       const filesToUpload = files.slice(0, remainingQuota);
       if (files.length > remainingQuota) {
-        toast.warning(`Only ${remainingQuota} more images can be added`);
+        toast.warning(t("quota_warning", { quota: remainingQuota }));
       }
 
       form.setValue("images", [...currentImages, ...filesToUpload]);

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { UserStatsGrid } from "../components/UserStatsGrid";
 import { UserInfoSidebar } from "../components/UserInfoSidebar";
@@ -28,6 +29,9 @@ const transactions = [
 ];
 
 export default function UserDetailsTemplate() {
+  const t = useTranslations("Users");
+  const tNav = useTranslations("Navigation");
+  const tCommon = useTranslations("Common");
   const { id } = useParams();
   const userId = typeof id === "string" ? id : id?.[0] || "";
 
@@ -49,16 +53,16 @@ export default function UserDetailsTemplate() {
     return (
       <div className="space-y-6">
         <PageHeader 
-          title="User Details"
+          title={t("user_details")}
           breadcrumbs={[
-            { label: "Dashboard", href: "/dashboard" },
-            { label: "User List", href: "/dashboard/users" },
-            { label: "User Details" },
+            { label: tNav("dashboard"), href: "/dashboard" },
+            { label: t("title"), href: "/dashboard/users" },
+            { label: t("user_details") },
           ]}
         />
         <NoDataMsg
-          title="Failed to load user"
-          description={error instanceof Error ? error.message : "User not found"}
+          title={t("failed_load_user")}
+          description={error instanceof Error ? error.message : t("user_not_found")}
         />
       </div>
     );
@@ -72,27 +76,27 @@ export default function UserDetailsTemplate() {
 
   const formattedLastTransaction = lastTransactionAt
     ? format(new Date(lastTransactionAt), "dd MMM yyyy")
-    : "N/A";
+    : t("na");
 
   const formattedLastOnline = lastLoginAt
     ? format(new Date(lastLoginAt), "dd MMM yyyy")
-    : "N/A";
+    : t("na");
 
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   const totalOrders = user.totalOrders ?? 0;
   const status = user.isBlocked
-    ? "Blocked"
+    ? "blocked"
     : user.isActive === false
-    ? "Deactivated"
-    : "Active";
+    ? "deactivated"
+    : "active";
   const idValue = (user.id || (user as User)._id || "") as string;
 
   const userSidebarData = {
     id: idValue,
-    name: user.name ?? "Unknown",
+    name: user.name ?? t("unknown"),
     status,
-    address: user.address ?? "N/A",
-    phone: user.phone ?? "N/A",
+    address: user.address ?? t("na"),
+    phone: user.phone ?? t("na"),
     lastTransaction: formattedLastTransaction,
     lastOnline: formattedLastOnline,
     profileImage: profileImageUrl,
@@ -106,12 +110,12 @@ export default function UserDetailsTemplate() {
     orderTrend: {
       value: "0%",
       isUp: totalOrders > 0,
-      sub: totalOrders > 0 ? "Orders available" : "No orders yet",
+      sub: totalOrders > 0 ? t("orders_available") : t("no_orders_yet"),
     },
     balanceTrend: {
       value: "0%",
       isUp: walletBalance >= 0,
-      sub: `Balance: ${walletBalance.toFixed(2)}`,
+      sub: t("balance_desc", { balance: walletBalance.toFixed(2) }),
     },
   };
 
@@ -163,22 +167,22 @@ export default function UserDetailsTemplate() {
   return (
     <div className="space-y-6">
       <PageHeader 
-        title="User Details"
+        title={t("user_details")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "User List", href: "/dashboard/users" },
-          { label: "User Details" },
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title"), href: "/dashboard/users" },
+          { label: t("user_details") },
         ]}
         actionButtons={[
           {
-            label: "Edit Profile",
+            label: t("edit_profile"),
             icon: Pencil,
             variant: "outline",
             className: "bg-secondary text-primary border-none hover:bg-secondary/80",
             onClick: () => setEditDialogOpen(true),
           },
           {
-            label: "Add Balance",
+            label: t("add_balance"),
             icon: Wallet,
             className: "bg-primary text-white hover:bg-primary/90",
             onClick: () => setBalanceModalOpen(true),
@@ -215,13 +219,13 @@ export default function UserDetailsTemplate() {
       <ConfirmationDialog
         open={blockDialogOpen}
         onOpenChange={setBlockDialogOpen}
-        title={user.isBlocked ? "Unblock User" : "Block User"}
+        title={user.isBlocked ? t("unblock_user_title") : t("block_user_title")}
         description={
           user.isBlocked
-            ? "Are you sure you want to unblock this user? They will be able to access their account again."
-            : "Are you sure you want to block this user? They will not be able to access their account."
+            ? t("unblock_user_desc")
+            : t("block_user_desc")
         }
-        confirmText={user.isBlocked ? "Unblock" : "Block"}
+        confirmText={user.isBlocked ? t("unblock_user") : t("block_user")}
         variant="destructive"
         onConfirm={handleConfirmBlock}
         isLoading={isBlocking}
@@ -231,9 +235,9 @@ export default function UserDetailsTemplate() {
       <ConfirmationDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title="Delete User"
-        description="Are you sure you want to delete this user? This action cannot be undone."
-        confirmText="Delete"
+        title={t("delete_user_title")}
+        description={t("delete_user_desc")}
+        confirmText={tCommon("delete")}
         variant="destructive"
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
@@ -243,9 +247,9 @@ export default function UserDetailsTemplate() {
       <ConfirmationDialog
         open={activateDialogOpen}
         onOpenChange={setActivateDialogOpen}
-        title="Activate User"
-        description="Are you sure you want to activate this user? Their account will be accessible again."
-        confirmText="Activate"
+        title={t("activate_user_title")}
+        description={t("activate_user_desc")}
+        confirmText={tCommon("confirm")}
         onConfirm={handleConfirmActivate}
         isLoading={isActivating}
       />
@@ -255,7 +259,7 @@ export default function UserDetailsTemplate() {
         open={balanceModalOpen}
         onOpenChange={setBalanceModalOpen}
         currentBalance={walletBalance}
-        userName={user.name || "User"}
+        userName={user.name || t("user")}
         onConfirm={handleConfirmBalance}
         isLoading={isAddingBalance}
       />

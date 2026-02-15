@@ -229,7 +229,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
         columns={columns}
         enablePagination={true}
         pageSize={10}
-        itemLabel="Orders"
+        itemLabel={t("title")}
         onSelectionChange={React.useCallback((rows: TableRowData[]) => {
           onSelectionChange?.(rows.map(r => r.originalOrder))
         }, [onSelectionChange])}
@@ -240,8 +240,8 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
       <ConfirmationModal
         open={modalConfig.open}
         onOpenChange={(open) => setModalConfig((prev) => ({ ...prev, open }))}
-        title={t("cancel_order_title") || "Cancel Order"}
-        description={t("cancel_order_desc") || "Are you sure you want to cancel this order? This action cannot be undone."}
+        title={t("cancel_order_title")}
+        description={t("cancel_order_desc")}
         onConfirm={handleConfirmCancel}
         variant="destructive"
         confirmText={tCommon("confirm")}

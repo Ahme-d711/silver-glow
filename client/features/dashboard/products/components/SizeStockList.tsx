@@ -21,7 +21,8 @@ interface SizeStockListProps {
 }
 
 export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
-  const t = useTranslations("Common");
+  const t = useTranslations("Products");
+  const tCommon = useTranslations("Common");
   const items = value || [];
 
   const handleAdd = () => {
@@ -43,7 +44,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-base font-semibold">Sizes & Stock</Label>
+        <Label className="text-base font-semibold">{t("sizes_title")}</Label>
         <Button
           type="button"
           onClick={handleAdd}
@@ -52,7 +53,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
           className="flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
-          Add Size
+          {t("add_size")}
         </Button>
       </div>
 
@@ -71,7 +72,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Size</Label>
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">{t("size_label")}</Label>
                 <Input
                   value={item.size}
                   onChange={(e) => handleChange(index, "size", e.target.value)}
@@ -80,7 +81,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Stock</Label>
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">{t("stock_label")}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -93,7 +94,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Price</Label>
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">{t("price_label")}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -104,7 +105,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Old Price</Label>
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">{tCommon("old_price")}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -115,7 +116,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cost</Label>
+                <Label className="text-xs font-bold text-neutral-400 uppercase tracking-wider">{tCommon("cost_price")}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -131,7 +132,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
 
         {items.length === 0 && (
           <div className="text-center py-8 border-2 border-dashed rounded-lg text-muted-foreground text-sm">
-            No sizes added yet. Click "Add Size" to start.
+            {tCommon("no_data_desc")}
           </div>
         )}
       </div>

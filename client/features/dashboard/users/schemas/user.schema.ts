@@ -5,64 +5,64 @@ import { z } from "zod";
  */
 export const USER_ROLES = ["admin", "user"] as const;
 
-export const emailSchema = z
+export const emailSchema = (t: (key: string) => string) => z
   .string()
-  .email("Invalid email format")
-  .min(1, "Email is required")
-  .max(500, "Email must be less than 500 characters")
+  .email(t("email_invalid"))
+  .min(1, t("email_required"))
+  .max(500, t("email_too_long"))
   .toLowerCase()
   .trim();
 
-export const passwordSchema = z
+export const passwordSchema = (t: (key: string) => string) => z
   .string()
-  .min(6, "Password must be at least 6 characters")
-  .max(255, "Password must be less than 255 characters")
+  .min(6, t("password_min"))
+  .max(255, t("password_max"))
   .regex(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-    "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    t("password_regex")
   );
 
-export const nameSchema = z
+export const nameSchema = (t: (key: string) => string) => z
   .string()
-  .min(1, "Name is required")
-  .max(500, "Name must be less than 500 characters")
+  .min(1, t("name_required"))
+  .max(500, t("name_too_long"))
   .trim();
 
-export const phoneSchema = z
+export const phoneSchema = (t: (key: string) => string) => z
   .string()
-  .min(1, "Phone number is required")
-  .max(20, "Phone number must be less than 20 characters")
+  .min(1, t("phone_required"))
+  .max(20, t("phone_too_long"))
   .regex(
     /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
-    "Invalid phone number format"
+    t("phone_invalid")
   );
 
-export const pictureSchema = z
+export const pictureSchema = (t: (key: string) => string) => z
   .string()
-  .max(500, "Picture must be less than 500 characters")
+  .max(500, t("picture_too_long"))
   .optional()
   .or(z.literal(""));
 
-export const roleSchema = z.enum(USER_ROLES, {
-  message: `Role must be one of: ${USER_ROLES.join(", ")}`,
+export const roleSchema = (t: (key: string) => string) => z.enum(USER_ROLES, {
+  message: t("role_invalid"),
 });
 
 /**
  * Create User Schema (Exactly like server)
  */
-export const createUserSchema = z.object({
-  name: nameSchema,
-  email: emailSchema,
-  password: passwordSchema.optional(),
-  phone: phoneSchema,
-  picture: pictureSchema,
-  role: roleSchema.default("user"),
+export const getCreateUserSchema = (t: (key: string) => string) => z.object({
+  name: nameSchema(t),
+  email: emailSchema(t),
+  password: passwordSchema(t).optional(),
+  phone: phoneSchema(t),
+  picture: pictureSchema(t),
+  role: roleSchema(t).default("user"),
   isActive: z.boolean().optional().default(true),
   isVerified: z.boolean().optional().default(false),
   isBlocked: z.boolean().optional().default(false),
   address: z
     .string()
-    .max(500, "Address must be less than 500 characters")
+    .max(500, t("address_too_long"))
     .optional(),
   totalOrders: z.coerce.number().int().min(0).optional().default(0),
   totalBalance: z.coerce.number().min(0).optional().default(0),
@@ -73,19 +73,19 @@ export const createUserSchema = z.object({
 /**
  * Update User Schema (Exactly like server)
  */
-export const updateUserSchema = z.object({
-  name: nameSchema.optional(),
-  email: emailSchema.optional(),
-  password: passwordSchema.optional().or(z.literal("")),
-  phone: phoneSchema.optional(),
-  picture: pictureSchema.optional(),
-  role: roleSchema.optional(),
+export const getUpdateUserSchema = (t: (key: string) => string) => z.object({
+  name: nameSchema(t).optional(),
+  email: emailSchema(t).optional(),
+  password: passwordSchema(t).optional().or(z.literal("")),
+  phone: phoneSchema(t).optional(),
+  picture: pictureSchema(t).optional(),
+  role: roleSchema(t).optional(),
   isActive: z.boolean().optional(),
   isVerified: z.boolean().optional(),
   isBlocked: z.boolean().optional(),
   address: z
     .string()
-    .max(500, "Address must be less than 500 characters")
+    .max(500, t("address_too_long"))
     .optional(),
   totalOrders: z.coerce.number().int().min(0).optional(),
   totalBalance: z.coerce.number().min(0).optional(),
@@ -95,7 +95,10 @@ export const updateUserSchema = z.object({
 
 /**
  * Type for the form values - derived from the schema
+ * We use a static version for the type definition
  */
+const staticT = (key: string) => key;
+export const createUserSchema = getCreateUserSchema(staticT);
 export type UserFormValues = z.infer<typeof createUserSchema>;
 
 /**

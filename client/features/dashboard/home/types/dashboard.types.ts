@@ -21,7 +21,7 @@ export interface DashboardStats {
   summary: DashboardSummary;
   ordersByStatus: { [key: string]: number };
   charts: {
-    ordersByCategory: { name: string; value: number }[];
+    ordersByCategory: { nameAr: string; nameEn: string; value: number }[];
     monthlyRevenue: MonthlyRevenueData[];
     ordersByGovernorate: { name: string; value: number }[];
   };
