@@ -33,6 +33,13 @@ import { Schema, model } from "mongoose";
  *         walletBalance:
  *           type: number
  *           description: Current balance in user's wallet
+ *         resetPasswordCode:
+ *           type: string
+ *           description: Code for password reset
+ *         resetPasswordCodeExpires:
+ *           type: string
+ *           format: date-time
+ *           description: Expiration time for password reset code
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -124,6 +131,14 @@ const UserSchema = new Schema<IUser>(
       required: false,
     },
     verificationCodeExpires: {
+      type: Date,
+      required: false,
+    },
+    resetPasswordCode: {
+      type: String,
+      required: false,
+    },
+    resetPasswordCodeExpires: {
       type: Date,
       required: false,
     },

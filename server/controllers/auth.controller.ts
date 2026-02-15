@@ -11,6 +11,8 @@ import {
   updateProfileSchema,
   verifyPhoneSchema,
   resendVerificationSchema,
+  resetPasswordRequestSchema,
+  resetPasswordSchema,
   validateAuthData,
   safeValidateAuthData,
 } from "../schemas/auth-schema.js";
@@ -449,6 +451,84 @@ export const resendVerification = asyncHandler(async (req: Request, res: Respons
   sendResponse(res, 200, {
     success: true,
     message: "Verification code has been sent via WhatsApp",
+  });
+});
+
+/**
+ * Forgot password - Send OTP via WhatsApp
+ */
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  // Validate input data
+  let { phone } = validateAuthData(resetPasswordRequestSchema, req.body);
+
+  // Strip + if exists
+  if (phone) {
+    phone = phone.replace(/^\+/, "");
+  }
+
+  const user = await UserModel.findOne({ phone, isActive: true });
+
+  if (!user) {
+    // Return success even if user not found to prevent user enumeration
+    return sendResponse(res, 200, {
+      success: true,
+      message: "If an account exists with this number, a verification code has been sent via WhatsApp",
+    });
+  }
+
+  // Generate verification code
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const resetCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+  // Update user with reset code
+  user.resetPasswordCode = resetCode;
+  user.resetPasswordCodeExpires = resetCodeExpires;
+  await user.save();
+
+  // Send verification code via WhatsApp
+  await sendVerificationWhatsApp(phone as string, resetCode);
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "If an account exists with this number, a verification code has been sent via WhatsApp",
+  });
+});
+
+/**
+ * Reset password
+ */
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  // Validate input data
+  let { phone, code, password } = validateAuthData(resetPasswordSchema, req.body);
+
+  // Strip + if exists
+  if (phone) {
+    phone = phone.replace(/^\+/, "");
+  }
+
+  const user = await UserModel.findOne({ 
+    phone, 
+    isActive: true,
+    resetPasswordCode: code,
+    resetPasswordCodeExpires: { $gt: new Date() }
+  });
+
+  if (!user) {
+    throw new AppError("Invalid or expired verification code", 400);
+  }
+
+  // Hash new password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Update user
+  user.password = hashedPassword;
+  user.resetPasswordCode = undefined;
+  user.resetPasswordCodeExpires = undefined;
+  await user.save();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Password reset successfully",
   });
 });
 

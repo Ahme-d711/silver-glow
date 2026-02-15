@@ -123,7 +123,7 @@ export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
  * Reset Password Request Schema (for forgot password)
  */
 export const resetPasswordRequestSchema = z.object({
-  email: emailSchema,
+  phone: phoneSchema.refine((val) => val && val.length > 0, "Phone number is required"),
 });
 
 export type ResetPasswordRequestInput = z.infer<typeof resetPasswordRequestSchema>;
@@ -133,7 +133,8 @@ export type ResetPasswordRequestInput = z.infer<typeof resetPasswordRequestSchem
  */
 export const resetPasswordSchema = z
   .object({
-    token: z.string().min(1, "Reset token is required"),
+    phone: phoneSchema.refine((val) => val && val.length > 0, "Phone number is required"),
+    code: z.string().min(4, "Code is required").max(6, "Code must be 6 digits"),
     password: passwordSchema,
     confirmPassword: z.string().min(1, "Password confirmation is required"),
   })

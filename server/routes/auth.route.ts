@@ -9,6 +9,8 @@ import {
   changePassword,
   verifyPhone,
   resendVerification,
+  forgotPassword,
+  resetPassword,
   deleteUser,
 } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
@@ -145,6 +147,61 @@ router.post("/verify-phone", verifyPhone);
  *         description: Verification code sent
  */
 router.post("/resend-verification", resendVerification);
+
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Request password reset (OTP via WhatsApp)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *             properties:
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Verification code sent if account exists
+ */
+router.post("/forgot-password", forgotPassword);
+
+/**
+ * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     summary: Reset password using OTP
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *               - code
+ *               - password
+ *               - confirmPassword
+ *             properties:
+ *               phone:
+ *                 type: string
+ *               code:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               confirmPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ */
+router.post("/reset-password", resetPassword);
 
 /**
  * @swagger

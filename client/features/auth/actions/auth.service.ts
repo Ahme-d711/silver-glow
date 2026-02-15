@@ -414,3 +414,54 @@ export async function deleteUser(): Promise<AuthActionResponse> {
     };
   }
 }
+
+/**
+ * Request password reset
+ */
+export async function forgotPassword(payload: {
+  phone: string;
+}): Promise<AuthActionResponse> {
+  try {
+    const response = await serverAxios.post<ApiResponse>("/auth/forgot-password", payload);
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
+    const message = err.response?.data?.message || "Failed to request password reset";
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+/**
+ * Reset password
+ */
+export async function resetPassword(payload: {
+  phone: string;
+  code: string;
+  password: string;
+  confirmPassword: string;
+}): Promise<AuthActionResponse> {
+  try {
+    const response = await serverAxios.post<ApiResponse>("/auth/reset-password", payload);
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
+    const message = err.response?.data?.message || "Failed to reset password";
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}

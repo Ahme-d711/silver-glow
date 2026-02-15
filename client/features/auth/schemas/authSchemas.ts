@@ -44,3 +44,23 @@ export const verifyPhoneSchema = z.object({
 });
 
 export type VerifyPhoneFormValues = z.infer<typeof verifyPhoneSchema>;
+
+export const forgotPasswordSchema = z.object({
+  phone: z.string().min(1, "Phone number is required"),
+});
+
+export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    phone: z.string().min(1, "Phone number is required"),
+    code: z.string().length(6, "Code must be 6 digits"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Password confirmation is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;

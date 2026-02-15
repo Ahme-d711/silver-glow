@@ -21,6 +21,8 @@ export interface IUser extends Document {
   lastTransactionAt?: Date;
   verificationCode?: string;
   verificationCodeExpires?: Date;
+  resetPasswordCode?: string;
+  resetPasswordCodeExpires?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
