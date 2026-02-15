@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Smartphone } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -16,7 +15,6 @@ import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 
 export function VerifyForm() {
-  const t = useTranslations("Auth");
   const searchParams = useSearchParams();
   const phone = searchParams.get("phone") || "";
   
@@ -47,7 +45,7 @@ export function VerifyForm() {
 
   const handleResend = async () => {
     if (!phone) {
-        toast.error(t("phone_missing"));
+        toast.error("Phone number missing");
         return;
     }
     await resend(phone);
@@ -60,10 +58,10 @@ export function VerifyForm() {
             <Smartphone className="h-10 w-10" />
         </div>
         <h2 className="text-4xl md:text-5xl text-left font-bold text-primary">
-          {t("verify_phone")}
+          Verify Phone Number
         </h2>
         <p className="font-medium text-primary/60 max-w-md">
-          {t("verification_instructions")}
+          Please enter the 6-digit verification code sent to your phone.
           {phone && <span className="block mt-1 font-bold text-primary">{phone}</span>}
         </p>
       </div>
@@ -93,7 +91,7 @@ export function VerifyForm() {
                 className="w-full h-14 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" 
                 disabled={loading || form.watch("code").length < 4}
             >
-                {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : t("verify")}
+                {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : "Verify"}
             </Button>
 
             <div className="text-center">
@@ -107,8 +105,8 @@ export function VerifyForm() {
                         <Loader className="h-4 w-4 animate-spin inline mr-2" />
                     ) : null}
                     {canResend 
-                        ? t("resend_code") 
-                        : t("resend_in", { seconds: countdown })
+                        ? "Resend Code" 
+                        : `Resend in ${countdown}s`
                     }
                 </button>
             </div>
@@ -116,7 +114,7 @@ export function VerifyForm() {
 
           <div className="text-center">
             <Link href="/register" className="text-sm font-medium text-primary/60 hover:text-primary transition-colors">
-              {t("back")}
+              Back
             </Link>
           </div>
         </form>

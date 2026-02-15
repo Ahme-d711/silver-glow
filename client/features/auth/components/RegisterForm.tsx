@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, User } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -22,7 +21,6 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ register, loading }: RegisterFormProps) {
-  const t = useTranslations("Auth");
   const router = useRouter();
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -39,7 +37,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
   async function onSubmit(data: RegisterFormValues) {
     try {
       await register(data);
-      toast.success(t("register_success") || "Account created successfully!");
+      toast.success("Account created successfully!");
       // Redirect to verification page
       router.push(`/verify?phone=${encodeURIComponent(data.phone)}`);
     } catch (error) {
@@ -52,9 +50,9 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
     <div className="w-full space-y-8 max-w-xl mx-auto">
       <div className="space-y-3">
         <h2 className="text-5xl font-bold text-primary">
-          {t("create_account")}
+          Create Account
         </h2>
-        <p className="font-medium text-primary/60">{t("sign_up_text")}</p>
+        <p className="font-medium text-primary/60">Enter your details to create a new account</p>
       </div>
 
       <Form {...form}>
@@ -62,21 +60,21 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
           <UniInput
             control={form.control}
             name="name"
-            label={t("full_name")}
+            label="Full Name"
             placeholder="ex. John Smith"
           />
 
           <UniPhoneInput
             control={form.control}
             name="phone"
-            label={t("phone")}
+            label="Phone Number"
             placeholder="123456789"
           />
 
           <UniInput
             control={form.control}
             name="email"
-            label={t("email")}
+            label="Email"
             placeholder="ahmed@simple.com"
             type="email"
           />
@@ -87,7 +85,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             name="gender"
             render={({ field }) => (
               <FormItem className="space-y-">
-                <FormLabel className="text-content-secondary text-base font-medium">{t("gender")}</FormLabel>
+                <FormLabel className="text-content-secondary text-base font-medium">Gender</FormLabel>
                 <FormControl>
                   <div className="flex gap-4">
                     <button
@@ -101,7 +99,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
                       )}
                     >
                       <User className="h-5 w-5" />
-                      <span className="font-medium">{t("male")}</span>
+                      <span className="font-medium">Male</span>
                     </button>
                     <button
                       type="button"
@@ -114,7 +112,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
                       )}
                     >
                       <User className="h-5 w-5" />
-                      <span className="font-medium">{t("female")}</span>
+                      <span className="font-medium">Female</span>
                     </button>
                   </div>
                 </FormControl>
@@ -127,7 +125,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             <UniInput
               control={form.control}
               name="password"
-              label={t("password")}
+              label="Password"
               placeholder="*******"
               type="password"
             />
@@ -137,22 +135,22 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
             <UniInput
               control={form.control}
               name="confirmPassword"
-              label={t("confirm_password")}
+              label="Confirm Password"
               placeholder="*******"
               type="password"
             />
           </div>
 
           <Button type="submit" className="w-full h-14 mt-4 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
-            {t("register_submit")}
+            Create Account
             {loading && <Loader className="mr-2 h-4 w-4 animate-spin" /> } 
           </Button>
 
           <div className="text-center">
             <p className="text-sm font-medium text-primary/60">
-              {t("already_have_account")}{" "}
+              Already have an account?{" "}
               <Link href="/login" className="text-primary font-bold hover:underline">
-                {t("sign_in")}
+                Sign in
               </Link>
             </p>
           </div>

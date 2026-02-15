@@ -83,10 +83,10 @@ export function SearchBar() {
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
         />
         <Search 
-          className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40 cursor-pointer" 
+          className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40 cursor-pointer" 
           onClick={handleSearch}
         />
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 p-1 border-l border-divider/50">
+        <div className="absolute right-4 rtl:right-auto rtl:left-4 top-1/2 -translate-y-1/2 p-1 border-l rtl:border-l-0 rtl:border-r border-divider/50">
            <Menu className="h-5 w-5 text-primary/40" />
         </div>
       </div>

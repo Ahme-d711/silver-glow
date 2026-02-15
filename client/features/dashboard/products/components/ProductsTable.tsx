@@ -268,10 +268,6 @@ export default function ProductsTable({
   ];
 
   if (isLoading) {
-    return <UniLoading message={tCommon("loading")} />;
-  }
-
-  if (isLoading) {
     return <UniTableSkeleton columnCount={8} rowCount={10} />;
   }
 

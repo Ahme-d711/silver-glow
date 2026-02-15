@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { AdForm } from "../components/AdForm"
 import { useCreateAd } from "../hooks/useAds"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 export default function AddAdsTemplate() {
   const router = useRouter()
@@ -14,6 +16,7 @@ export default function AddAdsTemplate() {
     createAd(data, {
         onSuccess: (response) => {
             if (response.success) {
+                toast.success(t("success_create"))
                 router.push("/dashboard/ads")
             }
         }
@@ -24,14 +27,17 @@ export default function AddAdsTemplate() {
     router.back()
   }
 
+  const t = useTranslations("Ads")
+  const tNav = useTranslations("Navigation")
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Ads"
+        title={t("title")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "Ads", href: "/dashboard/ads" },
-          { label: "Add Ad" },
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title"), href: "/dashboard/ads" },
+          { label: t("add_ad") },
         ]}
       />
 

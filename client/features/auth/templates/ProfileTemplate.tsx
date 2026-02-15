@@ -28,9 +28,9 @@ export default function ProfileTemplate() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const userName = user?.name || "User";
+  const userName = user?.name || t("user_fallback");
   const userPhoto = previewUrl || getImageUrl(user?.picture);
-  const userInitial = userName.charAt(0).toUpperCase();
+  const userInitial = (user?.name || "U").charAt(0).toUpperCase();
 
   // Sync state when user data is loaded from store (handles refresh)
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function ProfileTemplate() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(t("file_too_large") || "Image must be less than 5MB");
+        toast.error(t("file_too_large"));
         return;
       }
       setSelectedImage(file);
@@ -58,7 +58,7 @@ export default function ProfileTemplate() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error(t("name_required") || "Name is required");
+      toast.error(t("name_required"));
       return;
     }
 
@@ -95,7 +95,7 @@ export default function ProfileTemplate() {
           className="flex items-center gap-2 text-primary/60 hover:text-primary mb-8 transition-colors w-fit font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
-          {tNav("back_home") || "Back to Home"}
+          {tNav("back_home")}
         </Link>
 
         <input 
@@ -194,7 +194,7 @@ export default function ProfileTemplate() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-slate-600 font-medium ml-1">{t("email_address_readonly") || "Email Address (Read-only)"}</Label>
+                    <Label htmlFor="email" className="text-slate-600 font-medium ml-1">{t("email_address_readonly")}</Label>
                     <div className="relative opacity-80">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                       <Input 

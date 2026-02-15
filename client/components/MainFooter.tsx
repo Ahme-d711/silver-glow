@@ -78,7 +78,7 @@ const MainFooter = () => {
           {/* Brand Info */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="text-3xl font-bold text-primary tracking-tight">
-              Silver Glow.Com
+              {t("brand_name")}
             </Link>
             <p className="text-content-secondary text-base max-w-xs leading-relaxed">
               {t("description")}

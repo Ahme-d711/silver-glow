@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 import { getImageUrl } from "@/utils/image.utils";
 import { Ad } from "@/features/dashboard/ads/types";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 // Import Swiper styles
 import "swiper/css";
@@ -17,6 +17,7 @@ import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 
 export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean }) {
+  const t = useTranslations("Home");
   const locale = useLocale();
   const isAr = locale === "ar";
 
@@ -83,7 +84,7 @@ export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean
                 </p>
                 <div className="pt-4 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
                   <Button className="h-14 px-12 rounded-2xl bg-white text-primary hover:bg-white/90 text-lg font-bold shadow-xl border-none cursor-pointer">
-                    Start Now
+                    {t("start_now")}
                   </Button>
                 </div>
               </div>

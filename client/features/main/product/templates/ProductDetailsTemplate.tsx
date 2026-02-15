@@ -38,9 +38,9 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   if (isError || !product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold text-primary">{t("Product not found")}</h1>
+        <h1 className="text-2xl font-bold text-primary">{t("product_not_found")}</h1>
         <Link href="/shop" className="text-primary underline hover:text-primary/80">
-          {t("Return to Shop")}
+          {t("return_to_shop")}
         </Link>
       </div>
     );
@@ -57,8 +57,8 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           <StorefrontPageHeader
             title={productName}
             breadcrumbs={[
-              { label: t("home") || "Home", href: "/" },
-              { label: t("title") || "Shop", href: "/shop" },
+              { label: t("home"), href: "/" },
+              { label: t("title"), href: "/shop" },
               { label: productName },
             ]}
             className="mb-10"
@@ -79,7 +79,7 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           {/* Customer Reviews */}
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-primary mb-6">
-              {t("Reviews") || "Customer Reviews"} ({product.numReviews || 0})
+              {t("Reviews")} ({product.numReviews || 0})
             </h2>
             <ReviewsTab productId={product._id} />
           </div>

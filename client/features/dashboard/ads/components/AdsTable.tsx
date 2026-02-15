@@ -1,9 +1,11 @@
-import UniTable, { ActionCell, ActionButton, Trash2, Pencil, UniTableColumn, SelectionCell, SelectionHeader } from "@/components/shared/UniTable"
+import UniTable, { ActionCell, ActionButton, UniTableColumn, SelectionCell, SelectionHeader } from "@/components/shared/UniTable"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
 import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch"
-import { useTranslations, useLocale } from "next-intl"
+import { Trash2, Pencil, MoreVertical } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
+import { cn } from "@/lib/utils"
 import { getImageUrl } from "@/utils/image.utils"
 import type { Ad } from "../types"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
@@ -79,19 +81,31 @@ export function AdsTable({
       ),
     },
     {
-      id: "image",
-      header: tCommon("image"),
+      id: "photo",
+      header: tCommon("photo"),
       cell: (_: unknown, row: Ad) => (
-        <div className="h-10 w-10 bg-gray-200 rounded-lg overflow-hidden">
-             <img src={getImageUrl(row.photo) || "/ads-1.svg"} alt={row.nameEn} className="h-full w-full object-cover" />
+        <div className="relative h-12 w-12 rounded-lg overflow-hidden border border-divider">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={getImageUrl(row.photo) || "/ads-1.svg"} 
+            alt="Ad" 
+            className="object-cover w-full h-full"
+          />
         </div>
       ),
     },
     {
-      id: "title",
-      header: tAds("title"),
+      id: "name",
+      header: tCommon("name_ar"),
       cell: (_: unknown, row: Ad) => (
-        <span className="text-gray-600 font-medium">{locale === "ar" ? row.nameAr : row.nameEn}</span>
+        <div className="flex flex-col">
+          <span className="font-medium text-content-primary">
+            {locale === 'ar' ? row.nameAr : row.nameEn}
+          </span>
+          <span className="text-xs text-content-tertiary">
+            {tAds("adId")}: {row.id || row._id}
+          </span>
+        </div>
       ),
     },
     {
@@ -99,7 +113,7 @@ export function AdsTable({
       header: tCommon("description"),
       cell: (_: unknown, row: Ad) => (
         <span className="text-gray-500 text-sm truncate max-w-[150px] block">
-            {row.link || tCommon("none")}
+          {row.link || tCommon("none")}
         </span>
       ),
     },
@@ -138,11 +152,19 @@ export function AdsTable({
       id: "status",
       header: tCommon("status"),
       cell: (_: unknown, row: Ad) => (
-        <Switch
-          checked={row.isShown}
-          onCheckedChange={(checked) => onToggleStatus(row.id || row._id || "", checked)}
-          className="data-[state=checked]:bg-primary"
-        />
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={row.isShown}
+            onCheckedChange={(checked) => onToggleStatus(row.id || row._id || "", checked)}
+            className="data-[state=checked]:bg-primary"
+          />
+          <span className={cn(
+            "text-xs font-medium",
+            row.isShown ? "text-primary" : "text-content-tertiary"
+          )}>
+            {row.isShown ? tCommon("active") : tCommon("inactive")}
+          </span>
+        </div>
       ),
     },
     {

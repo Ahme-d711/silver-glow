@@ -8,6 +8,8 @@ import { useAd, useUpdateAd } from "../hooks/useAds"
 import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 export default function EditAdsTemplate() {
   const router = useRouter()
@@ -21,6 +23,7 @@ export default function EditAdsTemplate() {
     updateAd({ id, data }, {
         onSuccess: (response) => {
             if (response.success) {
+                toast.success(t("success_update"))
                 router.push("/dashboard/ads")
             }
         }
@@ -31,17 +34,21 @@ export default function EditAdsTemplate() {
     router.back()
   }
 
+  const t = useTranslations("Ads")
+  const tNav = useTranslations("Navigation")
+  const tCommon = useTranslations("Common")
+
   if (isLoadingAd) return <FormPageSkeleton />;
-  if (error || !ad) return <NoDataMsg title="Error loading ad" />
+  if (error || !ad) return <NoDataMsg title={t("error_loading_ad") || "Error loading ad"} />
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Edit Advertisement"
+        title={t("edit_ad")}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "Advertisements", href: "/dashboard/ads" },
-          { label: "Edit Ad" },
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title"), href: "/dashboard/ads" },
+          { label: t("edit_ad") },
         ]}
       />
 

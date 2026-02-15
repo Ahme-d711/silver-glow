@@ -38,7 +38,7 @@ export default function AdsTemplate() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get("search") || ""
   const locale = useLocale()
-  const t = useTranslations("Ads")
+  const tAds = useTranslations("Ads")
   const tCommon = useTranslations("Common")
   const tNav = useTranslations("Navigation")
 
@@ -121,10 +121,10 @@ export default function AdsTemplate() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={t("title")}
+        title={tAds("title")}
         breadcrumbs={[
           { label: tNav("dashboard"), href: "/dashboard" },
-          { label: t("title") },
+          { label: tAds("title") },
         ]}
         actionButtons={[
           {
@@ -134,7 +134,7 @@ export default function AdsTemplate() {
             variant: "secondary",
           },
           {
-            label: t("add_ad"),
+            label: tAds("add_ad"),
             icon: Plus,
             href: "/dashboard/ads/add",
           }
@@ -177,7 +177,7 @@ export default function AdsTemplate() {
       <ConfirmationModal
         open={deleteModalOpen}
         onOpenChange={setDeleteModalOpen}
-        title={t("delete_ad")}
+        title={tAds("delete_ad")}
         description={tCommon("confirm_delete_desc", { 
           name: adsData?.find(a => (a._id || a.id) === adToDelete)?.[locale === 'ar' ? 'nameAr' : 'nameEn'] || "" 
         })}
@@ -185,11 +185,11 @@ export default function AdsTemplate() {
         cancelText={tCommon("cancel")}
         variant="destructive"
         itemType="delete"
-        itemName={t("title").toLowerCase()}
+        itemName={tAds("title").toLowerCase()}
         icon={<Trash2 className="h-8 w-8" />}
         onConfirm={handleConfirmDelete}
         onSuccess={() => {
-          toast.success(tCommon("success_delete") || "Ad deleted successfully")
+          toast.success(tAds("success_delete") || "Ad deleted successfully")
         }}
       />
     </div>

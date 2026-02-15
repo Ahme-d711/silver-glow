@@ -74,7 +74,7 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({ productId }) => {
   };
 
   const handleDelete = (reviewId: string) => {
-    if (confirm("Are you sure you want to delete this review?")) {
+    if (confirm(t("delete_review_confirm"))) {
       deleteReview({ id: reviewId, productId });
     }
   };

@@ -76,7 +76,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                 <Input
                   value={item.size}
                   onChange={(e) => handleChange(index, "size", e.target.value)}
-                  placeholder="e.g. S, M, L"
+                  placeholder={t("size_placeholder")}
                   className="h-10 rounded-xl border-divider focus:ring-primary/20"
                 />
               </div>
@@ -87,6 +87,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                   min="0"
                   value={item.stock}
                   onChange={(e) => handleChange(index, "stock", parseInt(e.target.value) || 0)}
+                  placeholder="0"
                   className="h-10 rounded-xl border-divider focus:ring-primary/20"
                 />
               </div>
@@ -100,7 +101,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                   min="0"
                   value={item.price}
                   onChange={(e) => handleChange(index, "price", parseFloat(e.target.value) || 0)}
-                  placeholder="0.00"
+                  placeholder={tCommon("price")}
                   className="h-10 rounded-xl border-divider focus:ring-primary/20"
                 />
               </div>
@@ -111,7 +112,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                   min="0"
                   value={item.oldPrice}
                   onChange={(e) => handleChange(index, "oldPrice", parseFloat(e.target.value) || 0)}
-                  placeholder="0.00"
+                  placeholder={tCommon("price")}
                   className="h-10 rounded-xl border-divider focus:ring-primary/20"
                 />
               </div>
@@ -122,7 +123,7 @@ export function SizeStockList({ value = [], onChange }: SizeStockListProps) {
                   min="0"
                   value={item.costPrice}
                   onChange={(e) => handleChange(index, "costPrice", parseFloat(e.target.value) || 0)}
-                  placeholder="0.00"
+                  placeholder={tCommon("price")}
                   className="h-10 rounded-xl border-divider focus:ring-primary/20"
                 />
               </div>

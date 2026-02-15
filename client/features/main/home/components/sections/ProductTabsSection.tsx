@@ -28,7 +28,7 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
 
   // Combine "All" with fetched sections
   const tabs = [
-    { _id: undefined, nameAr: "الكل", nameEn: "All" },
+    { _id: undefined, nameAr: t("all"), nameEn: t("all") },
     ...sections
   ];
 

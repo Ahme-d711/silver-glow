@@ -47,7 +47,7 @@ export function NavbarActions() {
             </span>
           )}
         </div>
-        <span className="hidden lg:inline">{t("wishlist") || "Wishlist"}</span>
+        <span className="hidden lg:inline">{t("wishlist")}</span>
       </Link>
       
       <div className="h-6 w-px bg-white/20 hidden md:block" />

@@ -17,7 +17,7 @@ import { UniInput } from "@/components/shared/uni-form/UniInput"
 import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox"
 import { UniCheckbox } from "@/components/shared/uni-form/UniCheckbox"
 import { Card } from "@/components/ui/card"
-import { adSchema, type AdFormValues } from "../schemas/adSchemas"
+import { getAdSchema, type AdFormValues } from "../schemas/adSchemas"
 import { useTranslations } from "next-intl"
 
 import { getAllProducts } from "@/features/dashboard/products/services/product.service"
@@ -32,9 +32,10 @@ interface AdFormProps {
 }
 
 export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: AdFormProps) {
-  const t = useTranslations("Common")
+  const tCommon = useTranslations("Common")
   const tAds = useTranslations("Ads")
   const tOrders = useTranslations("Orders")
+  const tValidation = useTranslations("Validation")
   
   const [imagePreview, setImagePreview] = useState<string | null>(
     initialData?.photo ? (initialData.photo.startsWith('http') || initialData.photo.startsWith('/') ? initialData.photo : `/${initialData.photo}`) : null
@@ -47,7 +48,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     : (productIdValue as string) || "";
 
   const form = useForm<AdFormValues>({
-    resolver: zodResolver(adSchema) as Resolver<AdFormValues>,
+    resolver: zodResolver(getAdSchema(tValidation)) as Resolver<AdFormValues>,
     defaultValues: {
       nameAr: initialData?.nameAr || "",
       nameEn: initialData?.nameEn || "",
@@ -108,14 +109,14 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
         {/* Left Sidebar - Photo */}
         <div className="lg:col-span-4 space-y-6">
           <Card className="p-6 rounded-[24px] border border-divider shadow-none">
-            <h3 className="text-lg font-semibold text-content-primary mb-4">{t("photo")}</h3>
+            <h3 className="text-lg font-semibold text-content-primary mb-4">{tCommon("photo")}</h3>
             
             <FormField
               control={form.control}
               name="photo"
               render={() => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="text-content-secondary text-base">{t("photo")}</FormLabel>
+                  <FormLabel className="text-content-secondary text-base">{tCommon("photo")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <input
@@ -135,7 +136,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                             <ImageIcon className="h-8 w-8 text-primary" />
                           </div>
                           <p className="text-sm text-content-tertiary text-center mb-4 px-4">
-                            {t("drag_drop_image")}
+                            {tCommon("drag_drop_image")}
                           </p>
                           <Button 
                             type="button"
@@ -145,7 +146,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                               fileInputRef.current?.click()
                             }}
                           >
-                            {t("add_image")}
+                            {tCommon("add_image")}
                           </Button>
                         </div>
                       ) : (
@@ -181,23 +182,23 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
         {/* Right Section - General Information */}
         <div className="lg:col-span-8">
           <Card className="p-8 rounded-[32px] border border-divider shadow-none">
-            <h3 className="text-xl font-semibold text-content-primary mb-6">{t("general_info")}</h3>
+            <h3 className="text-xl font-semibold text-content-primary mb-6">{tCommon("general_info")}</h3>
             
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <UniInput
                   control={form.control}
                   name="nameAr"
-                  label={t("name_ar")}
-                  placeholder={t("enter_name_ar")}
+                  label={tCommon("name_ar")}
+                  placeholder={tCommon("enter_name_ar")}
                   required
                 />
 
                 <UniInput
                   control={form.control}
                   name="nameEn"
-                  label={t("name_en")}
-                  placeholder={t("enter_name_en")}
+                  label={tCommon("name_en")}
+                  placeholder={tCommon("enter_name_en")}
                   required
                 />
               </div>
@@ -206,15 +207,15 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 <UniInput
                   control={form.control}
                   name="descriptionAr"
-                  label={t("description_ar")}
-                  placeholder={t("description_ar")}
+                  label={tCommon("description_ar")}
+                  placeholder={tCommon("description_ar")}
                 />
 
                 <UniInput
                   control={form.control}
                   name="descriptionEn"
-                  label={t("description_en")}
-                  placeholder={t("description_en")}
+                  label={tCommon("description_en")}
+                  placeholder={tCommon("description_en")}
                 />
               </div>
 
@@ -222,7 +223,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 <UniInput
                   control={form.control}
                   name="priority"
-                  label={t("priority")}
+                  label={tCommon("priority")}
                   type="number"
                   required
                 />
@@ -230,18 +231,18 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 <UniInput
                   control={form.control}
                   name="link"
-                  label={`${t("link")} (${t("optional")})`}
-                  placeholder="https://..."
+                  label={`${tCommon("link")} (${tCommon("optional")})`}
+                  placeholder={tCommon("link_placeholder") || "https://..."}
                 />
 
                 <UniAsyncCombobox
                   control={form.control}
                   name="productId"
-                  label={`${tOrders("product")} (${t("optional")})`}
+                  label={`${tOrders("product")} (${tCommon("optional")})`}
                   fetchData={fetchProducts}
                   placeholder={tOrders("select_product")}
-                  searchPlaceholder={t("search")}
-                  emptyMessage={t("no_data")}
+                  searchPlaceholder={tCommon("search")}
+                  emptyMessage={tCommon("no_data")}
                   getItemLabel={(product: Product) => product.nameAr || product.nameEn}
                 />
               </div>
@@ -249,7 +250,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
               <UniCheckbox
                 control={form.control}
                 name="isShown"
-                label={t("is_show")}
+                label={tCommon("is_show")}
               />
             </div>
           </Card>
@@ -260,7 +261,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
               disabled={isLoading}
               className="h-12 px-12 rounded-xl bg-primary text-white font-bold cursor-pointer disabled:opacity-50"
             >
-              {isLoading ? t("saving") : t("save")}
+              {isLoading ? tCommon("saving") : tCommon("save")}
             </Button>
             {onCancel && (
               <Button 
@@ -270,7 +271,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 disabled={isLoading}
                 className="h-12 px-8 rounded-xl border-divider font-bold text-content-secondary cursor-pointer disabled:opacity-50"
               >
-                {t("cancel")}
+                {tCommon("cancel")}
               </Button>
             )}
           </div>

@@ -23,10 +23,10 @@ export function DashboardNavbar() {
   const { logout, loading: isLoggingOut } = useLogout();
   console.log(user);
 
-  const userName = user?.name || "Ahmed Elgedawy";
+  const userName = user?.name || tAuth("user_fallback");
   const userPhoto = getImageUrl(user?.picture);
-  const userInitial = userName?.charAt(0).toUpperCase() || "M";
-  const userRole = user?.role === "admin" ? "Admin" : "Admin"; // Simplified for now
+  const userInitial = userName?.charAt(0).toUpperCase() || "U";
+  const userRole = user?.role === "admin" ? t("admin_status") : t("user_fallback"); 
   const [imageError, setImageError] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 

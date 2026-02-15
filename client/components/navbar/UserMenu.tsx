@@ -22,7 +22,7 @@ export function UserMenu() {
   
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   
-  const userName = user?.name || "User";
+  const userName = user?.name || tAuth("user_fallback");
   const userPhoto = getImageUrl(user?.picture);
   const userInitial = userName.charAt(0).toUpperCase();
 
@@ -39,7 +39,7 @@ export function UserMenu() {
     <>
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none">
+          <button className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer">
             <Avatar className="h-8 w-8 border border-white/20">
               {!imageError && userPhoto ? (
                 <AvatarImage
@@ -75,7 +75,7 @@ export function UserMenu() {
                     className="object-cover h-full w-full" 
                   />
                 </div>
-                {t("profile") || "Profile"}
+                {t("profile")}
               </Button>
             </Link>
             {user?.role === "admin" && (
@@ -85,7 +85,7 @@ export function UserMenu() {
                   className="w-full justify-start cursor-pointer h-9 px-2"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  Dashboard
+                  {t("dashboard")}
                 </Button>
               </Link>
             )}
@@ -95,7 +95,7 @@ export function UserMenu() {
                 className="w-full justify-start cursor-pointer h-9 px-2"
               >
                 <Package className="h-4 w-4 mr-2" />
-                {t("my_orders") || "My Orders"}
+                {t("my_orders")}
               </Button>
             </Link>
             <Button

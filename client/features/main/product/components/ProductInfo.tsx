@@ -87,7 +87,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
   const handleToggleWishlist = () => {
     if (!user) {
-      toast.error(t("login_required_wishlist") || "Please login to add items to your wishlist");
+      toast.error(t("login_required_wishlist"));
       return;
     }
     toggleWishlist(product._id);
@@ -115,7 +115,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             ))}
           </div>
           <span className="text-secondary font-medium text-sm">
-            {product.numReviews} {t("Reviews") || "Reviews"}
+            {product.numReviews} {t("Reviews")}
           </span>
         </div>
       </div>
@@ -132,13 +132,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       </div>
 
       <div className="flex items-center gap-2 text-sm font-medium">
-        <span className="text-content-secondary">{t("Availability") || "Availability"}:</span>
+        <span className="text-content-secondary">{t("Availability")}:</span>
         {isInStock ? (
           <span className="text-green-600 flex items-center gap-1">
             <CheckCircle2 className="w-4 h-4" /> 
-            {t("In Stock") || "In Stock"} 
+            {t("In Stock")} 
             <span className="text-primary/60 font-bold ml-1">
-              ({currentStock} {t("pieces") || "pieces"})
+              ({currentStock} {t("pieces")})
             </span>
           </span>
         ) : (
@@ -151,12 +151,12 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       {sizes.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-primary font-bold text-lg">{t("Size") || "Size"}</span>
+            <span className="text-primary font-bold text-lg">{t("Size")}</span>
             <button 
               onClick={() => setIsSizeGuideOpen(true)}
               className="text-sm text-content-tertiary underline decoration-dotted hover:text-primary transition-colors"
             >
-              {t("Guide") || "Guide"}
+              {t("Guide")}
             </button>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -211,7 +211,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               disabled={quantity <= 1 || isPending}
-              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors"
+              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors cursor-pointer"
             >
               <Minus className="h-5 w-5" />
             </button>
@@ -221,7 +221,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             <button
               onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
               disabled={quantity >= product.stock || isPending}
-              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors"
+              className="p-1 hover:text-primary disabled:text-neutral-400 transition-colors cursor-pointer"
             >
               <Plus className="h-5 w-5" />
             </button>
@@ -231,7 +231,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             size="lg" 
             onClick={handleAddToCart}
             disabled={!isInStock || isPending}
-            className="flex-1 min-w-[200px] rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+            className="flex-1 min-w-[200px] rounded-xl h-14 text-base font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {isPending ? (
               <span className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             ) : (
               <>
                 <ShoppingCart className="w-5 h-5" />
-                {t("add_to_cart") || "Add to Cart"}
+                {t("add_to_cart")}
               </>
             )}
           </Button>
