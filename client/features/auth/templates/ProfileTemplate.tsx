@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { getImageUrl } from "@/utils/image.utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,6 +21,7 @@ export default function ProfileTemplate() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [imageError, setImageError] = useState(false);
@@ -31,8 +32,14 @@ export default function ProfileTemplate() {
   const userPhoto = previewUrl || getImageUrl(user?.picture);
   const userInitial = userName.charAt(0).toUpperCase();
 
-  console.log(user);
-  
+  // Sync state when user data is loaded from store (handles refresh)
+  useEffect(() => {
+    if (user && !isInitialized) {
+      setName(user.name || "");
+      setPhone(user.phone || "");
+      setIsInitialized(true);
+    }
+  }, [user, isInitialized]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,11 +88,11 @@ export default function ProfileTemplate() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary via-primary/95 to-primary/90 pt-32 pb-20 px-4">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 pt-32 pb-20 px-4">
       <div className="container mx-auto max-w-4xl">
         <Link 
           href="/" 
-          className="flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors w-fit"
+          className="flex items-center gap-2 text-primary/60 hover:text-primary mb-8 transition-colors w-fit font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
           {tNav("back_home") || "Back to Home"}
@@ -100,11 +107,13 @@ export default function ProfileTemplate() {
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Profile Summary */}
           <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-white/10 border-white/20 backdrop-blur-md text-white">
+            <Card className="bg-white border-slate-200 shadow-xl text-slate-900 border-none overflow-hidden">
+              <div className="h-1.5 bg-linear-to-r from-primary/80 to-primary" />
               <CardContent className="pt-10 pb-10 flex flex-col items-center">
                 <div className="relative group mb-6">
-                  <Avatar className="h-32 w-32 border-4 border-white/30 shadow-2xl">
+                  <Avatar className="h-32 w-32 border-4 border-slate-50 shadow-xl">
                     {!imageError && userPhoto ? (
                       <AvatarImage
                         src={userPhoto}
@@ -113,70 +122,71 @@ export default function ProfileTemplate() {
                         onError={() => setImageError(true)}
                       />
                     ) : null}
-                    <AvatarFallback className="bg-primary-light text-primary font-bold text-4xl">
+                    <AvatarFallback className="bg-primary/5 text-primary font-bold text-4xl">
                       {userInitial}
                     </AvatarFallback>
                   </Avatar>
                   <button 
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 right-0 bg-white text-primary p-2 rounded-full shadow-lg hover:scale-110 transition-transform cursor-pointer"
+                    className="absolute bottom-0 right-0 bg-primary text-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-transform cursor-pointer border-2 border-white"
                   >
                     <Camera className="h-5 w-5" />
                   </button>
                 </div>
                 
-                <h2 className="text-2xl font-bold mb-1">{userName}</h2>
-                <p className="text-white/60 text-sm mb-6">{user?.email}</p>
+                <h2 className="text-2xl font-bold mb-1 text-primary">{userName}</h2>
+                <p className="text-slate-500 text-sm mb-6 font-medium">{user?.email}</p>
                 
-                <div className="w-full pt-6 border-t border-white/10 flex justify-center gap-4">
+                <div className="w-full pt-6 border-t border-slate-100 flex justify-center gap-4">
                    <div className="text-center">
-                      <p className="text-lg font-bold">0</p>
-                      <p className="text-xs text-white/60">{t("orders")}</p>
+                      <p className="text-lg font-bold text-primary">0</p>
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">{t("orders")}</p>
                    </div>
-                   <div className="h-8 w-px bg-white/10" />
+                   <div className="h-8 w-px bg-slate-100" />
                    <div className="text-center">
-                      <p className="text-lg font-bold">0</p>
-                      <p className="text-xs text-white/60">{t("wallet")}</p>
+                      <p className="text-lg font-bold text-primary">0</p>
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">{t("wallet")}</p>
                    </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
+          {/* Right Column - Edit Form */}
           <div className="lg:col-span-2">
-            <Card className="bg-white border-none shadow-2xl overflow-hidden">
-              <div className="h-2 bg-linear-to-r from-primary-light to-primary" />
-              <CardHeader className="pb-2">
-                <CardTitle className="text-2xl text-primary">{t("edit_profile")}</CardTitle>
-                <CardDescription>{t("edit_profile_desc")}</CardDescription>
+            <Card className="bg-white border-none shadow-xl overflow-hidden">
+              <div className="h-1.5 bg-linear-to-r from-primary/80 to-primary" />
+              <CardHeader className="pb-2 pt-8 px-8">
+                <CardTitle className="text-2xl text-primary font-bold">{t("edit_profile")}</CardTitle>
+                <CardDescription className="text-slate-500">{t("edit_profile_desc")}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSave} className="space-y-6 pt-4">
+              <CardContent className="p-8">
+                <form onSubmit={handleSave} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-primary/70">{t("full_name")}</Label>
+                      <Label htmlFor="name" className="text-slate-600 font-medium ml-1">{t("full_name")}</Label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                         <Input 
                           id="name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="pl-10 h-11 border-primary/10 focus:border-primary/30" 
+                          className="pl-10 h-12 border-slate-200 focus:border-primary/30 focus:ring-primary/10 rounded-xl bg-slate-50/50" 
                           placeholder={t("name_placeholder")}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-primary/70">{t("phone")}</Label>
+                      <Label htmlFor="phone" className="text-slate-600 font-medium ml-1">{t("phone")}</Label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                         <Input 
                           id="phone"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="pl-10 h-11 border-primary/10 focus:border-primary/30" 
+                          className="pl-10 h-12 border-slate-200 focus:border-primary/30 focus:ring-primary/10 rounded-xl bg-slate-50/50" 
                           placeholder={t("phone_placeholder")}
                         />
                       </div>
@@ -184,14 +194,14 @@ export default function ProfileTemplate() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-primary/70">{t("email_address_readonly") || "Email Address (Read-only)"}</Label>
-                    <div className="relative opacity-60">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
+                    <Label htmlFor="email" className="text-slate-600 font-medium ml-1">{t("email_address_readonly") || "Email Address (Read-only)"}</Label>
+                    <div className="relative opacity-80">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                       <Input 
                         id="email"
                         value={user?.email || ""}
                         readOnly
-                        className="pl-10 h-11 bg-primary/5 border-transparent cursor-not-allowed" 
+                        className="pl-10 h-12 bg-slate-100/50 border-slate-200 cursor-not-allowed rounded-xl" 
                       />
                     </div>
                   </div>
@@ -199,15 +209,15 @@ export default function ProfileTemplate() {
                   <div className="pt-6 flex justify-end">
                     <Button 
                       type="submit" 
-                      className="bg-primary hover:bg-primary/90 text-white px-8 h-11 rounded-xl shadow-lg transition-all hover:scale-[1.02]"
+                      className="bg-primary hover:bg-primary/90 text-white px-10 h-12 rounded-xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] font-semibold"
                       disabled={isLoading}
-                      >
-                      {t("save_changes")}
+                    >
                       {isLoading ? (
-                        <Loader className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader className="h-5 w-5 mr-2 animate-spin" />
                       ) : (
-                        <Save className="h-4 w-4 mr-2" />
+                        <Save className="h-5 w-5 mr-2" />
                       )}
+                      {t("save_changes")}
                     </Button>
                   </div>
                 </form>

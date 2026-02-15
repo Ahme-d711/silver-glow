@@ -20,7 +20,11 @@
     "my_orders": "طلباتي",
     "profile": "الملف الشخصي",
     "back_home": "العودة للرئيسية",
-    "categories": "الأقسام"
+    "categories": "الأقسام",
+    "logout_confirm_title": "تأكيد تسجيل الخروج",
+    "logout_confirm_desc": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
+    "confirm_logout": "تسجيل خروج",
+    "cancel": "إلغاء"
   },
   "Auth": {
     "login": "تسجيل الدخول",

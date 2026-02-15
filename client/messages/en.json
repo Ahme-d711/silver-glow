@@ -20,7 +20,11 @@
     "my_orders": "My Orders",
     "profile": "Profile",
     "back_home": "Back to Home",
-    "categories": "Categories"
+    "categories": "Categories",
+    "logout_confirm_title": "Logout Confirmation",
+    "logout_confirm_desc": "Are you sure you want to log out of your account?",
+    "confirm_logout": "Logout",
+    "cancel": "Cancel"
   },
   "Auth": {
     "login": "Login",
