@@ -25,7 +25,7 @@ export const WishlistTemplate: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-2xl md:text-[32px] font-black text-primary flex items-center gap-4">
+            <h1 className="text-2xl md:text-[32px] font-bold text-primary flex items-center gap-4">
               <span className="relative">
                 {t("wishlist")}
                 <Sparkles className="absolute -top-6 -right-6 w-8 h-8 text-amber-400 opacity-50 animate-pulse" />
