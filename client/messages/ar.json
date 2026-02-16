@@ -388,7 +388,9 @@
     "subcategory_description_en": "الوصف (بالإنجليزية)",
     "priority": "الترتيب",
     "select_category": "اختر الفئة الأساسية",
-    "subcategory_image": "صورة الفئة الفرعية"
+    "subcategory_image": "صورة الفئة الفرعية",
+    "search_category": "بحث عن قسم",
+    "no_categories_found": "لم يتم العثور على أقسام"
   },
   "Brands": {
     "title": "قائمة العلامات التجارية",

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormItem, FormLabel } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
-import { UniSelect } from "@/components/shared/uni-form/UniSelect";
+import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Image as ImageIcon, X } from "lucide-react";
@@ -14,6 +14,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useCategories } from "@/features/dashboard/categories/hooks/useCategory";
+import { Category } from "@/features/dashboard/categories/services/category.service";
 import { Card } from "@/components/ui/card";
 
 interface SubCategoryFormProps {
@@ -184,7 +185,7 @@ export function SubCategoryForm({
           <Card className="p-8 rounded-[32px] border border-divider shadow-none">
             <h3 className="text-xl font-semibold text-content-primary mb-6">{tCommon("general_info")}</h3>
             
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <UniInput
                 control={form.control}
                 name="nameAr"
@@ -223,24 +224,34 @@ export function SubCategoryForm({
                 placeholder="0"
               />
 
-              <UniSelect
+              <UniAsyncCombobox
                 control={form.control}
                 name="categoryId"
                 label={t("category")}
                 placeholder={t("select_category")}
-                options={categories.map((category) => ({
-                  label: locale === "ar" ? category.nameAr : category.nameEn,
-                  value: category._id,
-                }))}
+                searchPlaceholder={t("search_category")}
+                emptyMessage={t("no_categories_found")}
+                fetchData={async (search: string) => {
+                  if (!search) return categories;
+                  const lowerSearch = search.toLowerCase();
+                  return categories.filter((category) => 
+                    (category.nameAr.toLowerCase().includes(lowerSearch) || 
+                     category.nameEn.toLowerCase().includes(lowerSearch))
+                  );
+                }}
+                getItemLabel={(item: Category) => locale === "ar" ? item.nameAr : item.nameEn}
+                getItemValue={(item: Category) => item._id}
                 disabled={isLoading}
               />
 
-              <UniSwitch
-                control={form.control}
-                name="isShow"
-                label={t("status")}
-                disabled={isLoading}
-              />
+              <div className="flex items-center h-full pt-8 md:col-span-2">
+                <UniSwitch
+                    control={form.control}
+                    name="isShow"
+                    label={t("status")}
+                    disabled={isLoading}
+                />
+              </div>
             </div>
           </Card>
 

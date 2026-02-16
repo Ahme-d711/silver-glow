@@ -9,11 +9,12 @@ interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
+  accessToken?: string;
 }
 
 interface AuthResponse {
   user: User;
-  accessToken: string;
+  accessToken?: string;
 }
 
 interface CheckAuthResponse {
@@ -59,7 +60,8 @@ async function authAction(
     });
 
     const responseData = response.data;
-    const accessToken = responseData?.data?.accessToken;
+    // Check for token in both data object and response root
+    const accessToken = responseData?.data?.accessToken || responseData?.accessToken;
 
     // Set access token cookie
     if (accessToken) {
@@ -77,7 +79,7 @@ async function authAction(
       message: responseData.message,
       data: responseData.data,
       user: responseData.data?.user,
-      accessToken: responseData.data?.accessToken,
+      accessToken: accessToken,
     };
   } catch (error: unknown) {
     const err = error as AxiosError<ApiResponse>;
@@ -114,8 +116,13 @@ export async function loginUser(credentials: {
 }): Promise<AuthActionResponse> {
   try {
     const res = await authAction(credentials, "/auth/login");
-    console.log('res', res)
 
+
+
+    console.log(res);
+    
+    
+    
     if (res.success && res.accessToken) {
       revalidatePath("/dashboard", "layout");
       return {

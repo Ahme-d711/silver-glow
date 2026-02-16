@@ -390,7 +390,9 @@
     "subcategory_description_en": "Description (English)",
     "priority": "Priority",
     "select_category": "Select Parent Category",
-    "subcategory_image": "Subcategory Image"
+    "subcategory_image": "Subcategory Image",
+    "search_category": "Search Category",
+    "no_categories_found": "No categories found"
   },
   "Brands": {
     "title": "Brands List",

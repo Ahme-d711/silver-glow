@@ -178,7 +178,7 @@ export function CategoryForm({
           <Card className="p-8 rounded-[32px] border border-divider shadow-none">
             <h3 className="text-xl font-semibold text-content-primary mb-6">{tCommon("general_info")}</h3>
             
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <UniInput
                 control={form.control}
                 name="nameAr"
@@ -217,12 +217,14 @@ export function CategoryForm({
                 placeholder="0"
               />
 
-              <UniSwitch
-                control={form.control}
-                name="isShow"
-                label={t("status")}
-                disabled={isLoading}
-              />
+              <div className="flex items-center h-full w-full pt-8">
+                <UniSwitch
+                    control={form.control}
+                    name="isShow"
+                    label={t("status")}
+                    disabled={isLoading}
+                />
+              </div>
             </div>
           </Card>
 
