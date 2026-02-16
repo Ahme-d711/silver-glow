@@ -9,6 +9,7 @@ import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 
 export const OrdersTemplate: React.FC = () => {
   const t = useTranslations("Shop");
@@ -23,22 +24,16 @@ export const OrdersTemplate: React.FC = () => {
   // ... (rest of the logic remains same)
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-20">
+    <div className="min-h-screen bg-background pt-40 pb-20">
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-content-secondary mb-8">
-          <Link href="/" className="hover:text-primary transition-colors">
-            {t("home") || "Home"}
-          </Link>
-          <ChevronRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-          <span className="text-primary font-medium">
-            {tOrders("my_orders") || "My Orders"}
-          </span>
-        </nav>
-
-        <h1 className="text-4xl font-black text-primary mb-10 tracking-tight">
-          {tOrders("my_orders") || "My Orders"}
-        </h1>
+        <StorefrontPageHeader
+          title={tOrders("my_orders") || "My Orders"}
+          breadcrumbs={[
+            { label: t("home"), href: "/" },
+            { label: tOrders("my_orders") || "My Orders" },
+          ]}
+        />
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
