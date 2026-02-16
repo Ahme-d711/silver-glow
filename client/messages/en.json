@@ -24,7 +24,9 @@
     "logout_confirm_title": "Logout Confirmation",
     "logout_confirm_desc": "Are you sure you want to log out of your account?",
     "confirm_logout": "Logout",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "user_fallback": "User",
+    "admin_status": "Admin"
   },
   "Auth": {
     "login": "Login",
@@ -146,7 +148,14 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "week": "Week",
-    "month": "Month"
+    "month": "Month",
+    "shipping_and_tax": "Shipping & Tax",
+    "shipping_cost": "Shipping Cost",
+    "free_shipping_threshold": "Free Shipping Threshold",
+    "tax_rate": "Tax Rate",
+    "currency": "Currency",
+    "save_changes": "Save Changes",
+    "saving": "Saving"
   },
   "Common": {
     "loading": "Loading...",
@@ -208,6 +217,8 @@
     "action": "Action",
     "category": "Category",
     "price": "Price",
+    "old_price": "Old Price",
+    "cost_price": "Cost Price",
     "stock": "Stock",
     "status": "Status",
     "currency": "$",

@@ -111,7 +111,7 @@ export function AsyncMultiCombobox<TItem = object>({
   return (
     <div className="space-y-2">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild suppressHydrationWarning>
           <Button
             variant="outline"
             role="combobox"

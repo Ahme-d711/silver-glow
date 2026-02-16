@@ -74,7 +74,7 @@ export function AsyncCombobox<TItem = object>({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild suppressHydrationWarning>
         <Button
           variant="outline"
           role="combobox"

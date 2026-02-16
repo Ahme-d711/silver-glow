@@ -24,7 +24,9 @@
     "logout_confirm_title": "تأكيد تسجيل الخروج",
     "logout_confirm_desc": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
     "confirm_logout": "تسجيل خروج",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "user_fallback": "مستخدم",
+    "admin_status": "مدير"
   },
   "Auth": {
     "login": "تسجيل الدخول",
@@ -146,7 +148,14 @@
     "today": "اليوم",
     "yesterday": "الأمس",
     "week": "الأسبوع",
-    "month": "الشهر"
+    "month": "الشهر",
+    "shipping_and_tax": "الشحن والضرائب",
+    "shipping_cost": "تكلفة الشحن",
+    "free_shipping_threshold": "الحد الأدنى الشحن المجاني",
+    "tax_rate": "معدل الضريبة",
+    "currency": "العملة",
+    "save_changes": "حفظ التغييرات",
+    "saving": "جاري الحفظ"
   },
   "Common": {
     "loading": "جاري التحميل...",
@@ -208,6 +217,8 @@
     "action": "العمليات",
     "category": "الفئة",
     "price": "السعر",
+    "old_price": "السعر القديم",
+    "cost_price": "سعر التكلفة",
     "stock": "المخزون",
     "status": "الحالة",
     "currency": "$",
