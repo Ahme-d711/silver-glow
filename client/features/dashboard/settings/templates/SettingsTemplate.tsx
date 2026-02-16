@@ -1,27 +1,24 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useTranslations } from "next-intl"
-import { PageHeader } from "@/components/shared/PageHeader"
-import { ThemeSetting } from "../components/ThemeSetting"
-import { LanguageSetting } from "../components/LanguageSetting"
+import { useTranslations } from "next-intl";
+
+import { PageHeader } from "@/components/shared/PageHeader";
+import { PageTransition } from "@/components/shared/PageTransition";
+import { SettingsForm } from "../components/SettingsForm";
 
 export default function SettingsTemplate() {
-  const t = useTranslations("Settings")
-  const tNav = useTranslations("Navigation")
+  const t = useTranslations("Dashboard");
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title={t("title")}
-        breadcrumbs={[
-          { label: tNav("dashboard"), href: "/dashboard" },
-          { label: t("title") },
-        ]}
-      />
+    <PageTransition>
+      <div className="space-y-8">
+        <PageHeader
+          title={t("settings")}
+          description="Manage site-wide configuration and preferences."
+        />
 
-      <ThemeSetting />
-      <LanguageSetting />
-    </div>
-  )
+        <SettingsForm />
+      </div>
+    </PageTransition>
+  );
 }
