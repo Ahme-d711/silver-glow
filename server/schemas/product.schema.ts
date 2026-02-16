@@ -34,6 +34,7 @@ export const createProductSchema = z.object({
     return val;
   }, z.array(z.string())).optional().default([]),
   priority: z.coerce.number().int().min(0).default(0),
+  soldCount: z.coerce.number().int().min(0).default(0),
   isShow: z.preprocess((val) => val === "true" || val === true, z.boolean()).default(true),
 });
 

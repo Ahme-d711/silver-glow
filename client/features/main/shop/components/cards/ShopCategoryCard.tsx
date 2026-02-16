@@ -22,7 +22,7 @@ export const ShopCategoryCard: React.FC<ShopCategoryCardProps> = ({ category }) 
 
   return (
     <Link 
-      href={`/categories/${category.slug}`}
+      href={`/shop?category=${category.slug}`}
       className="group relative overflow-hidden rounded-2xl aspect-4/5 block bg-secondary"
     >
       {/* Background Image */}

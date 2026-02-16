@@ -456,6 +456,7 @@
     "show": "Show",
     "items": "Items",
     "order_number": "Order #{id}",
+    "order_number_label": "Order Number",
     "added": "Added",
     "type": "Type",
     "standard": "Standard",

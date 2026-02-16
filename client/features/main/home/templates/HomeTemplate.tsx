@@ -14,9 +14,25 @@ export default function HomeTemplate() {
   const { 
     ads: { data: ads = [], isLoading: adsLoading }, 
     categories: { data: categories = [], isLoading: categoriesLoading }, 
+    // Fetch products sorted by soldCount descending
     products: { data, isLoading: productsLoading, isError, refetch: refetchProducts },
     isError: isGlobalError
   } = useHomeData();
+
+  // We need to fetch best sellers specifically here if useHomeData returns generic products
+  // But wait, useHomeData uses useHomeProducts which we just updated to accept params.
+  // However, useHomeData calls it with {}, so it returns default sort.
+  // We should probably fetch best sellers separately OR update useHomeData.
+  // Let's check useHomeData again. It returns `products`.
+  
+  // Actually, we should call useHomeProducts directly here for best sellers
+  // to avoid messing up other parts that might rely on useHomeData default behavior.
+  
+  const { data: bestSellerData, isLoading: bestSellerLoading } = useHomeProducts({ 
+    sort: "-soldCount" 
+  });
+  
+  const bestSellers = bestSellerData?.products || [];
 
   const products = (data as { products: Product[] })?.products || [];
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -36,8 +52,8 @@ export default function HomeTemplate() {
 
         {/* Best Seller Section */}
         <BestSellerSection 
-          products={products} 
-          isLoading={productsLoading}
+          products={bestSellers} 
+          isLoading={bestSellerLoading}
           onToggleWishlist={toggleWishlist}
           isInWishlist={isInWishlist}
         />

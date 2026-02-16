@@ -27,6 +27,7 @@ export interface IProduct extends Document {
   priority: number;
   isShow: boolean;
   isDeleted: boolean;
+  soldCount: number;
   averageRating: number;
   numReviews: number;
   createdAt?: Date;
