@@ -248,6 +248,7 @@
     "error_loading_ads": "Error loading ads",
     "success_delete": "Deleted successfully",
     "phone": "Phone",
+    "phone_placeholder": "+1234567890",
     "address": "Address",
     "no_data_to_export": "No data selected for export",
     "show_less": "Show Less"

@@ -23,7 +23,9 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isSectionsLoading } = useHomeSections();
-  const { data, isLoading: isProductsLoading } = useHomeProducts(activeSectionId);
+  const { data, isLoading: isProductsLoading } = useHomeProducts(
+    activeSectionId ? { sectionIds: [activeSectionId] } : {}
+  );
   const products = data?.products || [];
 
   // Combine "All" with fetched sections

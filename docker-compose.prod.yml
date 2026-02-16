@@ -1,5 +1,4 @@
 services:
-  # MongoDB Database
   mongodb:
     image: mongo:7
     container_name: silverglow-mongodb-prod
@@ -11,41 +10,26 @@ services:
     networks:
       - silverglow-network
 
-  # Backend API Service
   backend:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
+    build: ./server
     container_name: silverglow-backend-prod
     restart: unless-stopped
     ports:
       - "3131:3131"
     volumes:
-      - uploads_data:/var/www/projects/silver-glow/server/uploads
+      - uploads_data:/app/uploads
     env_file:
       - ./server/.env
     environment:
       - NODE_ENV=production
       - PORT=3131
-      - FRONTEND_URL=https://silverglow.store
-      - COOKIE_DOMAIN=.silverglow.store
-      - USE_HTTPS=true
-      - COOKIE_HTTP_ONLY=true
-      - DEFAULT_ADMIN_EMAIL=admin@admin.com
-      - DEFAULT_ADMIN_PASSWORD=admin123
-      - DEFAULT_ADMIN_PHONE=201018939831
-      - DEFAULT_ADMIN_ADDRESS=123 Main St
-      - DEFAULT_ADMIN_NAME=Super Admin
     depends_on:
       - mongodb
     networks:
       - silverglow-network
 
-  # Frontend Service
   frontend:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+    build: ./client
     container_name: silverglow-frontend-prod
     restart: unless-stopped
     ports:
@@ -53,7 +37,8 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://silverglow.store/api
-      - NEXT_PUBLIC_APP_URL=https://silverglow.store
+    depends_on:
+      - backend
     networks:
       - silverglow-network
 
@@ -63,6 +48,4 @@ networks:
 
 volumes:
   mongodb_data:
-    driver: local
   uploads_data:
-    driver: local

@@ -1,20 +1,28 @@
-# Dockerfile for Silver Glow Frontend (Next.js)
+# ===== Stage 1: Build =====
+FROM node:20-alpine AS builder
 
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# ===== Stage 2: Run =====
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
+ENV NODE_ENV=production
+
 COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Install dependencies
-RUN npm install
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.* ./
 
-# Copy source code
-COPY . .
-
-# Expose port
 EXPOSE 3030
 
-# Start development server (for dev) or production server (for prod)
-CMD ["npm", "run", "dev", "--", "-p", "3030"]
+CMD ["npm", "start", "--", "-p", "3030"]

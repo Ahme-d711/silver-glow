@@ -1,23 +1,16 @@
-# Dockerfile for Silver Glow Backend
-
-FROM oven/bun:1
+FROM oven/bun:1 AS base
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json bun.lock* ./
+RUN bun install --production
 
-# Install dependencies
-RUN bun install
-
-# Copy source code
 COPY . .
 
-# Create uploads directory
+ENV NODE_ENV=production
+
 RUN mkdir -p uploads
 
-# Expose port
 EXPOSE 3131
 
-# Start development server with hot reload
-CMD ["bun", "--watch", "index.ts"]
+CMD ["bun", "run", "index.ts"]
