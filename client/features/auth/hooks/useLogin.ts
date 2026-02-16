@@ -23,7 +23,7 @@ export function useLogin(): UseLoginReturn {
 
     try {
       const response = await loginUser({ phone, password });
-      
+
       if (!response.success) {
         throw new Error(response.message || "Login failed");
       }
@@ -40,7 +40,7 @@ export function useLogin(): UseLoginReturn {
       if (response.data?.user) {
         const user = response.data.user;
         const isAdmin = user.role === "admin";
-        
+
         if (isAdmin) {
           router.push("/dashboard");
         } else {
@@ -52,12 +52,12 @@ export function useLogin(): UseLoginReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);
-      
+
       // If error is about verification, redirect to verify page
       if (errorMessage.toLowerCase().includes("verify") && phone) {
         router.push(`/verify?phone=${phone}`);
       }
-      
+
       throw err;
     } finally {
       setLoading(false);

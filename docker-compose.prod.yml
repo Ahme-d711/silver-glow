@@ -1,0 +1,55 @@
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: silverglow-backend-prod
+    restart: unless-stopped
+    ports:
+      - "3131:3131"
+    volumes:
+      - uploads_data:/var/www/projects/silver-glow/server/uploads
+    environment:
+      - NODE_ENV=production
+      - PORT=3131
+      - MONGODB_URI=${MONGODB_URI}
+      - FRONTEND_URL=https://silverglow.store
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_DOMAIN=.silverglow.store
+      - USE_HTTPS=true
+      - COOKIE_HTTP_ONLY=true
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - WASEL_API_TOKEN=${WASEL_API_TOKEN}
+      - WASEL_INSTANCE_ID=${WASEL_INSTANCE_ID}
+      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@admin.com}
+      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD:-admin123}
+      - DEFAULT_ADMIN_PHONE=${DEFAULT_ADMIN_PHONE:-201018939831}
+      - DEFAULT_ADMIN_ADDRESS=${DEFAULT_ADMIN_ADDRESS:-123 Main St}
+      - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME:-Super Admin}
+    networks:
+      - silverglow-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: silverglow-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://silverglow.store/api
+      - NEXT_PUBLIC_APP_URL=https://silverglow.store
+    networks:
+      - silverglow-network
+
+networks:
+  silverglow-network:
+    driver: bridge
+
+volumes:
+  uploads_data:
+    driver: local

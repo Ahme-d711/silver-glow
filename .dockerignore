@@ -1,0 +1,15 @@
+# Root .dockerignore
+node_modules
+.git
+.gitignore
+*.log
+.env
+.env.local
+.env.*.local
+README.md
+DOCKER.md
+.vscode
+.idea
+.DS_Store
+*.md
+!DOCKER.md

@@ -1,0 +1,73 @@
+services:
+  # MongoDB Database (Optional - can use MongoDB Atlas instead)
+  mongodb:
+    image: mongo:7
+    container_name: silverglow-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: silver-glow
+    networks:
+      - silverglow-network
+
+  # Backend API Service
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: silverglow-backend-dev
+    restart: unless-stopped
+    ports:
+      - "3131:3131"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+      - ./server/uploads:/app/uploads
+    environment:
+      - NODE_ENV=development
+      - PORT=3131
+      - MONGODB_URI=mongodb://mongodb:27017/silver-glow
+      # For MongoDB Atlas, uncomment and update:
+      # - MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/silver-glow
+      - FRONTEND_URL=http://localhost:3030
+      - JWT_SECRET=dev-secret-key-change-in-production
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - WASEL_API_TOKEN=${WASEL_API_TOKEN:-}
+      - WASEL_INSTANCE_ID=${WASEL_INSTANCE_ID:-}
+    depends_on:
+      - mongodb
+    networks:
+      - silverglow-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: silverglow-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3131/api
+      - NEXT_PUBLIC_APP_URL=http://localhost:3030
+    depends_on:
+      - backend
+    networks:
+      - silverglow-network
+
+networks:
+  silverglow-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
