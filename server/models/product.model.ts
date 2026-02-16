@@ -173,6 +173,12 @@ const ProductSchema = new Schema<IProduct>(
       required: true,
       default: false,
     },
+    soldCount: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+    },
     averageRating: {
       type: Number,
       required: true,
@@ -235,6 +241,7 @@ ProductSchema.index({ sectionIds: 1 });
 ProductSchema.index({ isShow: 1 });
 ProductSchema.index({ isDeleted: 1 });
 ProductSchema.index({ priority: -1 });
+ProductSchema.index({ soldCount: -1 });
 ProductSchema.index({ createdAt: -1 });
 
 export const ProductModel = model<IProduct>("products", ProductSchema);

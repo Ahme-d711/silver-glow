@@ -438,6 +438,7 @@
     "show": "عرض",
     "items": "العناصر",
     "order_number": "طلب رقم {id}",
+    "order_number_label": "رقم الطلب",
     "added": "تاريخ الإضافة",
     "type": "النوع",
     "standard": "عادي",

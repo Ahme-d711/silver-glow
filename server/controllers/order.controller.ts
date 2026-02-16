@@ -197,14 +197,18 @@ export const createOrder = async (req: Request, res: Response) => {
         { 
           $inc: { 
             "sizes.$.stock": -item.quantity,
-            stock: -item.quantity 
+            stock: -item.quantity,
+            soldCount: item.quantity 
           } 
         }
       );
     } else {
       // Just total stock
       await ProductModel.findByIdAndUpdate(item.productId, {
-        $inc: { stock: -item.quantity }
+        $inc: { 
+          stock: -item.quantity,
+          soldCount: item.quantity
+        }
       });
     }
   }
@@ -404,14 +408,18 @@ export const checkout = async (req: Request, res: Response) => {
         { 
           $inc: { 
             "sizes.$.stock": -item.quantity,
-            stock: -item.quantity 
+            stock: -item.quantity,
+            soldCount: item.quantity
           } 
         }
       );
     } else {
       // Just total stock
       await ProductModel.findByIdAndUpdate(product._id, {
-        $inc: { stock: -item.quantity }
+        $inc: { 
+          stock: -item.quantity,
+          soldCount: item.quantity
+        }
       });
     }
   }

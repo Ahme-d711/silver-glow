@@ -39,7 +39,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       <div className="p-6 border-b border-divider flex flex-wrap items-center justify-between gap-4 bg-neutral-50/50">
         <div className="space-y-1">
           <p className="text-xs text-content-tertiary font-medium uppercase tracking-wider">
-            {tOrders("order_number") || "Order Number"}
+            {tOrders("order_number_label") || "Order Number"}
           </p>
           <p className="font-bold text-primary">#{order.trackingNumber}</p>
         </div>

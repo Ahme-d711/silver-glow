@@ -75,10 +75,10 @@ export function useHomeSections(options?: Partial<UseQueryOptions<Section[]>>) {
 /**
  * Hook to fetch home/featured products with optional section filtering
  */
-export function useHomeProducts(sectionId?: string, options?: Partial<UseQueryOptions<{ products: Product[], pagination?: Pagination }>>) {
+export function useHomeProducts(params: GetProductsParams = {}, options?: Partial<UseQueryOptions<{ products: Product[], pagination?: Pagination }>>) {
   return useQuery({
-    queryKey: homeKeys.products({ sectionIds: sectionId ? [sectionId] : undefined }),
-    queryFn: () => getPublicProducts({ sectionIds: sectionId ? [sectionId] : undefined }),
+    queryKey: homeKeys.products(params),
+    queryFn: () => getPublicProducts({ limit: 12, isShow: true, isDeleted: false, ...params }),
     staleTime: 1000 * 60 * 10, // 10 minutes
     ...options,
   });
@@ -115,7 +115,7 @@ export function useShopProducts(params: GetProductsParams = {}, options?: Partia
 export function useHomeData() {
   const ads = useHomeAds();
   const categories = useHomeCategories();
-  const products = useHomeProducts();
+  const products = useHomeProducts({});
 
   return {
     ads,
