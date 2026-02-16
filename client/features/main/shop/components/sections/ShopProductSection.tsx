@@ -15,9 +15,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useDebounce } from "@/hooks/use-debounce";
 import { StorefrontError } from "@/components/shared/StorefrontError";
 
 export const ShopProductSection = () => {
@@ -33,7 +31,6 @@ export const ShopProductSection = () => {
   const initialPage = Number(searchParams.get("page")) || 1;
 
   // Local State
-  const [view, setView] = useState<"grid" | "list">("grid");
   const [sortValue, setSortValue] = useState(initialSort);
   const [currentPage, setCurrentPage] = useState(initialPage);
   
@@ -108,22 +105,6 @@ export const ShopProductSection = () => {
         </div>
 
         <div className="flex items-center justify-between sm:justify-end gap-4 md:gap-8">
-          {/* View Toggles */}
-          <div className="hidden sm:flex items-center bg-secondary/50 p-1 rounded-xl border border-divider">
-            <button 
-              onClick={() => setView("grid")}
-              className={`p-2 rounded-lg transition-all ${view === "grid" ? "bg-white text-primary shadow-sm" : "text-content-tertiary hover:text-primary"}`}
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={() => setView("list")}
-              className={`p-2 rounded-lg transition-all ${view === "list" ? "bg-white text-primary shadow-sm" : "text-content-tertiary hover:text-primary"}`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-
           <div className="flex items-center gap-3">
             {/* Sort Select */}
             <Select value={sortValue} onValueChange={setSortValue}>
@@ -148,11 +129,7 @@ export const ShopProductSection = () => {
       </div>
 
       {/* Grid */}
-      <div className={`grid gap-8 ${
-        view === "grid" 
-          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
-          : "grid-cols-1"
-      }`}>
+      <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
         {products.map((product) => (
           <ShopProductCard key={product._id} product={product} />
         ))}
