@@ -36,6 +36,9 @@ services:
       - "3030:3030"
     environment:
       - NODE_ENV=production
+      # Server-side API URL (for Next.js Server Actions within Docker network)
+      - NEXT_PUBLIC_SERVER_API_URL=http://backend:3131/api
+      # Client-side API URL (for browser requests)
       - NEXT_PUBLIC_API_URL=https://silverglow.store/api
     depends_on:
       - backend
