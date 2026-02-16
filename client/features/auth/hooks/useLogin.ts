@@ -23,6 +23,7 @@ export function useLogin(): UseLoginReturn {
 
     try {
       const response = await loginUser({ phone, password });
+      console.log(response)
 
       if (!response.success) {
         throw new Error(response.message || "Login failed");
@@ -50,6 +51,7 @@ export function useLogin(): UseLoginReturn {
         router.push("/");
       }
     } catch (err) {
+      console.log('err', err)
       const errorMessage = err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);
 

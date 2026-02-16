@@ -57,6 +57,9 @@ services:
       - /app/.next
     environment:
       - NODE_ENV=development
+      # Server-side API URL (for Next.js Server Actions within Docker network)
+      - NEXT_PUBLIC_SERVER_API_URL=http://backend:3131/api
+      # Client-side API URL (for browser requests from host machine)
       - NEXT_PUBLIC_API_URL=http://localhost:3131/api
       - NEXT_PUBLIC_APP_URL=http://localhost:3030
     depends_on:

@@ -1,4 +1,4 @@
-import express, {type Application } from "express";
+import express, { type Application } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
@@ -28,7 +28,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: env.frontendUrl || "http://localhost:3000",
+    origin: env.frontendUrl || "http://localhost:3030",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -48,11 +48,11 @@ app.use(
     secret: env.jwtSecret,
     resave: false,
     saveUninitialized: false,
-    store: env.nodeEnv === "production" 
+    store: env.nodeEnv === "production"
       ? MongoStore.create({
-          mongoUrl: env.mongodbUri,
-          touchAfter: 24 * 3600 // lazy session update
-        })
+        mongoUrl: env.mongodbUri,
+        touchAfter: 24 * 3600 // lazy session update
+      })
       : undefined,
     cookie: {
       secure: env.nodeEnv === "production",
@@ -64,7 +64,7 @@ app.use(
   })
 );
 
-const uploadsPath = env.nodeEnv === "production" 
+const uploadsPath = env.nodeEnv === "production"
   ? path.resolve("/var/www/projects/silver-glow/server/uploads")
   : path.join(process.cwd(), "uploads");
 
@@ -101,7 +101,7 @@ async function start() {
 
     // Initialize default admin user if no users exist
     await initDefaultAdmin();
-    
+
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
       console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`);

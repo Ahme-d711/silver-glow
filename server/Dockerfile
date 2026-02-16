@@ -13,14 +13,11 @@ RUN bun install
 # Copy source code
 COPY . .
 
-# Build the project
-RUN bun build index.ts --outdir dist --target bun
-
 # Create uploads directory
 RUN mkdir -p uploads
 
 # Expose port
 EXPOSE 3131
 
-# Start production server
-CMD ["bun", "dist/index.js"]
+# Start development server with hot reload
+CMD ["bun", "--watch", "index.ts"]

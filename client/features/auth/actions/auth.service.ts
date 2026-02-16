@@ -81,6 +81,7 @@ async function authAction(
     };
   } catch (error: unknown) {
     const err = error as AxiosError<ApiResponse>;
+    console.log(err);
     const message = err.response?.data?.message || "Something went wrong";
 
     return {
@@ -113,8 +114,8 @@ export async function loginUser(credentials: {
 }): Promise<AuthActionResponse> {
   try {
     const res = await authAction(credentials, "/auth/login");
-    
-    
+    console.log('res', res)
+
     if (res.success && res.accessToken) {
       revalidatePath("/dashboard", "layout");
       return {
@@ -124,15 +125,16 @@ export async function loginUser(credentials: {
         accessToken: res.accessToken,
       };
     }
-
+    console.log('res', res)
     return {
       success: false,
       message: res.message || "Something went wrong during login",
     };
   } catch (err) {
+    console.log('err', err);
     const error = err as AxiosError<ApiResponse>;
     const message = error.response?.data?.message || "Something went wrong during login";
-    
+
     return {
       success: false,
       message,
@@ -174,7 +176,7 @@ export async function getProfile(): Promise<{
   token: string | null;
 }> {
   const tokenCookie = (await cookies()).get("accessToken");
-  
+
   if (!tokenCookie) {
     return {
       user: null,
@@ -361,13 +363,13 @@ export async function resendVerification(payload: {
 export async function logoutUser(): Promise<{ success: boolean; message: string }> {
   try {
     await serverAxios.get("/auth/logout");
-    
+
     // Clear cookies
     (await cookies()).delete("accessToken");
     (await cookies()).delete("token");
-    
+
     revalidatePath("/dashboard", "layout");
-    
+
     return {
       success: true,
       message: "Logout successful!",
@@ -377,10 +379,10 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
     (await cookies()).delete("accessToken");
     (await cookies()).delete("token");
     revalidatePath("/dashboard", "layout");
-    
+
     const err = error as AxiosError<ApiResponse>;
     const message = err.response?.data?.message || "Logout completed locally";
-    
+
     return {
       success: true,
       message,
@@ -394,7 +396,7 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
 export async function deleteUser(): Promise<AuthActionResponse> {
   try {
     const response = await serverAxios.delete<ApiResponse>("/auth/delete-account");
-    
+
     // Clear cookies after account deletion
     (await cookies()).delete("accessToken");
     (await cookies()).delete("token");
