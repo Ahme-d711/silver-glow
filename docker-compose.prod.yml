@@ -1,4 +1,16 @@
 services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: silverglow-mongodb-prod
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: silver-glow
+    networks:
+      - silverglow-network
+
   # Backend API Service
   backend:
     build:
@@ -10,23 +22,22 @@ services:
       - "3131:3131"
     volumes:
       - uploads_data:/var/www/projects/silver-glow/server/uploads
+    env_file:
+      - ./server/.env
     environment:
       - NODE_ENV=production
       - PORT=3131
-      - MONGODB_URI=${MONGODB_URI}
       - FRONTEND_URL=https://silverglow.store
-      - JWT_SECRET=${JWT_SECRET}
       - COOKIE_DOMAIN=.silverglow.store
       - USE_HTTPS=true
       - COOKIE_HTTP_ONLY=true
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - WASEL_API_TOKEN=${WASEL_API_TOKEN}
-      - WASEL_INSTANCE_ID=${WASEL_INSTANCE_ID}
-      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL:-admin@admin.com}
-      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD:-admin123}
-      - DEFAULT_ADMIN_PHONE=${DEFAULT_ADMIN_PHONE:-201018939831}
-      - DEFAULT_ADMIN_ADDRESS=${DEFAULT_ADMIN_ADDRESS:-123 Main St}
-      - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME:-Super Admin}
+      - DEFAULT_ADMIN_EMAIL=admin@admin.com
+      - DEFAULT_ADMIN_PASSWORD=admin123
+      - DEFAULT_ADMIN_PHONE=201018939831
+      - DEFAULT_ADMIN_ADDRESS=123 Main St
+      - DEFAULT_ADMIN_NAME=Super Admin
+    depends_on:
+      - mongodb
     networks:
       - silverglow-network
 
@@ -51,5 +62,7 @@ networks:
     driver: bridge
 
 volumes:
+  mongodb_data:
+    driver: local
   uploads_data:
     driver: local

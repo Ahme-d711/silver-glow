@@ -13,8 +13,11 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Build the Next.js application
+RUN npm run build
+
 # Expose port
 EXPOSE 3030
 
-# Start development server (for dev) or production server (for prod)
-CMD ["npm", "run", "dev", "--", "-p", "3030"]
+# Start production server
+CMD ["npm", "start"]
