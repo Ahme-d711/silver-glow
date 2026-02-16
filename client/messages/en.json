@@ -392,7 +392,8 @@
     "select_category": "Select Parent Category",
     "subcategory_image": "Subcategory Image",
     "search_category": "Search Category",
-    "no_categories_found": "No categories found"
+    "no_categories_found": "No categories found",
+    "slug": "Slug"
   },
   "Brands": {
     "title": "Brands List",

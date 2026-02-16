@@ -14,8 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { UniInput } from "@/components/shared/uni-form/UniInput"
+import { UniTextarea } from "@/components/shared/uni-form/UniTextarea"
 import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox"
-import { UniCheckbox } from "@/components/shared/uni-form/UniCheckbox"
+import { UniSwitch } from "@/components/shared/uni-form/UniSwitch"
 import { Card } from "@/components/ui/card"
 import { getAdSchema, type AdFormValues } from "../schemas/adSchemas"
 import { useTranslations } from "next-intl"
@@ -204,14 +205,14 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <UniInput
+                <UniTextarea
                   control={form.control}
                   name="descriptionAr"
                   label={tCommon("description_ar")}
                   placeholder={tCommon("description_ar")}
                 />
 
-                <UniInput
+                <UniTextarea
                   control={form.control}
                   name="descriptionEn"
                   label={tCommon("description_en")}
@@ -247,7 +248,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
                 />
               </div>
 
-              <UniCheckbox
+              <UniSwitch
                 control={form.control}
                 name="isShown"
                 label={tCommon("is_show")}
