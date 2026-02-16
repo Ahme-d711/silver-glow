@@ -320,7 +320,7 @@ export function ProductForm({
                   control={form.control as unknown as Control<FieldValues>}
                   name="isShow"
                   label={tCommon("show_on_store")}
-                  className="p-3 border-none bg-transparent"
+                  className="p-3 border-none bg-transparent mt-8"
                 />
               </div>
             </div>
