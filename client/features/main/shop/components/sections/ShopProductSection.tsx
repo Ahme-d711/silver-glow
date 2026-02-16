@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { useShopProducts } from "@/features/main/home/hooks/useHome";
+import { useTranslations, useLocale } from "next-intl";
+import { useShopProducts, useHomeCategories } from "@/features/main/home/hooks/useHome";
 import { ShopProductCard } from "../cards/ShopProductCard";
 import { ShopPagination } from "../ShopPagination";
 import { Product } from "@/features/dashboard/products/types";
-import { LayoutGrid, List, Filter } from "lucide-react";
 import { 
   Select, 
   SelectContent, 
@@ -14,12 +13,13 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { StorefrontError } from "@/components/shared/StorefrontError";
 
 export const ShopProductSection = () => {
   const t = useTranslations("Shop");
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,6 +29,9 @@ export const ShopProductSection = () => {
   const searchQuery = searchParams.get("search") || "";
   const initialSort = searchParams.get("sort") || "popularity";
   const initialPage = Number(searchParams.get("page")) || 1;
+
+  // Data Fetching
+  const { data: categories = [] } = useHomeCategories();
 
   // Local State
   const [sortValue, setSortValue] = useState(initialSort);
@@ -66,6 +69,17 @@ export const ShopProductSection = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, sortValue, categorySlug]);
+
+  const handleCategoryChange = (slug: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (slug === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", slug);
+    }
+    params.delete("page"); // Reset pagination
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const { data, isLoading, isError, refetch } = useShopProducts({
     search: searchQuery,
@@ -106,9 +120,33 @@ export const ShopProductSection = () => {
 
         <div className="flex items-center justify-between sm:justify-end gap-4 md:gap-8">
           <div className="flex items-center gap-3">
+             {/* Category Filter Select */}
+             <Select 
+              value={categorySlug || "all"} 
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger className="h-11 px-4 rounded-xl border-2 border-primary/10 bg-primary/5 text-primary gap-2 font-bold min-w-[180px] hover:border-primary hover:bg-primary/10 transition-all duration-300 shadow-sm">
+                <SelectValue placeholder={t("categoriesTitle")} />
+              </SelectTrigger>
+              <SelectContent align="end" className="w-56 rounded-xl p-2 max-h-[300px]">
+                <SelectItem value="all" className="rounded-lg cursor-pointer font-bold mb-1">
+                  {t("all")}
+                </SelectItem>
+                {categories.map((category) => (
+                  <SelectItem 
+                    key={category._id} 
+                    value={category.slug} 
+                    className="rounded-lg cursor-pointer font-medium"
+                  >
+                    {isRtl ? category.nameAr : category.nameEn}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             {/* Sort Select */}
             <Select value={sortValue} onValueChange={setSortValue}>
-              <SelectTrigger className="h-11 px-5 rounded-xl border-divider bg-white gap-2 font-semibold min-w-[140px]">
+              <SelectTrigger className="h-11 px-4 rounded-xl border-2 border-divider bg-white gap-2 font-semibold min-w-[160px] hover:border-primary/50 hover:text-primary transition-all duration-300 shadow-sm">
                 <SelectValue placeholder={t("popularity")} />
               </SelectTrigger>
               <SelectContent align="end" className="w-48 rounded-xl p-2">
@@ -118,12 +156,6 @@ export const ShopProductSection = () => {
                 <SelectItem value="priceHighLow" className="rounded-lg cursor-pointer">{t("priceHighLow")}</SelectItem>
               </SelectContent>
             </Select>
-
-            {/* Filter Button */}
-            <Button className="h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white gap-2 font-bold shadow-lg shadow-primary/20">
-              <Filter className="w-4 h-4" />
-              {t("filter")}
-            </Button>
           </div>
         </div>
       </div>
