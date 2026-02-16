@@ -1,13 +1,14 @@
 "use client";
 
-import { useForm, Control, FieldValues, Resolver } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormItem, FormLabel } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
+import { UniImageUpload } from "@/components/shared/uni-form/UniImageUpload";
 import { Button } from "@/components/ui/button";
-import { Loader, Image as ImageIcon, X } from "lucide-react";
+import { Loader } from "lucide-react";
 import { getCategorySchema, CategoryFormValues } from "../schemas/category.schema";
 import React, { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/utils/image.utils";
@@ -110,67 +111,14 @@ export function CategoryForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Sidebar - Photo */}
-        <div className="lg:col-span-4 space-y-6">
-          <Card className="p-6 rounded-[24px] border border-divider shadow-none">
-            <h3 className="text-lg font-semibold text-content-primary mb-4">{tCommon("category_image")}</h3>
-            
-            <FormItem className="space-y-1">
-              <FormLabel className="text-content-secondary text-base">{tCommon("category_image")}</FormLabel>
-              <div className="relative">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                />
-                
-                {!preview ? (
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-divider/50 rounded-[24px] p-8 flex flex-col items-center justify-center bg-background cursor-pointer hover:bg-background/10 transition-all min-h-[240px]"
-                  >
-                    <div className="bg-primary/10 p-4 rounded-xl mb-4">
-                      <ImageIcon className="h-8 w-8 text-primary" />
-                    </div>
-                    <p className="text-sm text-content-tertiary text-center mb-4 px-4">
-                      {tCommon("drag_drop_image")}
-                    </p>
-                    <Button 
-                      type="button"
-                      className="bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer rounded-xl px-6 h-11 font-semibold shadow-none"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fileInputRef.current?.click();
-                      }}
-                    >
-                      {tCommon("add_image")}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="relative rounded-[24px] overflow-hidden group border border-divider">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={preview} 
-                      alt="Preview" 
-                      className="w-full aspect-square object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="h-10 w-10 rounded-full shadow-lg"
-                        onClick={removeImage}
-                      >
-                        <X className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </FormItem>
-          </Card>
+        <div className="lg:col-span-4">
+          <UniImageUpload
+            label={tCommon("category_image")}
+            preview={preview}
+            onImageChange={handleImageChange}
+            onRemoveImage={removeImage}
+            fileInputRef={fileInputRef}
+          />
         </div>
 
         {/* Right Section - General Information */}

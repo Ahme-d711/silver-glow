@@ -77,6 +77,7 @@ export function UniInput<TFieldValues extends FieldValues = FieldValues>({
                   inputClassName
                 )}
                 {...field}
+                value={field.value ?? ""}
               />
               {isPassword && (
                 <button

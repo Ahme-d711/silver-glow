@@ -59,12 +59,13 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
               disabled={disabled}
               rows={rows}
               readOnly={readOnly}
-              className={cn(
-                "min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white resize-none",
-                textareaClassName
-              )}
-              {...field}
-            />
+                className={cn(
+                  "min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white resize-none",
+                  textareaClassName
+                )}
+                {...field}
+                value={field.value ?? ""}
+              />
           </FormControl>
           {helperText && (
             <p className="text-xs text-content-tertiary">

@@ -23,7 +23,6 @@ export default function EditAdsTemplate() {
     updateAd({ id, data }, {
         onSuccess: (response) => {
             if (response.success) {
-                toast.success(t("success_update"))
                 router.push("/dashboard/ads")
             }
         }

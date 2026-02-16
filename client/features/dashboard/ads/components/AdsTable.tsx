@@ -96,25 +96,13 @@ export function AdsTable({
     },
     {
       id: "name",
-      header: tCommon("name_ar"),
+      header: locale === 'ar' ? tCommon("name_ar") : tCommon("name_en"),
       cell: (_: unknown, row: Ad) => (
         <div className="flex flex-col">
           <span className="font-medium text-content-primary">
             {locale === 'ar' ? row.nameAr : row.nameEn}
           </span>
-          <span className="text-xs text-content-tertiary">
-            {tAds("adId")}: {row.id || row._id}
-          </span>
         </div>
-      ),
-    },
-    {
-      id: "description",
-      header: tCommon("description"),
-      cell: (_: unknown, row: Ad) => (
-        <span className="text-gray-500 text-sm truncate max-w-[150px] block">
-          {row.link || tCommon("none")}
-        </span>
       ),
     },
     {

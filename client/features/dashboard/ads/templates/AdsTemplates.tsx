@@ -188,9 +188,6 @@ export default function AdsTemplate() {
         itemName={tAds("title").toLowerCase()}
         icon={<Trash2 className="h-8 w-8" />}
         onConfirm={handleConfirmDelete}
-        onSuccess={() => {
-          toast.success(tAds("success_delete") || "Ad deleted successfully")
-        }}
       />
     </div>
   )

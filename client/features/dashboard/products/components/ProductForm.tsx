@@ -93,6 +93,8 @@ export function ProductForm({
       price: 0,
       oldPrice: 0,
       costPrice: 0,
+      stock: 0,
+      priority: 0,
       isShow: true,
       categoryId: "",
       sectionIds: [],

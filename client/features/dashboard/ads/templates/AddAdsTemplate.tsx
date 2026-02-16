@@ -16,7 +16,6 @@ export default function AddAdsTemplate() {
     createAd(data, {
         onSuccess: (response) => {
             if (response.success) {
-                toast.success(t("success_create"))
                 router.push("/dashboard/ads")
             }
         }

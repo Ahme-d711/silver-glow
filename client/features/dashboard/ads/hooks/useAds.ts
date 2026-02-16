@@ -2,6 +2,7 @@
 
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import type { Ad } from "../types"
 import { getAllAds, getAdById, createAd, updateAd, deleteAd, GetAdsParams } from "../services/ads.services"
 import { getErrorMessage } from "@/utils/api.utils"
@@ -34,13 +35,14 @@ export function useAd(id: string) {
 // Create Ad Mutation
 export function useCreateAd() {
   const queryClient = useQueryClient()
+  const t = useTranslations("Ads")
 
   return useMutation({
     mutationFn: (data: FormData) => createAd(data),
     onSuccess: (response) => {
       if (response.success) {
         queryClient.invalidateQueries({ queryKey: adsKeys.all })
-        toast.success(response.message || "Ad created successfully")
+        toast.success(t("success_create"))
       } else {
         toast.error(response.message || "Failed to create ad")
       }
@@ -54,6 +56,7 @@ export function useCreateAd() {
 // Update Ad Mutation
 export function useUpdateAd() {
   const queryClient = useQueryClient()
+  const t = useTranslations("Ads")
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: FormData }) => updateAd(id, data),
@@ -61,7 +64,7 @@ export function useUpdateAd() {
       if (response.success) {
         queryClient.invalidateQueries({ queryKey: adsKeys.all })
         queryClient.invalidateQueries({ queryKey: adsKeys.detail(variables.id) })
-        toast.success(response.message || "Ad updated successfully")
+        toast.success(t("success_update"))
       } else {
         toast.error(response.message || "Failed to update ad")
       }
@@ -75,6 +78,7 @@ export function useUpdateAd() {
 // Delete Ad Mutation
 export function useDeleteAd() {
   const queryClient = useQueryClient()
+  const t = useTranslations("Ads")
 
   return useMutation({
     mutationFn: (id: string) => deleteAd(id),
@@ -82,7 +86,7 @@ export function useDeleteAd() {
       if (response.success) {
         queryClient.invalidateQueries({ queryKey: adsKeys.all })
         queryClient.removeQueries({ queryKey: adsKeys.detail(deletedId) })
-        toast.success(response.message || "Ad deleted successfully")
+        toast.success(t("success_delete"))
       } else {
         toast.error(response.message || "Failed to delete ad")
       }

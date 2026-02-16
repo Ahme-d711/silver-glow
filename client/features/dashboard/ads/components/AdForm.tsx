@@ -3,23 +3,19 @@
 import React, { useRef, useState } from "react"
 import { useForm, Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Image as ImageIcon, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 import { UniInput } from "@/components/shared/uni-form/UniInput"
 import { UniTextarea } from "@/components/shared/uni-form/UniTextarea"
 import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox"
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch"
+import { UniImageUpload } from "@/components/shared/uni-form/UniImageUpload"
 import { Card } from "@/components/ui/card"
 import { getAdSchema, type AdFormValues } from "../schemas/adSchemas"
 import { useTranslations } from "next-intl"
+import { getImageUrl } from "@/utils/image.utils"
 
 import { getAllProducts } from "@/features/dashboard/products/services/product.service"
 import { Product } from "@/features/dashboard/products/types"
@@ -38,9 +34,11 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
   const tOrders = useTranslations("Orders")
   const tValidation = useTranslations("Validation")
   
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.photo ? (initialData.photo.startsWith('http') || initialData.photo.startsWith('/') ? initialData.photo : `/${initialData.photo}`) : null
-  )
+  const [imagePreview, setImagePreview] = useState<string | null>(getImageUrl(initialData?.photo))
+  
+  React.useEffect(() => {
+    setImagePreview(getImageUrl(initialData?.photo))
+  }, [initialData?.photo])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const productIdValue = initialData?.productId;
@@ -108,76 +106,14 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Sidebar - Photo */}
-        <div className="lg:col-span-4 space-y-6">
-          <Card className="p-6 rounded-[24px] border border-divider shadow-none">
-            <h3 className="text-lg font-semibold text-content-primary mb-4">{tCommon("photo")}</h3>
-            
-            <FormField
-              control={form.control}
-              name="photo"
-              render={() => (
-                <FormItem className="space-y-1">
-                  <FormLabel className="text-content-secondary text-base">{tCommon("photo")}</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        ref={fileInputRef}
-                        onChange={handleImageChange}
-                      />
-                      
-                      {!imagePreview ? (
-                        <div 
-                          onClick={() => fileInputRef.current?.click()}
-                          className="border-2 border-dashed border-divider/50 rounded-[24px] p-8 flex flex-col items-center justify-center bg-background cursor-pointer hover:bg-background/10 transition-all min-h-[240px]"
-                        >
-                          <div className="bg-primary/10 p-4 rounded-xl mb-4">
-                            <ImageIcon className="h-8 w-8 text-primary" />
-                          </div>
-                          <p className="text-sm text-content-tertiary text-center mb-4 px-4">
-                            {tCommon("drag_drop_image")}
-                          </p>
-                          <Button 
-                            type="button"
-                            className="bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer rounded-xl px-6 h-11 font-semibold shadow-none"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              fileInputRef.current?.click()
-                            }}
-                          >
-                            {tCommon("add_image")}
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="relative rounded-[24px] overflow-hidden group border border-divider">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src={imagePreview} 
-                            alt="Preview" 
-                            className="w-full aspect-square object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              className="h-10 w-10 rounded-full shadow-lg"
-                              onClick={removeImage}
-                            >
-                              <X className="h-5 w-5" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </Card>
+        <div className="lg:col-span-4">
+          <UniImageUpload
+            label={tCommon("photo")}
+            preview={imagePreview}
+            onImageChange={handleImageChange}
+            onRemoveImage={removeImage}
+            fileInputRef={fileInputRef}
+          />
         </div>
 
         {/* Right Section - General Information */}
