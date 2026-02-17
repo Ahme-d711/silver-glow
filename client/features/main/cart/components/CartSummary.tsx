@@ -17,6 +17,7 @@ import { useCheckout } from "../hooks/useCart";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useSettings } from "@/features/dashboard/settings/hooks/useSettings";
 
 const shippingSchema = z.object({
   recipientName: z.string().min(1, "Recipient name is required"),
@@ -39,9 +40,15 @@ export const CartSummary: React.FC = () => {
   const { mutate: checkout, isPending } = useCheckout();
   const clearCart = useCartStore((state) => state.clearCart);
   const router = useRouter();
+  const { settings, isLoading: isSettingsLoading } = useSettings();
   
-  const deliveryFee = subtotal > 0 ? 50 : 0;
-  const total = subtotal + deliveryFee;
+  const shippingCost = settings?.shippingCost ?? 50;
+  const freeShippingThreshold = settings?.freeShippingThreshold ?? 1000;
+  const taxRate = settings?.taxRate ?? 0;
+
+  const deliveryFee = subtotal > 0 && subtotal < freeShippingThreshold ? shippingCost : 0;
+  const taxAmount = subtotal * (taxRate / 100);
+  const total = subtotal + deliveryFee + taxAmount;
 
   const form = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingSchema),
@@ -146,6 +153,18 @@ export const CartSummary: React.FC = () => {
                 {t("currency")} {deliveryFee}
               </span>
             </div>
+
+            {/* Tax */}
+            {taxRate > 0 && (
+              <div className="flex justify-between items-center text-content-secondary">
+                <span className="text-neutral-500 font-medium">
+                  {t("tax") || "Tax"} ({taxRate}%)
+                </span>
+                <span className="text-primary font-bold">
+                  {t("currency")} {taxAmount.toFixed(2)}
+                </span>
+              </div>
+            )}
 
             <div className="pt-4 border-t border-divider">
               <div className="flex justify-between items-center">

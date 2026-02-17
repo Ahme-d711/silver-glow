@@ -631,6 +631,7 @@
     "subtotal": "المجموع الفرعي",
     "discount": "الخصم (20%)",
     "delivery_fee": "رسوم التوصيل",
+    "tax": "الضريبة",
     "total": "الإجمالي",
     "coupon_code_placeholder": "أضف كود الخصم",
     "activation": "تفعيل",

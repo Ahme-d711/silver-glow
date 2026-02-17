@@ -39,6 +39,8 @@ export interface IOrder extends Document {
   // التسعير
   subtotal: number;
   shippingCost: number;
+  taxRate: number;
+  taxAmount: number;
   discountAmount: number;
   totalAmount: number;
 

@@ -6,6 +6,7 @@ import { checkoutSchema } from "../schemas/checkout.schema.js";
 import { CartModel } from "../models/cart.model.js";
 import { ProductModel } from "../models/product.model.js";
 import { TransactionModel } from "../models/transaction.model.js";
+import { SettingsModel } from "../models/settings.model.js";
 import AppError from "../errors/AppError.js";
 import { IProduct } from "../types/product.type.js";
 
@@ -149,9 +150,16 @@ export const createOrder = async (req: Request, res: Response) => {
     });
   }
 
-  const shippingCost = 50; 
+  // Get dynamic settings
+  let settings = await SettingsModel.findOne();
+  if (!settings) {
+    settings = await SettingsModel.create({});
+  }
+
+  const shippingCost = subtotal >= settings.freeShippingThreshold ? 0 : settings.shippingCost;
+  const taxAmount = Math.round(subtotal * (settings.taxRate / 100) * 100) / 100;
   const discountAmount = 0; 
-  const totalAmount = subtotal + shippingCost - discountAmount;
+  const totalAmount = subtotal + shippingCost + taxAmount - discountAmount;
 
   // Balance deduction logic if Payment Method is WALLET
   if (validatedBody.paymentMethod === "WALLET") {
@@ -171,6 +179,8 @@ export const createOrder = async (req: Request, res: Response) => {
     userId,
     subtotal,
     shippingCost,
+    taxRate: settings.taxRate,
+    taxAmount,
     discountAmount,
     totalAmount,
     trackingNumber,
@@ -359,9 +369,15 @@ export const checkout = async (req: Request, res: Response) => {
     });
   }
 
-  // 3. Pricing
-  const shippingCost = 50; // Flat rate for now
-  const totalAmount = subtotal + shippingCost;
+  // 3. Pricing & Settings
+  let settings = await SettingsModel.findOne();
+  if (!settings) {
+    settings = await SettingsModel.create({});
+  }
+
+  const shippingCost = subtotal >= settings.freeShippingThreshold ? 0 : settings.shippingCost;
+  const taxAmount = Math.round(subtotal * (settings.taxRate / 100) * 100) / 100;
+  const totalAmount = subtotal + shippingCost + taxAmount;
 
   // 4. Verify Balance
   const user = await UserModel.findById(userId);
@@ -380,6 +396,8 @@ export const checkout = async (req: Request, res: Response) => {
     items: orderItems,
     subtotal,
     shippingCost,
+    taxRate: settings.taxRate,
+    taxAmount,
     totalAmount,
     trackingNumber,
     paymentStatus: "PAID", // Since it's from balance

@@ -643,6 +643,7 @@
     "subtotal": "Subtotal",
     "discount": "Discount (20%)",
     "delivery_fee": "Delivery Fee",
+    "tax": "Tax",
     "total": "Total",
     "coupon_code_placeholder": "Add coupon code",
     "activation": "activation",
