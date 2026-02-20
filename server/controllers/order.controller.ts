@@ -158,8 +158,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
   const shippingCost = subtotal >= settings.freeShippingThreshold ? 0 : settings.shippingCost;
   const taxAmount = Math.round(subtotal * (settings.taxRate / 100) * 100) / 100;
-  const discountAmount = 0; 
-  const totalAmount = subtotal + shippingCost + taxAmount - discountAmount;
+  const totalAmount = subtotal + shippingCost + taxAmount;
 
   // Balance deduction logic if Payment Method is WALLET
   if (validatedBody.paymentMethod === "WALLET") {
@@ -181,7 +180,6 @@ export const createOrder = async (req: Request, res: Response) => {
     shippingCost,
     taxRate: settings.taxRate,
     taxAmount,
-    discountAmount,
     totalAmount,
     trackingNumber,
   });

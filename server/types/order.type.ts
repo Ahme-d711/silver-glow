@@ -41,7 +41,6 @@ export interface IOrder extends Document {
   shippingCost: number;
   taxRate: number;
   taxAmount: number;
-  discountAmount: number;
   totalAmount: number;
 
   // الدفع

@@ -40,7 +40,6 @@ export interface Order {
   // التسعير
   subtotal: number
   shippingCost: number
-  discountAmount: number
   totalAmount: number
   
   // الدفع
@@ -78,7 +77,6 @@ export interface CreateOrderPayload {
   postalCode?: string
   subtotal: number
   shippingCost: number
-  discountAmount: number
   totalAmount: number
   paymentMethod: PaymentMethod
   paymentStatus?: PaymentStatus

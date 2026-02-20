@@ -137,11 +137,6 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       default: 0,
     },
-    discountAmount: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
     totalAmount: {
       type: Number,
       required: true,

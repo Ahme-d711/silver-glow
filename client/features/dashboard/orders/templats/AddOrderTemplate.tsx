@@ -20,8 +20,7 @@ export default function AddOrderTemplate() {
     // Calculate totals strictly for the payload
     const subtotal = values.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const shippingCost = 0; // Default or calculate if needed
-    const discountAmount = 0;
-    const totalAmount = subtotal + shippingCost - discountAmount;
+    const totalAmount = subtotal + shippingCost;
 
     const payload: CreateOrderPayload = {
       userId: values.userId,
@@ -35,7 +34,6 @@ export default function AddOrderTemplate() {
       postalCode: values.postalCode,
       subtotal,
       shippingCost,
-      discountAmount,
       totalAmount,
       paymentMethod: values.paymentMethod as PaymentMethod,
       paymentStatus: values.paymentStatus as PaymentStatus,

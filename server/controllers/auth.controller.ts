@@ -241,13 +241,13 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
     isActive: true,
   }).select("-password");
 
-          if (!user) {
+  if (!user) {
     throw new AppError("User not found or account is deactivated", 404);
-          }
+  }
 
-          sendResponse(res, 200, {
-            success: true,
-            message: "User data retrieved successfully",
+  sendResponse(res, 200, {
+    success: true,
+    message: "User data retrieved successfully",
     data: { user },
   });
 });
