@@ -9,28 +9,39 @@ import { Button } from '../../../../components/ui/button';
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CountryPickerModal } from './CountryPickerModal';
+import { Country } from '../../../utils/countries';
 import { registerSchema, RegisterFormData } from '../schemas/registerSchema';
+
+import { useRegisterMutation } from '../hooks/useAuth';
 
 export const RegisterForm = () => {
   const router = useRouter();
+  const { mutate: register, isPending, error: apiError } = useRegisterMutation();
+
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      fullName: '',
+      name: '',
       email: '',
-      phoneNumber: '',
-      gender: undefined,
+      phone: '',
       password: '',
       confirmPassword: '',
     },
   });
 
   const [image, setImage] = useState<string | null>(null);
+  const [isCountryPickerVisible, setIsCountryPickerVisible] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<Country>({
+    name: 'Egypt',
+    code: 'EG',
+    flag: '🇪🇬',
+    dialCode: '+20',
+  });
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -43,21 +54,18 @@ export const RegisterForm = () => {
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setImage(uri);
-      // If we wanted to add image to form state:
-      // setValue('avatar', uri); 
     }
   };
 
   const onSubmit = (data: RegisterFormData) => {
-    console.log('Form Data:', data);
-    router.replace('/(main)');
+    register({ ...data, phone: selectedCountry.dialCode + data.phone });
   };
 
   return (
     <View className="flex-1 bg-white px-8 pt-12 pb-10">
       {/* Header */}
       <View className="items-center mb-8">
-        <Text className="text-2xl font-bold text-content-primary mb-2">Create account</Text>
+        <Text className="text-3xl font-bold text-content-primary mb-2">Create account</Text>
         <Text className="text-content-secondary text-center">
           Please enter your information to create account.
         </Text>
@@ -70,20 +78,26 @@ export const RegisterForm = () => {
           activeOpacity={0.7}
           className="relative"
         >
-          <View className="w-24 h-24 rounded-full bg-background border border-divider items-center justify-center overflow-hidden">
+          <View style={{
+            width: 128,
+            height: 128,
+            borderRadius: 64,
+            backgroundColor: '#f8fafc',
+            borderWidth: 1,
+            borderColor: '#e2e8f0',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden'
+          }}>
             {image ? (
               <Image 
                 source={{ uri: image }} 
-                className="w-full h-full" 
+                style={{ width: '100%', height: '100%' }}
                 contentFit="cover"
               />
             ) : (
-              <Ionicons name="image-outline" size={32} color="#94a3b8" />
+              <Ionicons name="image-outline" size={40} color="#94a3b8" />
             )}
-          </View>
-          {/* Plus Icon - Positioned to look "on top" of the edge */}
-          <View className="absolute bottom-0 right-0 bg-white border border-divider rounded-full p-2 shadow-sm z-20">
-            <Ionicons name="add" size={16} color="#1e293b" />
           </View>
         </TouchableOpacity>
       </View>
@@ -91,7 +105,7 @@ export const RegisterForm = () => {
       {/* Inputs */}
       <Controller
         control={control}
-        name="fullName"
+        name="name"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
             placeholder="Full name"
@@ -99,24 +113,30 @@ export const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            error={errors.fullName?.message}
+            error={errors.name?.message as string}
           />
         )}
       />
 
       <View className="flex-row gap-3">
-        <View className="w-20">
+        <TouchableOpacity 
+          onPress={() => setIsCountryPickerVisible(true)}
+          activeOpacity={0.7}
+          className="w-24"
+        >
           <Input 
-            placeholder="+20"
-            className="text-center px-0"
+            placeholder={selectedCountry.dialCode}
+            value={selectedCountry.dialCode}
+            className="text-center px-0 font-bold text-slate-900"
             keyboardType="phone-pad"
             editable={false}
+            pointerEvents="none"
           />
-        </View>
+        </TouchableOpacity>
         <View className="flex-1">
           <Controller
             control={control}
-            name="phoneNumber"
+            name="phone"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input 
                 placeholder="Phone number"
@@ -125,7 +145,7 @@ export const RegisterForm = () => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                error={errors.phoneNumber?.message}
+                error={errors.phone?.message as string}
               />
             )}
           />
@@ -144,61 +164,11 @@ export const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            error={errors.email?.message}
+            error={errors.email?.message as string}
           />
         )}
       />
 
-      {/* Gender Selection */}
-      <View className="mb-6">
-        <Text className="text-slate-600 font-medium mb-3">Gender</Text>
-        <Controller
-          control={control}
-          name="gender"
-          render={({ field: { onChange, value } }) => (
-            <>
-              <View className="flex-row gap-4">
-                <TouchableOpacity 
-                  onPress={() => onChange('male')}
-                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center border ${
-                    value === 'male' ? 'bg-slate-50 border-primary' : 'bg-white border-divider'
-                  }`}
-                >
-                  <Ionicons 
-                    name="person-outline" 
-                    size={20} 
-                    color={value === 'male' ? '#1e293b' : '#94a3b8'} 
-                    className="mr-2"
-                  />
-                  <Text className={`font-medium ${value === 'male' ? 'text-slate-900' : 'text-slate-400'}`}>
-                    Male
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  onPress={() => onChange('female')}
-                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center border ${
-                    value === 'female' ? 'bg-slate-50 border-primary' : 'bg-white border-divider'
-                  }`}
-                >
-                  <Ionicons 
-                    name="woman-outline" 
-                    size={20} 
-                    color={value === 'female' ? '#1e293b' : '#94a3b8'} 
-                    className="mr-2"
-                  />
-                  <Text className={`font-medium ${value === 'female' ? 'text-slate-900' : 'text-slate-400'}`}>
-                    Female
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {errors.gender && (
-                <Text className="text-red-500 text-sm mt-1 ml-1">{errors.gender.message}</Text>
-              )}
-            </>
-          )}
-        />
-      </View>
 
       <Controller
         control={control}
@@ -211,7 +181,7 @@ export const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            error={errors.password?.message}
+            error={errors.password?.message as string}
           />
         )}
       />
@@ -227,16 +197,22 @@ export const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            error={errors.confirmPassword?.message}
+            error={errors.confirmPassword?.message as string}
           />
         )}
       />
       
+      {apiError && (
+        <Text className="text-red-500 text-sm mb-4 text-center">{(apiError as Error).message}</Text>
+      )}
+
       <Button 
         title="Create account"
         onPress={handleSubmit(onSubmit)}
         className="bg-primary border-none mt-2 mb-6"
         textClassName="text-white"
+        loading={isPending}
+        disabled={isPending}
       />
       
       <View className="flex-row justify-center items-center">
@@ -245,6 +221,12 @@ export const RegisterForm = () => {
           <Text className="text-primary text-base font-bold">Login</Text>
         </TouchableOpacity>
       </View>
+
+      <CountryPickerModal 
+        visible={isCountryPickerVisible}
+        onClose={() => setIsCountryPickerVisible(false)}
+        onSelect={setSelectedCountry}
+      />
     </View>
   );
 };

@@ -1,13 +1,14 @@
 import React from 'react';
-import { TouchableOpacity, Text, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity, Text, TouchableOpacityProps, ActivityIndicator } from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
   variant?: 'primary' | 'outline';
   textClassName?: string;
+  loading?: boolean;
 }
 
-export const Button = ({ title, variant = 'primary', className, textClassName, ...props }: ButtonProps) => {
+export const Button = ({ title, variant = 'primary', className, textClassName, loading, disabled, ...props }: ButtonProps) => {
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
@@ -32,11 +33,16 @@ export const Button = ({ title, variant = 'primary', className, textClassName, .
     <TouchableOpacity
       className={`w-full h-14 rounded-2xl justify-center items-center ${getVariantStyles()} ${className || ''}`}
       activeOpacity={0.7}
+      disabled={disabled || loading}
       {...props}
     >
-      <Text className={`text-base font-bold ${getTextColor()} ${textClassName || ''}`}>
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={getTextColor() === 'text-white' ? '#fff' : '#000'} />
+      ) : (
+        <Text className={`text-lg font-bold ${getTextColor()} ${textClassName || ''}`}>
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 
 export const AuthHero = () => {
   return (
-    <View style={{ height: 450, width: '100%', position: 'relative', backgroundColor: '#f0f0f0' }}>
+    <View style={{ height: 480, width: '100%', position: 'relative', backgroundColor: '#f0f0f0' }}>
       <Image 
         source={require('../../../../assets/images/login-image.jpg')} 
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}

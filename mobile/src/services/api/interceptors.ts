@@ -1,11 +1,11 @@
 import { axiosInstance } from './axios';
-import { getToken } from '../../utils/token';
+import { getToken, deleteToken } from '../../utils/token';
 
-export const setupInterceptors = () => {
+export const setupInterceptors = (onLogout?: () => void) => {
   axiosInstance.interceptors.request.use(
     async (config) => {
       const token = await getToken();
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
@@ -20,11 +20,20 @@ export const setupInterceptors = () => {
       return response;
     },
     async (error) => {
-      // Prepare for 401 handling (refresh token flow or logout)
-      if (error.response?.status === 401) {
-        // Handle unauthorized access
+      const originalRequest = error.config;
+
+      // Handle 401 Unauthorized globally
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        await deleteToken();
+        if (onLogout) {
+          onLogout();
+        }
       }
-      return Promise.reject(error);
+
+      // Extract professional error message
+      const message = error.response?.data?.message || error.message || 'Something went wrong';
+      return Promise.reject(new Error(message));
     }
   );
 };

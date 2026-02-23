@@ -13,9 +13,9 @@ export const Input = ({ label, isPassword, leftIcon, error, className, ...props 
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className="mb-4">
+    <View className="mb-5">
       {label && (
-        <Text className="text-content-secondary text-base mb-2 font-medium">{label}</Text>
+        <Text className="text-content-secondary text-lg mb-2 font-medium">{label}</Text>
       )}
       <View className="relative">
         {leftIcon && (
