@@ -10,6 +10,7 @@ export interface IUser extends Document {
   password?: string;
   role: UserRole;
   picture?: string;
+  gender?: "male" | "female";
   isActive?: boolean;
   isVerified?: boolean;
   isBlocked?: boolean;

@@ -52,7 +52,10 @@ const sendAuthResponse = (
     success: true,
     message,
     data: {
-      user: userResponse,
+      user: {
+        ...userResponse,
+        gender: userResponse.gender || null, // Ensure it's returned
+      },
       accessToken,
     },
   });
@@ -110,6 +113,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     password: hashedPassword,
     phone: validatedData.phone ? validatedData.phone.replace(/^\+/, "") : undefined,
     picture: validatedData.picture,
+    gender: validatedData.gender,
     role: validatedData.role,
     isActive: true,
     isVerified: false,
@@ -223,6 +227,7 @@ export const checkAuth = asyncHandler(async (req: Request, res: Response) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                gender: user.gender || null,
               },
       accessToken,
             },
@@ -248,7 +253,12 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
   sendResponse(res, 200, {
     success: true,
     message: "User data retrieved successfully",
-    data: { user },
+    data: { 
+      user: {
+        ...user.toObject(),
+        gender: user.toObject().gender || null,
+      },
+    },
   });
 });
 
@@ -277,6 +287,7 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
     { _id: req.user!._id, isActive: true },
     {
       ...validatedData,
+      phone: validatedData.phone ? validatedData.phone.replace(/^\+/, "") : undefined,
       picture: req.file ? getRelativePath(req.file.path) : validatedData.picture,
     },
     { new: true, runValidators: true }

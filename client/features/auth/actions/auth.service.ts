@@ -101,6 +101,7 @@ export async function registerUser(payload: {
   email: string;
   password: string;
   phone: string;
+  gender?: string;
   picture?: string;
   role?: string;
 }): Promise<AuthActionResponse> {

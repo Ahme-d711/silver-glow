@@ -8,6 +8,7 @@ export interface User {
   photo?: string | null;
   profileImage?: string | null;
   picture?: string | null;
+  gender?: "male" | "female";
   username?: string;
   phone?: string;
   type?: string;

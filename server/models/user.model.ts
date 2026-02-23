@@ -27,6 +27,10 @@ import { Schema, model } from "mongoose";
  *         picture:
  *           type: string
  *           description: URL to user's profile picture
+ *         gender:
+ *           type: string
+ *           enum: [male, female]
+ *           description: The user's gender
  *         phone:
  *           type: string
  *           description: User's phone number
@@ -78,6 +82,11 @@ const UserSchema = new Schema<IUser>(
       required: false,
       trim: true,
       maxlength: 255,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+      default: null,
     },
     phone: {
       type: String,

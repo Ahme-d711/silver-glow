@@ -8,6 +8,7 @@ export interface User {
   password?: string;
   role: UserRole;
   picture?: string;
+  gender?: "male" | "female";
   isActive?: boolean;
   isVerified?: boolean;
   isBlocked?: boolean;

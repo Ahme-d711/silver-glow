@@ -19,6 +19,7 @@ export const registerSchema = z
       .string()
       .min(1, 'Phone number is required')
       .max(20, 'Phone number must be less than 20 characters'),
+    gender: z.enum(['male', 'female'], { message: 'Gender is required' }),
     confirmPassword: z.string().min(1, 'Password confirmation is required'),
   })
   .refine((data) => data.password === data.confirmPassword, {

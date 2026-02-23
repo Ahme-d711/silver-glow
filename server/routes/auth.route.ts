@@ -51,6 +51,9 @@ export const router = Router();
  *                 type: string
  *               phone:
  *                 type: string
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female]
  *     responses:
  *       201:
  *         description: User registered successfully. A verification code has been sent via WhatsApp.
@@ -82,6 +85,22 @@ router.post("/register", register);
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *                     accessToken:
+ *                       type: string
  *       401:
  *         description: Invalid credentials
  */
@@ -239,6 +258,9 @@ router.get("/user-data", authenticate, getCurrentUser);
  *                 type: string
  *               picture:
  *                 type: string
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female]
  *     responses:
  *       200:
  *         description: Profile updated

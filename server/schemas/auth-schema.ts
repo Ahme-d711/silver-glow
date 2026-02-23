@@ -72,6 +72,7 @@ export const registerSchema = z
       .max(20, "Phone number must be less than 20 characters")
       .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format")
       .trim(), // Phone is required for verification
+    gender: z.enum(["male", "female"]).optional(),
     picture: pictureSchema,
     role: roleSchema.default("user"),
   })
@@ -95,6 +96,7 @@ export const updateProfileSchema = z.object({
   name: nameSchema.optional(),
   phone: phoneSchema,
   picture: pictureSchema,
+  gender: z.enum(["male", "female"]).optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

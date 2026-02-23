@@ -31,6 +31,7 @@ export const RegisterForm = () => {
       phone: '',
       password: '',
       confirmPassword: '',
+      gender: undefined,
     },
   });
 
@@ -168,6 +169,79 @@ export const RegisterForm = () => {
           />
         )}
       />
+
+      <View className="mb-6">
+        <Text className="text-slate-900 font-semibold mb-3">Gender</Text>
+        <View className="flex-row gap-4">
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <TouchableOpacity
+                  onPress={() => onChange('male')}
+                  activeOpacity={0.7}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 56,
+                    borderRadius: 16,
+                    borderWidth: 1.5,
+                    backgroundColor: value === 'male' ? '#F8FAFC' : '#FFFFFF',
+                    borderColor: value === 'male' ? '#0B1324' : '#F1F5F9',
+                  }}
+                >
+                  <Ionicons 
+                    name="person-outline" 
+                    size={20} 
+                    color={value === 'male' ? '#0B1324' : '#94a3b8'} 
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{
+                    fontWeight: '600',
+                    color: value === 'male' ? '#0B1324' : '#94a3b8',
+                  }}>
+                    Male
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onChange('female')}
+                  activeOpacity={0.7}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 56,
+                    borderRadius: 16,
+                    borderWidth: 1.5,
+                    backgroundColor: value === 'female' ? '#F8FAFC' : '#FFFFFF',
+                    borderColor: value === 'female' ? '#0B1324' : '#F1F5F9',
+                  }}
+                >
+                  <Ionicons 
+                    name="woman-outline" 
+                    size={20} 
+                    color={value === 'female' ? '#0B1324' : '#94a3b8'} 
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{
+                    fontWeight: '600',
+                    color: value === 'female' ? '#0B1324' : '#94a3b8',
+                  }}>
+                    Female
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          />
+        </View>
+        {errors.gender && (
+          <Text className="text-red-500 text-sm mt-2">{errors.gender.message}</Text>
+        )}
+      </View>
 
 
       <Controller
