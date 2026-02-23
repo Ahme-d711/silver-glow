@@ -4,18 +4,20 @@ import { Image } from 'expo-image';
 
 export const AuthHero = () => {
   return (
-    <View className="h-[450px] w-full relative">
+    <View style={{ height: 450, width: '100%', position: 'relative', backgroundColor: '#f0f0f0' }}>
       <Image 
-        source={require('../../../../assets/images/login-image.svg')} 
-        className="w-full h-full"
+        source={require('../../../../assets/images/login-image.jpg')} 
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
         contentFit="cover"
+        transition={200}
       />
-      {/* Logo */}
-      <View className="absolute top-16 left-8">
+      {/* Logo Container */}
+      <View style={{ position: 'absolute', top: 64, left: 20, zIndex: 10 }}>
         <Image 
-          source={require('../../../../assets/images/logo.svg')} 
-          className="w-24 h-12"
+          source={require('@/assets/images/logo.png')} 
+          style={{ width: 50, height: 50 }}
           contentFit="contain"
+          transition={200}
         />
       </View>
     </View>

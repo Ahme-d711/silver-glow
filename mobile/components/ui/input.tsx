@@ -5,9 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 interface InputProps extends TextInputProps {
   label?: string;
   isPassword?: boolean;
+  leftIcon?: keyof typeof Ionicons.glyphMap;
+  error?: string;
 }
 
-export const Input = ({ label, isPassword, className, ...props }: InputProps) => {
+export const Input = ({ label, isPassword, leftIcon, error, className, ...props }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -16,11 +18,19 @@ export const Input = ({ label, isPassword, className, ...props }: InputProps) =>
         <Text className="text-content-secondary text-base mb-2 font-medium">{label}</Text>
       )}
       <View className="relative">
+        {leftIcon && (
+          <View className="absolute left-4 top-4 z-10">
+            <Ionicons name={leftIcon} size={20} color={error ? "#ef4444" : "#9ca3af"} />
+          </View>
+        )}
         <TextInput
-          className={`w-full h-14 border border-divider rounded-2xl px-4 text-base bg-white shadow-sm ${
+          className={`w-full h-14 border ${
+            error ? 'border-red-500' : 'border-divider'
+          } rounded-2xl px-4 text-base bg-white shadow-sm ${
             isPassword ? 'pr-12' : ''
-          } ${className || ''}`}
+          } ${leftIcon ? 'pl-12' : ''} ${className || ''}`}
           secureTextEntry={isPassword && !showPassword}
+          placeholderTextColor="#9ca3af"
           {...props}
         />
         {isPassword && ( 
@@ -29,13 +39,16 @@ export const Input = ({ label, isPassword, className, ...props }: InputProps) =>
             onPress={() => setShowPassword(!showPassword)}
           >
             <Ionicons
-              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
               size={20}
               color="#9ca3af"
             />
           </TouchableOpacity>
         )}
       </View>
+      {error && (
+        <Text className="text-error text-sm mt-1 ml-1">{error}</Text>
+      )}
     </View>
   );
 };
