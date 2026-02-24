@@ -21,7 +21,10 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
         style={{ paddingBottom: Math.max(insets.bottom, 15) }}
         className="flex-row items-center justify-around bg-white py-3 px-4 rounded-t-[40px] shadow-lg"
       >
-        {state.routes.filter(route => (descriptors[route.key].options as any).href !== null).map((route, index) => {
+        {state.routes.filter(route => {
+          const { options } = descriptors[route.key];
+          return (options as any).href !== null && route.name !== 'orders';
+        }).map((route, index) => {
           const { options } = descriptors[route.key];
           const isFocused = state.index === index;
 
@@ -54,7 +57,7 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
                 <Feather 
                   name={iconName} 
                   size={24} 
-                  color={isFocused ? '#0B1324' : '#94A3B8'} 
+                  color={isFocused ? '#192C56' : '#94A3B8'} 
                 />
               </View>
             </TouchableOpacity>

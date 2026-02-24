@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'rea
 import { useHomeProducts, useHomeSections } from '../hooks/useProduct';
 import { ProductCard } from './ProductCard';
 import { SectionHeader } from '@/components/ui/section-header';
-import { Button } from '@/components/ui/button';
+import { Feather } from '@expo/vector-icons';
 
 export const ProductTabsSection = () => {
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
@@ -73,13 +73,18 @@ export const ProductTabsSection = () => {
       </View>
 
       {/* View All Button */}
-      <View className="mt-6">
-        <Button 
-          title="More Products" 
-          variant="outline"
-          className="rounded-2xl border-2 border-primary"
-          textClassName="text-primary font-bold"
-        />
+      <View className="mt-8">
+        <TouchableOpacity
+          activeOpacity={0.8}
+          className="flex-row items-center justify-center bg-primary/5 border border-primary/10 py-5 rounded-[24px]"
+        >
+          <Text className="text-primary font-bold text-lg mr-3">
+            More Products
+          </Text>
+          <View className="bg-primary/10 p-2 rounded-full">
+            <Feather name="arrow-right" size={18} color="#192C56" />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
