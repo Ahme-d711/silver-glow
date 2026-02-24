@@ -76,7 +76,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    aspectRatio: 3/4,
-    maxHeight: 225,
+    width: '100%',
+    height: 225,
   }
 });

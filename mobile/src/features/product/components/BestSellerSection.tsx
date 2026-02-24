@@ -35,15 +35,6 @@ export const BestSellerSection = () => {
           </View>
         ))}
       </ScrollView>
-
-      <View className="px-6 mt-4">
-        <Button 
-          title="More Products" 
-          variant="outline"
-          className="rounded-2xl border-2 border-primary"
-          textClassName="text-primary font-bold"
-        />
-      </View>
     </View>
   );
 };
