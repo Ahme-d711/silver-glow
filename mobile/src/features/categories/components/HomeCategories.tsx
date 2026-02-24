@@ -32,8 +32,8 @@ export const HomeCategories = () => {
             key={category._id} 
             category={category} 
             onPress={() => router.push({
-              pathname: `/category/${category._id}` as any,
-              params: { name: category.nameEn }
+              pathname: '/(main)/category/[id]',
+              params: { id: category._id, name: category.nameEn }
             })}
           />
         ))}

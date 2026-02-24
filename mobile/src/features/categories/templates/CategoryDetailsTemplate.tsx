@@ -45,7 +45,7 @@ export const CategoryDetailsTemplate = () => {
                 subcategory={subcategory}
                 onPress={() => {
                   router.push({
-                    pathname: '/(main)/shop' as any,
+                    pathname: '/shop',
                     params: { 
                       categoryId: id,
                       subCategoryId: subcategory._id 

@@ -27,7 +27,11 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
       >
         {state.routes.filter(route => {
           const { options } = descriptors[route.key];
-          return (options as any).href !== null && route.name !== 'orders';
+          const href = (options as { href?: string | null }).href;
+          
+          return href !== null && 
+                 iconMap[route.name] && 
+                 route.name !== 'orders';
         }).map((route) => {
           const { options } = descriptors[route.key];
           const isFocused = state.routes[state.index].key === route.key;
