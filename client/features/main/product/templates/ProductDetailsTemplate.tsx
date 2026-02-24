@@ -19,8 +19,6 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   const locale = useLocale();
   const isRtl = locale === "ar";
 
-  console.log("slug", slug);
-  
   const { data: product, isLoading, isError } = useProduct(slug);
 
   if (isLoading) {

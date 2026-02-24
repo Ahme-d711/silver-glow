@@ -23,7 +23,6 @@ export function useLogin(): UseLoginReturn {
 
     try {
       const response = await loginUser({ phone, password });
-      console.log(response)
 
       if (!response.success) {
         throw new Error(response.message || "Login failed");

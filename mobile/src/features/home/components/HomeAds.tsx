@@ -38,7 +38,7 @@ export const HomeAds = () => {
               {item.nameEn}
             </Text>
             <Text className="text-white/90 text-sm font-medium leading-5">
-              {item.nameAr}
+              {item.descriptionEn}
             </Text>
           </View>
         </View>

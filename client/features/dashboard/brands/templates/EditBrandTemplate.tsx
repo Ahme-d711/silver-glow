@@ -15,13 +15,8 @@ export default function EditBrandTemplate() {
   const t = useTranslations("Brands");
   const tNav = useTranslations("Navigation");
   const tCommon = useTranslations("Common");
-
-  console.log(slug);
-  
   
   const { data: brand, isLoading: isFetching } = useBrandBySlug(slug);
-  console.log(brand);
-  
   const { mutate: updateBrand, isPending } = useUpdateBrand();
 
   const handleSubmit = (values: BrandFormData | FormData) => {

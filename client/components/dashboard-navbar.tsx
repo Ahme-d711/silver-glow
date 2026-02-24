@@ -21,7 +21,6 @@ export function DashboardNavbar() {
   const tAuth = useTranslations("Auth");
   
   const { logout, loading: isLoggingOut } = useLogout();
-  console.log(user);
 
   const userName = user?.name || tAuth("user_fallback");
   const userPhoto = getImageUrl(user?.picture);

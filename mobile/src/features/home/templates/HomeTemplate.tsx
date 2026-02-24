@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeHeader } from '../components/HomeHeader';
 import { HomeAds } from '../components/HomeAds';
+import { HomeCategories } from '../../categories/components/HomeCategories';
 
 export const HomeTemplate = () => {
   return (
@@ -13,6 +14,7 @@ export const HomeTemplate = () => {
         showsVerticalScrollIndicator={false}
       >
         <HomeAds />
+        <HomeCategories />
         <View className="p-6">
           {/* Future Home Content */}
         </View>
