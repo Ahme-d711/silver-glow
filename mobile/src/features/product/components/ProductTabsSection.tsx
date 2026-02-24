@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useHomeProducts, useHomeSections } from '../hooks/useProduct';
 import { ProductCard } from './ProductCard';
 import { SectionHeader } from '@/components/ui/section-header';
+import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist';
+import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 import { Feather } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 
@@ -14,6 +17,19 @@ export const ProductTabsSection = () => {
   const { data: { products = [] } = {}, isLoading: isProductsLoading } = useHomeProducts(
     activeSectionId ? { sectionIds: [activeSectionId] } : {}
   );
+  
+  const { user } = useAuthStore();
+  const { openAuthModal } = useModalStore();
+  const { isInWishlist } = useWishlist();
+  const { mutate: toggleWishlist } = useToggleWishlist();
+
+  const handleWishlistToggle = (productId: string) => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    toggleWishlist(productId);
+  };
 
   // Combine "All" with fetched sections
   const tabs = [
@@ -64,7 +80,11 @@ export const ProductTabsSection = () => {
         ) : products.length > 0 ? (
           products.slice(0, 8).map((product) => (
             <View key={product._id} className="w-[48%]">
-              <ProductCard product={product} />
+              <ProductCard 
+                product={product} 
+                isInWishlist={isInWishlist(product._id)}
+                onWishlistPress={() => handleWishlistToggle(product._id)}
+              />
             </View>
           ))
         ) : (

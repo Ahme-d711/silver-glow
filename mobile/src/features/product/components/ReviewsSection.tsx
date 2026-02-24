@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Alert, Imag
 import { Feather } from '@expo/vector-icons';
 import { useProductReviews, useAddReview, useUpdateReview, useDeleteReview } from '../hooks/useReviews';
 import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 import { getImageUrl } from '../../../utils/image.utils';
 
 interface ReviewsSectionProps {
@@ -12,6 +13,7 @@ interface ReviewsSectionProps {
 
 export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numReviews = 0 }) => {
   const { user } = useAuthStore();
+  const { openAuthModal } = useModalStore();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
@@ -25,7 +27,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
 
   const handleSubmit = () => {
     if (!user) {
-      Alert.alert("Login Required", "Please login to leave a review.");
+      openAuthModal();
       return;
     }
     

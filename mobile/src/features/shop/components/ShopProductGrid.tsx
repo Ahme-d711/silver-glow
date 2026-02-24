@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { ProductCard } from '../../product/components/ProductCard';
 import { Pagination } from '@/components/ui/pagination';
 import { Product } from '../../product/types/product.types';
+import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist';
+import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 
 interface ShopProductGridProps {
   products: Product[];
@@ -27,6 +30,19 @@ export const ShopProductGrid: React.FC<ShopProductGridProps> = ({
   onPageChange,
   onRefresh,
 }) => {
+  const { user } = useAuthStore();
+  const { openAuthModal } = useModalStore();
+  const { isInWishlist } = useWishlist();
+  const { mutate: toggleWishlist } = useToggleWishlist();
+
+  const handleWishlistToggle = (productId: string) => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    toggleWishlist(productId);
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -44,7 +60,11 @@ export const ShopProductGrid: React.FC<ShopProductGridProps> = ({
       columnWrapperStyle={{ justifyContent: 'space-between' }}
       renderItem={({ item }) => (
         <View style={{ width: '48%', marginBottom: 16 }}>
-          <ProductCard product={item} />
+          <ProductCard 
+            product={item} 
+            isInWishlist={isInWishlist(item._id)}
+            onWishlistPress={() => handleWishlistToggle(item._id)}
+          />
         </View>
       )}
       ListFooterComponent={

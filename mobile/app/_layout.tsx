@@ -7,6 +7,7 @@ import { AuthProvider } from '../src/providers/AuthProvider';
 import { setupInterceptors } from '../src/services/api/interceptors';
 import { useAuthStore } from '../src/features/auth/store/authStore';
 import { SplashScreen } from '../src/components/common/SplashScreen';
+import { AuthModal } from '../src/components/ui/AuthModal';
 import "../global.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -41,6 +42,7 @@ export default function RootLayout() {
           }}
         />
         <StatusBar style="light" />
+        <AuthModal />
       </AuthProvider>
     </QueryProvider>
   );

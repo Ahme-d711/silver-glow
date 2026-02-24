@@ -14,9 +14,9 @@ export const HomeAds = () => {
   const { data: ads, isLoading } = useAds();
 
   const renderItem = ({ item }: { item: Ad }) => (
-    <View className="px-6 py-2">
+    <View className="px-6">
       {/* Container that allows overflow for the button */}
-      <View className="h-48 relative shadow-sm">
+      <View className="h-56 relative shadow-sm">
         {/* Rounded background layer clipping the image and gradient */}
         <View style={styles.imageContainer}>
           <Image 
@@ -63,7 +63,7 @@ export const HomeAds = () => {
       <Carousel
         loop
         width={width}
-        height={210}
+        height={230}
         autoPlay={true}
         autoPlayInterval={3000}
         data={ads || []}

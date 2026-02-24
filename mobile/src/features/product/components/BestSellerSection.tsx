@@ -3,10 +3,24 @@ import { View, ActivityIndicator, ScrollView } from 'react-native';
 import { useBestSellers } from '../hooks/useProduct';
 import { ProductCard } from './ProductCard';
 import { SectionHeader } from '@/components/ui/section-header';
-import { Button } from '@/components/ui/button';
+import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist';
+import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 
 export const BestSellerSection = () => {
+  const { user } = useAuthStore();
+  const { openAuthModal } = useModalStore();
   const { data: products, isLoading } = useBestSellers();
+  const { isInWishlist } = useWishlist();
+  const { mutate: toggleWishlist } = useToggleWishlist();
+
+  const handleWishlistToggle = (productId: string) => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    toggleWishlist(productId);
+  };
 
   if (isLoading) {
     return (
@@ -31,7 +45,11 @@ export const BestSellerSection = () => {
       >
         {products.map((product) => (
           <View key={product._id} style={{ width: 320 }}>
-            <ProductCard product={product} />
+            <ProductCard 
+              product={product} 
+              isInWishlist={isInWishlist(product._id)}
+              onWishlistPress={() => handleWishlistToggle(product._id)}
+            />
           </View>
         ))}
       </ScrollView>

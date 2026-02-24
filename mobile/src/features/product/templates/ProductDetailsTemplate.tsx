@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useProductDetails } from '../hooks/useProduct';
 import { ProductImageCarousel } from '../components/ProductImageCarousel';
 import { ProductMainInfo } from '../components/ProductMainInfo';
 import { ReviewsSection } from '../components/ReviewsSection';
 import { BestSellerSection } from '../components/BestSellerSection';
+
+import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist';
+import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 
 interface ProductDetailsTemplateProps {
   id: string;
@@ -14,13 +18,25 @@ interface ProductDetailsTemplateProps {
 export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ id }) => {
   const { data: product, isLoading, error } = useProductDetails(id);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  
+  const { user } = useAuthStore();
+  const { openAuthModal } = useModalStore();
+  const { isInWishlist } = useWishlist();
+  const { mutate: toggleWishlist } = useToggleWishlist();
+
+  const handleWishlistToggle = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    toggleWishlist(id);
+  };
 
   useEffect(() => {
     if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
       setSelectedSize(product.sizes[0].size);
     }
   }, [product, selectedSize]);
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   if (isLoading) {
     return (
@@ -68,8 +84,8 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           price={currentPrice}
           oldPrice={currentOldPrice}
           rating={product.averageRating}
-          isWishlisted={isWishlisted}
-          onWishlistToggle={() => setIsWishlisted(!isWishlisted)}
+          isWishlisted={isInWishlist(id)}
+          onWishlistToggle={handleWishlistToggle}
           isInStock={isInStock}
           currentStock={currentStock}
           description={product.descriptionEn}
