@@ -48,6 +48,12 @@ export default function MainLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="category/[id]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
