@@ -20,10 +20,10 @@ export const ProductInfoSegment: React.FC<ProductInfoSegmentProps> = ({
   onWishlistToggle,
 }) => {
   return (
-    <View className="mt-4">
+    <View>
       <View className="flex-row justify-between items-start">
         <View className="flex-1 mr-4">
-          <Text className="text-2xl font-bold text-content-primary">{name}</Text>
+          <Text className="text-2xl font-bold text-content-primary capitalize">{name}</Text>
           
           <View className="flex-row items-center mt-2">
             <Text className="text-2xl font-bold text-primary mr-2">
