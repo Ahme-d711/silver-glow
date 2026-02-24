@@ -9,11 +9,14 @@ import { ShopProductGrid } from '../components/ShopProductGrid';
 import { FilterModal } from '../components/FilterModal';
 import { SortModal } from '../components/SortModal';
 import { PageHeader } from '@/components/ui/page-header';
+import { useLocalSearchParams } from 'expo-router';
 
 export const ShopTemplate = () => {
+  const params = useLocalSearchParams<{ categoryId?: string; subCategoryId?: string }>();
+  
   // State
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined);
-  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | undefined>(undefined);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(params.categoryId);
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | undefined>(params.subCategoryId);
   const [sortValue, setSortValue] = useState<string>('popularity');
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);

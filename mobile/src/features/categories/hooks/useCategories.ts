@@ -8,3 +8,12 @@ export const useCategories = () => {
     select: (response) => response.data.categories,
   });
 };
+
+export const useSubcategories = (categoryId: string) => {
+  return useQuery({
+    queryKey: ['subcategories', categoryId],
+    queryFn: () => categoryService.getSubcategories(categoryId),
+    select: (response) => response.data.subcategories,
+    enabled: !!categoryId,
+  });
+};
