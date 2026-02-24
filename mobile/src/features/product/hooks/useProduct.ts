@@ -5,8 +5,11 @@ import { GetProductsParams } from '../types/product.types';
 export const useHomeProducts = (params: GetProductsParams = {}) => {
   return useQuery({
     queryKey: ['products', params],
-    queryFn: () => productService.getProducts({ limit: 8, isShow: true, ...params }),
-    select: (response) => response.data.products,
+    queryFn: () => productService.getProducts({ limit: 12, isShow: true, ...params }),
+    select: (response) => ({
+      products: response.data.products,
+      pagination: response.data.pagination
+    }),
   });
 };
 
@@ -21,7 +24,7 @@ export const useHomeSections = () => {
 export const useBestSellers = () => {
   return useQuery({
     queryKey: ['products', 'best-seller'],
-    queryFn: () => productService.getProducts({ limit: 8, isShow: true }), // Server might have a specific flag or sort for best sellers
+    queryFn: () => productService.getProducts({ limit: 8, isShow: true }),
     select: (response) => response.data.products,
   });
 };

@@ -4,14 +4,14 @@ import { useHomeProducts, useHomeSections } from '../hooks/useProduct';
 import { ProductCard } from './ProductCard';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export const ProductTabsSection = () => {
   const router = useRouter();
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isSectionsLoading } = useHomeSections();
-  const { data: products = [], isLoading: isProductsLoading } = useHomeProducts(
+  const { data: { products = [] } = {}, isLoading: isProductsLoading } = useHomeProducts(
     activeSectionId ? { sectionIds: [activeSectionId] } : {}
   );
 
@@ -75,20 +75,19 @@ export const ProductTabsSection = () => {
       </View>
 
       {/* View All Button */}
-      <View className="mt-8">
+      <Link href="/shop" asChild>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push('/shop')}
-          className="flex-row items-center justify-center bg-primary/5 border border-primary/10 py-5 rounded-[24px]"
+          className="flex-row items-center justify-center bg-primary/5 border border-primary/10 py-4 rounded-[24px]"
         >
           <Text className="text-primary font-bold text-lg mr-3">
             More Products
           </Text>
           <View className="bg-primary/10 p-2 rounded-full">
-            <Feather name="arrow-right" size={18} color="#192C56" />
+            <Feather name="arrow-right" size={16} color="#192C56" />
           </View>
         </TouchableOpacity>
-      </View>
+      </Link>
     </View>
   );
 };

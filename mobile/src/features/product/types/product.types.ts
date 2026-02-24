@@ -54,8 +54,10 @@ export interface SectionsResponse {
 export interface GetProductsParams {
   search?: string;
   categoryId?: string;
+  subCategoryId?: string;
   sectionIds?: string[];
   page?: number;
   limit?: number;
   isShow?: boolean;
+  sort?: string;
 }
