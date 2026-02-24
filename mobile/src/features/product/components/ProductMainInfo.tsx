@@ -58,11 +58,13 @@ export const ProductMainInfo: React.FC<ProductMainInfoProps> = ({
         </Text>
       </View>
 
-      <SizeSelector 
-        sizes={sizes}
-        selectedSize={selectedSize}
-        onSelect={onSizeSelect}
-      />
+      {sizes.length > 0 && (
+        <SizeSelector 
+          sizes={sizes}
+          selectedSize={selectedSize}
+          onSelect={onSizeSelect}
+        />
+      )}
     </View>
   );
 };

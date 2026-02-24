@@ -25,19 +25,13 @@ export const ProductInfoSegment: React.FC<ProductInfoSegmentProps> = ({
         <View className="flex-1 mr-4">
           <Text className="text-2xl font-bold text-content-primary capitalize">{name}</Text>
           <View className="flex-row items-center mt-2">
-            <Text className="text-2xl font-bold text-primary mr-2">
-              ${(price || 0).toFixed(2)}
-            </Text>
+            <Text className="text-2xl font-bold text-primary mr-2">${(price || 0).toFixed(2)}</Text>
             {oldPrice && (
-              <Text className="text-lg text-content-tertiary line-through">
-                ${oldPrice.toFixed(2)}
-              </Text>
+              <Text className="text-lg text-content-tertiary line-through">${oldPrice.toFixed(2)}</Text>
             )}
             <View className="flex-row items-center ml-4">
               <Feather name="star" size={16} color="#F59E0B" fill="#F59E0B" />
-              <Text className="ml-1 text-content-secondary font-bold">
-                {(rating || 0).toFixed(1)}
-              </Text>
+              <Text className="ml-1 text-content-secondary font-bold">{(rating || 0).toFixed(1)}</Text>
             </View>
           </View>
         </View>

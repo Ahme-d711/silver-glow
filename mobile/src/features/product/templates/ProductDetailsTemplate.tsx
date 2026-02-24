@@ -66,9 +66,7 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   const currentOldPrice = selectedSizeData?.oldPrice || product.oldPrice;
   const currentStock = selectedSizeData ? selectedSizeData.stock : product.stock;
   
-  const normalizedSizes = sizes.length > 0 
-    ? sizes.map(s => s.size) 
-    : ['5.0', '6.0', '7.0', '8.0', '9.0']; // Fallback
+  const normalizedSizes = sizes.map(s => s.size);
 
   const isInStock = currentStock > 0;
 
