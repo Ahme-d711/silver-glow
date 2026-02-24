@@ -7,9 +7,16 @@ export function getImageUrl(path: string | null | undefined): string | null {
     return path;
   }
 
+  // Ensure path starts with a single /
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  const finalPath = cleanPath.startsWith("/uploads") ? cleanPath : `/uploads${cleanPath}`;
-  return `${BASE_URL}${finalPath}`;
+  
+  // If the path already has /uploads, use it as is, otherwise prefix it
+  const finalPath = cleanPath.includes("/uploads") ? cleanPath : `/uploads${cleanPath}`;
+  
+  // Remove possible trailing slash from BASE_URL before joining
+  const baseUrl = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+  
+  return `${baseUrl}${finalPath}`;
 }
 
 

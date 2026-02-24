@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { Button } from '../../../../components/ui/button';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,45 +12,44 @@ const { width } = Dimensions.get('window');
 
 export const HomeAds = () => {
   const { data: ads, isLoading } = useAds();
-  
 
   const renderItem = ({ item }: { item: Ad }) => (
     <View className="px-6 py-2">
-      <View className="h-48 rounded-[32px] overflow-hidden shadow-sm">
-        {/* Background Image */}
-        <Image 
-          source={{ uri: getImageUrl(item.photo) as string }} 
-          className="absolute inset-0 w-full h-full"
-          contentFit="cover"
-        />
-        
-        {/* Dark Overlay */}
-        <LinearGradient
-          colors={['transparent', 'rgba(11, 19, 36, 0.7)']}
-          className="absolute inset-0"
-        />
+      {/* Container that allows overflow for the button */}
+      <View className="h-48 relative shadow-sm">
+        {/* Rounded background layer clipping the image and gradient */}
+        <View style={styles.imageContainer}>
+          <Image 
+            source={{ uri: getImageUrl(item.photo) ?? '' }} 
+            style={styles.backgroundImage}
+            contentFit="cover"
+            transition={300}
+          />
+          <LinearGradient
+            colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.6)']}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
 
-        {/* Content */}
-        <View className="p-6 justify-between flex-1">
-          <View>
-            <Text className="text-white text-2xl font-bold leading-8">
+        {/* Content Layer */}
+        <View className="flex-1 p-8 justify-center">
+          <View className="pr-20">
+            <Text className="text-white text-2xl font-bold mb-2 leading-7">
               {item.nameEn}
             </Text>
-            <Text className="text-white/80 text-sm mt-1 leading-5">
+            <Text className="text-white/90 text-sm font-medium leading-5">
               {item.nameAr}
             </Text>
           </View>
-
-          {/* Shop Now Button */}
-          <View className="flex-row justify-end">
-            <TouchableOpacity 
-              activeOpacity={0.8}
-              className="bg-primary px-8 py-3 rounded-2xl border-white border"
-            >
-              <Text className="text-white font-bold text-base">Shop Now</Text>
-            </TouchableOpacity>
-          </View>
         </View>
+
+        {/* Shop Now Button - Positioned absolutely relative to the main h-48 container */}
+        <Button 
+          title="Shop Now"
+          className="absolute -bottom-4 right-0 w-[120px] h-12 rounded-full border-[3px] border-white z-10"
+          textClassName="text-white text-base font-bold"
+          activeOpacity={0.8}
+        />
       </View>
     </View>
   );
@@ -74,3 +73,15 @@ export const HomeAds = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 24,
+    overflow: 'hidden',
+    backgroundColor: '#f1f5f9', // Fallback color
+  },
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});

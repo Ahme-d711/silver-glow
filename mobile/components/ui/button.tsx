@@ -31,7 +31,7 @@ export const Button = ({ title, variant = 'primary', className, textClassName, l
 
   return (
     <TouchableOpacity
-      className={`w-full h-14 rounded-2xl justify-center items-center ${getVariantStyles()} ${className || ''}`}
+      className={`h-14 rounded-2xl justify-center items-center ${getVariantStyles()} ${!className?.includes('w-') ? 'w-full' : ''} ${className || ''}`}
       activeOpacity={0.7}
       disabled={disabled || loading}
       {...props}
