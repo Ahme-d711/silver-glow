@@ -20,7 +20,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
   return (
     <View className="bg-white rounded-[20px] p-3 mb-4 flex-row items-center border border-divider shadow-sm">
       {/* Product Image */}
-      <View className="h-24 w-24 rounded-[15px] overflow-hidden bg-gray-100">
+      <View className="h-40 w-36 rounded-[15px] overflow-hidden bg-gray-100">
         {imageUrl ? (
           <Image source={{ uri: imageUrl }} className="w-full h-full" resizeMode="cover" />
         ) : (
@@ -41,7 +41,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
               onPress={onRemove}
               className="bg-primary/5 p-1.5 rounded-full"
             >
-              <Feather name="heart" size={16} color="#192C56" fill="#192C56" />
+              <Feather name="heart" size={20} color="#192C56" fill="#192C56" />
             </TouchableOpacity>
           </View>
           
@@ -66,7 +66,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
             onPress={handlePress}
             className="bg-primary px-5 py-2.5 rounded-xl"
           >
-            <Text className="text-white font-bold text-sm">Shop Now</Text>
+            <Text className="text-white font-bold text-lg">Shop Now</Text>
           </TouchableOpacity>
         </View>
       </View>

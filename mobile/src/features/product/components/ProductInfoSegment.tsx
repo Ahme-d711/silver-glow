@@ -24,7 +24,6 @@ export const ProductInfoSegment: React.FC<ProductInfoSegmentProps> = ({
       <View className="flex-row justify-between items-start">
         <View className="flex-1 mr-4">
           <Text className="text-2xl font-bold text-content-primary capitalize">{name}</Text>
-          
           <View className="flex-row items-center mt-2">
             <Text className="text-2xl font-bold text-primary mr-2">
               ${(price || 0).toFixed(2)}
@@ -34,7 +33,6 @@ export const ProductInfoSegment: React.FC<ProductInfoSegmentProps> = ({
                 ${oldPrice.toFixed(2)}
               </Text>
             )}
-            
             <View className="flex-row items-center ml-4">
               <Feather name="star" size={16} color="#F59E0B" fill="#F59E0B" />
               <Text className="ml-1 text-content-secondary font-bold">
@@ -43,7 +41,6 @@ export const ProductInfoSegment: React.FC<ProductInfoSegmentProps> = ({
             </View>
           </View>
         </View>
-
         <TouchableOpacity 
           onPress={onWishlistToggle}
           className={`p-3 rounded-full ${isWishlisted ? 'bg-error/10' : 'bg-gray-100'}`}
