@@ -24,9 +24,9 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
         {state.routes.filter(route => {
           const { options } = descriptors[route.key];
           return (options as any).href !== null && route.name !== 'orders';
-        }).map((route, index) => {
+        }).map((route) => {
           const { options } = descriptors[route.key];
-          const isFocused = state.index === index;
+          const isFocused = state.routes[state.index].key === route.key;
 
           const onPress = () => {
             const event = navigation.emit({
@@ -50,7 +50,7 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
               activeOpacity={0.7}
             >
               <View 
-                className={`w-20 h-14 items-center justify-center rounded-full ${
+                className={`w-20 h-14 items-center justify-center rounded-full overflow-hidden ${
                   isFocused ? 'bg-[#F1F5F9]' : 'bg-transparent'
                 }`}
               >

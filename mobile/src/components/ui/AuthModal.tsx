@@ -102,7 +102,7 @@ export const AuthModal: React.FC = () => {
                 colors={['#192C56', '#2A457D']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                className="h-[60px] rounded-2xl! items-center justify-center flex-row shadow-lg shadow-primary/30"
+                className="h-[60px] rounded-2xl overflow-hidden items-center justify-center flex-row shadow-lg shadow-primary/30"
               >
                 <Text className="text-white font-bold text-lg mr-2">Login Now</Text>
                 <Feather name="arrow-right" size={20} color="white" />
