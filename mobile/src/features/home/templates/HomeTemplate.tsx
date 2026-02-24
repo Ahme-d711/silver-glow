@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeHeader } from '../components/HomeHeader';
 import { HomeAds } from '../components/HomeAds';
 import { HomeCategories } from '../../categories/components/HomeCategories';
+import { BestSellerSection } from '../../product/components/BestSellerSection';
+import { ProductTabsSection } from '../../product/components/ProductTabsSection';
 
 export const HomeTemplate = () => {
   return (
@@ -15,9 +17,9 @@ export const HomeTemplate = () => {
       >
         <HomeAds />
         <HomeCategories />
-        <View className="p-6">
-          {/* Future Home Content */}
-        </View>
+        <BestSellerSection />
+        <ProductTabsSection />
+        <View className="mb-10" />
       </ScrollView>
     </SafeAreaView>
   );
