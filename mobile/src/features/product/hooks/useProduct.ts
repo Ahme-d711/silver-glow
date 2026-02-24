@@ -28,3 +28,12 @@ export const useBestSellers = () => {
     select: (response) => response.data.products,
   });
 };
+
+export const useProductDetails = (id: string) => {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: () => productService.getProductById(id),
+    select: (response) => response.data.product,
+    enabled: !!id,
+  });
+};

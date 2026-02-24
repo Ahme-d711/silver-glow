@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { Product } from '../types/product.types';
 import { getImageUrl } from '../../../utils/image.utils';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
 interface ProductCardProps {
   product: Product;
@@ -19,14 +20,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onWishlistPress,
   isInWishlist = false 
 }) => {
+  const router = useRouter();
   const name = product.nameEn;
   const description = product.descriptionEn || "Your ring, your style";
   const imageUrl = getImageUrl(product.mainImage);
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      router.push(`/product/${product._id}`);
+    }
+  };
+
   return (
     <TouchableOpacity 
       activeOpacity={0.9}
-      onPress={onPress}
+      onPress={handlePress}
       className="mb-6 w-full"
       style={styles.cardContainer}
     >

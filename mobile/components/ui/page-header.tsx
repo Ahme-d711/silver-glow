@@ -18,7 +18,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <View 
-      className="bg-primary pb-10 px-6 rounded-b-[40px] shadow-lg"
+      className="bg-primary pb-6 px-6 rounded-b-[40px] shadow-lg"
       style={{ paddingTop: insets.top + 10 }}
     >
       <View className="flex-row items-center justify-between">

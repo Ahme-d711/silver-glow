@@ -1,3 +1,11 @@
+export interface ProductSize {
+  _id: string;
+  size: string;
+  stock: number;
+  price: number;
+  oldPrice?: number;
+}
+
 export interface Section {
   _id: string;
   nameAr: string;
@@ -27,6 +35,7 @@ export interface Product {
   sectionIds: string[];
   averageRating?: number;
   numReviews?: number;
+  sizes?: ProductSize[];
 }
 
 export interface ProductsResponse {
@@ -40,6 +49,14 @@ export interface ProductsResponse {
       limit: number;
       pages: number;
     };
+  };
+}
+
+export interface SingleProductResponse {
+  success: boolean;
+  message: string;
+  data: {
+    product: Product;
   };
 }
 
