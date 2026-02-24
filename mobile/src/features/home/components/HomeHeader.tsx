@@ -6,9 +6,6 @@ import { getImageUrl } from '../../../utils/image.utils';
 
 export const HomeHeader = () => {
   const user = useAuthStore((state) => state.user);
-  
-  // Mock cart count for now
-  const cartItemCount = 33;
 
   return (
     <View className="bg-primary pt-14 pb-6 px-6 rounded-b-[40px]">
@@ -34,8 +31,8 @@ export const HomeHeader = () => {
           <View>
             <Text className="text-white text-xl font-bold">{user?.name || 'Guest User'}</Text>
             <View className="flex-row items-center mt-1">
-              <Ionicons name="cart-outline" size={16} color="white" />
-              <Text className="text-white/80 text-base ml-1">{cartItemCount} Item in Cart</Text>
+              <Ionicons name="wallet-outline" size={16} color="white" />
+              <Text className="text-white/80 text-base ml-1">Balance: ${user?.totalBalance || 0}</Text>
             </View>
           </View>
         </View>

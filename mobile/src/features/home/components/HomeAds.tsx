@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, Linking } from 'react-native';
 import { Button } from '../../../../components/ui/button';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image } from 'expo-image';
@@ -6,12 +6,26 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAds } from '../hooks/useAds';
 import { getImageUrl } from '../../../utils/image.utils';
 import { Ad } from '../types/ad.types';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
 
 export const HomeAds = () => {
   const { data: ads, isLoading } = useAds();
+  const router = useRouter();
+
+  const handleAdPress = (item: Ad) => {
+    if (item.link) {
+      Linking.openURL(item.link).catch(err => console.error("Couldn't load page", err));
+    } else if (item.productId) {
+      const productId = typeof item.productId === 'string' ? item.productId : item.productId._id;
+      router.push({
+        pathname: '/product/[id]' as any,
+        params: { id: productId }
+      });
+    }
+  };
 
   const renderItem = ({ item }: { item: Ad }) => (
     <View className="px-6">
@@ -49,6 +63,7 @@ export const HomeAds = () => {
           className="absolute -bottom-4 right-0 w-[120px] h-12 rounded-full border-[3px] border-white z-10"
           textClassName="text-white text-base font-bold"
           activeOpacity={0.8}
+          onPress={() => handleAdPress(item)}
         />
       </View>
     </View>

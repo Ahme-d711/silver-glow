@@ -8,7 +8,7 @@ export interface Ad {
   isShown: boolean;
   priority: number;
   link?: string;
-  productId?: string;
+  productId?: string | { _id: string; nameAr: string; nameEn: string; id: string } | null;
   createdAt: string;
   updatedAt: string;
 }
