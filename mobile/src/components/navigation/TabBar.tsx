@@ -3,9 +3,13 @@ import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuthStore } from '../../features/auth/store/authStore';
+import { useRouter } from 'expo-router';
 
 export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   
   const iconMap: Record<string, React.ComponentProps<typeof Feather>['name']> = {
     index: 'home',
@@ -29,6 +33,11 @@ export const TabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, naviga
           const isFocused = state.routes[state.index].key === route.key;
 
           const onPress = () => {
+            if (route.name === 'profile' && !isAuthenticated) {
+              router.push('/(auth)/login');
+              return;
+            }
+
             const event = navigation.emit({
               type: 'tabPress',
               target: route.key,

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { User } from '../types/auth.types';
 import { getToken, saveToken, deleteToken } from '../../../utils/token';
+import { authApi } from '../services/auth.service';
 
 interface AuthState {
   user: User | null;
@@ -36,8 +37,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await getToken();
       if (token) {
-        // In a real app, you might want to fetch the user profile here using the token
-        set({ token, isAuthenticated: true });
+        try {
+          // Fetch the latest user profile using the token
+          const user = await authApi.getProfile();
+          set({ user, token, isAuthenticated: true });
+        } catch (error) {
+          // If profile fetch fails, the token might be invalid/expired
+          console.error('Failed to fetch user profile during initialization', error);
+          await deleteToken();
+          set({ user: null, token: null, isAuthenticated: false });
+        }
       }
     } catch (error) {
       console.error('Failed to initialize auth store', error);

@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWishlist, useToggleWishlist } from '../hooks/useWishlist';
 import { WishlistCard } from '../components/WishlistCard';
+import { PageHeader } from '@/components/ui/page-header';
 
 export const WishlistTemplate: React.FC = () => {
-  const insets = useSafeAreaInsets();
   const { data: wishlistData, isLoading, isRefetching, refetch } = useWishlist();
   const { mutate: toggleWishlist } = useToggleWishlist();
 
@@ -15,20 +14,7 @@ export const WishlistTemplate: React.FC = () => {
   return (
     <View className="flex-1 bg-neutral-50">
       {/* Custom Header */}
-      <View 
-        className="bg-primary pb-8 px-6 rounded-b-[40px] shadow-lg"
-        style={{ paddingTop: insets.top + 10 }}
-      >
-        <View className="flex-row items-center justify-between">
-          <Text className="text-white text-3xl font-bold">Wishlist</Text>
-          <TouchableOpacity 
-            className="bg-white/20 p-2.5 rounded-2xl"
-            activeOpacity={0.7}
-          >
-            <Feather name="bell" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <PageHeader title="Wishlist" />
 
       <ScrollView 
         className="flex-1 px-5 pt-6"

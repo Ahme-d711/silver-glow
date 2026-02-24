@@ -34,14 +34,14 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
       <View className="flex-1 ml-4 justify-between h-24 py-1">
         <View>
           <View className="flex-row justify-between items-start">
-            <Text className="text-lg font-bold text-primary flex-1 mr-2" numberOfLines={1}>
+            <Text className="text-lg font-bold text-primary flex-1 mr-2 capitalize" numberOfLines={1}>
               {product.nameEn}
             </Text>
             <TouchableOpacity 
               onPress={onRemove}
-              className="bg-primary/5 p-1.5 rounded-full"
+              className="bg-red-50 p-1.5 rounded-full"
             >
-              <Feather name="heart" size={20} color="#192C56" fill="#192C56" />
+              <Feather name="heart" size={20} color="#EF4444" fill="#EF4444" />
             </TouchableOpacity>
           </View>
           
@@ -49,9 +49,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
             {product.descriptionEn || "No description available"}
           </Text>
           
-          <Text className="text-content-secondary text-sm mt-1">
+          {/* <Text className="text-content-secondary text-sm mt-1">
             Size : {product.sizes?.[0]?.size || "N/A"}
-          </Text>
+          </Text> */}
         </View>
 
         <View className="flex-row justify-between items-center mt-2">

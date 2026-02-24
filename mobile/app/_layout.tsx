@@ -3,7 +3,6 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenNative from 'expo-splash-screen';
 import { QueryProvider } from '../src/providers/QueryProvider';
-import { AuthProvider } from '../src/providers/AuthProvider';
 import { setupInterceptors } from '../src/services/api/interceptors';
 import { useAuthStore } from '../src/features/auth/store/authStore';
 import { SplashScreen } from '../src/components/common/SplashScreen';
@@ -35,15 +34,13 @@ export default function RootLayout() {
 
   return (
     <QueryProvider>
-      <AuthProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        />
-        <StatusBar style="light" />
-        <AuthModal />
-      </AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+      <StatusBar style="light" />
+      <AuthModal />
     </QueryProvider>
   );
 }

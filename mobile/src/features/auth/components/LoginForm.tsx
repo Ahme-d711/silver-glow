@@ -29,7 +29,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <View className="flex-1 bg-white -mt-12 rounded-t-[40px] px-8 pt-10">
+    <View className="flex-1 bg-white -mt-12 rounded-t-[40px] px-8 pt-10 pb-12">
       <Controller
         control={control}
         name="phone"
