@@ -4,8 +4,10 @@ import { useHomeProducts, useHomeSections } from '../hooks/useProduct';
 import { ProductCard } from './ProductCard';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export const ProductTabsSection = () => {
+  const router = useRouter();
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isSectionsLoading } = useHomeSections();
@@ -76,6 +78,7 @@ export const ProductTabsSection = () => {
       <View className="mt-8">
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => router.push('/shop')}
           className="flex-row items-center justify-center bg-primary/5 border border-primary/10 py-5 rounded-[24px]"
         >
           <Text className="text-primary font-bold text-lg mr-3">
