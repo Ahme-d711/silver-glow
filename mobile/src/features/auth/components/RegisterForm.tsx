@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,6 +14,7 @@ import { Country } from '../../../utils/countries';
 import { registerSchema, RegisterFormData } from '../schemas/registerSchema';
 
 import { useRegisterMutation } from '../hooks/useAuth';
+import { AuthSparkles } from './AuthSparkles';
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -63,9 +64,13 @@ export const RegisterForm = () => {
   };
 
   return (
-    <View className="flex-1 bg-white px-8 pt-12 pb-10">
-      {/* Header */}
-      <View className="items-center mb-8">
+    <ScrollView 
+      className="flex-1 bg-white" 
+      contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 50, paddingBottom: 20 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <AuthSparkles />
+      <View className="items-center mb-10">
         <Text className="text-3xl font-bold text-content-primary mb-2">Create account</Text>
         <Text className="text-content-secondary text-center">
           Please enter your information to create account.
@@ -171,7 +176,7 @@ export const RegisterForm = () => {
       />
 
       <View className="mb-6">
-        <Text className="text-slate-900 font-semibold mb-3">Gender</Text>
+        <Text className="text-content-secondary text-lg font-medium mb-3">Gender</Text>
         <View className="flex-row gap-4">
           <Controller
             control={control}
@@ -301,6 +306,6 @@ export const RegisterForm = () => {
         onClose={() => setIsCountryPickerVisible(false)}
         onSelect={setSelectedCountry}
       />
-    </View>
+    </ScrollView>
   );
 };
