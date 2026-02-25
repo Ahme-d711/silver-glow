@@ -7,11 +7,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 interface PageHeaderProps {
   title: string;
   showBackButton?: boolean;
+  rightElement?: React.ReactNode;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({ 
   title, 
-  showBackButton = true 
+  showBackButton = true,
+  rightElement
 }) => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -36,6 +38,12 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             {title}
           </Text>
         </View>
+
+        {rightElement && (
+          <View className="ml-4">
+            {rightElement}
+          </View>
+        )}
       </View>
     </View>
   );
