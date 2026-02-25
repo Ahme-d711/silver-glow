@@ -58,7 +58,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
           <View className="flex-row items-center">
             <Feather name="briefcase" size={14} color="#64748B" />
             <Text className="ml-1.5 text-lg font-bold text-primary">
-              {product.price} $
+              {product.sizes?.[0]?.price} $
             </Text>
           </View>
 
