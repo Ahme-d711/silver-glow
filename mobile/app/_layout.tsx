@@ -7,6 +7,8 @@ import { setupInterceptors } from '../src/services/api/interceptors';
 import { useAuthStore } from '../src/features/auth/store/authStore';
 import { SplashScreen } from '../src/components/common/SplashScreen';
 import { AuthModal } from '../src/components/ui/AuthModal';
+import { StatusModal } from '../src/components/ui/StatusModal';
+import { ConfirmModal } from '../src/components/ui/ConfirmModal';
 import "../global.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -41,6 +43,8 @@ export default function RootLayout() {
       />
       <StatusBar style="light" />
       <AuthModal />
+      <StatusModal />
+      <ConfirmModal />
     </QueryProvider>
   );
 }

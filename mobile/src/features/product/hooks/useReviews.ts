@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { reviewService } from "../services/review.service";
 import { CreateReviewPayload, UpdateReviewPayload } from "../types/review.types";
-import { Alert } from "react-native";
 import { AxiosError } from "axios";
+import { useModalStore } from "../../../store/modalStore";
 
 export const useProductReviews = (productId: string) => {
   return useQuery({
@@ -14,48 +14,75 @@ export const useProductReviews = (productId: string) => {
 
 export const useAddReview = () => {
   const queryClient = useQueryClient();
+  const { openStatusModal } = useModalStore();
 
   return useMutation({
     mutationFn: (payload: CreateReviewPayload) => reviewService.addReview(payload),
     onSuccess: (data) => {
-      Alert.alert("Success", data.message || "Review added successfully");
+      openStatusModal({
+        type: 'success',
+        title: 'Success',
+        message: data.message || "Review added successfully"
+      });
       queryClient.invalidateQueries({ queryKey: ["reviews", data.data.review.productId] });
       queryClient.invalidateQueries({ queryKey: ["product", data.data.review.productId] });
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      Alert.alert("Error", error.response?.data?.message || "Failed to add review");
+      openStatusModal({
+        type: 'error',
+        title: 'Error',
+        message: error.response?.data?.message || "Failed to add review"
+      });
     },
   });
 };
 
 export const useUpdateReview = () => {
   const queryClient = useQueryClient();
+  const { openStatusModal } = useModalStore();
 
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateReviewPayload }) => 
       reviewService.updateReview(id, payload),
     onSuccess: (data) => {
-      Alert.alert("Success", data.message || "Review updated successfully");
+      openStatusModal({
+        type: 'success',
+        title: 'Success',
+        message: data.message || "Review updated successfully"
+      });
       queryClient.invalidateQueries({ queryKey: ["reviews", data.data.review.productId] });
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      Alert.alert("Error", error.response?.data?.message || "Failed to update review");
+      openStatusModal({
+        type: 'error',
+        title: 'Error',
+        message: error.response?.data?.message || "Failed to update review"
+      });
     },
   });
 };
 
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
+  const { openStatusModal } = useModalStore();
 
   return useMutation({
     mutationFn: ({ id, productId }: { id: string; productId: string }) => 
       reviewService.deleteReview(id),
     onSuccess: (data, variables) => {
-      Alert.alert("Success", data.message || "Review deleted successfully");
+      openStatusModal({
+        type: 'success',
+        title: 'Success',
+        message: data.message || "Review deleted successfully"
+      });
       queryClient.invalidateQueries({ queryKey: ["reviews", variables.productId] });
     },
     onError: (error: AxiosError<{ message?: string }>) => {
-      Alert.alert("Error", error.response?.data?.message || "Failed to delete review");
+      openStatusModal({
+        type: 'error',
+        title: 'Error',
+        message: error.response?.data?.message || "Failed to delete review"
+      });
     },
   });
 };

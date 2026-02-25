@@ -13,7 +13,7 @@ interface ReviewsSectionProps {
 
 export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numReviews = 0 }) => {
   const { user } = useAuthStore();
-  const { openAuthModal } = useModalStore();
+  const { openAuthModal, openConfirmModal } = useModalStore();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
@@ -71,18 +71,13 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
   };
 
   const handleDelete = (reviewId: string) => {
-    Alert.alert(
-      "Delete Review",
-      "Are you sure you want to delete this review?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive", 
-          onPress: () => deleteReview({ id: reviewId, productId }) 
-        }
-      ]
-    );
+    openConfirmModal({
+      title: "Delete Review",
+      message: "Are you sure you want to delete this review? This action cannot be undone.",
+      type: 'danger',
+      label: 'Delete',
+      onConfirm: () => deleteReview({ id: reviewId, productId })
+    });
   };
 
   const userReview = reviews.find((r) => r.userId._id === user?._id);
@@ -212,19 +207,21 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
                   </View>
 
                   {isUserReview && (
-                    <View className="flex-row gap-2">
+                    <View className="flex-row gap-1">
                       <TouchableOpacity 
                         onPress={() => handleEdit(review._id, review.rating, review.comment)}
-                        className="p-2 h-8 w-8 items-center justify-center"
+                        className="h-10 w-10 items-center justify-center"
+                        activeOpacity={0.6}
                       >
-                        <Feather name="edit-2" size={16} color="#475569" />
+                        <Feather name="edit-2" size={18} color="#475569" />
                       </TouchableOpacity>
                       <TouchableOpacity 
                         onPress={() => handleDelete(review._id)}
                         disabled={isDeleting}
-                        className="p-2 h-8 w-8 items-center justify-center"
+                        className="h-10 w-10 items-center justify-center"
+                        activeOpacity={0.6}
                       >
-                        <Feather name="trash-2" size={16} color="#EF4444" />
+                        <Feather name="trash-2" size={18} color="#EF4444" />
                       </TouchableOpacity>
                     </View>
                   )}

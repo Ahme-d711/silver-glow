@@ -49,9 +49,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
             {product.descriptionEn || "No description available"}
           </Text>
           
-          {/* <Text className="text-content-secondary text-sm mt-1">
+          <Text className="text-content-secondary text-sm mt-1">
             Size : {product.sizes?.[0]?.size || "N/A"}
-          </Text> */}
+          </Text>
         </View>
 
         <View className="flex-row justify-between items-center mt-2">
