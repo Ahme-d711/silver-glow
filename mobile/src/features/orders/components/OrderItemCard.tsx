@@ -38,6 +38,8 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, status, note
 
   const statusConfig = getStatusConfig(status);
 
+  const price = item.price * item.quantity;
+
   const StatusBadge = (
     <View className={`${statusConfig.bg} px-3 py-1.5 rounded-full flex-row items-center border border-divider/20`}>
       <Ionicons 
@@ -53,8 +55,8 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, status, note
 
   const FooterContent = date ? (
     <View className="mb-1">
-      <Text className="text-[10px] text-content-tertiary uppercase font-bold">Order Date</Text>
-      <Text className="text-primary font-bold text-xs">{new Date(date).toLocaleDateString()}</Text>
+      <Text className="text-sm text-content-tertiary uppercase font-semibold">Order Date</Text>
+      <Text className="text-primary font-bold text-sm">{new Date(date).toLocaleDateString()}</Text>
     </View>
   ) : undefined;
 
@@ -63,8 +65,7 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, status, note
       image={imageUrl ?? undefined}
       title={item.name}
       description={note || item.productId?.descriptionEn || "Add a touch of elegance to your"}
-      price={item.price}
-      size={item.size}
+      price={price}
       imageSize="md"
       statusBadge={StatusBadge}
       footerContent={FooterContent}
