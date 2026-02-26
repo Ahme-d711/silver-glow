@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as ImagePicker from 'expo-image-picker';
-import { Image } from 'expo-image';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUpdateProfileMutation } from '../../auth/hooks/useAuth';
 import { updateProfileSchema, UpdateProfileFormData } from '../../auth/schemas/updateProfileSchema';
@@ -12,6 +11,7 @@ import { getImageUrl } from '../../../utils/image.utils';
 import { PageHeader } from '@/components/ui/page-header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { EditProfileImagePicker } from '../components/EditProfileImagePicker';
 
 export const EditProfileTemplate = () => {
   const { user } = useAuthStore();
@@ -81,30 +81,7 @@ export const EditProfileTemplate = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        {/* Avatar Section */}
-        <View className="items-center py-10">
-          <TouchableOpacity 
-            onPress={pickImage}
-            activeOpacity={0.8}
-            className="relative"
-          >
-            <View className="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-50 shadow-sm bg-slate-100 items-center justify-center">
-              {imageUri ? (
-                <Image 
-                  source={{ uri: imageUri }}
-                  className="w-full h-full"
-                  contentFit="cover"
-                />
-              ) : (
-                <Ionicons name="person" size={56} color="#94A3B8" />
-              )}
-            </View>
-            <View className="absolute bottom-1 right-1 bg-primary w-10 h-10 rounded-full items-center justify-center border-4 border-white shadow-md">
-              <Feather name="camera" size={16} color="white" />
-            </View>
-          </TouchableOpacity>
-          <Text className="text-slate-400 text-xs mt-4 font-bold uppercase tracking-widest">Tap to change picture</Text>
-        </View>
+        <EditProfileImagePicker imageUri={imageUri} onPickImage={pickImage} />
 
         {/* Form Section */}
         <View className="px-6">
