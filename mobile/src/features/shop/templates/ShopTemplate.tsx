@@ -17,7 +17,7 @@ export const ShopTemplate = () => {
   // State
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(params.categoryId);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | undefined>(params.subCategoryId);
-  const [sortValue, setSortValue] = useState<string>('popularity');
+  const [sortValue, setSortValue] = useState<string>('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);

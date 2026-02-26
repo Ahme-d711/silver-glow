@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Button } from '../../../../components/ui/button';
 import { Feather } from '@expo/vector-icons';
 import { Product } from '../../product/types/product.types';
 import { getImageUrl } from '../../../utils/image.utils';
 import { router } from 'expo-router';
+import { GenericItemCard } from '../../../components/ui/GenericItemCard';
 
 interface WishlistCardProps {
   product: Product;
@@ -12,65 +13,46 @@ interface WishlistCardProps {
 }
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove }) => {
+  // Use getImageUrl to get the full path for the image
   const imageUrl = getImageUrl(product.mainImage);
   
   const handlePress = () => {
     router.push(`/product/${product._id}`);
   };
 
+  const WishlistAction = (
+    <TouchableOpacity 
+      onPress={onRemove}
+      className="bg-red-50 p-1.5 rounded-full"
+    >
+      <Feather name="heart" size={20} color="#EF4444" fill="#EF4444" />
+    </TouchableOpacity>
+  );
+
+  const ShopButton = (
+    <Button 
+      title="Shop Now"
+      onPress={handlePress}
+      size="sm"
+      className="w-32"
+    />
+  );
+
+  // Use the root price and size if available, fallback to sizes array
+  const displayPrice = product.price || product.sizes?.[0]?.price;
+  const displaySize = product.sizes?.[0]?.size;
+
   return (
-    <View className="bg-white rounded-[20px] p-3 mb-4 flex-row items-center border border-divider shadow-sm">
-      {/* Product Image */}
-      <View className="h-40 w-36 rounded-[15px] overflow-hidden bg-gray-100">
-        {imageUrl ? (
-          <Image source={{ uri: imageUrl }} className="w-full h-full" resizeMode="cover" />
-        ) : (
-          <View className="w-full h-full items-center justify-center">
-            <Feather name="image" size={24} color="#CBD5E1" />
-          </View>
-        )}
-      </View>
-
-      {/* Product Details */}
-      <View className="flex-1 ml-4 justify-between h-24 py-1">
-        <View>
-          <View className="flex-row justify-between items-start">
-            <Text className="text-lg font-bold text-primary flex-1 mr-2 capitalize" numberOfLines={1}>
-              {product.nameEn}
-            </Text>
-            <TouchableOpacity 
-              onPress={onRemove}
-              className="bg-red-50 p-1.5 rounded-full"
-            >
-              <Feather name="heart" size={20} color="#EF4444" fill="#EF4444" />
-            </TouchableOpacity>
-          </View>
-          
-          <Text className="text-content-tertiary text-sm" numberOfLines={1}>
-            {product.descriptionEn || "No description available"}
-          </Text>
-          
-          <Text className="text-content-secondary text-sm mt-1">
-            Size : {product.sizes?.[0]?.size || "N/A"}
-          </Text>
-        </View>
-
-        <View className="flex-row justify-between items-center mt-2">
-          <View className="flex-row items-center">
-            <Feather name="briefcase" size={14} color="#64748B" />
-            <Text className="ml-1.5 text-lg font-bold text-primary">
-              {product.sizes?.[0]?.price} $
-            </Text>
-          </View>
-
-          <Button 
-            title="Shop Now"
-            onPress={handlePress}
-            size="sm"
-            className="w-32"
-          />
-        </View>
-      </View>
-    </View>
+    <GenericItemCard
+      image={imageUrl ?? undefined}
+      title={product.nameEn}
+      description={product.descriptionEn || "No description available"}
+      price={displayPrice}
+      size={displaySize}
+      imageSize="lg"
+      onPress={handlePress}
+      topRightAction={WishlistAction}
+      bottomRightAction={ShopButton}
+    />
   );
 };
