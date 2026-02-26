@@ -11,14 +11,18 @@ import { CartGuestState } from '../components/CartGuestState';
 import { CartEmptyState } from '../components/CartEmptyState';
 import { CartSummaryFooter } from '../components/CartSummaryFooter';
 
+import { useSettings } from '../../settings/hooks/useSettings';
+
 export const CartTemplate = () => {
   const { user } = useAuthStore();
   const { openAuthModal, openConfirmModal } = useModalStore();
   const { data: cartData, isLoading } = useCart();
   const { mutate: clearCart } = useClearCart();
+  const { data: settingsData } = useSettings();
 
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
+  const settings = settingsData?.data?.settings;
 
   const subtotal = items.reduce((acc, item) => {
     const productId = item.productId;
@@ -33,7 +37,11 @@ export const CartTemplate = () => {
     return acc + (unitPrice * item.quantity);
   }, 0);
   
-  const shipping = items.length > 0 ? 10 : 0; 
+  // Calculate dynamic shipping cost
+  const baseShipping = settings?.shippingCost ?? 10;
+  const freeThreshold = settings?.freeShippingThreshold ?? 1000;
+  
+  const shipping = items.length === 0 || subtotal >= freeThreshold ? 0 : baseShipping;
   const total = subtotal + shipping;
 
   const handleClearCart = () => {
@@ -88,8 +96,8 @@ export const CartTemplate = () => {
           <CartItemCard key={`${item.productId._id}-${item.size}`} item={item} />
         ))}
         
-        {/* Spacer for floating footer */}
-        <View className="h-80" />
+        {/* Spacer for floating footer to allow scrolling past it */}
+        <View style={{ height: 360 }} />
       </ScrollView>
 
       <CartSummaryFooter 

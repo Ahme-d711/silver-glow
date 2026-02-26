@@ -17,15 +17,24 @@ import { CheckoutItemCard } from '../components/CheckoutItemCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckoutPayload } from '../types/checkout.types';
 
+import { useSettings } from '../../settings/hooks/useSettings';
+
 export const CheckoutTemplate = () => {
   const { data: cartData } = useCart();
   const { mutate: placeOrder, isPending: isProcessing } = useCheckout();
+  const { data: settingsData } = useSettings();
   
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
+  const settings = settingsData?.data?.settings;
   
   const subtotal = items.reduce((acc, item) => acc + (item.productId.price * item.quantity), 0);
-  const shipping = items.length > 0 ? 10 : 0;
+  
+  // Calculate dynamic shipping cost
+  const baseShipping = settings?.shippingCost ?? 10;
+  const freeThreshold = settings?.freeShippingThreshold ?? 1000;
+  
+  const shipping = items.length === 0 || subtotal >= freeThreshold ? 0 : baseShipping;
   const total = subtotal + shipping;
 
   const [formData, setFormData] = useState<CheckoutPayload>({
@@ -137,11 +146,17 @@ export const CheckoutTemplate = () => {
             
             {renderInput('Notes', 'customerNotes', 'edit-3', 'Any notes for delivery?')}
           </View>
+          
+          {/* Spacer for floating footer */}
+          <View style={{ height: 350 }} />
         </ScrollView>
       </KeyboardAvoidingView>
 
       {/* Floating Price Summary & Action */}
-      <View className="absolute bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-[40px] border-t border-divider p-8">
+      <View 
+        className="absolute bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-[40px] border-t border-divider p-8"
+        style={{ paddingBottom: 110 }} // Lift above TabBar
+      >
         <View className="gap-3 mb-6">
           <View className="flex-row justify-between">
             <Text className="text-content-secondary text-base">Total Amount</Text>

@@ -45,7 +45,7 @@ export const CartSummaryFooter: React.FC<CartSummaryFooterProps> = ({
           colors={['#192C56', '#2A457D']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          className="h-[70px] rounded-3xl overflow-hidden items-center justify-center flex-row shadow-xl shadow-primary/40"
+          className="h-16 rounded-2xl overflow-hidden items-center justify-center flex-row shadow-xl shadow-primary/40"
         >
           <Text className="text-white font-bold text-xl mr-3">Checkout Now</Text>
           <Feather name="arrow-right" size={24} color="white" />
