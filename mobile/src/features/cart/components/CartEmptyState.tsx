@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { PageHeader } from '../../../../components/ui/page-header';
 import { Button } from '../../../../components/ui/button';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const { width } = Dimensions.get('window');
 
 interface CartEmptyStateProps {
   onExplore: () => void;
@@ -18,32 +16,24 @@ export const CartEmptyState: React.FC<CartEmptyStateProps> = ({ onExplore }) => 
       
       <View className="flex-1 justify-center items-center px-8 relative overflow-hidden">
         {/* Background Decorative Circles */}
-        <View style={styles.decorCircle1} />
-        <View style={styles.decorCircle2} />
+        <View className="absolute -top-[100px] -right-[50px] w-[300px] h-[300px] rounded-full bg-slate-50 z-0" />
+        <View className="absolute -bottom-[150px] -left-[100px] w-[400px] h-[400px] rounded-full bg-slate-50 z-0" />
         
         {/* Main Content Container */}
         <View className="items-center z-10">
           {/* Layered Icon Design */}
           <View className="mb-10 items-center justify-center">
              {/* Sub Glow */}
-             <View style={styles.glow} />
+             <View className="absolute w-[250px] h-[250px] rounded-full bg-primary/5" />
              
              {/* Outer Circle */}
              <LinearGradient
                 colors={['#F8FAFC', '#F1F5F9']}
-                style={styles.outerCircle}
+                className="w-[180px] h-[180px] rounded-full overflow-hidden justify-center items-center border border-slate-200"
              >
                 {/* Inner Circle with Shadow */}
-                <View style={styles.innerCircle}>
+                <View className="w-[130px] h-[130px] rounded-full bg-white justify-center items-center shadow-lg shadow-primary/10 elevation-8 relative">
                   <Feather name="shopping-bag" size={64} color="#192C56" />
-                  
-                  {/* Floating Small Icons for detail */}
-                  <View style={styles.miniIcon1}>
-                    <Ionicons name="sparkles" size={16} color="#D4AF37" />
-                  </View>
-                  <View style={styles.miniIcon2}>
-                    <Feather name="plus" size={12} color="#192C56" />
-                  </View>
                 </View>
              </LinearGradient>
           </View>
@@ -70,82 +60,3 @@ export const CartEmptyState: React.FC<CartEmptyStateProps> = ({ onExplore }) => 
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  outerCircle: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  innerCircle: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: "#192C56",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    elevation: 8,
-    position: 'relative',
-  },
-  glow: {
-    position: 'absolute',
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: 'rgba(25, 44, 86, 0.03)',
-  },
-  miniIcon1: {
-    position: 'absolute',
-    top: -5,
-    right: 15,
-    backgroundColor: '#FFF',
-    padding: 6,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  miniIcon2: {
-    position: 'absolute',
-    bottom: 20,
-    left: -5,
-    backgroundColor: '#FFF',
-    padding: 6,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  decorCircle1: {
-    position: 'absolute',
-    top: -100,
-    right: -50,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: '#F8FAFC',
-    zIndex: 0,
-  },
-  decorCircle2: {
-    position: 'absolute',
-    bottom: -150,
-    left: -100,
-    width: 400,
-    height: 400,
-    borderRadius: 200,
-    backgroundColor: '#F8FAFC',
-    zIndex: 0,
-  }
-});
