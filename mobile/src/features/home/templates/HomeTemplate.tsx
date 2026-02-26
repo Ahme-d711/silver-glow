@@ -19,7 +19,7 @@ export const HomeTemplate = () => {
         <HomeCategories />
         <BestSellerSection />
         <ProductTabsSection />
-        <View className="mb-10" />
+        <View className="mb-20" />
       </ScrollView>
     </SafeAreaView>
   );
