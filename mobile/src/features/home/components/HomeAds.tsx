@@ -1,4 +1,5 @@
-import { View, Text, Dimensions, StyleSheet, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Dimensions, StyleSheet, Linking, TouchableOpacity } from 'react-native';
 import { Button } from '../../../../components/ui/button';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image } from 'expo-image';
@@ -7,13 +8,23 @@ import { useAds } from '../hooks/useAds';
 import { getImageUrl } from '../../../utils/image.utils';
 import { Ad } from '../types/ad.types';
 import { useRouter } from 'expo-router';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  interpolate, 
+  Extrapolate,
+  SharedValue
+} from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
-
+const PAGE_WIDTH = width;
+const CARD_WIDTH = width - 48;
 
 export const HomeAds = () => {
   const { data: ads, isLoading } = useAds();
   const router = useRouter();
+  const progressValue = useSharedValue<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleAdPress = (item: Ad) => {
     if (item.link) {
@@ -27,76 +38,141 @@ export const HomeAds = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: Ad }) => (
-    <View className="px-6">
-      {/* Container that allows overflow for the button */}
-      <View className="h-56 relative shadow-sm">
-        {/* Rounded background layer clipping the image and gradient */}
-        <View style={styles.imageContainer}>
+  const renderItem = ({ item, index, animationValue }: { item: Ad; index: number; animationValue: any }) => {
+    return (
+      <View style={{ width: PAGE_WIDTH }} className="px-6">
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => handleAdPress(item)}
+          className="h-[220px] rounded-[32px] overflow-hidden bg-slate-100 shadow-sm"
+          style={{ elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12 }}
+        >
           <Image 
             source={{ uri: getImageUrl(item.photo) ?? '' }} 
-            style={styles.backgroundImage}
+            style={StyleSheet.absoluteFillObject}
             contentFit="cover"
             transition={300}
           />
+          
           <LinearGradient
-            colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.6)']}
-            style={StyleSheet.absoluteFill}
+            colors={['transparent', 'rgba(11, 19, 36, 0.85)']}
+            className="absolute left-0 right-0 bottom-0 h-full"
           />
-        </View>
 
-        {/* Content Layer */}
-        <View className="flex-1 p-8 justify-center">
-          <View className="pr-20">
-            <Text className="text-white text-2xl font-bold mb-2 leading-7">
+          <View className="flex-1 p-6 justify-end">
+            <View className="bg-white/20 px-2.5 py-1 rounded-lg self-start mb-2 border border-white/30">
+              <Text className="text-white text-[10px] font-bold uppercase tracking-[1px]">Promotional</Text>
+            </View>
+            
+            <Text className="text-white text-2xl font-bold mb-1" numberOfLines={1}>
               {item.nameEn}
             </Text>
-            <Text className="text-white/90 text-sm font-medium leading-5">
+            <Text className="text-white/80 text-sm font-medium leading-5 mb-4" numberOfLines={2}>
               {item.descriptionEn}
             </Text>
-          </View>
-        </View>
 
-        {/* Shop Now Button - Positioned absolutely relative to the main h-48 container */}
-        <Button 
-          title="Shop Now"
-          className="absolute -bottom-4 right-0 w-[120px] h-12 rounded-full border-[3px] border-white z-10"
-          textClassName="text-white text-base font-bold"
-          activeOpacity={0.8}
-          onPress={() => handleAdPress(item)}
-        />
+            <View className="flex-row items-center">
+              <View className="h-11 px-6 rounded-[14px] overflow-hidden justify-center items-center relative">
+                <Text className="text-white text-sm font-bold z-10">Shop Now</Text>
+                <LinearGradient
+                  colors={['#192C56', '#0B1324']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
-    </View>
-  );
+    );
+  };
 
   if (isLoading || !Array.isArray(ads) || ads.length === 0) {
     return null;
   }
 
   return (
-    <View className="mt-6">
+    <View className="mt-5">
       <Carousel
         loop
-        width={width}
-        height={230}
+        width={PAGE_WIDTH}
+        height={240}
         autoPlay={true}
-        autoPlayInterval={3000}
-        data={ads || []}
+        autoPlayInterval={4000}
+        data={ads}
+        onProgressChange={(_, absoluteProgress) => {
+          progressValue.value = absoluteProgress;
+        }}
+        onSnapToItem={(index) => setActiveIndex(index)}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 1,
+          parallaxScrollingOffset: 0,
+        }}
         scrollAnimationDuration={1000}
         renderItem={renderItem}
       />
+
+      <View className="flex-row justify-center items-center mt-4">
+        {ads.map((_, index) => {
+          return (
+            <PaginationItem
+              key={index}
+              index={index}
+              animValue={progressValue}
+              length={ads.length}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  imageContainer: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: '#f1f5f9', // Fallback color
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
+const PaginationItem: React.FC<{
+  index: number;
+  length: number;
+  animValue: SharedValue<number>;
+}> = (props) => {
+  const { animValue, index, length } = props;
+  const width = 8;
+
+  const animStyle = useAnimatedStyle(() => {
+    let inputRange = [index - 1, index, index + 1];
+    let outputRange = [width, width * 3, width];
+
+    if (index === 0 && animValue.value > length - 1) {
+      inputRange = [length - 1, length, length + 1];
+    }
+
+    return {
+      width: interpolate(
+        animValue.value,
+        inputRange,
+        outputRange,
+        Extrapolate.CLAMP
+      ),
+      opacity: interpolate(
+        animValue.value,
+        inputRange,
+        [0.4, 1, 0.4],
+        Extrapolate.CLAMP
+      ),
+    };
+  }, [animValue, index, length]);
+
+  return (
+    <Animated.View
+      className="h-2 rounded-full mx-1"
+      style={[
+        {
+          backgroundColor: '#192C56',
+        },
+        animStyle,
+      ]}
+    />
+  );
+};
+
+const styles = StyleSheet.create({});
