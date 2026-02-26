@@ -10,7 +10,9 @@ import { ProductTabsSection } from '../../product/components/ProductTabsSection'
 export const HomeTemplate = () => {
   return (
     <SafeAreaView className="flex-1 bg-primary" edges={['top']}>
-      <HomeHeader />
+      <View className="bg-white">
+        <HomeHeader />
+      </View>
       <ScrollView 
         className="flex-1 bg-background"
         showsVerticalScrollIndicator={false}
