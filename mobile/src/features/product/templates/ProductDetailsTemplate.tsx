@@ -11,6 +11,8 @@ import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist
 import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
 
+import { useAddToCart } from '../../cart/hooks/useCart';
+
 interface ProductDetailsTemplateProps {
   id: string;
 }
@@ -18,11 +20,13 @@ interface ProductDetailsTemplateProps {
 export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ id }) => {
   const { data: product, isLoading, error } = useProductDetails(id);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
   
   const { user } = useAuthStore();
   const { openAuthModal } = useModalStore();
   const { isInWishlist } = useWishlist();
   const { mutate: toggleWishlist } = useToggleWishlist();
+  const { mutate: addToCart, isPending: isAdding } = useAddToCart();
 
   const handleWishlistToggle = () => {
     if (!user) {
@@ -31,6 +35,22 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
     }
     toggleWishlist(id);
   };
+
+  const handleAddToCart = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    
+    addToCart({
+      productId: id,
+      quantity,
+      size: selectedSize || undefined
+    });
+  };
+
+  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   useEffect(() => {
     if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
@@ -101,16 +121,45 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
         </View>
       </ScrollView>
 
-      {/* Add to Cart Floating Footer - Simplified for design alignment */}
-      <View className="absolute bottom-0 left-0 right-0 bg-white p-6 border-t border-divider flex-row items-center justify-between">
+      {/* Add to Cart Floating Footer */}
+      <View className="absolute bottom-0 left-0 right-0 bg-white p-6 border-t border-divider flex-row items-center gap-4">
+        {/* Quantity Selector */}
+        <View className="flex-row items-center bg-gray-50 rounded-2xl px-2 border border-divider h-[60px]">
+          <TouchableOpacity 
+            onPress={decrementQuantity}
+            className="p-2"
+            disabled={quantity <= 1}
+          >
+            <Feather name="minus" size={20} color={quantity <= 1 ? "#CBD5E1" : "#192C56"} />
+          </TouchableOpacity>
+          
+          <View className="w-10 items-center">
+            <Text className="text-primary font-bold text-lg">{quantity}</Text>
+          </View>
+
+          <TouchableOpacity 
+            onPress={incrementQuantity}
+            className="p-2"
+          >
+            <Feather name="plus" size={20} color="#192C56" />
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity 
-          disabled={!isInStock}
+          onPress={handleAddToCart}
+          disabled={!isInStock || isAdding}
           className={`flex-1 h-[60px] rounded-2xl flex-row items-center justify-center ${isInStock ? 'bg-primary' : 'bg-divider'}`}
         >
-            <Feather name="shopping-cart" size={18} color="white" style={{ marginRight: 8 }} />
-            <Text className="text-white font-bold text-xl">
-              {isInStock ? 'Add to Cart' : 'Out of Stock'}
-            </Text>
+          {isAdding ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Feather name="shopping-cart" size={18} color="white" style={{ marginRight: 8 }} />
+              <Text className="text-white font-bold text-xl">
+                {isInStock ? 'Add to Cart' : 'Out of Stock'}
+              </Text>
+            </>
+          )}
         </TouchableOpacity>
       </View>
     </View>

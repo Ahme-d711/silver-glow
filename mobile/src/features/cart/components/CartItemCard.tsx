@@ -46,6 +46,17 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({ item }) => {
     });
   };
 
+  // Calculate price based on size if available
+  const getUnitPrice = () => {
+    if (size && productId.sizes) {
+      const sizeData = productId.sizes.find(s => s.size === size);
+      if (sizeData) return sizeData.price;
+    }
+    return productId.price;
+  };
+
+  const unitPrice = getUnitPrice();
+
   return (
     <View className="bg-white rounded-[20px] p-3 mb-4 flex-row items-center border border-divider shadow-sm">
       {/* Product Image */}
@@ -91,7 +102,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({ item }) => {
           <View className="flex-row items-center">
             <Feather name="briefcase" size={14} color="#64748B" />
             <Text className="ml-1.5 text-lg font-bold text-primary">
-              {(productId.price * quantity).toFixed(2)} $
+              {(unitPrice * quantity).toFixed(2)} $
             </Text>
           </View>
 
