@@ -1,35 +1,32 @@
 import React from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { router } from 'expo-router';
-import { PageHeader } from '../../../../components/ui/page-header';
-import { Button } from '../../../../components/ui/button';
 import { useOrders } from '../hooks/useOrders';
 import { OrderItemCard } from '../components/OrderItemCard';
 import { LastOrderSection } from '../components/LastOrderSection';
 import { BestSellerSection } from '../../product/components/BestSellerSection';
+import { PageHeader } from '../../../../components/ui/page-header';
+import { Button } from '../../../../components/ui/button';
+import { LoadingState } from '../../../../components/ui/LoadingState';
+import { ErrorState } from '../../../../components/ui/ErrorState';
 
 export const OrdersTemplate = () => {
-  const { data: ordersData, isLoading, error } = useOrders();
+  const { data: ordersData, isLoading, error, refetch } = useOrders();
   
   const orders = ordersData?.data?.orders || [];
   const lastOrder = orders.length > 0 ? orders[0] : null;
 
   if (isLoading) {
-    return (
-      <View className="flex-1 bg-white">
-        <PageHeader title="My Orders" />
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#192C56" />
-        </View>
-      </View>
-    );
+    return <LoadingState title="My Orders" />;
   }
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-red-500 font-bold text-center">Failed to load your orders. Please try again later.</Text>
-      </View>
+      <ErrorState 
+        title="My Orders" 
+        message="Failed to load your orders. Please try again later." 
+        onRetry={refetch}
+      />
     );
   }
 

@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader } from '../../../../components/ui/page-header';
+import { LoadingState } from '../../../../components/ui/LoadingState';
+import { ErrorState } from '../../../../components/ui/ErrorState';
 import { useSubcategories } from '../hooks/useCategories';
 import { SubcategoryCard } from '../components/SubcategoryCard';
 import { Feather } from '@expo/vector-icons';
@@ -9,7 +11,15 @@ import { Feather } from '@expo/vector-icons';
 export const CategoryDetailsTemplate = () => {
   const { id, name } = useLocalSearchParams<{ id: string; name: string }>();
   const router = useRouter();
-  const { data: subcategories, isLoading, refetch, isRefetching } = useSubcategories(id);
+  const { data: subcategories, isLoading, refetch, isRefetching, error } = useSubcategories(id);
+
+  if (isLoading && !isRefetching) {
+    return <LoadingState title={name || 'Category Details'} />;
+  }
+
+  if (error) {
+    return <ErrorState title={name || 'Category Details'} onRetry={refetch} />;
+  }
 
   return (
     <View className="flex-1 bg-white">
@@ -23,11 +33,7 @@ export const CategoryDetailsTemplate = () => {
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#192C56" />
         }
       >
-        {isLoading && !isRefetching ? (
-          <View className="py-20 items-center justify-center">
-            <ActivityIndicator size="large" color="#192C56" />
-          </View>
-        ) : !subcategories || subcategories.length === 0 ? (
+        {!subcategories || subcategories.length === 0 ? (
           <View className="py-20 items-center justify-center">
             <View className="bg-primary/5 p-8 rounded-full mb-4">
               <Feather name="layers" size={48} color="#192C56" />

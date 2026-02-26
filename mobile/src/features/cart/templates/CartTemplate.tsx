@@ -12,6 +12,7 @@ import { CartEmptyState } from '../components/CartEmptyState';
 import { CartSummaryFooter } from '../components/CartSummaryFooter';
 
 import { useSettings } from '../../settings/hooks/useSettings';
+import { LoadingState } from '../../../../components/ui/LoadingState';
 
 export const CartTemplate = () => {
   const { user } = useAuthStore();
@@ -63,14 +64,7 @@ export const CartTemplate = () => {
   }
 
   if (isLoading) {
-    return (
-      <View className="flex-1 bg-background">
-        <PageHeader title="My Cart" />
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#192C56" />
-        </View>
-      </View>
-    );
+    return <LoadingState title="My Cart" />;
   }
 
   if (items.length === 0) {
