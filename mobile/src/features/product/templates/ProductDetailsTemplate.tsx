@@ -12,6 +12,7 @@ import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
 
 import { useAddToCart } from '../../cart/hooks/useCart';
+import { Button } from '../../../../components/ui/button';
 
 interface ProductDetailsTemplateProps {
   id: string;
@@ -145,22 +146,15 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
+        <Button 
+          title={isInStock ? 'Add to Cart' : 'Out of Stock'}
+          leftIcon="cart-outline"
           onPress={handleAddToCart}
-          disabled={!isInStock || isAdding}
-          className={`flex-1 h-[60px] rounded-2xl flex-row items-center justify-center ${isInStock ? 'bg-primary' : 'bg-divider'}`}
-        >
-          {isAdding ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <>
-              <Feather name="shopping-cart" size={18} color="white" style={{ marginRight: 8 }} />
-              <Text className="text-white font-bold text-xl">
-                {isInStock ? 'Add to Cart' : 'Out of Stock'}
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
+          disabled={!isInStock}
+          loading={isAdding}
+          className="flex-1"
+          variant={isInStock ? 'primary' : 'outline'}
+        />
       </View>
     </View>
   );

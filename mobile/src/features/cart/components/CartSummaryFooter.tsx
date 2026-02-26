@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Button } from '../../../../components/ui/button';
 
 interface CartSummaryFooterProps {
   subtotal: number;
@@ -37,20 +37,11 @@ export const CartSummaryFooter: React.FC<CartSummaryFooterProps> = ({
         </View>
       </View>
 
-      <TouchableOpacity 
-        activeOpacity={0.8}
+      <Button 
+        title="Checkout Now"
+        rightIcon="arrow-forward"
         onPress={onCheckout}
-      >
-        <LinearGradient
-          colors={['#192C56', '#2A457D']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          className="h-16 rounded-2xl overflow-hidden items-center justify-center flex-row shadow-xl shadow-primary/40"
-        >
-          <Text className="text-white font-bold text-xl mr-3">Checkout Now</Text>
-          <Feather name="arrow-right" size={24} color="white" />
-        </LinearGradient>
-      </TouchableOpacity>
+      />
     </View>
   );
 };

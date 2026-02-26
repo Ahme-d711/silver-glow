@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { PageHeader } from '../../../../components/ui/page-header';
+import { Button } from '../../../../components/ui/button';
 
 interface CartGuestStateProps {
   onLogin: () => void;
@@ -19,12 +20,11 @@ export const CartGuestState: React.FC<CartGuestStateProps> = ({ onLogin }) => {
         <Text className="text-content-tertiary text-center mt-3 text-lg">
           Login to see your items and start shopping our premium collection.
         </Text>
-        <TouchableOpacity 
+        <Button 
+          title="Login Now"
           onPress={onLogin}
-          className="bg-primary px-10 py-4 rounded-2xl mt-8 shadow-lg shadow-primary/30"
-        >
-          <Text className="text-white font-bold text-lg">Login Now</Text>
-        </TouchableOpacity>
+          className="mt-8 px-10"
+        />
       </View>
     </View>
   );

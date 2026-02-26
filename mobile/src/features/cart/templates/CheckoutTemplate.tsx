@@ -14,10 +14,10 @@ import { PageHeader } from '../../../../components/ui/page-header';
 import { useCart } from '../hooks/useCart';
 import { useCheckout } from '../hooks/useCheckout';
 import { CheckoutItemCard } from '../components/CheckoutItemCard';
-import { LinearGradient } from 'expo-linear-gradient';
-import { CheckoutPayload } from '../types/checkout.types';
-
 import { useSettings } from '../../settings/hooks/useSettings';
+import { Input } from '../../../../components/ui/input';
+import { Button } from '../../../../components/ui/button';
+import { CheckoutPayload } from '../types/checkout.types';
 
 export const CheckoutTemplate = () => {
   const { data: cartData } = useCart();
@@ -75,26 +75,18 @@ export const CheckoutTemplate = () => {
     placeholder: string,
     keyboardType: 'default' | 'numeric' | 'phone-pad' = 'default'
   ) => (
-    <View className="mb-4">
-      <Text className="text-primary font-bold mb-2 ml-1">{label}</Text>
-      <View className={`bg-gray-50 rounded-2xl flex-row items-center px-4 py-3 border ${errors[field] ? 'border-red-400' : 'border-divider'}`}>
-        <Feather name={icon as any} size={20} color="#64748B" />
-        <TextInput
-          className="flex-1 ml-3 text-primary font-medium"
-          placeholder={placeholder}
-          placeholderTextColor="#94A3B8"
-          value={formData[field] as string}
-          onChangeText={(text) => {
-            setFormData({ ...formData, [field]: text });
-            if (errors[field]) setErrors({ ...errors, [field]: undefined });
-          }}
-          keyboardType={keyboardType}
-        />
-      </View>
-      {errors[field] && (
-        <Text className="text-red-500 text-xs mt-1 ml-1 font-medium">{errors[field]} is required</Text>
-      )}
-    </View>
+    <Input
+      label={label}
+      leftIcon={icon as any}
+      placeholder={placeholder}
+      value={formData[field] as string}
+      onChangeText={(text) => {
+        setFormData({ ...formData, [field]: text });
+        if (errors[field]) setErrors({ ...errors, [field]: undefined });
+      }}
+      error={errors[field] ? `${errors[field]} is required` : undefined}
+      keyboardType={keyboardType}
+    />
   );
 
   return (
@@ -123,7 +115,7 @@ export const CheckoutTemplate = () => {
           </View>
 
           {/* Section: Shipping Address */}
-          <View className="mb-24">
+          <View className="mb-10">
             <View className="flex-row items-center mb-4">
               <View className="bg-primary/10 p-2 rounded-lg mr-3">
                 <Feather name="map-pin" size={20} color="#192C56" />
@@ -131,24 +123,24 @@ export const CheckoutTemplate = () => {
               <Text className="text-xl font-bold text-primary">Shipping Details</Text>
             </View>
             
-            {renderInput('Full Name', 'recipientName', 'user', 'Enter recipient name')}
-            {renderInput('Phone Number', 'recipientPhone', 'phone', 'Enter phone number', 'phone-pad')}
-            {renderInput('Address', 'shippingAddress', 'home', 'Street, building, apartment')}
+            {renderInput('Full Name', 'recipientName', 'person-outline', 'Enter recipient name')}
+            {renderInput('Phone Number', 'recipientPhone', 'call-outline', 'Enter phone number', 'phone-pad')}
+            {renderInput('Address', 'shippingAddress', 'home-outline', 'Street, building, apartment')}
             
             <View className="flex-row gap-4">
               <View className="flex-1">
-                {renderInput('City', 'city', 'map', 'City')}
+                {renderInput('City', 'city', 'map-outline', 'City')}
               </View>
               <View className="flex-1">
-                {renderInput('Governorate', 'governorate', 'flag', 'Governorate')}
+                {renderInput('Governorate', 'governorate', 'flag-outline', 'Governorate')}
               </View>
             </View>
             
-            {renderInput('Notes', 'customerNotes', 'edit-3', 'Any notes for delivery?')}
+            {renderInput('Notes', 'customerNotes', 'create-outline', 'Any notes for delivery?')}
           </View>
           
           {/* Spacer for floating footer */}
-          <View style={{ height: 350 }} />
+          <View style={{ height: 250 }} />
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -164,27 +156,12 @@ export const CheckoutTemplate = () => {
           </View>
         </View>
 
-        <TouchableOpacity 
-          activeOpacity={0.8}
+        <Button
+          title="Confirm Order"
+          rightIcon="checkmark-outline"
           onPress={handlePlaceOrder}
-          disabled={isProcessing}
-        >
-          <LinearGradient
-            colors={['#192C56', '#2A457D']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            className="h-[70px] rounded-3xl items-center justify-center flex-row shadow-xl shadow-primary/40"
-          >
-            {isProcessing ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <>
-                <Text className="text-white font-bold text-xl mr-3">Confirm Order</Text>
-                <Feather name="check" size={24} color="white" />
-              </>
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
+          loading={isProcessing}
+        />
       </View>
     </View>
   );

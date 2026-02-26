@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { Button } from '../../../../components/ui/button';
 import { Feather } from '@expo/vector-icons';
 import { Product } from '../../product/types/product.types';
 import { getImageUrl } from '../../../utils/image.utils';
@@ -62,12 +63,12 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
             </Text>
           </View>
 
-          <TouchableOpacity 
+          <Button 
+            title="Shop Now"
             onPress={handlePress}
-            className="bg-primary px-5 py-2.5 rounded-xl"
-          >
-            <Text className="text-white font-bold text-lg">Shop Now</Text>
-          </TouchableOpacity>
+            size="sm"
+            className="w-32"
+          />
         </View>
       </View>
     </View>
