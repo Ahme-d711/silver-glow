@@ -4,6 +4,7 @@ import { LoginFormData } from '../schemas/loginSchema';
 import { RegisterFormData } from '../schemas/registerSchema';
 import { VerifyFormData, ResendFormData } from '../schemas/verifySchema';
 import { UpdateProfileFormData } from '../schemas/updateProfileSchema';
+import { ChangePasswordFormData } from '../schemas/changePasswordSchema';
 
 export const authApi = {
   login: async (data: LoginFormData): Promise<AuthResponse> => {
@@ -36,5 +37,10 @@ export const authApi = {
   getProfile: async (): Promise<User> => {
     const response = await axiosInstance.get<ApiResponse<{ user: User }>>('/auth/user-data');
     return response.data.data.user;
+  },
+
+  changePassword: async (data: ChangePasswordFormData): Promise<ApiResponse<null>> => {
+    const response = await axiosInstance.post<ApiResponse<null>>('/auth/change-password', data);
+    return response.data;
   },
 };

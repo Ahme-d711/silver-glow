@@ -72,3 +72,13 @@ export const useUpdateProfileMutation = () => {
     },
   });
 };
+export const useChangePasswordMutation = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: authApi.changePassword,
+    onSuccess: () => {
+      router.back();
+    },
+  });
+};

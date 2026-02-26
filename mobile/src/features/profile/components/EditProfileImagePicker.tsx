@@ -8,6 +8,8 @@ interface EditProfileImagePickerProps {
   onPickImage: () => Promise<void>;
 }
 
+
+
 export const EditProfileImagePicker: React.FC<EditProfileImagePickerProps> = ({ imageUri, onPickImage }) => (
   <View className="items-center py-10">
     <TouchableOpacity 
@@ -19,7 +21,7 @@ export const EditProfileImagePicker: React.FC<EditProfileImagePickerProps> = ({ 
         {imageUri ? (
           <Image 
             source={{ uri: imageUri }}
-            className="w-full h-full"
+            style={{ width: '100%', height: '100%' }}
             contentFit="cover"
           />
         ) : (

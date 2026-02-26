@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../auth/store/authStore';
 import { PageHeader } from '@/components/ui/page-header';
@@ -12,8 +12,24 @@ export const ProfileTemplate = () => {
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
-    logout();
-    router.replace('/(auth)/login');
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            await logout();
+            router.replace('/(auth)/login');
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -50,7 +66,7 @@ export const ProfileTemplate = () => {
               icon="lock" 
               iconColor="#10B981" 
               bgColor="#ECFDF5"
-              onPress={() => {}} 
+              onPress={() => router.push('/(main)/change-password')} 
             />
             <ProfileMenuItem 
               title="App Theme" 

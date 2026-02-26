@@ -12,6 +12,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { EditProfileImagePicker } from '../components/EditProfileImagePicker';
+import { GenderPicker } from '../../auth/components/GenderPicker';
 
 export const EditProfileTemplate = () => {
   const { user } = useAuthStore();
@@ -85,8 +86,8 @@ export const EditProfileTemplate = () => {
 
         {/* Form Section */}
         <View className="px-6">
-          <View className="bg-white rounded-[32px] p-6 shadow-2xl shadow-slate-200 border border-slate-50">
-            <Text className="text-slate-400 text-sm font-bold mb-6 ml-1 uppercase tracking-tighter">Profile Details</Text>
+          <View className="">
+            <Text className="text-content-secondary text-base font-medium mb-6 ml-1 uppercase tracking-tighter">Profile Details</Text>
             
             <Controller
               control={control}
@@ -134,72 +135,7 @@ export const EditProfileTemplate = () => {
               )}
             />
 
-            <View className="mb-6">
-              <Text className="text-slate-500 text-sm font-medium mb-3 ml-1">Gender</Text>
-              <View className="flex-row gap-4">
-                <Controller
-                  control={control}
-                  name="gender"
-                  render={({ field: { onChange, value } }) => (
-                    <>
-                      <TouchableOpacity
-                        onPress={() => onChange('male')}
-                        activeOpacity={0.7}
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          height: 56,
-                          borderRadius: 20,
-                          borderWidth: 1.5,
-                          backgroundColor: value === 'male' ? '#F8FAFC' : '#FFFFFF',
-                          borderColor: value === 'male' ? '#192C56' : '#F1F5F9',
-                        }}
-                      >
-                        <Ionicons 
-                          name="person-outline" 
-                          size={20} 
-                          color={value === 'male' ? '#192C56' : '#94a3b8'} 
-                          style={{ marginRight: 8 }}
-                        />
-                        <Text className={`font-bold ${value === 'male' ? 'text-primary' : 'text-slate-400'}`}>
-                          Male
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => onChange('female')}
-                        activeOpacity={0.7}
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          height: 56,
-                          borderRadius: 20,
-                          borderWidth: 1.5,
-                          backgroundColor: value === 'female' ? '#F8FAFC' : '#FFFFFF',
-                          borderColor: value === 'female' ? '#192C56' : '#F1F5F9',
-                        }}
-                      >
-                        <Ionicons 
-                          name="woman-outline" 
-                          size={20} 
-                          color={value === 'female' ? '#192C56' : '#94a3b8'} 
-                          style={{ marginRight: 8 }}
-                        />
-                        <Text className={`font-bold ${value === 'female' ? 'text-primary' : 'text-slate-400'}`}>
-                          Female
-                        </Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                />
-              </View>
-              {errors.gender && (
-                <Text className="text-red-500 text-xs mt-2 ml-1">{errors.gender.message}</Text>
-              )}
-            </View>
+            <GenderPicker control={control} errors={errors} />
 
             <Button 
               title="Save Changes"
