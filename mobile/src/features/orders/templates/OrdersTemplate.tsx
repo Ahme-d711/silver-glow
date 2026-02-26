@@ -16,8 +16,11 @@ export const OrdersTemplate = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#192C56" />
+      <View className="flex-1 bg-white">
+        <PageHeader title="My Orders" />
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#192C56" />
+        </View>
       </View>
     );
   }
