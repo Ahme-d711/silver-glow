@@ -97,6 +97,7 @@ export const updateProfileSchema = z.object({
   phone: phoneSchema,
   picture: pictureSchema,
   gender: z.enum(["male", "female"]).optional(),
+  address: z.string().max(500, "Address must be less than 500 characters").optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

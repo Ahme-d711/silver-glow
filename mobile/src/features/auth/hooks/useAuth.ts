@@ -59,3 +59,16 @@ export const useResendVerificationMutation = () => {
     mutationFn: authApi.resendVerification,
   });
 };
+
+export const useUpdateProfileMutation = () => {
+  const router = useRouter();
+  const updateUser = useAuthStore((state) => state.updateUser);
+
+  return useMutation({
+    mutationFn: authApi.updateProfile,
+    onSuccess: (user) => {
+      updateUser(user);
+      router.back();
+    },
+  });
+};

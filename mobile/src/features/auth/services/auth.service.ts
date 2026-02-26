@@ -3,6 +3,7 @@ import { AuthResponse, User, ApiResponse } from '../types/auth.types';
 import { LoginFormData } from '../schemas/loginSchema';
 import { RegisterFormData } from '../schemas/registerSchema';
 import { VerifyFormData, ResendFormData } from '../schemas/verifySchema';
+import { UpdateProfileFormData } from '../schemas/updateProfileSchema';
 
 export const authApi = {
   login: async (data: LoginFormData): Promise<AuthResponse> => {
@@ -13,6 +14,13 @@ export const authApi = {
   register: async (data: RegisterFormData): Promise<AuthResponse> => {
     const response = await axiosInstance.post<ApiResponse<AuthResponse>>('/auth/register', data);
     return response.data.data;
+  },
+
+  updateProfile: async (data: UpdateProfileFormData | FormData): Promise<User> => {
+    const response = await axiosInstance.put<ApiResponse<{ user: User }>>('/auth/profile', data, {
+      headers: data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {},
+    });
+    return response.data.data.user;
   },
 
   verifyPhone: async (data: VerifyFormData): Promise<ApiResponse<null>> => {

@@ -43,7 +43,7 @@ export const ProfileTemplate = () => {
               icon="user" 
               iconColor="#192C56" 
               bgColor="#F1F5F9"
-              onPress={() => {}} 
+              onPress={() => router.push('/(main)/account-info')} 
             />
             <ProfileMenuItem 
               title="Change password" 
