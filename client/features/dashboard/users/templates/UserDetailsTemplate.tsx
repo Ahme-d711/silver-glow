@@ -39,8 +39,7 @@ export default function UserDetailsTemplate() {
   // Map UI filter status to API OrderStatus
   const getMappedStatus = (filter: string) => {
     if (filter === "all") return undefined;
-    if (filter === "completed") return "DELIVERED";
-    return filter.toUpperCase();
+    return filter.toUpperCase() as any;
   };
 
   const { data: ordersData, isLoading: isLoadingOrders } = useUserOrders(userId, { 

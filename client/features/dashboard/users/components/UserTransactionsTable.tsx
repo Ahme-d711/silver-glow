@@ -7,6 +7,7 @@ import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 import { TableFilters } from "@/components/shared/TableFilters"
+import { cn } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 
@@ -46,9 +47,13 @@ export function UserTransactionsTable({
 
   const filterOptions = [
     { label: t("all_status"), value: "all" },
-    { label: tOrders("completed"), value: "completed" },
-    { label: tOrders("processing"), value: "processing" },
-    { label: tOrders("cancelled"), value: "cancelled" },
+    { label: tOrders("pending"), value: "PENDING" },
+    { label: tOrders("confirmed"), value: "CONFIRMED" },
+    { label: tOrders("processing"), value: "PROCESSING" },
+    { label: tOrders("shipped"), value: "SHIPPED" },
+    { label: tOrders("delivered"), value: "DELIVERED" },
+    { label: tOrders("cancelled"), value: "CANCELLED" },
+    { label: tOrders("returned"), value: "RETURNED" },
   ]
 
  
@@ -78,11 +83,25 @@ export function UserTransactionsTable({
     {
       id: "status",
       header: t("status"),
-      cell: (_: unknown, row: Transaction) => (
-        <Badge className="bg-purple-100/50 text-primary border-none px-4 py-1.5 rounded-xl font-semibold shadow-none hover:bg-purple-100/50">
-          {row.status}
-        </Badge>
-      )
+      cell: (_: unknown, row: Transaction) => {
+        const statusColors: Record<string, string> = {
+          PENDING: "bg-yellow-100/50 text-yellow-600 border-yellow-200",
+          CONFIRMED: "bg-blue-100/50 text-blue-600 border-blue-200",
+          PROCESSING: "bg-purple-100/50 text-purple-600 border-purple-200",
+          SHIPPED: "bg-indigo-100/50 text-indigo-600 border-indigo-200",
+          DELIVERED: "bg-green-100/50 text-green-600 border-green-200",
+          CANCELLED: "bg-gray-100/50 text-gray-600 border-gray-200",
+          RETURNED: "bg-red-100/50 text-red-600 border-red-200",
+        }
+        
+        const colorClass = statusColors[row.status] || "bg-purple-100/50 text-primary border-none"
+
+        return (
+          <Badge className={cn("px-4 py-1.5 rounded-xl font-semibold shadow-none border hover:bg-opacity-70", colorClass)}>
+            {tOrders(row.status.toLowerCase() as any)}
+          </Badge>
+        )
+      }
     },
     {
       id: "date",
