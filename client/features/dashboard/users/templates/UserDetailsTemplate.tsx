@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { UserStatsGrid } from "../components/UserStatsGrid";
 import { UserInfoSidebar } from "../components/UserInfoSidebar";
 import { UserTransactionsTable } from "../components/UserTransactionsTable";
-import { useUser, useDeleteUser, useUpdateUserBlockStatus, useAddUserBalance, useActivateUser } from "../hooks/useUser";
+import { useUser, useDeleteUser, useUpdateUserBlockStatus, useAddUserBalance, useActivateUser, useUserOrders } from "../hooks/useUser";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
@@ -19,14 +19,6 @@ import type { User } from "@/features/auth/types";
 import { Wallet, Pencil } from "lucide-react";
 import { getImageUrl } from "@/utils/image.utils";
 
-// Mock transactions - TODO: Replace with real API when available
-const transactions = [
-  { id: "302002", product: "Handmade Pouch", sub: "+3 other products", total: "$121.00", status: "Processing", date: "12 Dec 2023" },
-  { id: "302002", product: "Handmade Pouch", sub: "+3 other products", total: "$121.00", status: "Processing", date: "12 Dec 2023" },
-  { id: "302002", product: "Handmade Pouch", sub: "+3 other products", total: "$121.00", status: "Processing", date: "12 Dec 2023" },
-  { id: "302002", product: "Handmade Pouch", sub: "+3 other products", total: "$121.00", status: "Processing", date: "12 Dec 2023" },
-  { id: "302002", product: "Handmade Pouch", sub: "+3 other products", total: "$121.00", status: "Processing", date: "12 Dec 2023" },
-];
 
 export default function UserDetailsTemplate() {
   const t = useTranslations("Users");
@@ -40,6 +32,22 @@ export default function UserDetailsTemplate() {
   const { mutate: updateBlockStatus, isPending: isBlocking } = useUpdateUserBlockStatus();
   const { mutate: addBalance, isPending: isAddingBalance } = useAddUserBalance();
   const { mutate: activateUserMutation, isPending: isActivating } = useActivateUser();
+  
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState<Date | undefined>();
+
+  // Map UI filter status to API OrderStatus
+  const getMappedStatus = (filter: string) => {
+    if (filter === "all") return undefined;
+    if (filter === "completed") return "DELIVERED";
+    return filter.toUpperCase();
+  };
+
+  const { data: ordersData, isLoading: isLoadingOrders } = useUserOrders(userId, { 
+    limit: 5,
+    status: getMappedStatus(statusFilter) as any,
+    startDate: dateFilter ? dateFilter.toISOString() : undefined,
+  });
 
   const [blockDialogOpen, setBlockDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -77,10 +85,19 @@ export default function UserDetailsTemplate() {
   const formattedLastTransaction = lastTransactionAt
     ? format(new Date(lastTransactionAt), "dd MMM yyyy")
     : t("na");
-
   const formattedLastOnline = lastLoginAt
     ? format(new Date(lastLoginAt), "dd MMM yyyy")
     : t("na");
+
+  const transactions = ordersData?.orders.map((order: any) => ({
+    id: order.trackingNumber || order._id,
+    product: order.items[0]?.name || t("na"),
+    sub: order.items.length > 1 ? `+${order.items.length - 1} ${t("other_products")}` : "",
+    total: `${order.totalAmount} ${user.currency || "EGP"}`,
+    status: order.status,
+    date: format(new Date(order.createdAt), "dd MMM yyyy"),
+    image: order.items[0]?.image || "",
+  })) || [];
 
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   const totalOrders = user.totalOrders ?? 0;
@@ -89,7 +106,7 @@ export default function UserDetailsTemplate() {
     : user.isActive === false
     ? "deactivated"
     : "active";
-  const idValue = (user.id || (user as User)._id || "") as string;
+  const idValue = (user.id || (user as any)._id || "") as string;
 
   const userSidebarData = {
     id: idValue,
@@ -211,7 +228,14 @@ export default function UserDetailsTemplate() {
           />
 
           {/* Table Component */}
-          <UserTransactionsTable transactions={transactions} />
+          <UserTransactionsTable 
+            transactions={transactions} 
+            isLoading={isLoadingOrders}
+            filterValue={statusFilter}
+            onFilterChange={setStatusFilter}
+            date={dateFilter}
+            onDateChange={setDateFilter}
+          />
         </div>
       </div>
 

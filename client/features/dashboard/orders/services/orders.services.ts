@@ -23,6 +23,8 @@ export interface GetOrdersParams {
   userId?: string;
   driverId?: string;
   search?: string;
+  startDate?: string;
+  endDate?: string;
   page?: number;
   limit?: number;
 }

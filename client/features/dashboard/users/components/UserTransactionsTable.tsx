@@ -17,21 +17,32 @@ interface Transaction {
   total: string
   status: string
   date: string
+  image?: string
 }
 
 interface UserTransactionsTableProps {
   transactions: Transaction[]
+  isLoading?: boolean
+  filterValue?: string
+  onFilterChange?: (value: string) => void
+  date?: Date | undefined
+  onDateChange?: (date: Date | undefined) => void
 }
 
-export function UserTransactionsTable({ transactions }: UserTransactionsTableProps) {
+export function UserTransactionsTable({ 
+  transactions, 
+  isLoading = false,
+  filterValue,
+  onFilterChange,
+  date,
+  onDateChange
+}: UserTransactionsTableProps) {
   const t = useTranslations("Users")
   const tCommon = useTranslations("Common")
   const tOrders = useTranslations("Orders")
   const searchParams = useSearchParams()
   const search = searchParams.get("search") || ""
   
-  const [date, setDate] = React.useState<Date | undefined>()
-  const [filter, setFilter] = React.useState("all")
 
   const filterOptions = [
     { label: t("all_status"), value: "all" },
@@ -40,8 +51,6 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
     { label: tOrders("cancelled"), value: "cancelled" },
   ]
 
-  // Assuming isLoading is defined elsewhere, e.g., from a data fetching hook
-  const isLoading = false; // Placeholder for demonstration
  
   const columns = [
     {
@@ -56,7 +65,7 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
         <ProductCell 
           title={row.product}
           subtitle={row.sub}
-          image=""
+          image={row.image}
         />
       )
     },
@@ -93,9 +102,9 @@ export function UserTransactionsTable({ transactions }: UserTransactionsTablePro
         <h3 className="text-xl font-semibold text-content-primary">{t("transaction_history")}</h3>
       <TableFilters
         date={date}
-        setDate={setDate}
-        filterValue={filter}
-        onFilterChange={setFilter}
+        setDate={onDateChange}
+        filterValue={filterValue}
+        onFilterChange={onFilterChange}
         filterOptions={filterOptions}
         className="px-6 py-4 border-b border-divider/50"
         />

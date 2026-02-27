@@ -12,6 +12,7 @@ import {
   addUserBalance,
   activateUser,
 } from "../services/user.service";
+import { getOrders, GetOrdersParams } from "../../orders/services/orders.services";
 import type { User } from "@/features/auth/types";
 import type {
   GetAllUsersParams,
@@ -30,6 +31,7 @@ export const usersKeys = {
   details: () => [...usersKeys.all, "detail"] as const,
   detail: (id: string) => [...usersKeys.details(), id] as const,
   current: () => [...usersKeys.all, "current"] as const,
+  orders: (id: string, params?: GetOrdersParams) => [...usersKeys.detail(id), "orders", { params }] as const,
 };
 
 /**
@@ -78,6 +80,23 @@ export function useUser(id: string) {
       return response.data.user;
     },
     enabled: !!id,
+  });
+}
+
+/**
+ * Get user orders query
+ */
+export function useUserOrders(userId: string, params?: GetOrdersParams) {
+  return useQuery({
+    queryKey: usersKeys.orders(userId, params),
+    queryFn: async () => {
+      const response = await getOrders({ ...params, userId });
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to fetch user orders");
+      }
+      return response.data;
+    },
+    enabled: !!userId,
   });
 }
 

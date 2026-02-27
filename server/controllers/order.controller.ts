@@ -15,13 +15,19 @@ import { IProduct } from "../types/product.type.js";
  */
 export const getAllOrders = async (req: Request, res: Response) => {
   const validatedQuery = queryOrderSchema.parse(req.query);
-  const { status, paymentStatus, userId, search, page, limit } = validatedQuery;
+  const { status, paymentStatus, userId, search, page, limit, startDate, endDate } = validatedQuery;
 
-  const query: Record<string, unknown> = {};
+  const query: Record<string, any> = {};
 
   if (status) query.status = status;
   if (paymentStatus) query.paymentStatus = paymentStatus;
   if (userId) query.userId = userId;
+
+  if (startDate || endDate) {
+    query.createdAt = {};
+    if (startDate) (query.createdAt as any).$gte = new Date(startDate);
+    if (endDate) (query.createdAt as any).$lte = new Date(endDate);
+  }
 
   if (search) {
     query.$or = [
