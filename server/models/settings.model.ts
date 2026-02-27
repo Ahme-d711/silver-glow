@@ -5,6 +5,9 @@ export interface ISettings extends Document {
   taxRate: number; // Percentage
   freeShippingThreshold: number;
   currency: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  facebookLink?: string;
 }
 
 const SettingsSchema = new Schema<ISettings>(
@@ -28,6 +31,18 @@ const SettingsSchema = new Schema<ISettings>(
       type: String,
       required: true,
       default: "EGP",
+    },
+    contactEmail: {
+      type: String,
+      default: "",
+    },
+    contactPhone: {
+      type: String,
+      default: "",
+    },
+    facebookLink: {
+      type: String,
+      default: "",
     },
   },
   {

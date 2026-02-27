@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 import { decodeJwt } from 'jose';
+import { TOKEN_KEY } from './utils/constants';
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -17,7 +18,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get('accessToken')?.value;
+  const token = request.cookies.get(TOKEN_KEY)?.value;
   
   // Detect locale from path or fallback to default
   const pathSegments = pathname.split('/');

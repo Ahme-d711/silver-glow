@@ -155,7 +155,11 @@
     "tax_rate": "معدل الضريبة",
     "currency": "العملة",
     "save_changes": "حفظ التغييرات",
-    "saving": "جاري الحفظ"
+    "saving": "جاري الحفظ",
+    "contact_info": "معلومات الاتصال",
+    "contact_email": "البريد الإلكتروني للتواصل",
+    "contact_phone": "رقم الهاتف للتواصل",
+    "facebook_link": "رابط الفيسبوك"
   },
   "Common": {
     "loading": "جاري التحميل...",

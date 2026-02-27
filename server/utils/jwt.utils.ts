@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import type { Request } from "express";
+import { TOKEN_KEY } from "./constants.js";
 
 export interface JwtPayload {
   id: string;
@@ -37,7 +38,7 @@ export const verifyToken = (token: string): JwtPayload | null => {
  */
 export const extractTokenFromRequest = (req: Request): string | null => {
   return (
-    req.cookies?.accessToken ||
+    req.cookies?.[TOKEN_KEY] ||
     req.headers.authorization?.replace("Bearer ", "") ||
     null
   );

@@ -2,7 +2,7 @@
 
 import axios, { AxiosInstance } from "axios";
 import { cookies } from "next/headers";
-import { API_URL } from "@/utils/constants";
+import { API_URL, TOKEN_KEY } from "@/utils/constants";
 
 const serverAxios: AxiosInstance = axios.create({
   baseURL: API_URL,
@@ -13,7 +13,7 @@ const serverAxios: AxiosInstance = axios.create({
 });
 
 serverAxios.interceptors.request.use(async (config) => {
-  const accessToken = (await cookies()).get("accessToken")?.value || (await cookies()).get("token")?.value;
+  const accessToken = (await cookies()).get(TOKEN_KEY)?.value;
   if (accessToken && config.headers) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -36,8 +36,8 @@ serverAxios.interceptors.response.use(
       // Authentication status should be handled by the middleware (proxy.ts) 
       // or through manual Logout Server Actions.
       
-      // (await cookies()).delete("accessToken");
-      // (await cookies()).delete("token");
+      // (await cookies()).delete(TOKEN_KEY);
+      // (await cookies()).delete("token"); // Note: "token" was old key, can be removed eventually
       delete serverAxios.defaults.headers.common["Authorization"];
     }
     return Promise.reject(error);

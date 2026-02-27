@@ -25,6 +25,9 @@ export function SettingsForm() {
       taxRate: 0,
       freeShippingThreshold: 0,
       currency: "EGP",
+      contactEmail: "",
+      contactPhone: "",
+      facebookLink: "",
     },
   });
 
@@ -36,6 +39,9 @@ export function SettingsForm() {
         taxRate: settings.taxRate,
         freeShippingThreshold: settings.freeShippingThreshold,
         currency: settings.currency,
+        contactEmail: settings.contactEmail || "",
+        contactPhone: settings.contactPhone || "",
+        facebookLink: settings.facebookLink || "",
       });
     }
   }, [settings, form]);
@@ -93,6 +99,40 @@ export function SettingsForm() {
             label={t("currency")}
             placeholder="EGP"
             type="text"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-[24px] border border-divider shadow-sm">
+          <div className="md:col-span-2 mb-2">
+            <h3 className="text-lg font-bold text-primary">{t("contact_info")}</h3>
+            <p className="text-sm text-content-secondary">
+              Configure contact information displayed on the "Need Help" page.
+            </p>
+          </div>
+
+          <UniInput
+            control={form.control}
+            name="contactEmail"
+            label={t("contact_email")}
+            placeholder="support@example.com"
+            type="email"
+          />
+
+          <UniInput
+            control={form.control}
+            name="contactPhone"
+            label={t("contact_phone")}
+            placeholder="+20123456789"
+            type="text"
+          />
+
+          <UniInput
+            control={form.control}
+            name="facebookLink"
+            label={t("facebook_link")}
+            placeholder="https://facebook.com/yourpage"
+            type="text"
+            className="md:col-span-2"
           />
         </div>
 

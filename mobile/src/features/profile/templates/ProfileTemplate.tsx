@@ -25,7 +25,7 @@ export const ProfileTemplate = () => {
           style: 'destructive',
           onPress: async () => {
             await logout();
-            router.replace('/(auth)/login');
+            router.replace('/login');
           },
         },
       ]
@@ -91,7 +91,7 @@ export const ProfileTemplate = () => {
               iconColor="#F97316" 
               bgColor="#FFF7ED"
               rightLabel="contact with us"
-              onPress={() => {}} 
+              onPress={() => router.push('/(main)/need-help' as any)} 
             />
             <ProfileMenuItem 
               title="Logout" 

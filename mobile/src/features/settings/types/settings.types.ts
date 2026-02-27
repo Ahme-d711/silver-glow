@@ -3,6 +3,9 @@ export interface AppSettings {
   taxRate: number;
   freeShippingThreshold: number;
   currency: string;
+  contactEmail: string;
+  contactPhone: string;
+  facebookLink: string;
 }
 
 export interface SettingsResponse {

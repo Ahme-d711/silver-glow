@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import serverAxios from "@/lib/axios/serverAxios";
 import { User } from "../types";
+import { TOKEN_KEY } from "@/utils/constants";
 
 interface ApiResponse<T = unknown> {
   success: boolean;
@@ -65,7 +66,7 @@ async function authAction(
 
     // Set access token cookie
     if (accessToken) {
-      (await cookies()).set("accessToken", accessToken, {
+      (await cookies()).set(TOKEN_KEY, accessToken, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
@@ -183,7 +184,7 @@ export async function getProfile(): Promise<{
   user: User | null;
   token: string | null;
 }> {
-  const tokenCookie = (await cookies()).get("accessToken");
+  const tokenCookie = (await cookies()).get(TOKEN_KEY);
 
   if (!tokenCookie) {
     return {
@@ -243,7 +244,7 @@ export async function updateProfile(payload: FormData | {
     );
 
     const user = response.data.data?.user;
-    const accessToken = (await cookies()).get("accessToken")?.value || "";
+    const accessToken = (await cookies()).get(TOKEN_KEY)?.value || "";
 
     if (!user) {
       return {
@@ -313,7 +314,7 @@ export async function verifyPhone(payload: {
     );
 
     const user = response.data.data?.user;
-    const accessToken = (await cookies()).get("accessToken")?.value || "";
+    const accessToken = (await cookies()).get(TOKEN_KEY)?.value || "";
 
     if (!user) {
       return {
@@ -373,7 +374,7 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
     await serverAxios.get("/auth/logout");
 
     // Clear cookies
-    (await cookies()).delete("accessToken");
+    (await cookies()).delete(TOKEN_KEY);
     (await cookies()).delete("token");
 
     revalidatePath("/dashboard", "layout");
@@ -384,7 +385,7 @@ export async function logoutUser(): Promise<{ success: boolean; message: string 
     };
   } catch (error) {
     // Even if server call fails, clear local cookies
-    (await cookies()).delete("accessToken");
+    (await cookies()).delete(TOKEN_KEY);
     (await cookies()).delete("token");
     revalidatePath("/dashboard", "layout");
 
@@ -406,7 +407,7 @@ export async function deleteUser(): Promise<AuthActionResponse> {
     const response = await serverAxios.delete<ApiResponse>("/auth/delete-account");
 
     // Clear cookies after account deletion
-    (await cookies()).delete("accessToken");
+    (await cookies()).delete(TOKEN_KEY);
     (await cookies()).delete("token");
     revalidatePath("/dashboard", "layout");
 

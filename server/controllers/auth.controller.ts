@@ -21,6 +21,7 @@ import type { IUser } from "../types/user.type.js";
 import { generateToken, extractTokenFromRequest, verifyToken } from "../utils/jwt.utils.js";
 import { sendVerificationWhatsApp } from "../utils/whatsapp.service.js";
 import { getRelativePath } from "../utils/upload.js";
+import { TOKEN_KEY } from "../utils/constants.js";
 
 /**
  * Helper function to generate JWT token, set cookie, and send authentication response
@@ -43,7 +44,7 @@ const sendAuthResponse = (
   });
 
   // Set cookie
-  res.cookie("accessToken", accessToken, getAccessTokenCookieOptions());
+  res.cookie(TOKEN_KEY, accessToken, getAccessTokenCookieOptions());
 
   // Return user without password
   const { password: _, ...userResponse } = user.toObject();
@@ -350,7 +351,7 @@ export const changePassword = asyncHandler(async (req: Request, res: Response) =
  */
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   // Clear access token cookie
-  res.clearCookie("accessToken", getAccessTokenCookieOptions());
+  res.clearCookie(TOKEN_KEY, getAccessTokenCookieOptions());
 
   // Destroy session if exists
       if (req.session) {
@@ -564,7 +565,7 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Clear access token cookie
-  res.clearCookie("accessToken", getAccessTokenCookieOptions());
+  res.clearCookie(TOKEN_KEY, getAccessTokenCookieOptions());
 
   // Destroy session if exists
   if (req.session) {

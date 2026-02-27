@@ -35,6 +35,9 @@ export const updateSettings = asyncHandler(async (req: Request, res: Response) =
     if (req.body.taxRate !== undefined) settings.taxRate = req.body.taxRate;
     if (req.body.freeShippingThreshold !== undefined) settings.freeShippingThreshold = req.body.freeShippingThreshold;
     if (req.body.currency !== undefined) settings.currency = req.body.currency;
+    if (req.body.contactEmail !== undefined) settings.contactEmail = req.body.contactEmail;
+    if (req.body.contactPhone !== undefined) settings.contactPhone = req.body.contactPhone;
+    if (req.body.facebookLink !== undefined) settings.facebookLink = req.body.facebookLink;
     
     await settings.save();
   }

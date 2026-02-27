@@ -155,7 +155,11 @@
     "tax_rate": "Tax Rate",
     "currency": "Currency",
     "save_changes": "Save Changes",
-    "saving": "Saving"
+    "saving": "Saving",
+    "contact_info": "Contact Information",
+    "contact_email": "Contact Email",
+    "contact_phone": "Contact Phone",
+    "facebook_link": "Facebook Link"
   },
   "Common": {
     "loading": "Loading...",
