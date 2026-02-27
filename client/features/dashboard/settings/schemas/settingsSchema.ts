@@ -14,7 +14,15 @@ export const settingsSchema = z.object({
   currency: z.string().min(1, { message: "Currency is required" }),
   contactEmail: z.string().email({ message: "Invalid email format" }).optional().or(z.literal("")),
   contactPhone: z.string().optional().or(z.literal("")),
-  facebookLink: z.string().url({ message: "Invalid URL format" }).optional().or(z.literal("")).or(z.string().startsWith("facebook.com")).or(z.string().startsWith("https://facebook.com")),
+  socialLinks: z
+    .array(
+      z.object({
+        platform: z.string().min(1, { message: "Platform name is required" }),
+        link: z.string().min(1, { message: "Link is required" }),
+      })
+    )
+    .optional()
+    .default([]),
 });
 
 export type SettingsFormValues = z.infer<typeof settingsSchema>;

@@ -1,5 +1,35 @@
 import { Schema, model, Document } from "mongoose";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Settings:
+ *       type: object
+ *       properties:
+ *         shippingCost:
+ *           type: number
+ *         taxRate:
+ *           type: number
+ *         freeShippingThreshold:
+ *           type: number
+ *         currency:
+ *           type: string
+ *         contactEmail:
+ *           type: string
+ *         contactPhone:
+ *           type: string
+ *         socialLinks:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               platform:
+ *                 type: string
+ *               link:
+ *                 type: string
+ */
+
 export interface ISettings extends Document {
   shippingCost: number;
   taxRate: number; // Percentage
@@ -7,7 +37,10 @@ export interface ISettings extends Document {
   currency: string;
   contactEmail?: string;
   contactPhone?: string;
-  facebookLink?: string;
+  socialLinks: {
+    platform: string;
+    link: string;
+  }[];
 }
 
 const SettingsSchema = new Schema<ISettings>(
@@ -28,22 +61,24 @@ const SettingsSchema = new Schema<ISettings>(
       default: 1000, // Free shipping over 1000
     },
     currency: {
-      type: String,
-      required: true,
-      default: "EGP",
-    },
-    contactEmail: {
-      type: String,
-      default: "",
-    },
-    contactPhone: {
-      type: String,
-      default: "",
-    },
-    facebookLink: {
-      type: String,
-      default: "",
-    },
+       type: String,
+       required: true,
+       default: "EGP",
+     },
+     contactEmail: {
+       type: String,
+       default: "",
+     },
+     contactPhone: {
+       type: String,
+       default: "",
+     },
+     socialLinks: [
+      {
+        platform: { type: String, required: true },
+        link: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,
