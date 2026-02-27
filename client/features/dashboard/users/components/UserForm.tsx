@@ -198,17 +198,7 @@ export function UserForm({
             </>
           )}
 
-          {isEdit && (
-            <motion.div variants={item}>
-              <UniInput
-                control={form.control}
-                name="password"
-                label={t("password")}
-                placeholder="••••••"
-                type="password"
-              />
-            </motion.div>
-          )}
+
 
           <motion.div variants={item}>
             <UniInput

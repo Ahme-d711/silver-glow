@@ -14,6 +14,7 @@ import { settingsSchema, SettingsFormValues } from "../schemas/settingsSchema";
 import { useSettings } from "../hooks/useSettings";
 import { useEffect } from "react";
 import UniLoading from "@/components/shared/UniLoading";
+import { SecuritySettings } from "./SecuritySettings";
 
 export function SettingsForm() {
   const t = useTranslations("Dashboard");
@@ -62,8 +63,7 @@ export function SettingsForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Tabs defaultValue="shipping" className="w-full">
+      <Tabs defaultValue="shipping" className="w-full space-y-6">
           <TabsList className="bg-secondary py-2! h-12 rounded-xl mb-6">
             <TabsTrigger value="shipping" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               {t("shipping_and_tax")}
@@ -73,6 +73,9 @@ export function SettingsForm() {
             </TabsTrigger>
             <TabsTrigger value="links" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               Social Links
+            </TabsTrigger>
+            <TabsTrigger value="security" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              Security
             </TabsTrigger>
           </TabsList>
 
@@ -150,6 +153,10 @@ export function SettingsForm() {
             </div>
           </TabsContent>
 
+          <TabsContent value="security" className="space-y-6 outline-none">
+            <SecuritySettings />
+          </TabsContent>
+
           <TabsContent value="links" className="space-y-6 outline-none">
             <div className="bg-white p-8 rounded-[24px] border border-divider shadow-sm">
               <div className="flex justify-between items-center mb-6">
@@ -213,9 +220,10 @@ export function SettingsForm() {
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-6">
           <Button 
-            type="submit" 
+            type="button" 
+            onClick={form.handleSubmit(onSubmit)}
             disabled={isUpdating}
             className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
           >
@@ -232,7 +240,6 @@ export function SettingsForm() {
             )}
           </Button>
         </div>
-      </form>
     </Form>
   );
 }
