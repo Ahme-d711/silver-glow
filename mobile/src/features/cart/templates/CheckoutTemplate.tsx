@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   View, 
   Text, 
   ScrollView, 
-  TouchableOpacity, 
-  TextInput, 
   KeyboardAvoidingView, 
-  Platform,
-  ActivityIndicator
+  Platform
 } from 'react-native';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Feather } from '@expo/vector-icons';
 import { PageHeader } from '../../../../components/ui/page-header';
 import { useCart } from '../hooks/useCart';
@@ -17,7 +16,7 @@ import { CheckoutItemCard } from '../components/CheckoutItemCard';
 import { useSettings } from '../../settings/hooks/useSettings';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
-import { CheckoutPayload } from '../types/checkout.types';
+import { checkoutSchema, CheckoutFormData } from '../schemas/checkoutSchema';
 
 export const CheckoutTemplate = () => {
   const { data: cartData } = useCart();
@@ -37,57 +36,27 @@ export const CheckoutTemplate = () => {
   const shipping = items.length === 0 || subtotal >= freeThreshold ? 0 : baseShipping;
   const total = subtotal + shipping;
 
-  const [formData, setFormData] = useState<CheckoutPayload>({
-    recipientName: '',
-    recipientPhone: '',
-    shippingAddress: '',
-    city: '',
-    governorate: '',
-    country: 'Egypt',
-    postalCode: '',
-    customerNotes: '',
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      recipientName: '',
+      recipientPhone: '',
+      shippingAddress: '',
+      city: '',
+      governorate: '',
+      country: 'Egypt',
+      postalCode: '',
+      customerNotes: '',
+    },
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof CheckoutPayload, string>>>({});
-
-  const validate = () => {
-    const newErrors: Partial<Record<keyof CheckoutPayload, string>> = {};
-    if (!formData.recipientName) newErrors.recipientName = 'Required';
-    if (!formData.recipientPhone) newErrors.recipientPhone = 'Required';
-    if (!formData.shippingAddress) newErrors.shippingAddress = 'Required';
-    if (!formData.city) newErrors.city = 'Required';
-    if (!formData.governorate) newErrors.governorate = 'Required';
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const onSubmit: SubmitHandler<CheckoutFormData> = (data) => {
+    placeOrder(data);
   };
-
-  const handlePlaceOrder = () => {
-    if (validate()) {
-      placeOrder(formData);
-    }
-  };
-
-  const renderInput = (
-    label: string, 
-    field: keyof CheckoutPayload, 
-    icon: string, 
-    placeholder: string,
-    keyboardType: 'default' | 'numeric' | 'phone-pad' = 'default'
-  ) => (
-    <Input
-      label={label}
-      leftIcon={icon as any}
-      placeholder={placeholder}
-      value={formData[field] as string}
-      onChangeText={(text) => {
-        setFormData({ ...formData, [field]: text });
-        if (errors[field]) setErrors({ ...errors, [field]: undefined });
-      }}
-      error={errors[field] ? `${errors[field]} is required` : undefined}
-      keyboardType={keyboardType}
-    />
-  );
 
   return (
     <View className="flex-1 bg-background">
@@ -101,7 +70,7 @@ export const CheckoutTemplate = () => {
           className="flex-1 px-6 pt-4"
           showsVerticalScrollIndicator={false}
         >
-          {/* Section: Order Summary (Products) */}
+          {/* Section: Your Items */}
           <View className="mb-8">
             <View className="flex-row items-center mb-4">
               <View className="bg-primary/10 p-2 rounded-lg mr-3">
@@ -114,7 +83,7 @@ export const CheckoutTemplate = () => {
             ))}
           </View>
 
-          {/* Section: Shipping Address */}
+          {/* Section: Shipping Details */}
           <View className="mb-10">
             <View className="flex-row items-center mb-4">
               <View className="bg-primary/10 p-2 rounded-lg mr-3">
@@ -123,31 +92,116 @@ export const CheckoutTemplate = () => {
               <Text className="text-xl font-bold text-primary">Shipping Details</Text>
             </View>
             
-            {renderInput('Full Name', 'recipientName', 'person-outline', 'Enter recipient name')}
-            {renderInput('Phone Number', 'recipientPhone', 'call-outline', 'Enter phone number', 'phone-pad')}
-            {renderInput('Address', 'shippingAddress', 'home-outline', 'Street, building, apartment')}
+            <Controller
+              control={control}
+              name="recipientName"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Full Name"
+                  leftIcon="person-outline"
+                  placeholder="Enter recipient name"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors.recipientName?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="recipientPhone"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Phone Number"
+                  leftIcon="call-outline"
+                  placeholder="Enter phone number"
+                  keyboardType="phone-pad"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors.recipientPhone?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="shippingAddress"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Address"
+                  leftIcon="home-outline"
+                  placeholder="Street, building, apartment"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors.shippingAddress?.message}
+                />
+              )}
+            />
             
             <View className="flex-row gap-4">
               <View className="flex-1">
-                {renderInput('City', 'city', 'map-outline', 'City')}
+                <Controller
+                  control={control}
+                  name="city"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label="City"
+                      leftIcon="map-outline"
+                      placeholder="City"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      error={errors.city?.message}
+                    />
+                  )}
+                />
               </View>
               <View className="flex-1">
-                {renderInput('Governorate', 'governorate', 'flag-outline', 'Governorate')}
+                <Controller
+                  control={control}
+                  name="governorate"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label="Governorate"
+                      leftIcon="flag-outline"
+                      placeholder="Governorate"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      error={errors.governorate?.message}
+                    />
+                  )}
+                />
               </View>
             </View>
             
-            {renderInput('Notes', 'customerNotes', 'create-outline', 'Any notes for delivery?')}
+            <Controller
+              control={control}
+              name="customerNotes"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Notes"
+                  leftIcon="create-outline"
+                  placeholder="Any notes for delivery?"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors.customerNotes?.message}
+                />
+              )}
+            />
           </View>
           
-          {/* Spacer for floating footer */}
           <View style={{ height: 250 }} />
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Floating Price Summary & Action */}
       <View 
         className="absolute bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-[40px] border-t border-divider p-8"
-        style={{ paddingBottom: 110 }} // Lift above TabBar
+        style={{ paddingBottom: 110 }} 
       >
         <View className="gap-3 mb-6">
           <View className="flex-row justify-between">
@@ -159,7 +213,7 @@ export const CheckoutTemplate = () => {
         <Button
           title="Confirm Order"
           rightIcon="checkmark-outline"
-          onPress={handlePlaceOrder}
+          onPress={() => handleSubmit(onSubmit)()}
           loading={isProcessing}
         />
       </View>
