@@ -1,19 +1,21 @@
-"use client";
-
+import { forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { securitySchema, SecurityFormValues } from "../schemas/securitySchema";
 import { useChangePassword } from "@/features/auth/hooks/useChangePassword";
 
-export function SecuritySettings() {
+export interface SecuritySettingsHandle {
+  submit: () => Promise<void>;
+}
+
+export const SecuritySettings = forwardRef<SecuritySettingsHandle>((_, ref) => {
   const t = useTranslations("Dashboard");
-  const { submitChangePassword, loading } = useChangePassword();
+  const { submitChangePassword } = useChangePassword();
 
   const form = useForm<SecurityFormValues>({
     resolver: zodResolver(securitySchema) as any,
@@ -32,6 +34,10 @@ export function SecuritySettings() {
       // Error handled in hook toast
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    submit: form.handleSubmit(onSubmit),
+  }));
 
   return (
     <Form {...form}>
@@ -75,25 +81,10 @@ export function SecuritySettings() {
               type="password"
             />
           </div>
-
-          <div className="flex justify-end mt-8">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                "Change Password"
-              )}
-            </Button>
-          </div>
         </div>
       </form>
     </Form>
   );
-}
+});
+
+SecuritySettings.displayName = "SecuritySettings";

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../auth/store/authStore';
+import { useModalStore } from '../../../store/modalStore';
 import { PageHeader } from '@/components/ui/page-header';
 import { ProfileInfoCard } from '../components/ProfileInfoCard';
 import { ProfileQuickActions } from '../components/ProfileQuickActions';
@@ -10,26 +11,19 @@ import { ProfileMenuItem } from '../components/ProfileMenuItem';
 export const ProfileTemplate = () => {
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const { openConfirmModal } = useModalStore();
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await logout();
-            router.replace('/login');
-          },
-        },
-      ]
-    );
+    openConfirmModal({
+      title: 'Logout',
+      message: 'Are you sure you want to logout?',
+      type: 'danger',
+      label: 'LOGOUT',
+      onConfirm: async () => {
+        await logout();
+        router.replace('/login');
+      },
+    });
   };
 
   return (

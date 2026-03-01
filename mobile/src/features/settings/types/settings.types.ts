@@ -5,13 +5,14 @@ export interface AppSettings {
   currency: string;
   contactEmail: string;
   contactPhone: string;
-  facebookLink: string;
+  socialLinks: {
+    platform: string;
+    link: string;
+  }[];
 }
 
 export interface SettingsResponse {
   success: boolean;
   message: string;
-  data: {
-    settings: AppSettings;
-  };
+  data: AppSettings;
 }

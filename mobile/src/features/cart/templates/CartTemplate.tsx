@@ -23,7 +23,7 @@ export const CartTemplate = () => {
 
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
-  const settings = settingsData?.data?.settings;
+  const settings = settingsData?.data;
 
   const subtotal = items.reduce((acc, item) => {
     const productId = item.productId;

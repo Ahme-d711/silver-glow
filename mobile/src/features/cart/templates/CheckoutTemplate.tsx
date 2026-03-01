@@ -25,7 +25,7 @@ export const CheckoutTemplate = () => {
   
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
-  const settings = settingsData?.data?.settings;
+  const settings = settingsData?.data;
   
   const subtotal = items.reduce((acc, item) => acc + (item.productId.price * item.quantity), 0);
   
