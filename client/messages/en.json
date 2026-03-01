@@ -161,7 +161,8 @@
     "contact_info": "Contact Information",
     "contact_email": "Contact Email",
     "contact_phone": "Contact Phone",
-    "facebook_link": "Facebook Link"
+    "facebook_link": "Facebook Link",
+    "new_users_30d": "New Users (30d)"
   },
   "Common": {
     "loading": "Loading...",

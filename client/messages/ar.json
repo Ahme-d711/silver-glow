@@ -161,7 +161,8 @@
     "contact_info": "معلومات الاتصال",
     "contact_email": "البريد الإلكتروني للتواصل",
     "contact_phone": "رقم الهاتف للتواصل",
-    "facebook_link": "رابط الفيسبوك"
+    "facebook_link": "رابط الفيسبوك",
+    "new_users_30d": "المستخدمين الجدد (30 يوم)"
   },
   "Common": {
     "loading": "جاري التحميل...",
