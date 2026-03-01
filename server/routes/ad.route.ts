@@ -5,6 +5,7 @@ import {
   createAd,
   updateAd,
   deleteAd,
+  toggleAdStatus,
 } from "../controllers/ad.controller.js";
 import { authenticate, authorize } from "../middlewares/auth.middleware.js";
 import { uploadAd } from "../utils/upload.js";
@@ -136,3 +137,23 @@ router.put(
  *         description: Ad deleted
  */
 router.delete("/:id", authenticate, authorize("admin"), deleteAd);
+
+/**
+ * @swagger
+ * /ads/{id}/toggle-status:
+ *   patch:
+ *     summary: Toggle advertisement visibility (Admin only)
+ *     tags: [Ads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Status updated
+ */
+router.patch("/:id/toggle-status", authenticate, authorize("admin"), toggleAdStatus);

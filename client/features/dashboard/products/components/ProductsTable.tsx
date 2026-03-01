@@ -21,7 +21,7 @@ import { Product } from "../types";
 import { useToggleProductStatus, useRestoreProduct } from "../hooks/useProduct";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Pencil, Trash2, RotateCcw } from "lucide-react";
+import { Pencil, Trash2, RotateCcw, Loader } from "lucide-react";
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 
@@ -43,7 +43,7 @@ export default function ProductsTable({
   const t = useTranslations("Products");
   const tCommon = useTranslations("Common");
   const locale = useLocale();
-  const { mutate: toggleStatus } = useToggleProductStatus();
+  const { mutate: toggleStatus, isPending: isToggling } = useToggleProductStatus();
   const { mutateAsync: restoreProduct } = useRestoreProduct();
 
   const [modalConfig, setModalConfig] = useState<{
@@ -231,12 +231,15 @@ export default function ProductsTable({
       id: "status",
       header: tCommon("status"),
       cell: (_, row) => (
+        <div className="flex items-center gap-2">
           <Switch
             checked={row.isShow}
             onCheckedChange={() => toggleStatus(row._id)}
-            disabled={row.isDeleted}
+            disabled={row.isDeleted || isToggling}
             className="data-[state=checked]:bg-primary"
           />
+          {isToggling && <Loader className="h-3 w-3 animate-spin text-primary" />}
+        </div>
       ),
     },
     {

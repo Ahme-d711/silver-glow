@@ -3,7 +3,7 @@ import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { HeaderContext, CellContext } from "@tanstack/react-table"
 import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch"
-import { Trash2, Pencil, MoreVertical } from "lucide-react"
+import { Trash2, Pencil, MoreVertical, Loader } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { getImageUrl } from "@/utils/image.utils"
@@ -14,11 +14,12 @@ interface AdsTableProps {
   ads: Ad[]
   selectedIds: string[]
   onToggleSelect: (id: string) => void
-  onToggleStatus: (id: string, isShown: boolean) => void
+  onToggleStatus: (id: string) => void
   onDelete: (id: string) => void
   onEdit: (id: string) => void
   onSelectionChange?: (selectedRows: Ad[]) => void
   isLoading: boolean
+  isToggling: boolean
 }
 
 export function AdsTable({ 
@@ -29,7 +30,8 @@ export function AdsTable({
   onDelete, 
   onEdit, 
   onSelectionChange,
-  isLoading 
+  isLoading, 
+  isToggling
 }: AdsTableProps) {
   const tCommon = useTranslations("Common")
   const tAds = useTranslations("Ads")
@@ -143,15 +145,10 @@ export function AdsTable({
         <div className="flex items-center gap-2">
           <Switch
             checked={row.isShown}
-            onCheckedChange={(checked) => onToggleStatus(row.id || row._id || "", checked)}
+            onCheckedChange={() => onToggleStatus(row.id || row._id || "")}
             className="data-[state=checked]:bg-primary"
           />
-          <span className={cn(
-            "text-xs font-medium",
-            row.isShown ? "text-primary" : "text-content-tertiary"
-          )}>
-            {row.isShown ? tCommon("active") : tCommon("inactive")}
-          </span>
+          {isToggling && <Loader className="h-3 w-3 animate-spin text-primary" />}
         </div>
       ),
     },

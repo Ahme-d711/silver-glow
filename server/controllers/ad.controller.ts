@@ -160,3 +160,24 @@ export const deleteAd = async (req: Request, res: Response) => {
     data: null,
   });
 };
+
+/**
+ * Toggle ad status (shown/hidden)
+ */
+export const toggleAdStatus = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ad = await AdModel.findById(id);
+
+  if (!ad) {
+    throw new AppError("Ad not found", 404);
+  }
+
+  ad.isShown = !ad.isShown;
+  await ad.save();
+
+  res.status(200).json({
+    success: true,
+    message: `Ad ${ad.isShown ? "shown" : "hidden"} successfully`,
+    data: { ad },
+  });
+};

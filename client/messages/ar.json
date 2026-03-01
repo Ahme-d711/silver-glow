@@ -258,7 +258,9 @@
     "phone_placeholder": "+1234567890",
     "address": "العنوان",
     "no_data_to_export": "لم يتم اختيار بيانات للتصدير",
-    "show_less": "عرض أقل"
+    "show_less": "عرض أقل",
+    "postal_code_placeholder": "مثال: 12345"
+
   },
   "Users": {
     "title": "المستخدمين",

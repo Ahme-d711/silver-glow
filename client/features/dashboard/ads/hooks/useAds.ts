@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useTranslations } from "next-intl"
 import type { Ad } from "../types"
-import { getAllAds, getAdById, createAd, updateAd, deleteAd, GetAdsParams } from "../services/ads.services"
+import { getAllAds, getAdById, createAd, updateAd, deleteAd, toggleAdStatus, GetAdsParams } from "../services/ads.services"
 import { getErrorMessage } from "@/utils/api.utils"
 
 // Query keys
@@ -89,6 +89,29 @@ export function useDeleteAd() {
         toast.success(t("success_delete"))
       } else {
         toast.error(response.message || "Failed to delete ad")
+      }
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error))
+    },
+  })
+}
+
+// Toggle Ad Status Mutation
+export function useToggleAdStatus() {
+  const queryClient = useQueryClient()
+  const t = useTranslations("Ads")
+
+  return useMutation({
+    mutationFn: (id: string) => toggleAdStatus(id),
+    onSuccess: (response, id) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: adsKeys.all })
+        queryClient.invalidateQueries({ queryKey: adsKeys.detail(id) })
+        // We don't necessarily need a toast for status toggle as the switch provides feedback
+        // but we can add one if desired.
+      } else {
+        toast.error(response.message || "Failed to toggle ad status")
       }
     },
     onError: (error: unknown) => {

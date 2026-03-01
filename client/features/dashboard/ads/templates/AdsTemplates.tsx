@@ -9,7 +9,7 @@ import { AdsTable } from "../components/AdsTable"
 import { AdsMobileMockup } from "../components/AdsMobileMockup"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
-import { useAds, useUpdateAd, useDeleteAd } from "../hooks/useAds"
+import { useAds, useUpdateAd, useDeleteAd, useToggleAdStatus } from "../hooks/useAds"
 import { useTranslations, useLocale } from "next-intl"
 import { Ad, AdCard } from "../types"
 import { AdsSkeleton } from "../components/AdsSkeleton"
@@ -42,8 +42,8 @@ export default function AdsTemplate() {
   const tCommon = useTranslations("Common")
   const tNav = useTranslations("Navigation")
 
-  const { mutate: updateAd } = useUpdateAd()
   const { mutate: deleteAd } = useDeleteAd()
+  const { mutate: toggleAdStatus, isPending: isToggling } = useToggleAdStatus()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [adToDelete, setAdToDelete] = useState<string | null>(null)
   const [selectedAds, setSelectedAds] = useState<Ad[]>([])
@@ -86,17 +86,8 @@ export default function AdsTemplate() {
     });
   };
 
-  const handleToggleStatus = (id: string, isShown: boolean) => {
-    const originalAd = adsData?.find((a) => (a._id || a.id) === id)
-    if (!originalAd) return
-
-    const formData = new FormData()
-    formData.append("isShown", String(isShown))
-    
-    updateAd({
-      id: originalAd._id || originalAd.id,
-      data: formData,
-    })
+  const handleToggleStatus = (id: string) => {
+    toggleAdStatus(id)
   }
 
   const handleDeleteClick = (id: string) => {
@@ -163,6 +154,7 @@ export default function AdsTemplate() {
                       onDelete={handleDeleteClick}
                       onEdit={handleEdit}
                       onSelectionChange={setSelectedAds}
+                      isToggling={isToggling}
                   />
                 </div>
             </div>

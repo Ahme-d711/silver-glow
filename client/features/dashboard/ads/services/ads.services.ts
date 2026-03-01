@@ -50,3 +50,10 @@ export const deleteAd = async (id: string) => {
   const response = await clientAxios.delete<{ success: boolean; message: string }>(`/ads/${id}`);
   return response.data;
 };
+
+export const toggleAdStatus = async (id: string) => {
+  const response = await clientAxios.patch<{ success: boolean; message: string; data: { ad: Ad } }>(
+    `/ads/${id}/toggle-status`
+  );
+  return response.data;
+};
