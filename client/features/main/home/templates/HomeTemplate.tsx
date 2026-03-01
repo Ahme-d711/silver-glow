@@ -65,7 +65,7 @@ export default function HomeTemplate() {
         />
 
         {/* Testimonial Section */}
-        <TestimonialSection />
+        {/*<TestimonialSection />*/}
       </div>
     </div>
   );
