@@ -23,7 +23,7 @@ export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean
 
   if (isLoading) {
     return (
-      <div className="relative w-full h-[64vh] bg-secondary/20 animate-pulse flex items-center justify-center">
+      <div className="relative w-full h-[80vh] bg-secondary/20 animate-pulse flex items-center justify-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-6 flex flex-col items-center">
           <div className="h-4 w-32 bg-secondary/40 rounded-full" />
           <div className="h-12 w-full md:w-3/4 bg-secondary/40 rounded-3xl" />
@@ -40,7 +40,7 @@ export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean
   if (displayAds.length === 0) return null;
 
   return (
-    <div className="relative w-full h-[64vh] overflow-hidden group">
+    <div className="relative w-full h-[80vh] overflow-hidden group">
       <Swiper
         modules={[Pagination, Navigation, Autoplay, EffectFade]}
         effect="fade"
