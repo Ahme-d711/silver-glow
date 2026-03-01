@@ -4,46 +4,27 @@ import { useForm, useFieldArray, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
-import { UniInput } from "@/components/shared/uni-form/UniInput";
-import { UniTextarea } from "@/components/shared/uni-form/UniTextarea";
-import { UniSelect } from "@/components/shared/uni-form/UniSelect";
-import { UniAsyncCombobox } from "@/components/shared/uni-form/UniAsyncCombobox";
 import { Button } from "@/components/ui/button";
-import { Loader, Plus, Trash2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { Order } from "../types";
 import { Product } from "@/features/dashboard/products/types";
 import { User } from "@/features/auth/types"; 
-import { UserReference, BilingualItem } from "@/types";
+import { UserReference } from "@/types";
 
 import { getAllProducts, getProductById } from "@/features/dashboard/products/services/product.service";
 import { getAllUsers } from "@/features/dashboard/users/services/user.service";
 
-// Form Schema
-export const getOrderFormSchema = (t: (key: string) => string) => z.object({
-  userId: z.string().min(1, t("customer_required")),
-  items: z.array(z.object({
-    productId: z.string().min(1, t("product_required")),
-    name: z.string().min(1),
-    price: z.coerce.number(),
-    quantity: z.coerce.number().int().min(1),
-    image: z.string().optional(),
-    size: z.string().optional(),
-  })).min(1),
-  recipientName: z.string().min(1),
-  recipientPhone: z.string().min(1),
-  shippingAddress: z.string().min(1),
-  city: z.string().min(1),
-  governorate: z.string().min(1, t("governorate_required")),
-  country: z.string().min(1),
-  postalCode: z.string().optional(),
-  paymentMethod: z.string(),
-  customerNotes: z.string().optional(),
-  adminNotes: z.string().optional(),
-  status: z.string().optional(),
-  paymentStatus: z.string().optional(),
-});
+import { getOrderFormSchema } from "../schemas/orderSchemas";
+
+// Section Components
+import { CustomerSection } from "./form-sections/CustomerSection";
+import { ItemsSection } from "./form-sections/ItemsSection";
+import { ShippingSection } from "./form-sections/ShippingSection";
+import { PaymentSection } from "./form-sections/PaymentSection";
+import { NotesSection } from "./form-sections/NotesSection";
+import { SummarySection } from "./form-sections/SummarySection";
 
 const staticT = (key: string) => key;
 export const orderFormSchema = getOrderFormSchema(staticT);
@@ -68,7 +49,6 @@ export function OrderForm({
 }: OrderFormProps) {
   const t = useTranslations("Orders");
   const tCommon = useTranslations("Common");
-
   const tValidation = useTranslations("Validation");
 
   const initialUserId = typeof defaultValues?.userId === 'object' && defaultValues?.userId !== null 
@@ -128,8 +108,6 @@ export function OrderForm({
       }).filter(Boolean);
       
       if (productIds.length > 0) {
-        // We could fetch them individually or all at once. 
-        // For now, let's fetch for each unique ID to ensure we have size data.
         const uniqueIds = [...new Set(productIds)];
         const fetchedProducts: Record<string, Product> = {};
         
@@ -155,7 +133,6 @@ export function OrderForm({
       form.setValue(`items.${index}.name`, product.nameAr || product.nameEn);
       form.setValue(`items.${index}.image`, product.mainImage);
       
-      // Auto-select first size if available
       if (product.sizes && product.sizes.length > 0) {
         const firstSize = product.sizes[0];
         form.setValue(`items.${index}.size`, firstSize.size);
@@ -195,301 +172,62 @@ export function OrderForm({
     return Array.isArray(response) ? response : [];
   };
 
+  const totalAmount = ((form.watch("items") || []).reduce(
+    (acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0),
+    0
+  )).toFixed(2);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Customer Selection */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-primary">{t("customer")}</h3>
-          <UniAsyncCombobox
-            control={form.control}
-            name="userId"
-            label={t("customer")}
-            onSelect={handleUserSelect}
-            fetchData={fetchUsers}
-            placeholder={t("select_customer")}
-            searchPlaceholder={tCommon("search")}
-            emptyMessage={tCommon("no_data")}
-            getItemLabel={(user: User) => `${user.name} (${user.phone})`}
-            disabled={isEdit}
-            required
-          />
-        </div>
+        <CustomerSection
+          control={form.control}
+          t={t}
+          tCommon={tCommon}
+          onUserSelect={handleUserSelect}
+          fetchUsers={fetchUsers}
+          isEdit={isEdit}
+        />
 
-        {/* Order Items */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-primary">{t("order_items")}</h3>
-            {!isEdit && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => append({ productId: "", name: "", price: 0, quantity: 1, image: "", size: "" })}
-                className="rounded-xl border-primary text-primary hover:bg-primary/5"
-              >
-                <Plus className="h-4 w-4 me-2" />
-                {t("add_item")}
-              </Button>
-            )}
-          </div>
+        <ItemsSection
+          form={form}
+          fields={fields}
+          append={append}
+          remove={remove}
+          t={t}
+          tCommon={tCommon}
+          selectedProducts={selectedProducts}
+          handleProductSelect={handleProductSelect}
+          handleSizeSelect={handleSizeSelect}
+          fetchProducts={fetchProducts}
+          isEdit={isEdit}
+        />
 
-          <div className="space-y-4">
-            {fields.map((field, index) => (
-              <div key={field.id} className="p-6 border border-divider/50 rounded-3xl space-y-6 bg-gray-50/30">
-                <div className="flex items-center justify-between border-b border-divider/50 pb-4">
-                  <h4 className="font-bold text-primary">{t("item")} {index + 1}</h4>
-                  {fields.length > 1 && !isEdit && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => remove(index)}
-                      className="text-error hover:text-error/80 hover:bg-error/10 rounded-xl"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
+        <ShippingSection
+          control={form.control}
+          t={t}
+          tCommon={tCommon}
+        />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  <UniAsyncCombobox
-                    control={form.control}
-                    name={`items.${index}.productId`}
-                    label={t("product")}
-                    onSelect={(product: Product) => handleProductSelect(index, product)}
-                    fetchData={fetchProducts}
-                    placeholder={t("select_product")}
-                    searchPlaceholder={tCommon("search")}
-                    emptyMessage={tCommon("no_data")}
-                    getItemLabel={(product: Product) => product.nameAr || product.nameEn}
-                    disabled={isEdit}
-                    required
-                  />
+        <PaymentSection
+          control={form.control}
+          t={t}
+          isEdit={isEdit}
+        />
 
-                  <UniInput
-                    control={form.control}
-                    name={`items.${index}.name`}
-                    label={t("product_name")}
-                    placeholder={t("enter_product_name")}
-                    readOnly
-                    required
-                  />
+        <NotesSection
+          control={form.control}
+          t={t}
+          isEdit={isEdit}
+        />
 
-                  {/* Size Selection */}
-                  {(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length || 0) > 0 || form.watch(`items.${index}.size`) ? (
-                    <UniSelect
-                      control={form.control}
-                      name={`items.${index}.size`}
-                      label={t("size") || "Size"}
-                      options={
-                        selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.map(s => ({
-                          label: `${s.size} (${s.price} ${tCommon("currency")})`,
-                          value: s.size
-                        })) || (form.watch(`items.${index}.size`) ? [{ label: form.watch(`items.${index}.size`)!, value: form.watch(`items.${index}.size`)! }] : [])
-                      }
-                      onValueChange={(val: string) => handleSizeSelect(index, val)}
-                      placeholder={t("select_size") || "Select Size"}
-                      required={!!(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
-                      disabled={isEdit || !(selectedProducts[form.watch(`items.${index}.productId`)]?.sizes?.length)}
-                    />
-                  ) : (
-                    <div className="hidden lg:block"></div>
-                  )}
+        <SummarySection
+          t={t}
+          tCommon={tCommon}
+          itemCount={fields.length}
+          totalAmount={totalAmount}
+        />
 
-                  <UniInput
-                    control={form.control}
-                    name={`items.${index}.price`}
-                    label={t("price")}
-                    type="number"
-                    step="0.01"
-                    placeholder={`0.00 ${tCommon("currency")}`}
-                    readOnly
-                    required
-                  />
-
-                  <UniInput
-                    control={form.control}
-                    name={`items.${index}.quantity`}
-                    label={t("quantity")}
-                    type="number"
-                    min="1"
-                    placeholder="1"
-                    disabled={isEdit}
-                    required
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Shipping Information */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-primary">{t("shipping_info")}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <UniInput
-              control={form.control}
-              name="recipientName"
-              label={t("recipient_name")}
-              placeholder={t("enter_recipient_name")}
-              required
-            />
-
-            <UniInput
-              control={form.control}
-              name="recipientPhone"
-              label={t("recipient_phone")}
-              placeholder={tCommon("phone_placeholder") || "+1234567890"}
-              required
-            />
-          </div>
-
-          <UniTextarea
-            control={form.control}
-            name="shippingAddress"
-            label={t("shipping_address")}
-            placeholder={t("enter_full_address")}
-            rows={3}
-            required
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <UniInput
-              control={form.control}
-              name="city"
-              label={t("city")}
-              placeholder={t("enter_city")}
-              required
-            />
-
-            <UniAsyncCombobox
-              control={form.control}
-              name="governorate"
-              label={t("governorate")}
-              fetchData={async (search) => {
-                const { EGYPT_GOVERNORATES } = await import("@/constants/governorates");
-                const locale = window.localStorage.getItem("NEXT_LOCALE") || "ar";
-                return EGYPT_GOVERNORATES.filter((g) => 
-                  g.nameAr.includes(search) || 
-                  g.nameEn.toLowerCase().includes(search.toLowerCase())
-                );
-              }}
-              placeholder={t("select_governorate")}
-              searchPlaceholder={tCommon("search")}
-              emptyMessage={tCommon("no_data")}
-              getItemLabel={(g: BilingualItem) => {
-                const locale = typeof window !== 'undefined' ? window.localStorage.getItem("NEXT_LOCALE") || "ar" : "ar";
-                return locale === "ar" ? g.nameAr : g.nameEn;
-              }}
-              getItemValue={(g: BilingualItem) => g.nameEn}
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <UniInput
-              control={form.control}
-              name="country"
-              label={t("country")}
-              placeholder={t("enter_country")}
-              required
-            />
-
-            <UniInput
-              control={form.control}
-              name="postalCode"
-              label={t("postal_code")}
-              placeholder={tCommon("postal_code_placeholder") || "12345"}
-            />
-          </div>
-        </div>
-
-        {/* Payment & Status */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-primary">{t("payment_status")}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <UniSelect
-              control={form.control}
-              name="paymentMethod"
-              label={t("payment_method")}
-              options={[
-                { label: t("payment_cod"), value: "COD" },
-                { label: t("payment_card"), value: "CARD" },
-                { label: t("payment_paypal"), value: "PAYPAL" },
-                { label: t("payment_wallet"), value: "WALLET" },
-              ]}
-              required
-            />
-
-            <UniSelect
-              control={form.control}
-              name="paymentStatus"
-              label={t("payment_status")}
-              options={[
-                { label: t("pending"), value: "PENDING" },
-                { label: t("paid"), value: "PAID" },
-                { label: t("failed"), value: "FAILED" },
-              ]}
-              disabled={!isEdit}
-            />
-          </div>
-
-          {isEdit && (
-            <UniSelect
-              control={form.control}
-              name="status"
-              label={t("order_status")}
-              options={[
-                { label: t("pending"), value: "PENDING" },
-                { label: t("confirmed"), value: "CONFIRMED" },
-                { label: t("processing"), value: "PROCESSING" },
-                { label: t("shipped"), value: "SHIPPED" },
-                { label: t("delivered"), value: "DELIVERED" },
-                { label: t("cancelled"), value: "CANCELLED" },
-                { label: t("returned"), value: "RETURNED" },
-              ]}
-              required
-            />
-          )}
-        </div>
-
-        {/* Notes */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-primary">{t("notes")}</h3>
-          
-          <UniTextarea
-            control={form.control}
-            name="customerNotes"
-            label={t("customer_notes")}
-            placeholder={t("enter_customer_notes")}
-            rows={3}
-          />
-
-          {isEdit && (
-            <UniTextarea
-              control={form.control}
-              name="adminNotes"
-              label={t("admin_notes")}
-              placeholder={t("enter_admin_notes")}
-              rows={3}
-            />
-          )}
-        </div>
-
-        {/* Summary */}
-        <div className="p-4 bg-primary/5 border border-primary/10 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-lg text-content-secondary font-medium">
-            {t("total_items")}: <span className="text-primary font-bold text-xl ml-2">{fields.length}</span>
-          </div>
-          <div className="text-lg font-bold text-primary">
-            {t("total_amount")}: {((form.watch("items") || []).reduce((acc: number, item) => acc + (Number(item.price) * Number(item.quantity) || 0), 0)).toFixed(2)} {tCommon("currency")}
-          </div>
-        </div>
-
-        {/* Actions */}
         <div className="flex gap-4 justify-end pt-8 border-t border-divider/50">
           {onCancel && (
             <Button

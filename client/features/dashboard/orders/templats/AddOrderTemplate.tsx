@@ -12,7 +12,6 @@ export default function AddOrderTemplate() {
   const router = useRouter();
   const t = useTranslations("Orders");
   const tNav = useTranslations("Navigation");
-  const tCommon = useTranslations("Common");
   
   const { mutate: createOrder, isPending } = useCreateOrder();
 

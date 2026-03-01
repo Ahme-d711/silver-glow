@@ -450,6 +450,7 @@
   "Orders": {
     "title": "قائمة الطلبات",
     "order_id": "معرف الطلب",
+    "id": "المعرف",
     "customer": "العميل",
     "date": "التاريخ",
     "total": "الإجمالي",
@@ -499,7 +500,8 @@
     "shipping_info": "معلومات الشحن",
     "recipient_name": "اسم المستلم",
     "enter_recipient_name": "أدخل اسم المستلم",
-    "recipient_phone": "رقم هاتف المستلم",
+    "recipient_phone": "هاتف المستلم",
+    "phone": "الهاتف",
     "shipping_address": "عنوان الشحن",
     "enter_full_address": "أدخل العنوان بالكامل",
     "city": "المدينة",
@@ -535,7 +537,14 @@
     "no_orders_title": "لا توجد طلبات بعد",
     "no_orders_desc": "يبدو أنك لم تقم بأي طلب حتى الآن. ابدأ باستكشاف مجموعتنا المميزة!",
     "more_items": "منتجات أخرى",
-    "show_less": "عرض أقل"
+    "show_less": "عرض أقل",
+    "order_placed": "تم تقديم الطلب",
+    "order_placed_desc": "تم تقديم طلبك بنجاح",
+    "processing_desc": "يتم تحضير طلبك",
+    "on_the_way": "في الطريق",
+    "pending_shipping": "في انتظار الشحن",
+    "has_been_delivered": "تم التوصيل",
+    "pending_delivery": "في انتظار التوصيل"
   },
   "Ads": {
     "title": "الإعلانات",

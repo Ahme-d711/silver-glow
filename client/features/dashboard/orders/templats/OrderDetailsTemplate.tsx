@@ -5,10 +5,8 @@ import { PageHeader } from "@/components/shared/PageHeader"
 import { OrderDetailCards } from "../components/OrderDetailCards"
 import { OrderDetailTable } from "../components/OrderDetailTable"
 import { OrderDetailSidebar } from "../components/OrderDetailSidebar"
-import  EditOrderTemplate  from "./EditOrderTemplate"
 import React from "react"
 import { useParams } from "next/navigation"
-import { OrderStatus } from "../types"
 import { exportToExcel } from "@/utils/excelExport"
 import { useOrder } from "../hooks/useOrders"
 import { useTranslations } from "next-intl"
@@ -16,7 +14,6 @@ import { useTranslations } from "next-intl"
 export default function OrderDetailsTemplate() {
   const params = useParams()
   const orderId = params.orderId as string
-  const [isEditOpen, setIsEditOpen] = React.useState(false)
   
   const t = useTranslations("Orders");
   const tNav = useTranslations("Navigation");
@@ -68,7 +65,7 @@ export default function OrderDetailsTemplate() {
             label: t("edit"),
             icon: Pencil,
             className: "bg-primary text-white rounded-xl h-10 px-6 gap-2 font-semibold shadow-none hover:bg-primary/90",
-            onClick: () => setIsEditOpen(true)
+            href: `/dashboard/orders/${orderId}/edit`
           }
         ]}
       />
@@ -87,12 +84,6 @@ export default function OrderDetailsTemplate() {
           <OrderDetailSidebar data={order} />
         </div>
       </div>
-
-      <EditOrderTemplate 
-        isOpen={isEditOpen} 
-        onClose={() => setIsEditOpen(false)} 
-        orderData={order} 
-      />
     </div>
   )
 }

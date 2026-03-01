@@ -450,6 +450,7 @@
   "Orders": {
     "title": "Orders List",
     "order_id": "Order ID",
+    "id": "ID",
     "customer": "Customer",
     "date": "Date",
     "total": "Total",
@@ -500,6 +501,7 @@
     "recipient_name": "Recipient Name",
     "enter_recipient_name": "Enter recipient name",
     "recipient_phone": "Recipient Phone",
+    "phone": "Phone",
     "shipping_address": "Shipping Address",
     "enter_full_address": "Enter full address",
     "city": "City",
@@ -535,7 +537,14 @@
     "no_orders_title": "No orders yet",
     "no_orders_desc": "Looks like you haven't placed any orders yet. Start exploring our premium collection!",
     "more_items": "more items",
-    "show_less": "Show Less"
+    "show_less": "Show Less",
+    "order_placed": "Order Placed",
+    "order_placed_desc": "Your order has been successfully placed",
+    "processing_desc": "Your order is being prepared",
+    "on_the_way": "On the way",
+    "pending_shipping": "Pending shipping",
+    "has_been_delivered": "Has been delivered",
+    "pending_delivery": "Pending delivery"
   },
   "Ads": {
     "title": "Advertisements",
