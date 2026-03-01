@@ -37,6 +37,7 @@ export interface ISettings extends Document {
   currency: string;
   contactEmail?: string;
   contactPhone?: string;
+  facebookLink?: string;
   socialLinks: {
     platform: string;
     link: string;
@@ -70,6 +71,10 @@ const SettingsSchema = new Schema<ISettings>(
        default: "",
      },
      contactPhone: {
+       type: String,
+       default: "",
+     },
+     facebookLink: {
        type: String,
        default: "",
      },

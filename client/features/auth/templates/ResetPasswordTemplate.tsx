@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
@@ -37,9 +36,8 @@ export function ResetPasswordTemplate() {
   async function onSubmit(data: ResetPasswordValues) {
     try {
       await submitResetPassword(data);
-      toast.success("Password reset successfully!");
     } catch (error) {
-       // Error handled in hook
+       // Handled in hook
     }
   }
 
@@ -57,7 +55,7 @@ export function ResetPasswordTemplate() {
             <h2 className="text-[40px] font-bold text-primary">
               {t("reset_password")}
             </h2>
-            <p className="font-medium text-primary/60">Enter the code sent to your phone and your new password.</p>
+            <p className="font-medium text-primary/60">{t("verification_instructions")}</p>
           </div>
 
           <Form {...form}>
@@ -82,7 +80,7 @@ export function ResetPasswordTemplate() {
               <UniInput
                 control={form.control}
                 name="password"
-                label="New Password"
+                label={t("new_password")}
                 placeholder=""
                 type="password"
               />
@@ -96,7 +94,7 @@ export function ResetPasswordTemplate() {
               />
 
               <Button type="submit" className="w-full h-14 cursor-pointer rounded-2xl text-base font-bold bg-[#1B254B] hover:bg-[#1B254B]/90 text-white" disabled={loading}>
-                Reset Password
+                {t("reset_password")}
                 {loading && <Loader className="mr-2 h-4 w-4 animate-spin" /> } 
               </Button>
 

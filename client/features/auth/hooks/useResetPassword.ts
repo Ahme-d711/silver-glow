@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { resetPassword } from "../actions/auth.service";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { ResetPasswordValues } from "../schemas/authSchemas";
 
 interface UseResetPasswordReturn {
@@ -12,6 +14,7 @@ interface UseResetPasswordReturn {
 }
 
 export function useResetPassword(): UseResetPasswordReturn {
+  const t = useTranslations("Auth");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,12 +30,13 @@ export function useResetPassword(): UseResetPasswordReturn {
         throw new Error(response.message || "Failed to reset password");
       }
 
+      toast.success(t("reset_password_success"));
       // Redirect to login page
       router.push("/login");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
-      throw err;
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

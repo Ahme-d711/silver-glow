@@ -27,7 +27,7 @@ export default async function middleware(request: NextRequest) {
     : routing.defaultLocale;
   
   // Normalize checking for auth pages
-  const isAuthPage = pathSegments.includes('login') || pathSegments.includes('register');
+  const isAuthPage = pathSegments.includes('login') || pathSegments.includes('register') || pathSegments.includes('forgot-password') || pathSegments.includes('reset-password') || pathSegments.includes('verify');
   
   // 1. Unauthenticated users
   if (!token) {

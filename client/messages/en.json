@@ -70,6 +70,8 @@
     "resend_in": "Resend in {seconds}s",
     "back": "Back",
     "reset_password": "Reset Password",
+    "reset_password_success": "Password reset successfully!",
+    "new_password": "New Password",
     "verify_phone": "Verify Phone Number",
     "verification_code": "Verification Code",
     "verify": "Verify",

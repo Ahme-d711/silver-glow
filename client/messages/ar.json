@@ -70,6 +70,8 @@
     "resend_in": "إعادة الإرسال خلال {seconds} ثانية",
     "back": "الرجوع",
     "reset_password": "إعادة تعيين كلمة المرور",
+    "reset_password_success": "تم إعادة تعيين كلمة المرور بنجاح!",
+    "new_password": "كلمة المرور الجديدة",
     "verify_phone": "تحقق من رقم الهاتف",
     "verification_code": "رمز التحقق",
     "verify": "تحقق",
