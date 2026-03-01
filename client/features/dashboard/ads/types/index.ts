@@ -2,6 +2,7 @@ export interface Ad {
   _id: string;
   id: string; // Legacy field often added by virtuals or toJSON
   photo: string;
+  mobilePhoto?: string;
   nameAr: string;
   nameEn: string;
   descriptionAr?: string;
@@ -26,6 +27,7 @@ export interface AdCard {
   id: string;
   title: string;
   image: string;
+  mobileImage?: string;
   isActive: boolean;
   showOnHome: boolean;
 }

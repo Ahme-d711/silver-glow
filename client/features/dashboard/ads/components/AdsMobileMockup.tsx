@@ -75,7 +75,7 @@ export function AdsMobileMockup({ ads }: { ads: AdCard[] }) {
                       <SwiperSlide key={currentAd.id} className="relative h-full w-full overflow-auto">
                         <div className="relative h-full w-full rounded-xl overflow-hidden">
                           <Image 
-                              src={getImageUrl(currentAd.image) || "/ads-1.svg"} 
+                              src={getImageUrl(currentAd.mobileImage || currentAd.image) || "/ads-1.svg"} 
                               alt={currentAd.title} 
                               fill
                               className="object-cover"

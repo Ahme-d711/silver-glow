@@ -259,7 +259,9 @@
     "address": "Address",
     "no_data_to_export": "No data selected for export",
     "show_less": "Show Less",
-    "postal_code_placeholder": "e.g. 12345"
+    "postal_code_placeholder": "e.g. 12345",
+    "web": "Web",
+    "mobile": "Mobile"
 
   },
   "Users": {

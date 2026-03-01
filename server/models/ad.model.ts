@@ -24,6 +24,8 @@ import { IAd } from "../types/ad.type.js";
  *           type: string
  *         photo:
  *           type: string
+ *         mobilePhoto:
+ *           type: string
  *         isShown:
  *           type: boolean
  *         priority:
@@ -61,6 +63,11 @@ const AdSchema = new Schema<IAd>(
     photo: {
       type: String,
       required: true,
+      trim: true,
+    },
+    mobilePhoto: {
+      type: String,
+      required: false,
       trim: true,
     },
     isShown: {

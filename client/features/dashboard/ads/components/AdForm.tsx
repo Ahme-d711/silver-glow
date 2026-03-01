@@ -35,11 +35,15 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
   const tValidation = useTranslations("Validation")
   
   const [imagePreview, setImagePreview] = useState<string | null>(getImageUrl(initialData?.photo))
+  const [mobileImagePreview, setMobileImagePreview] = useState<string | null>(getImageUrl(initialData?.mobilePhoto))
   
   React.useEffect(() => {
     setImagePreview(getImageUrl(initialData?.photo))
-  }, [initialData?.photo])
+    setMobileImagePreview(getImageUrl(initialData?.mobilePhoto))
+  }, [initialData?.photo, initialData?.mobilePhoto])
+
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const mobileFileInputRef = useRef<HTMLInputElement>(null)
 
   const productIdValue = initialData?.productId;
   const initialProductId = typeof productIdValue === 'object' && productIdValue !== null
@@ -58,6 +62,7 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
       link: initialData?.link || "",
       productId: initialProductId,
       photo: initialData?.photo || undefined,
+      mobilePhoto: initialData?.mobilePhoto || undefined,
     },
   })
 
@@ -73,10 +78,28 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
     }
   }
 
+  const handleMobileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setMobileImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+      form.setValue("mobilePhoto", file)
+    }
+  }
+
   const removeImage = () => {
     setImagePreview(null)
     form.setValue("photo", undefined)
     if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
+  const removeMobileImage = () => {
+    setMobileImagePreview(null)
+    form.setValue("mobilePhoto", undefined)
+    if (mobileFileInputRef.current) mobileFileInputRef.current.value = ""
   }
 
   const handleFormSubmit = (values: AdFormValues) => {
@@ -94,6 +117,10 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
       formData.append("photo", values.photo)
     }
 
+    if (values.mobilePhoto instanceof File) {
+      formData.append("mobilePhoto", values.mobilePhoto)
+    }
+
     onSubmit(formData)
   }
 
@@ -105,14 +132,22 @@ export function AdForm({ initialData, onSubmit, onCancel, isLoading = false }: A
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Sidebar - Photo */}
-        <div className="lg:col-span-4">
+        {/* Left Sidebar - Photos */}
+        <div className="lg:col-span-4 space-y-6">
           <UniImageUpload
-            label={tCommon("photo")}
+            label={`${tCommon("photo")} (${tCommon("web") || "Web"})`}
             preview={imagePreview}
             onImageChange={handleImageChange}
             onRemoveImage={removeImage}
             fileInputRef={fileInputRef}
+          />
+
+          <UniImageUpload
+            label={`${tCommon("photo")} (${tCommon("mobile") || "Mobile"})`}
+            preview={mobileImagePreview}
+            onImageChange={handleMobileImageChange}
+            onRemoveImage={removeMobileImage}
+            fileInputRef={mobileFileInputRef}
           />
         </div>
 

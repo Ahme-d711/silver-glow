@@ -19,15 +19,16 @@ import { TableFilters } from "@/components/shared/TableFilters"
 
 // Convert Ad to AdCard format (for mockup)
 function convertAdToCardFormat(ad: Ad, locale: string): AdCard {
-  let imageUrl = "/ads-1.svg" 
-  if (ad.photo) {
-    imageUrl = ad.photo.startsWith('http') || ad.photo.startsWith('/') ? ad.photo : `/${ad.photo}`
+  const getPath = (p: string | undefined) => {
+    if (!p) return "/ads-1.svg"
+    return p.startsWith('http') || p.startsWith('/') ? p : `/${p}`
   }
 
   return {
     id: ad._id || ad.id || "",
     title: locale === 'ar' ? ad.nameAr : ad.nameEn,
-    image: imageUrl,
+    image: getPath(ad.photo),
+    mobileImage: ad.mobilePhoto ? getPath(ad.mobilePhoto) : undefined,
     isActive: ad.isShown,
     showOnHome: ad.isShown,
   }

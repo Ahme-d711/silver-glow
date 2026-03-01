@@ -5,6 +5,7 @@ export interface Ad {
   descriptionAr?: string;
   descriptionEn?: string;
   photo: string;
+  mobilePhoto?: string;
   isShown: boolean;
   priority: number;
   link?: string;

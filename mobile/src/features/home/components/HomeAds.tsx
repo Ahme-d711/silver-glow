@@ -39,16 +39,19 @@ export const HomeAds = () => {
   };
 
   const renderItem = ({ item, index, animationValue }: { item: Ad; index: number; animationValue: any }) => {
+    // Determine which photo to show: mobilePhoto is preferred on mobile app
+    const adImage = item.mobilePhoto || item.photo;
+    
     return (
       <View style={{ width: PAGE_WIDTH }} className="px-6">
         <TouchableOpacity 
           activeOpacity={0.9}
           onPress={() => handleAdPress(item)}
-          className="h-[220px] rounded-[32px] overflow-hidden bg-slate-100 shadow-sm"
+          className="h-[260px] rounded-[32px] overflow-hidden bg-slate-100 shadow-sm"
           style={{ elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 12 }}
         >
           <Image 
-            source={{ uri: getImageUrl(item.photo) ?? '' }} 
+            source={{ uri: getImageUrl(adImage) ?? '' }} 
             style={StyleSheet.absoluteFillObject}
             contentFit="cover"
             transition={300}
@@ -59,21 +62,21 @@ export const HomeAds = () => {
             className="absolute left-0 right-0 bottom-0 h-full"
           />
 
-          <View className="flex-1 p-6 justify-end">
-            <View className="bg-white/20 px-2.5 py-1 rounded-lg self-start mb-2 border border-white/30">
-              <Text className="text-white text-[10px] font-bold uppercase tracking-[1px]">Promotional</Text>
+          <View className="flex-1 p-8 justify-end">
+            <View className="bg-white/20 px-3 py-1.5 rounded-xl self-start mb-3 border border-white/30 backdrop-blur-md">
+              <Text className="text-white text-[10px] font-black uppercase tracking-[1.5px]">Exclusive Offer</Text>
             </View>
             
-            <Text className="text-white text-2xl font-bold mb-1" numberOfLines={1}>
+            <Text className="text-white text-3xl font-black mb-1 tracking-tight" numberOfLines={1}>
               {item.nameEn}
             </Text>
-            <Text className="text-white/80 text-sm font-medium leading-5 mb-4" numberOfLines={2}>
+            <Text className="text-white/90 text-sm font-semibold leading-5 mb-5" numberOfLines={2}>
               {item.descriptionEn}
             </Text>
 
             <View className="flex-row items-center">
-              <View className="h-11 px-6 rounded-[14px] overflow-hidden justify-center items-center relative">
-                <Text className="text-white text-sm font-bold z-10">Shop Now</Text>
+              <View className="h-12 px-8 rounded-2xl overflow-hidden justify-center items-center relative shadow-lg">
+                <Text className="text-white text-sm font-black z-10">Shop Now</Text>
                 <LinearGradient
                   colors={['#192C56', '#0B1324']}
                   start={{ x: 0, y: 0 }}
@@ -93,13 +96,13 @@ export const HomeAds = () => {
   }
 
   return (
-    <View className="mt-5">
+    <View className="mt-6">
       <Carousel
         loop
         width={PAGE_WIDTH}
-        height={240}
+        height={280}
         autoPlay={true}
-        autoPlayInterval={4000}
+        autoPlayInterval={5000}
         data={ads}
         onProgressChange={(_, absoluteProgress) => {
           progressValue.value = absoluteProgress;

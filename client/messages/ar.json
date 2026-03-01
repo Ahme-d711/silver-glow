@@ -259,7 +259,9 @@
     "address": "العنوان",
     "no_data_to_export": "لم يتم اختيار بيانات للتصدير",
     "show_less": "عرض أقل",
-    "postal_code_placeholder": "مثال: 12345"
+    "postal_code_placeholder": "مثال: 12345",
+    "web": "ويب",
+    "mobile": "موبايل"
 
   },
   "Users": {

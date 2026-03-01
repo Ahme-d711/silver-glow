@@ -86,13 +86,25 @@ export function AdsTable({
       id: "photo",
       header: tCommon("photo"),
       cell: (_: unknown, row: Ad) => (
-        <div className="relative h-12 w-12 rounded-lg overflow-hidden border border-divider">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={getImageUrl(row.photo) || "/ads-1.svg"} 
-            alt="Ad" 
-            className="object-cover w-full h-full"
-          />
+        <div className="flex gap-2">
+          <div className="relative h-12 w-12 rounded-lg overflow-hidden border border-divider" title="Desktop">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={getImageUrl(row.photo) || "/ads-1.svg"} 
+              alt="Ad" 
+              className="object-cover w-full h-full"
+            />
+          </div>
+          {row.mobilePhoto && (
+            <div className="relative h-12 w-8 rounded-lg overflow-hidden border border-divider" title="Mobile">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={getImageUrl(row.mobilePhoto) || ""} 
+                alt="Ad Mobile" 
+                className="object-cover w-full h-full"
+              />
+            </div>
+          )}
         </div>
       ),
     },

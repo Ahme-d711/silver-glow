@@ -79,7 +79,10 @@ router.post(
   "/",
   authenticate,
   authorize("admin"),
-  uploadAd.single("photo"),
+  uploadAd.fields([
+    { name: "photo", maxCount: 1 },
+    { name: "mobilePhoto", maxCount: 1 },
+  ]),
   createAd
 );
 
@@ -114,7 +117,10 @@ router.put(
   "/:id",
   authenticate,
   authorize("admin"),
-  uploadAd.single("photo"),
+  uploadAd.fields([
+    { name: "photo", maxCount: 1 },
+    { name: "mobilePhoto", maxCount: 1 },
+  ]),
   updateAd
 );
 

@@ -5,6 +5,10 @@ export const getAdSchema = (t: (key: string) => string) => z.object({
     z.custom<File>((val) => val instanceof File),
     z.string().min(1)
   ]).optional()),
+  mobilePhoto: z.preprocess((val) => val === "" ? undefined : val, z.union([
+    z.custom<File>((val) => val instanceof File),
+    z.string().min(1)
+  ]).optional()),
   nameAr: z.string().min(1, t("name_ar_required")),
   nameEn: z.string().min(1, t("name_en_required")),
   descriptionAr: z.string().optional(),

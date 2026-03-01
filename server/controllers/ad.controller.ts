@@ -83,16 +83,21 @@ export const getAdById = async (req: Request, res: Response) => {
  */
 export const createAd = async (req: Request, res: Response) => {
   const validatedBody = createAdSchema.parse(req.body);
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
   
-  if (!req.file) {
+  if (!files || !files.photo || files.photo.length === 0) {
     throw new AppError("Ad photo is required", 400);
   }
 
-  const photo = `/uploads/ads/${req.file.filename}`;
+  const photo = `/uploads/ads/${files.photo[0].filename}`;
+  const mobilePhoto = files.mobilePhoto?.[0] 
+    ? `/uploads/ads/${files.mobilePhoto[0].filename}` 
+    : undefined;
 
   const ad = await AdModel.create({
     ...validatedBody,
     photo,
+    mobilePhoto,
   } as unknown as IAd);
 
   res.status(201).json({
@@ -108,6 +113,7 @@ export const createAd = async (req: Request, res: Response) => {
 export const updateAd = async (req: Request, res: Response) => {
   const { id } = req.params;
   const validatedBody = updateAdSchema.parse(req.body);
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
   
   const ad = await AdModel.findById(id);
   if (!ad) {
@@ -116,13 +122,24 @@ export const updateAd = async (req: Request, res: Response) => {
 
   const updateData: Partial<IAd> = { ...validatedBody } as unknown as Partial<IAd>;
 
-  if (req.file) {
-    // Delete old photo if exists
-    if (ad.photo) {
-      const oldPhotoPath = path.join(process.cwd(), ad.photo);
-      if (fs.existsSync(oldPhotoPath)) fs.unlinkSync(oldPhotoPath);
+  if (files) {
+    if (files.photo?.[0]) {
+      // Delete old photo if exists
+      if (ad.photo) {
+        const oldPhotoPath = path.join(process.cwd(), ad.photo);
+        if (fs.existsSync(oldPhotoPath)) fs.unlinkSync(oldPhotoPath);
+      }
+      updateData.photo = `/uploads/ads/${files.photo[0].filename}`;
     }
-    updateData.photo = `/uploads/ads/${req.file.filename}`;
+
+    if (files.mobilePhoto?.[0]) {
+      // Delete old mobile photo if exists
+      if (ad.mobilePhoto) {
+        const oldMobilePhotoPath = path.join(process.cwd(), ad.mobilePhoto);
+        if (fs.existsSync(oldMobilePhotoPath)) fs.unlinkSync(oldMobilePhotoPath);
+      }
+      updateData.mobilePhoto = `/uploads/ads/${files.mobilePhoto[0].filename}`;
+    }
   }
 
   const updatedAd = await AdModel.findByIdAndUpdate(id, updateData, { new: true })
