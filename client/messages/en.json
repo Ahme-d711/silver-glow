@@ -188,6 +188,7 @@
     "next": "Next",
     "previous": "Previous",
     "submit": "Submit",
+    "validation_error": "Please check the form for errors",
     "close": "Close",
     "view": "View",
     "download": "Download",

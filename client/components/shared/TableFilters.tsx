@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState, useEffect } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { DatePicker } from "./DatePicker"
@@ -60,15 +61,20 @@ export function TableFilters({
   children,
   className,
 }: TableFiltersProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className={cn("p-6 flex flex-wrap items-center justify-between gap-4", className)}>
       {/* Tabs Section */}
-      {tabs && activeTab !== undefined && setActiveTab && (
+      {mounted && tabs && activeTab !== undefined && setActiveTab && (
         <Tabs 
           value={activeTab} 
           onValueChange={setActiveTab} 
           className="w-fit"
-          suppressHydrationWarning
         >
           <TabsList className="bg-background p-1.5 rounded-2xl border border-divider h-auto gap-1">
             {tabs.map((tab) => (
@@ -84,6 +90,10 @@ export function TableFilters({
             ))}
           </TabsList>
         </Tabs>
+      )}
+
+      {!mounted && tabs && (
+        <div className="bg-background p-1.5 rounded-2xl border border-divider h-11 w-64 animate-pulse" />
       )}
 
       {/* Inputs Section */}

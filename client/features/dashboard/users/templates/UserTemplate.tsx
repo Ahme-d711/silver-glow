@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { exportToExcel } from "@/utils/excelExport";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
+import { Pagination } from "@/components/shared/Pagination";
 
 const getCategoryTabs = (t: { [key: string]: string }) => {
   const { all_status, active, not_active, blocked, not_blocked } = t;
@@ -74,12 +75,23 @@ export default function UserTemplate() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [addUserOpen, setAddUserOpen] = useState(false);
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
 
   const { data: usersData, isLoading, error } = useUsers({
     search,
+    page,
+    limit,
     isActive: activeTab === "active" ? true : activeTab === "deactivated" ? false : undefined,
     isBlocked: activeTab === "blocked" ? true : activeTab === "not_blocked" ? false : undefined,
   });
+
+  // Reset page when filters or search change
+  React.useEffect(() => {
+    setPage(1);
+  }, [search, activeTab]);
 
   const handleExport = () => {
     if (filteredUsers.length === 0 || selectedIds.length === 0) {
@@ -170,6 +182,18 @@ export default function UserTemplate() {
                 />
               ))}
             </AnimatePresence>
+          </div>
+        )}
+
+        {usersData?.pagination && (
+          <div className="border-t border-divider">
+            <Pagination
+              currentPage={page}
+              totalPages={usersData.pagination.totalPages}
+              totalItems={usersData.pagination.total}
+              pageSize={limit}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </div>

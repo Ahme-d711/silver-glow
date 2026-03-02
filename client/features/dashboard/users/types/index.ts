@@ -17,6 +17,7 @@ export interface Pagination {
   limit: number;
   total: number;
   totalPages: number;
+  pages: number;
 }
 
 /**

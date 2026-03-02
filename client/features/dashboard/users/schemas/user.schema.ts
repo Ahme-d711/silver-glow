@@ -7,8 +7,8 @@ export const USER_ROLES = ["admin", "user"] as const;
 
 export const emailSchema = (t: (key: string) => string) => z
   .string()
-  .email(t("email_invalid"))
   .min(1, t("email_required"))
+  .email(t("email_invalid"))
   .max(500, t("email_too_long"))
   .toLowerCase()
   .trim();
@@ -53,7 +53,7 @@ export const roleSchema = (t: (key: string) => string) => z.enum(USER_ROLES, {
 export const getCreateUserSchema = (t: (key: string) => string) => z.object({
   name: nameSchema(t),
   email: emailSchema(t),
-  password: passwordSchema(t).optional(),
+  password: passwordSchema(t).optional().or(z.literal("")),
   phone: phoneSchema(t),
   picture: pictureSchema(t),
   role: roleSchema(t).default("user"),

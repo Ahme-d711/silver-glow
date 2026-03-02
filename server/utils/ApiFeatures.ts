@@ -13,6 +13,7 @@ interface PaginationResult {
   limit: number;
   total: number;
   pages: number;
+  totalPages: number;
   hasNext: boolean;
   hasPrev: boolean;
 }
@@ -156,17 +157,18 @@ class ApiFeatures<T extends Document> {
 
       const pages = Math.ceil(total / this.limit);
 
-    return {
-      results,
-      pagination: {
+      return {
+        results,
+        pagination: {
           page: this.page,
           limit: this.limit,
-        total,
-        pages,
+          total,
+          pages,
+          totalPages: pages,
           hasNext: this.page < pages,
           hasPrev: this.page > 1,
-      },
-    };
+        },
+      };
     } catch (error) {
       throw new Error(`Query execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

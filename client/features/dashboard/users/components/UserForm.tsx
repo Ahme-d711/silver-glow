@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface UserFormProps {
   defaultValues?: Partial<UserFormValues>;
@@ -114,7 +115,9 @@ export function UserForm({
     <Form {...form}>
       <form 
         onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-          console.error("Form Validation Errors:", errors);
+          console.error("Form Validation Errors:", JSON.stringify(errors, null, 2));
+          console.log("Current Form Values:", form.getValues());
+          toast.error(tCommon("validation_error") || "Please check the form for errors");
         })} 
         className="space-y-6 py-4"
       >

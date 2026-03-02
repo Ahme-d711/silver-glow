@@ -31,9 +31,12 @@ export function Pagination({
   const getPageNumbers = () => {
     const pages: (number | string)[] = []
     const maxVisible = 5
+    const safeTotalPages = Number(totalPages) || 0
 
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
+    if (safeTotalPages <= 0) return []
+
+    if (safeTotalPages <= maxVisible) {
+      for (let i = 1; i <= safeTotalPages; i++) {
         pages.push(i)
       }
       return pages
@@ -42,16 +45,16 @@ export function Pagination({
     pages.push(1)
 
     let start = Math.max(2, currentPage - 1)
-    let end = Math.min(totalPages - 1, currentPage + 1)
+    let end = Math.min(safeTotalPages - 1, currentPage + 1)
 
     if (currentPage <= 3) {
       start = 2
       end = 4
     }
 
-    if (currentPage >= totalPages - 2) {
-      start = totalPages - 3
-      end = totalPages - 1
+    if (currentPage >= safeTotalPages - 2) {
+      start = safeTotalPages - 3
+      end = safeTotalPages - 1
     }
 
     if (start > 2) {
@@ -59,16 +62,16 @@ export function Pagination({
     }
 
     for (let i = start; i <= end; i++) {
-      if (i > 1 && i < totalPages) {
+      if (i > 1 && i < safeTotalPages) {
         pages.push(i)
       }
     }
 
-    if (end < totalPages - 1) {
+    if (end < safeTotalPages - 1) {
       pages.push("...")
     }
 
-    pages.push(totalPages)
+    pages.push(safeTotalPages)
 
     return pages
   }
@@ -87,14 +90,14 @@ export function Pagination({
       <UiPagination className="justify-end mx-0 w-auto">
         <PaginationContent className="gap-4">
           {/* Previous Button */}
-          <PaginationItem>
+          <PaginationItem key="prev-item">
             <PaginationPrevious
               onClick={(e) => {
                 e.preventDefault()
                 if (currentPage > 1) onPageChange(currentPage - 1)
               }}
               className={cn(
-                "h-10 w-10 p-0 flex items-center justify-center rounded-lg bg-background/50 text-primary hover:bg-primary/10 transition-colors border-none",
+                "min-w-10 h-10 px-3 flex items-center justify-center rounded-lg bg-secondary text-content-primary hover:bg-black/5 transition-colors border-none",
                 currentPage === 1 && "pointer-events-none opacity-50"
               )}
             />
@@ -114,14 +117,14 @@ export function Pagination({
             const isActive = pageNum === currentPage
 
             return (
-              <PaginationItem key={pageNum}>
+              <PaginationItem key={`page-${pageNum}`}>
                 <PaginationLink
                   isActive={isActive}
                   className={cn(
-                    "flex items-center justify-center rounded-lg cursor-pointer text-sm hover:text-white font-semibold transition-all border-none shadow-none",
+                    "flex items-center justify-center rounded-lg cursor-pointer text-sm font-semibold transition-all border-none shadow-none min-w-10 h-10 px-2",
                     isActive 
                       ? "bg-primary text-white hover:bg-primary/90" 
-                      : "bg-background/50 text-primary hover:bg-primary/10"
+                      : "bg-secondary text-content-primary hover:bg-black/5"
                   )}
                   onClick={(e) => {
                     e.preventDefault()
@@ -135,14 +138,14 @@ export function Pagination({
           })}
 
           {/* Next Button */}
-          <PaginationItem>
+          <PaginationItem key="next-item">
             <PaginationNext
               onClick={(e) => {
                 e.preventDefault()
                 if (currentPage < totalPages) onPageChange(currentPage + 1)
               }}
               className={cn(
-                "h-10 w-10 p-0 flex items-center justify-center rounded-lg bg-background/50 text-primary hover:bg-primary/10 transition-colors border-none cursor-pointer",
+                "min-w-10 h-10 px-3 flex items-center justify-center rounded-lg bg-secondary text-content-primary hover:bg-black/5 transition-colors border-none cursor-pointer",
                 currentPage === totalPages && "pointer-events-none opacity-50"
               )}
             />

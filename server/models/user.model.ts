@@ -92,6 +92,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: false,
       trim: true,
+      unique: true,
       maxlength: 20,
     },
     address: {

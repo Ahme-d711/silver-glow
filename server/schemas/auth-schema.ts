@@ -26,12 +26,16 @@ export const nameSchema = z
   .max(500, "Name must be less than 500 characters")
   .trim();
 
+/**
+ * Phone validation schema
+ * Note: Uniqueness is enforced at the database level and checked in the auth controller
+ */
 export const phoneSchema = z
   .string()
+  .min(1, "Phone number is required")
   .max(20, "Phone number must be less than 20 characters")
   .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format")
-  .optional()
-  .or(z.literal(""));
+  .trim();
 
 export const pictureSchema = z
   .url("Picture must be a valid URL")
