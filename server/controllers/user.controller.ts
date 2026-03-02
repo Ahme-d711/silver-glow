@@ -75,7 +75,7 @@ const convertQueryToParams = (query: Request["query"]): Record<string, string | 
  */
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = validateUserData(getUsersQuerySchema, req.query);
-  const query = UserModel.find().select("-password").sort({ createdAt: -1 });
+  const query = UserModel.find({ role: { $ne: "admin" } }).select("-password").sort({ createdAt: -1 });
 
   const apiFeatures = new ApiFeatures(query, validatedQuery as Record<string, unknown>)
     .filter()
