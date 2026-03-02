@@ -1,5 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, TouchableOpacityProps, ActivityIndicator, View } from 'react-native';
+import { 
+  TouchableOpacity, 
+  Text, 
+  TouchableOpacityProps, 
+  ActivityIndicator, 
+  View,
+  StyleSheet 
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -47,6 +54,10 @@ export const Button = ({
 
   const getVariantStyles = () => {
     switch (variant) {
+      case 'primary':
+        return 'bg-primary';
+      case 'danger':
+        return 'bg-error';
       case 'outline':
         return 'bg-transparent border border-divider';
       case 'ghost':
@@ -68,36 +79,6 @@ export const Button = ({
 
   const colors = getColors();
 
-  const content = (
-    <View className="flex-row items-center justify-center px-6 w-full h-full">
-      {loading ? (
-        <ActivityIndicator color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} />
-      ) : (
-        <>
-          {leftIcon && (
-            <Ionicons 
-              name={leftIcon} 
-              size={size === 'sm' ? 18 : 22} 
-              color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} 
-              style={{ marginRight: 10 }}
-            />
-          )}
-          <Text className={`${size === 'sm' ? 'text-base' : 'text-xl'} font-bold ${getTextColor()} ${textClassName || ''}`}>
-            {title}
-          </Text>
-          {rightIcon && (
-            <Ionicons 
-              name={rightIcon} 
-              size={size === 'sm' ? 18 : 22} 
-              color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} 
-              style={{ marginLeft: 10 }}
-            />
-          )}
-        </>
-      )}
-    </View>
-  );
-
   return (
     <TouchableOpacity
       className={`${getHeight()} rounded-2xl overflow-hidden justify-center items-center ${getVariantStyles()} ${!className?.includes('w-') ? 'w-full' : ''} ${variant === 'primary' || variant === 'danger' ? 'shadow-xl shadow-primary/40' : ''} ${className || ''}`}
@@ -105,18 +86,47 @@ export const Button = ({
       disabled={disabled || loading}
       {...props}
     >
-      {colors ? (
+      {/* Background Gradient */}
+      {colors && (
         <LinearGradient
           colors={colors as unknown as readonly [string, string, ...string[]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={{ width: '100%', height: '100%' }}
-        >
-          {content}
-        </LinearGradient>
-      ) : (
-        content
+          style={StyleSheet.absoluteFill}
+        />
       )}
+
+      {/* Button Content - Always on top and independent of gradient rendering */}
+      <View className="flex-row items-center justify-center px-6 w-full h-full">
+        {loading ? (
+          <ActivityIndicator color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} />
+        ) : (
+          <>
+            {leftIcon && (
+              <Ionicons 
+                name={leftIcon} 
+                size={size === 'sm' ? 18 : 22} 
+                color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} 
+                style={{ marginRight: 10 }}
+              />
+            )}
+            <Text 
+              className={`${size === 'sm' ? 'text-base' : 'text-xl'} font-bold ${getTextColor()} ${textClassName || ''}`}
+              numberOfLines={1}
+            >
+              {title}
+            </Text>
+            {rightIcon && (
+              <Ionicons 
+                name={rightIcon} 
+                size={size === 'sm' ? 18 : 22} 
+                color={getTextColor() === 'text-white' ? '#fff' : '#192C56'} 
+                style={{ marginLeft: 10 }}
+              />
+            )}
+          </>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
