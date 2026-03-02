@@ -63,6 +63,13 @@ export const LoginForm = () => {
           />
         )}
       />
+
+      <TouchableOpacity 
+        onPress={() => router.push('/(auth)/forgot-password')}
+        className="mb-6 self-end"
+      >
+        <Text className="text-primary font-semibold">Forgot password?</Text>
+      </TouchableOpacity>
       
       {apiError && (
         <Text className="text-red-500 text-sm mb-4 text-center">{(apiError as Error).message}</Text>

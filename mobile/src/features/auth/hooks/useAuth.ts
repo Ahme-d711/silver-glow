@@ -4,6 +4,8 @@ import { authApi } from '../services/auth.service';
 import { useAuthStore } from '../store/authStore';
 import { AuthResponse } from '../types/auth.types';
 import { VerifyFormData, ResendFormData } from '../schemas/verifySchema';
+import { ForgotPasswordFormData } from '../schemas/forgotPasswordSchema';
+import { ResetPasswordFormData } from '../schemas/resetPasswordSchema';
 
 export const useLoginMutation = () => {
   const router = useRouter();
@@ -79,6 +81,31 @@ export const useChangePasswordMutation = () => {
     mutationFn: authApi.changePassword,
     onSuccess: () => {
       router.back();
+    },
+  });
+};
+
+export const useForgotPasswordMutation = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: authApi.forgotPassword,
+    onSuccess: (_, variables) => {
+      router.push({
+        pathname: '/(auth)/reset-password',
+        params: { phone: variables.phone }
+      });
+    },
+  });
+};
+
+export const useResetPasswordMutation = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: authApi.resetPassword,
+    onSuccess: () => {
+      router.replace('/(auth)/login');
     },
   });
 };

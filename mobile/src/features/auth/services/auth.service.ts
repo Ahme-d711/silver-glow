@@ -5,6 +5,8 @@ import { RegisterFormData } from '../schemas/registerSchema';
 import { VerifyFormData, ResendFormData } from '../schemas/verifySchema';
 import { UpdateProfileFormData } from '../schemas/updateProfileSchema';
 import { ChangePasswordFormData } from '../schemas/changePasswordSchema';
+import { ForgotPasswordFormData } from '../schemas/forgotPasswordSchema';
+import { ResetPasswordFormData } from '../schemas/resetPasswordSchema';
 
 export const authApi = {
   login: async (data: LoginFormData): Promise<AuthResponse> => {
@@ -41,6 +43,16 @@ export const authApi = {
 
   changePassword: async (data: ChangePasswordFormData): Promise<ApiResponse<null>> => {
     const response = await axiosInstance.post<ApiResponse<null>>('/auth/change-password', data);
+    return response.data;
+  },
+  
+  forgotPassword: async (data: ForgotPasswordFormData): Promise<ApiResponse<null>> => {
+    const response = await axiosInstance.post<ApiResponse<null>>('/auth/forgot-password', data);
+    return response.data;
+  },
+
+  resetPassword: async (data: ResetPasswordFormData): Promise<ApiResponse<null>> => {
+    const response = await axiosInstance.post<ApiResponse<null>>('/auth/reset-password', data);
     return response.data;
   },
 };

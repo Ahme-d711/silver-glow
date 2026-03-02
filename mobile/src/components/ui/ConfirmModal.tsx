@@ -78,51 +78,38 @@ export const ConfirmModal: React.FC = () => {
         {/* Modal Content */}
         <Animated.View 
           style={[styles.modalContent, animatedStyle]}
-          className="bg-white rounded-[40px] overflow-hidden shadow-2xl w-full max-w-[340px]"
+          className="bg-primary rounded-[28px] overflow-hidden shadow-2xl w-full max-w-[340px] p-8"
         >
-          <LinearGradient
-            colors={[primaryColor, secondaryColor]}
-            className="pt-10 pb-8 items-center px-6"
-          >
-            <View className="bg-white/10 p-5 rounded-full mb-5">
-              <View className="bg-white p-4 rounded-full">
-                <Feather name={iconName} size={40} color={primaryColor} />
-              </View>
-            </View>
-            
-            <Text className="text-white text-2xl font-bold text-center">
-              {confirmTitle}
-            </Text>
-            <Text className="text-white/80 text-center mt-2 leading-5 font-medium">
-              {confirmMessage}
-            </Text>
-          </LinearGradient>
+          <Text className="text-white text-xl font-bold leading-tight mb-2">
+            {confirmTitle}
+          </Text>
+          
+          <Text className="text-white/70 text-base leading-6 mb-10">
+            {confirmMessage}
+          </Text>
 
-          <View className="p-8">
-            <TouchableOpacity 
-              onPress={handleConfirm}
-              activeOpacity={0.8}
-              className="mb-4"
-            >
-              <LinearGradient
-                colors={[primaryColor, secondaryColor]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                className="h-[60px] rounded-2xl overflow-hidden items-center justify-center shadow-lg shadow-error/30"
-              >
-                <Text className="text-white font-bold text-lg">{confirmLabel}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+          <View className="flex-row items-center justify-end space-x-6">
 
             <TouchableOpacity 
               onPress={closeConfirmModal}
               activeOpacity={0.6}
-              className="items-center"
+              className="px-4 h-12 items-center justify-center"
             >
-              <Text className="text-content-tertiary font-bold text-base">
+              <Text className="text-white/50 font-bold text-base">
                 Cancel
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={handleConfirm}
+              activeOpacity={0.8}
+              style={{ backgroundColor: isDanger ? '#FF4B55' : '#4CAF50' }}
+              className="px-8 h-12 rounded-full items-center justify-center"
+            >
+              <Text className="text-white font-bold text-base">
+                {confirmLabel}
+              </Text>
+            </TouchableOpacity>
+
           </View>
         </Animated.View>
       </View>
@@ -135,3 +122,4 @@ const styles = StyleSheet.create({
     elevation: 24,
   },
 });
+
