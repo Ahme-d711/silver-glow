@@ -52,7 +52,7 @@ function convertUserToCardFormat(user: User) {
     name: user.name ?? "Unknown",
     avatar: profileImageUrl,
     status: status as "active" | "blocked" | "deactivated",
-    orders: "0", // TODO: Get from orders API when available
+    orders: `${user.totalOrders ?? 0}`,
     balance: `${walletBalance.toFixed(2)}`, // Format wallet balance
   };
 }

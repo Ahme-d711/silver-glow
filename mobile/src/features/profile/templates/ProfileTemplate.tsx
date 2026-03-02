@@ -43,7 +43,7 @@ export const ProfileTemplate = () => {
           {/* Quick Actions */}
           <ProfileQuickActions 
             onOrdersPress={() => router.push('/(main)/orders')}
-            onWishlistPress={() => router.push('/(main)/wishlist')}
+            onWalletPress={() => router.push('/(main)/wallet')}
           />
 
           {/* Menu Items */}

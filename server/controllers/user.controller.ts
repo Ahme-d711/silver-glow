@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { UserModel } from "../models/user.model.js";
+import { OrderModel } from "../models/order.model.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import AppError from "../errors/AppError.js";
 import bcrypt from "bcryptjs";
@@ -83,11 +84,20 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
 
   const { results: users, pagination } = await apiFeatures.execute();
 
+  // Fetch true order counts for each user
+  const usersWithOrderCount = await Promise.all(
+    users.map(async (user) => {
+      const orderCount = await OrderModel.countDocuments({ userId: user._id });
+      const userObj = user.toObject();
+      return { ...userObj, totalOrders: orderCount };
+    })
+  );
+
     sendResponse(res, 200, {
       success: true,
       message: "Users retrieved successfully",
       data: {
-        users,
+        users: usersWithOrderCount,
       pagination,
       },
     });
@@ -105,10 +115,16 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("User not found", 404);
     }
 
+    // Fetch true order count
+    const totalOrders = await OrderModel.countDocuments({ userId: user._id });
+    const userObj = user.toObject();
+
     sendResponse(res, 200, {
       success: true,
     message: "User retrieved successfully",
-      data: { user },
+      data: { 
+        user: { ...userObj, totalOrders } 
+      },
     });
 });
 

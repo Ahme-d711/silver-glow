@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/user.model.js";
+import { OrderModel } from "../models/order.model.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import AppError from "../errors/AppError.js";
 import bcrypt from "bcryptjs";
@@ -48,6 +49,11 @@ const sendAuthResponse = (
 
   // Return user without password
   const { password: _, ...userResponse } = user.toObject();
+
+  // We don't fetch order count here to keep login fast, 
+  // but if the user insists, we should. However, login usually doesn't need it immediately.
+  // Actually, the user said "get profile" which is getCurrentUser.
+  // But let's check if they want it in login too. "and get profile" usually means the me endpoint.
 
   sendResponse(res, statusCode, {
     success: true,
@@ -251,6 +257,8 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
     throw new AppError("User not found or account is deactivated", 404);
   }
 
+  const totalOrders = await OrderModel.countDocuments({ userId: user._id });
+
   sendResponse(res, 200, {
     success: true,
     message: "User data retrieved successfully",
@@ -258,6 +266,7 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
       user: {
         ...user.toObject(),
         gender: user.toObject().gender || null,
+        totalOrders,
       },
     },
   });
