@@ -226,6 +226,12 @@ export const createOrder = async (req: Request, res: Response) => {
       });
     }
   }
+  
+  // Update User Stats
+  await UserModel.findByIdAndUpdate(userId, {
+    $inc: { totalOrders: 1 },
+    $set: { lastTransactionAt: new Date() }
+  });
 
   res.status(201).json({
     success: true,
@@ -445,6 +451,12 @@ export const checkout = async (req: Request, res: Response) => {
       });
     }
   }
+  
+  // Update User Stats
+  await UserModel.findByIdAndUpdate(userId, {
+    $inc: { totalOrders: 1 },
+    $set: { lastTransactionAt: new Date() }
+  });
 
   // Clear Cart
   cart.items = [];
