@@ -91,17 +91,17 @@ export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean
                   </div>
                   
                   {/* Visual Contrast: Layered Gradients for Depth and Readability */}
-                  {/* 1. Bottom Shadow for Text Readability */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent opacity-90" />
+                  {/* 1. Bottom Shadow for Text Readability - Reduced */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-80" />
                   
-                  {/* 2. Top Shadow for Header Contrast */}
-                  <div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-transparent opacity-60" />
+                  {/* 2. Top Shadow for Header Contrast - Reduced */}
+                  <div className="absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-transparent opacity-40" />
                   
-                  {/* 3. Subtle Vignette for Focus */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.3)_100%)]" />
+                  {/* 3. Subtle Vignette for Focus - Kept subtle */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)]" />
                   
-                  {/* 4. Overall Brightness Adjustment */}
-                  <div className="absolute inset-0 bg-black/10 backdrop-brightness-[0.85]" />
+                  {/* 4. Overall Brightness Adjustment - Increased brightness */}
+                  <div className="absolute inset-0 bg-black/5 backdrop-brightness-[0.95]" />
                 </div>
 
                 {/* Content Overlay */}
