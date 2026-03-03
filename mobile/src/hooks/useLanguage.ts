@@ -23,9 +23,18 @@ export const useLanguage = () => {
       // 3. Handle RTL and Reload
       if (I18nManager.isRTL !== isRTL) {
         I18nManager.forceRTL(isRTL);
-        // Using a slight delay to ensure storage is saved
-        await new Promise(resolve => setTimeout(resolve, 100));
-        await Updates.reloadAsync();
+        
+        // Using a more robust delay and error handling for reload
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        try {
+          // Some versions of expo-updates have issues with direct calls in some environments
+          // Calling it without any hidden arguments (like from an event)
+          await Updates.reloadAsync();
+        } catch (reloadError) {
+          console.error('Failed to reload app automatically:', reloadError);
+          // Fallback: Notify user to restart manually if reload fails
+        }
       }
     } catch (error) {
       console.error('Error changing language:', error);
