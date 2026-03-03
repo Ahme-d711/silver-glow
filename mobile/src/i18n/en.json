@@ -13,5 +13,19 @@
     "register": "Register",
     "email": "Email",
     "password": "Password"
+  },
+  "profile": {
+    "title": "Profile",
+    "my_orders": "My Orders",
+    "my_wishlist": "My Wishlist",
+    "account_info": "Account informations",
+    "change_password": "Change password",
+    "app_theme": "App Theme",
+    "app_language": "App Language",
+    "need_help": "Need help?",
+    "contact_us": "contact with us",
+    "logout": "Logout",
+    "theme_light": "Light",
+    "theme_dark": "Dark"
   }
 }

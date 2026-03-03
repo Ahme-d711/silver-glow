@@ -4,7 +4,7 @@
     "loading": "جاري التحميل...",
     "save": "حفظ",
     "cancel": "إلغاء",
-    "english": "الإنجليزية",
+    "english": "English",
     "arabic": "العربية",
     "language": "اللغة"
   },
@@ -13,5 +13,19 @@
     "register": "إنشاء حساب",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "my_orders": "طلباتي",
+    "my_wishlist": "قائمة الأمنيات",
+    "account_info": "معلومات الحساب",
+    "change_password": "تغيير كلمة المرور",
+    "app_theme": "سمة التطبيق",
+    "app_language": "لغة التطبيق",
+    "need_help": "تحتاج مساعدة؟",
+    "contact_us": "تواصل معنا",
+    "logout": "تسجيل الخروج",
+    "theme_light": "فاتح",
+    "theme_dark": "داكن"
   }
 }

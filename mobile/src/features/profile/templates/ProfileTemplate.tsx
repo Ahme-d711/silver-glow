@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
@@ -7,18 +7,21 @@ import { PageHeader } from '@/components/ui/page-header';
 import { ProfileInfoCard } from '../components/ProfileInfoCard';
 import { ProfileQuickActions } from '../components/ProfileQuickActions';
 import { ProfileMenuItem } from '../components/ProfileMenuItem';
+import { useLanguage } from '@/src/hooks/useLanguage';
+import { LanguageSwitcher } from '@/src/components/LanguageSwitcher';
 
 export const ProfileTemplate = () => {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const { openConfirmModal } = useModalStore();
+  const { t } = useLanguage();
 
   const handleLogout = () => {
     openConfirmModal({
-      title: 'Logout',
-      message: 'Are you sure you want to logout?',
+      title: t('profile.logout'),
+      message: t('Navigation.logout_confirm_desc'),
       type: 'danger',
-      label: 'LOGOUT',
+      label: t('Navigation.confirm_logout'),
       onConfirm: async () => {
         await logout();
         router.replace('/login');
@@ -29,7 +32,7 @@ export const ProfileTemplate = () => {
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
-      <PageHeader title="Profile" />
+      <PageHeader title={t('profile.title')} />
 
       <ScrollView 
         className="flex-1 -mt-8"
@@ -49,46 +52,40 @@ export const ProfileTemplate = () => {
           {/* Menu Items */}
           <View>
             <ProfileMenuItem 
-              title="Account informations" 
+              title={t('profile.account_info')} 
               icon="user" 
               iconColor="#192C56" 
               bgColor="#F1F5F9"
               onPress={() => router.push('/(main)/account-info')} 
             />
             <ProfileMenuItem 
-              title="Change password" 
+              title={t('profile.change_password')} 
               icon="lock" 
               iconColor="#10B981" 
               bgColor="#ECFDF5"
               onPress={() => router.push('/(main)/change-password')} 
             />
             <ProfileMenuItem 
-              title="App Theme" 
+              title={t('profile.app_theme')} 
               icon="sun" 
               iconColor="#F59E0B" 
               bgColor="#FFFBEB"
-              rightLabel="Light"
+              rightLabel={t('profile.theme_light')}
               onPress={() => {}} 
             />
+            
+            <LanguageSwitcher />
+
             <ProfileMenuItem 
-              title="App Language" 
-              icon="language" 
-              iconType="Ionicons"
-              iconColor="#3B82F6" 
-              bgColor="#EFF6FF"
-              rightLabel="English"
-              onPress={() => {}} 
-            />
-            <ProfileMenuItem 
-              title="Need help?" 
+              title={t('profile.need_help')} 
               icon="headphones" 
               iconColor="#F97316" 
               bgColor="#FFF7ED"
-              rightLabel="contact with us"
+              rightLabel={t('profile.contact_us')}
               onPress={() => router.push('/(main)/need-help' as any)} 
             />
             <ProfileMenuItem 
-              title="Logout" 
+              title={t('profile.logout')} 
               icon="log-out" 
               iconColor="#EF4444" 
               bgColor="#FEF2F2"
