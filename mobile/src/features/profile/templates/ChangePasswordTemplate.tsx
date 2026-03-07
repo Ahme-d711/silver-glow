@@ -8,9 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { changePasswordSchema, ChangePasswordFormData } from '../../auth/schemas/changePasswordSchema';
 import { useChangePasswordMutation } from '../../auth/hooks/useAuth';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const ChangePasswordTemplate = () => {
   const { mutate: changePassword, isPending, error } = useChangePasswordMutation();
+  const { t } = useLanguage();
 
   const {
     control,
@@ -31,7 +33,7 @@ export const ChangePasswordTemplate = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <PageHeader title="Change Password" showBackButton />
+      <PageHeader title={t('profile.change_password')} showBackButton />
 
       <ScrollView 
         className="flex-1" 
@@ -40,7 +42,7 @@ export const ChangePasswordTemplate = () => {
       >
         <View className="mb-8">
           <Text className="text-slate-500 text-sm font-medium mb-6 ml-1 uppercase tracking-wider">
-            Update your security details
+            {t('profile.update_security')}
           </Text>
 
           <Controller
@@ -48,7 +50,7 @@ export const ChangePasswordTemplate = () => {
             name="currentPassword"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                placeholder="Current Password"
+                placeholder={t('profile.current_password')}
                 leftIcon="lock-closed-outline"
                 isPassword
                 onBlur={onBlur}
@@ -66,7 +68,7 @@ export const ChangePasswordTemplate = () => {
             name="newPassword"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                placeholder="New Password"
+                placeholder={t('profile.new_password')}
                 leftIcon="lock-closed-outline"
                 isPassword
                 onBlur={onBlur}
@@ -84,7 +86,7 @@ export const ChangePasswordTemplate = () => {
             name="confirmPassword"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                placeholder="Confirm New Password"
+                placeholder={t('profile.confirm_new_password')}
                 leftIcon="lock-closed-outline"
                 isPassword
                 onBlur={onBlur}
@@ -100,13 +102,13 @@ export const ChangePasswordTemplate = () => {
           <View className="mb-6 p-4 bg-red-50 rounded-2xl flex-row items-center border border-red-100">
             <Ionicons name="alert-circle-outline" size={20} color="#EF4444" />
             <Text className="text-red-500 text-sm ml-2 flex-1">
-              {error instanceof Error ? error.message : 'Something went wrong'}
+              {error instanceof Error ? error.message : t('profile.something_wrong')}
             </Text>
           </View>
         )}
 
         <Button
-          title="Update Password"
+          title={t('profile.update_password')}
           onPress={handleSubmit(onSubmit)}
           loading={isPending}
           disabled={isPending}
@@ -118,7 +120,7 @@ export const ChangePasswordTemplate = () => {
           <View className="bg-slate-50 p-4 rounded-2xl flex-row items-center max-w-[90%]">
             <Ionicons name="information-circle-outline" size={18} color="#64748B" />
             <Text className="text-slate-400 text-xs ml-2 leading-relaxed">
-              Password must be at least 6 characters and should include different character types for better security.
+              {t('profile.password_hint')}
             </Text>
           </View>
         </View>

@@ -7,15 +7,24 @@ import { PageHeader } from '@/components/ui/page-header';
 import { AccountInfoRow } from '../components/AccountInfoRow';
 import { AccountProfileHeader } from '../components/AccountProfileHeader';
 import { AccountStats } from '../components/AccountStats';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const AccountInfoTemplate = () => {
   const router = useRouter();
   const { user } = useAuthStore();
+  const { t, currentLanguage } = useLanguage();
+
+  const getGenderLabel = () => {
+    if (!user?.gender) return t('profile.not_specified');
+    if (user.gender === 'male') return t('auth.male');
+    if (user.gender === 'female') return t('auth.female');
+    return user.gender;
+  };
 
   return (
     <View className="flex-1 bg-white">
       <PageHeader 
-        title="Account Information" 
+        title={t('profile.account_info')} 
         rightElement={
           <TouchableOpacity onPress={() => router.push('/(main)/edit-profile')}>
             <Feather name="edit-3" size={24} color="white" />
@@ -32,31 +41,33 @@ export const AccountInfoTemplate = () => {
 
         {/* Info Card */}
         <View className="px-6">
-          <Text className="text-slate-400 text-sm font-bold mb-2 ml-1">Personal Details</Text>
+          <Text className="text-slate-400 text-sm font-bold mb-2 ml-1">
+            {t('profile.personal_details')}
+          </Text>
           <AccountInfoRow 
             icon="user" 
-            label="Full Name" 
-            value={user?.name || 'Not provided'} 
+            label={t('auth.full_name')} 
+            value={user?.name || t('profile.not_provided')} 
           />
           <AccountInfoRow 
             icon="mail" 
-            label="Email Address" 
-            value={user?.email || 'Not provided'} 
+            label={t('auth.email')} 
+            value={user?.email || t('profile.not_provided')} 
           />
           <AccountInfoRow 
             icon="phone" 
-            label="Phone Number" 
-            value={user?.phone || 'Not provided'} 
+            label={t('auth.phone')} 
+            value={user?.phone || t('profile.not_provided')} 
           />
           <AccountInfoRow 
             icon="heart" 
-            label="Gender" 
-            value={user?.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : 'Not specified'} 
+            label={t('auth.gender')} 
+            value={getGenderLabel()} 
           />
           <AccountInfoRow 
             icon="map-pin" 
-            label="Address" 
-            value={user?.address || 'No address set yet'} 
+            label={t('checkout.shipping_address')} 
+            value={user?.address || t('profile.no_address')} 
             isLast 
           />
         </View>
@@ -68,7 +79,7 @@ export const AccountInfoTemplate = () => {
         
         <View className="px-6 mt-10">
           <Text className="text-slate-300 text-center text-xs">
-            Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+            {t('profile.member_since')} {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US') : 'N/A'}
           </Text>
         </View>
       </ScrollView>

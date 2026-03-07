@@ -7,9 +7,11 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { resetPasswordSchema, ResetPasswordFormData } from '../schemas/resetPasswordSchema';
 import { useResetPasswordMutation } from '../hooks/useAuth';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const ResetPasswordForm = () => {
   const { phone } = useLocalSearchParams<{ phone: string }>();
+  const { t } = useLanguage();
   const { mutate: resetPassword, isPending, error: apiError } = useResetPasswordMutation();
 
   const {
@@ -32,9 +34,9 @@ export const ResetPasswordForm = () => {
 
   return (
     <View className="flex-1 bg-white -mt-12 rounded-t-[40px] px-8 pt-10 pb-12">
-      <Text className="text-2xl font-bold text-primary mb-2">Reset Password</Text>
+      <Text className="text-2xl font-bold text-primary mb-2">{t('auth.reset_password_title')}</Text>
       <Text className="text-content-secondary mb-8">
-        Enter the 6-digit code sent to your WhatsApp and your new password.
+        {t('auth.reset_password_subtitle')}
       </Text>
 
       <Controller
@@ -42,10 +44,10 @@ export const ResetPasswordForm = () => {
         name="code"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Verification Code"
+            placeholder={t('auth.verification_code')}
             leftIcon="shield-checkmark-outline"
             keyboardType="number-pad"
-            label='Verification Code'
+            label={t('auth.verification_code')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -59,10 +61,10 @@ export const ResetPasswordForm = () => {
         name="password"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="New Password"
+            placeholder={t('auth.new_password')}
             leftIcon="lock-closed-outline"
             isPassword
-            label='New Password'
+            label={t('auth.new_password')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -76,10 +78,10 @@ export const ResetPasswordForm = () => {
         name="confirmPassword"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Confirm New Password"
+            placeholder={t('auth.confirm_new_password')}
             leftIcon="lock-closed-outline"
             isPassword
-            label='Confirm New Password'
+            label={t('auth.confirm_new_password')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -93,7 +95,7 @@ export const ResetPasswordForm = () => {
       )}
       
       <Button 
-        title="Reset Password"
+        title={t('auth.reset_password_title')}
         onPress={handleSubmit(onSubmit)}
         className="mt-4 bg-primary"
         textClassName="text-white"

@@ -6,6 +6,7 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { useWishlist, useToggleWishlist } from '../../wishlist/hooks/useWishlist';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const BestSellerSection = () => {
   const { user } = useAuthStore();
@@ -13,6 +14,7 @@ export const BestSellerSection = () => {
   const { data: products, isLoading } = useBestSellers();
   const { isInWishlist } = useWishlist();
   const { mutate: toggleWishlist } = useToggleWishlist();
+  const { t } = useLanguage();
 
   const handleWishlistToggle = (productId: string) => {
     if (!user) {
@@ -35,7 +37,7 @@ export const BestSellerSection = () => {
   return (
     <View className="py-8">
       <View className="px-6">
-        <SectionHeader title="Best Seller" />
+        <SectionHeader title={t('home.best_seller')} />
       </View>
 
       <ScrollView 

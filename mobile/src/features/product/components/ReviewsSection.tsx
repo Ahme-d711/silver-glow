@@ -5,6 +5,7 @@ import { useProductReviews, useAddReview, useUpdateReview, useDeleteReview } fro
 import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
 import { getImageUrl } from '../../../utils/image.utils';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ReviewsSectionProps {
   productId: string;
@@ -14,6 +15,7 @@ interface ReviewsSectionProps {
 export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numReviews = 0 }) => {
   const { user } = useAuthStore();
   const { openAuthModal, openConfirmModal } = useModalStore();
+  const { t, currentLanguage } = useLanguage();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
@@ -72,10 +74,10 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
 
   const handleDelete = (reviewId: string) => {
     openConfirmModal({
-      title: "Delete Review",
-      message: "Are you sure you want to delete this review? This action cannot be undone.",
+      title: t('product.delete_review'),
+      message: t('product.delete_review_confirm'),
       type: 'danger',
-      label: 'Delete',
+      label: t('product.delete'),
       onConfirm: () => deleteReview({ id: reviewId, productId })
     });
   };
@@ -95,7 +97,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
     <View className="px-6 pb-10">
       <View className="flex-row items-center justify-between mb-6">
         <Text className="text-2xl font-bold text-primary">
-          Reviews ({reviews.length})
+          {t('product.reviews')} ({reviews.length})
         </Text>
       </View>
 
@@ -103,12 +105,12 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
       {(canAddReview || editingReviewId) && (
         <View className="border border-divider rounded-2xl p-5 mb-8 bg-gray-50/50">
           <Text className="text-lg font-semibold text-primary mb-4">
-            {editingReviewId ? "Edit Review" : "Write Review"}
+            {editingReviewId ? t('product.edit_review') : t('product.write_review')}
           </Text>
           
           {/* Star Rating */}
           <View className="flex-row items-center mb-4">
-            <Text className="text-content-secondary font-medium mr-3">Rating:</Text>
+            <Text className="text-content-secondary font-medium mr-3">{t('product.rating')}:</Text>
             <View className="flex-row gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity
@@ -132,7 +134,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
             numberOfLines={4}
             value={comment}
             onChangeText={setComment}
-            placeholder="Share your thoughts about this product..."
+            placeholder={t('product.share_thoughts')}
             className="bg-white border border-divider rounded-xl p-4 min-h-[100px] mb-2 text-content-primary"
             maxLength={300}
             textAlignVertical="top"
@@ -153,7 +155,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
               {isAdding || isUpdating ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text className="text-white font-bold">{editingReviewId ? "Save" : "Submit"}</Text>
+                <Text className="text-white font-bold">{editingReviewId ? t('common.save') : t('product.submit')}</Text>
               )}
             </TouchableOpacity>
             {editingReviewId && (
@@ -161,7 +163,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
                 onPress={handleCancelEdit}
                 className="flex-1 h-12 rounded-xl border border-divider items-center justify-center bg-white"
               >
-                <Text className="text-content-primary font-bold">Cancel</Text>
+                <Text className="text-content-primary font-bold">{t('common.cancel')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -172,8 +174,8 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
       <View className="gap-4">
         {reviews.length === 0 ? (
           <View className="items-center py-10 border-2 border-dashed border-divider rounded-2xl">
-            <Text className="text-content-tertiary">No reviews yet.</Text>
-            {user && <Text className="text-sm text-content-secondary mt-1">Be the first to review!</Text>}
+            <Text className="text-content-tertiary">{t('product.no_reviews')}.</Text>
+            {user && <Text className="text-sm text-content-secondary mt-1">{t('product.be_first_review')}</Text>}
           </View>
         ) : (
           reviews.map((review) => {
@@ -201,7 +203,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, numRe
                     <View>
                       <Text className="font-semibold text-primary">{review.userId.name}</Text>
                       <Text className="text-xs text-content-tertiary">
-                        {new Date(review.createdAt).toLocaleDateString()}
+                        {new Date(review.createdAt).toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-US')}
                       </Text>
                     </View>
                   </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Button } from '../../../../components/ui/button';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ProductDetailsFooterProps {
   quantity: number;
@@ -20,6 +21,8 @@ export const ProductDetailsFooter: React.FC<ProductDetailsFooterProps> = ({
   isAdding,
   onAddToCart,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <View className="absolute bottom-0 left-0 right-0 bg-white p-6 border-t border-divider flex-row items-center gap-4">
       {/* Quantity Selector */}
@@ -45,7 +48,7 @@ export const ProductDetailsFooter: React.FC<ProductDetailsFooterProps> = ({
       </View>
 
       <Button 
-        title={isInStock ? 'Add to Cart' : 'Out of Stock'}
+        title={isInStock ? t('product.add_to_cart') : t('product.out_of_stock')}
         leftIcon="cart-outline"
         onPress={onAddToCart}
         disabled={!isInStock}

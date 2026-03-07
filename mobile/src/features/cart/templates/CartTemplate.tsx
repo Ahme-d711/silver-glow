@@ -13,6 +13,7 @@ import { CartSummaryFooter } from '../components/CartSummaryFooter';
 
 import { useSettings } from '../../settings/hooks/useSettings';
 import { LoadingState } from '../../../../components/ui/LoadingState';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const CartTemplate = () => {
   const { user } = useAuthStore();
@@ -20,6 +21,7 @@ export const CartTemplate = () => {
   const { data: cartData, isLoading } = useCart();
   const { mutate: clearCart } = useClearCart();
   const { data: settingsData } = useSettings();
+  const { t } = useLanguage();
 
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
@@ -47,10 +49,10 @@ export const CartTemplate = () => {
 
   const handleClearCart = () => {
     openConfirmModal({
-      title: "Clear Cart",
-      message: "Are you sure you want to remove all items from your cart?",
+      title: t('cart.clear_confirm_title'),
+      message: t('cart.clear_confirm_message'),
       type: 'danger',
-      label: 'Clear All',
+      label: t('cart.clear_all'),
       onConfirm: () => clearCart()
     });
   };
@@ -64,7 +66,7 @@ export const CartTemplate = () => {
   }
 
   if (isLoading) {
-    return <LoadingState title="My Cart" />;
+    return <LoadingState title={t('cart.title')} />;
   }
 
   if (items.length === 0) {
@@ -74,7 +76,7 @@ export const CartTemplate = () => {
   return (
     <View className="flex-1 bg-background">
       <PageHeader 
-        title="My Cart" 
+        title={t('cart.title')} 
         rightElement={
           <TouchableOpacity onPress={handleClearCart}>
             <Feather name="trash-2" size={24} color="#EF4444" />

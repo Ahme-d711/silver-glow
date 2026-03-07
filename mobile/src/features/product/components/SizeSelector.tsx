@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface SizeSelectorProps {
   sizes: string[];
@@ -12,14 +13,15 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
   selectedSize,
   onSelect,
 }) => {
+  const { t } = useLanguage();
   if (!sizes || sizes.length === 0) return null;
 
   return (
     <View className="mt-6">
       <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-xl font-bold text-content-primary">Size</Text>
+        <Text className="text-xl font-bold text-content-primary">{t('product.size')}</Text>
         <TouchableOpacity>
-          <Text className="text-content-tertiary font-medium underline">Guide</Text>
+          <Text className="text-content-tertiary font-medium underline">{t('product.size_guide')}</Text>
         </TouchableOpacity>
       </View>
 

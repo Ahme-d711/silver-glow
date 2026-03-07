@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { ProductInfoSegment } from './ProductInfoSegment';
 import { SizeSelector } from './SizeSelector';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ProductMainInfoProps {
   name: string;
@@ -32,6 +33,8 @@ export const ProductMainInfo: React.FC<ProductMainInfoProps> = ({
   selectedSize,
   onSizeSelect,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <View className="bg-white -mt-8 rounded-t-[40px] px-6 pt-10 mb-8 border-b border-divider pb-5">
       <ProductInfoSegment
@@ -44,17 +47,17 @@ export const ProductMainInfo: React.FC<ProductMainInfoProps> = ({
       />
 
       <View className="flex-row items-center mt-4">
-        <Text className="text-content-secondary font-medium mr-2">Availability:</Text>
+        <Text className="text-content-secondary font-medium mr-2">{t('product.availability')}:</Text>
         {isInStock ? (
-          <Text className="text-success font-bold">In Stock ({currentStock})</Text>
+          <Text className="text-success font-bold">{t('product.in_stock')} ({currentStock})</Text>
         ) : (
-          <Text className="text-error font-bold">Out of Stock</Text>
+          <Text className="text-error font-bold">{t('product.out_of_stock')}</Text>
         )}
       </View>
 
       <View className="mt-8">
         <Text className="text-content-secondary leading-6 text-lg">
-          {description || "No description available for this product."}
+          {description || t('product.no_description')}
         </Text>
       </View>
 

@@ -6,6 +6,7 @@ import { Product } from '../../product/types/product.types';
 import { getImageUrl } from '../../../utils/image.utils';
 import { router } from 'expo-router';
 import { GenericItemCard } from '../../../components/ui/GenericItemCard';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface WishlistCardProps {
   product: Product;
@@ -13,6 +14,7 @@ interface WishlistCardProps {
 }
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove }) => {
+  const { t, currentLanguage } = useLanguage();
   // Use getImageUrl to get the full path for the image
   const imageUrl = getImageUrl(product.mainImage);
   
@@ -31,7 +33,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
 
   const ShopButton = (
     <Button 
-      title="Shop Now"
+      title={t('wishlist.shop_now')}
       onPress={handlePress}
       size="sm"
       className="w-32"
@@ -45,8 +47,10 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({ product, onRemove })
   return (
     <GenericItemCard
       image={imageUrl ?? undefined}
-      title={product.nameEn}
-      description={product.descriptionEn || "No description available"}
+      title={currentLanguage === 'ar' ? product.nameAr : product.nameEn}
+      description={
+        (currentLanguage === 'ar' ? product.descriptionAr : product.descriptionEn) || t('wishlist.no_description')
+      }
       price={displayPrice}
       size={displaySize}
       imageSize="lg"

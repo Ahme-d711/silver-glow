@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, FlatList, TextInput, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { countries, Country } from '../../../utils/countries';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface Props {
   visible: boolean;
@@ -11,6 +12,7 @@ interface Props {
 
 export const CountryPickerModal = ({ visible, onClose, onSelect }: Props) => {
   const [search, setSearch] = useState('');
+  const { t } = useLanguage();
 
   const filteredCountries = countries.filter(c => 
     c.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -22,7 +24,7 @@ export const CountryPickerModal = ({ visible, onClose, onSelect }: Props) => {
       <SafeAreaView className="flex-1 bg-black/50">
         <View className="flex-1 mt-20 bg-white rounded-t-[40px] overflow-hidden">
           <View className="flex-row items-center justify-between px-8 py-6 border-b border-divider">
-            <Text className="text-xl font-bold text-content-primary">Select Country</Text>
+            <Text className="text-xl font-bold text-content-primary">{t('auth.select_country')}</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#1e293b" />
             </TouchableOpacity>
@@ -32,7 +34,7 @@ export const CountryPickerModal = ({ visible, onClose, onSelect }: Props) => {
             <View className="flex-row items-center bg-background border border-divider rounded-2xl px-4 h-14">
               <Ionicons name="search-outline" size={20} color="#94a3b8" />
               <TextInput
-                placeholder="Search country or code..."
+                placeholder={t('auth.search_country')}
                 placeholderTextColor="#94a3b8"
                 className="flex-1 ml-2 text-base text-content-primary"
                 value={search}

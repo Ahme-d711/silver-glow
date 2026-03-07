@@ -6,6 +6,7 @@ import { Product } from '../types/product.types';
 import { getImageUrl } from '../../../utils/image.utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ProductCardProps {
   product: Product;
@@ -21,8 +22,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isInWishlist = false 
 }) => {
   const router = useRouter();
-  const name = product.nameEn;
-  const description = product.descriptionEn || "Your ring, your style";
+  const { currentLanguage } = useLanguage();
+  
+  const name = currentLanguage === 'ar' ? product.nameAr : product.nameEn;
+  const description = (currentLanguage === 'ar' ? product.descriptionAr : product.descriptionEn) || "Your ring, your style";
   const imageUrl = getImageUrl(product.mainImage);
 
   const handlePress = () => {

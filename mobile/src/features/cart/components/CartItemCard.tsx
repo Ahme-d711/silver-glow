@@ -6,6 +6,7 @@ import { getImageUrl } from '../../../utils/image.utils';
 import { useUpdateCartQuantity, useRemoveFromCart } from '../hooks/useCart';
 import { useModalStore } from '../../../store/modalStore';
 import { GenericItemCard } from '../../../components/ui/GenericItemCard';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -15,6 +16,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({ item }) => {
   const { productId, quantity, size } = item;
   const imageUrl = getImageUrl(productId.mainImage);
   const { openConfirmModal } = useModalStore();
+  const { t, currentLanguage } = useLanguage();
   
   const { mutate: updateQuantity, isPending: isUpdating } = useUpdateCartQuantity();
   const { mutate: removeItem, isPending: isRemoving } = useRemoveFromCart();
@@ -37,12 +39,14 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({ item }) => {
     }
   };
 
+  const productName = currentLanguage === 'ar' ? productId.nameAr : productId.nameEn;
+
   const handleRemove = () => {
     openConfirmModal({
-      title: "Remove Item",
-      message: `Are you sure you want to remove "${productId.nameEn}" from your cart?`,
+      title: t('cart.remove_item'),
+      message: t('cart.remove_confirm', { name: productName }),
       type: 'danger',
-      label: 'Remove',
+      label: t('cart.remove'),
       onConfirm: () => removeItem({ productId: productId._id, size })
     });
   };
@@ -98,8 +102,8 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({ item }) => {
   return (
     <GenericItemCard
       image={imageUrl ?? undefined}
-      title={productId.nameEn}
-      description={productId.descriptionEn || "No description available"}
+      title={productName}
+      description={(currentLanguage === 'ar' ? productId.descriptionAr : productId.descriptionEn) || t('cart.no_description')}
       price={(unitPrice * quantity).toFixed(2)}
       size={size}
       imageSize="lg"

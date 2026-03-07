@@ -15,17 +15,30 @@ import { checkoutSchema, CheckoutFormData } from '../schemas/checkoutSchema';
 import { CheckoutItems } from '../components/CheckoutItems';
 import { CheckoutShippingForm } from '../components/CheckoutShippingForm';
 import { CheckoutSummary } from '../components/CheckoutSummary';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const CheckoutTemplate = () => {
   const { data: cartData } = useCart();
   const { mutate: placeOrder, isPending: isProcessing } = useCheckout();
   const { data: settingsData } = useSettings();
+  const { t } = useLanguage();
   
   const cart = cartData?.data?.cart;
   const items = cart?.items || [];
   const settings = settingsData?.data;
   
-  const subtotal = items.reduce((acc, item) => acc + (item.productId.price * item.quantity), 0);
+  const subtotal = items.reduce((acc, item) => {
+    const productId = item.productId;
+    const size = item.size;
+    let unitPrice = productId.price;
+    
+    if (size && productId.sizes) {
+      const sizeData = productId.sizes.find(s => s.size === size);
+      if (sizeData) unitPrice = sizeData.price;
+    }
+    
+    return acc + (unitPrice * item.quantity);
+  }, 0);
   
   // Calculate dynamic shipping cost
   const baseShipping = settings?.shippingCost ?? 10;
@@ -58,7 +71,7 @@ export const CheckoutTemplate = () => {
 
   return (
     <View className="flex-1 bg-background">
-      <PageHeader title="Checkout" />
+      <PageHeader title={t('checkout.title')} />
       
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -84,4 +97,3 @@ export const CheckoutTemplate = () => {
     </View>
   );
 };
-

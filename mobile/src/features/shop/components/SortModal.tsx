@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface SortOption {
   label: string;
@@ -22,6 +23,8 @@ export const SortModal: React.FC<SortModalProps> = ({
   selectedValue,
   onSelect,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <Modal
       visible={isVisible}
@@ -35,7 +38,7 @@ export const SortModal: React.FC<SortModalProps> = ({
         className="flex-1 justify-center bg-black/40 px-6"
       >
         <View className="bg-white rounded-3xl p-6">
-          <Text className="text-xl font-bold text-content-primary mb-6">Sort By</Text>
+          <Text className="text-xl font-bold text-content-primary mb-6">{t('shop.sort')}</Text>
           {options.map((option) => (
             <TouchableOpacity 
               key={option.value}

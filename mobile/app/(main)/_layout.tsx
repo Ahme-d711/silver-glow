@@ -1,8 +1,11 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { TabBar } from '../../src/components/navigation/TabBar';
+import { useLanguage } from '../../src/hooks/useLanguage';
 
 export default function MainLayout() {
+  const { t } = useLanguage();
+
   return (
     <Tabs
       tabBar={(props) => <TabBar {...props} />}
@@ -13,25 +16,25 @@ export default function MainLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('navigation.home'),
         }}
       />
       <Tabs.Screen
         name="shop"
         options={{
-          title: 'Shop',
+          title: t('navigation.shop'),
         }}
       />
       <Tabs.Screen
         name="wishlist"
         options={{
-          title: 'Wishlist',
+          title: t('navigation.wishlist'),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t('navigation.profile'),
         }}
       />
       
@@ -39,7 +42,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="cart"
         options={{
-          title: 'Cart',
+          title: t('navigation.cart'),
         }}
       />
       <Tabs.Screen

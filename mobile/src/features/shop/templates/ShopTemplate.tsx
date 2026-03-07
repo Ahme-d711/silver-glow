@@ -10,9 +10,11 @@ import { FilterModal } from '../components/FilterModal';
 import { SortModal } from '../components/SortModal';
 import { PageHeader } from '@/components/ui/page-header';
 import { useLocalSearchParams } from 'expo-router';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const ShopTemplate = () => {
   const params = useLocalSearchParams<{ categoryId?: string; subCategoryId?: string }>();
+  const { t } = useLanguage();
   
   // State
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(params.categoryId);
@@ -41,10 +43,10 @@ export const ShopTemplate = () => {
 
   // Sort Options
   const sortOptions = [
-    { label: 'Popularity', value: 'popularity' },
-    { label: 'Newest', value: 'newest' },
-    { label: 'Price: Low to High', value: 'priceLowHigh' },
-    { label: 'Price: High to Low', value: 'priceHighLow' },
+    { label: t('shop.popularity'), value: 'popularity' },
+    { label: t('shop.newest'), value: 'newest' },
+    { label: t('shop.price_low_high'), value: 'priceLowHigh' },
+    { label: t('shop.price_high_low'), value: 'priceHighLow' },
   ];
 
   const handleCategorySelect = (id: string | undefined) => {
@@ -52,11 +54,11 @@ export const ShopTemplate = () => {
     setSelectedSubCategoryId(undefined);
   };
 
-  const getSortLabel = () => sortOptions.find(o => o.value === sortValue)?.label || 'Sort';
+  const getSortLabel = () => sortOptions.find(o => o.value === sortValue)?.label || t('shop.sort');
 
   return (
     <View className="flex-1 bg-background">
-      <PageHeader title="Shop" />
+      <PageHeader title={t('shop.title')} />
 
       <ShopToolbar 
         onOpenFilter={() => setIsFilterModalVisible(true)}

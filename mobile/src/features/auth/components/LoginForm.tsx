@@ -7,9 +7,11 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { loginSchema, LoginFormData } from '../schemas/loginSchema';
 import { useLoginMutation } from '../hooks/useAuth';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const LoginForm = () => {
   const router = useRouter();
+  const { t } = useLanguage();
   const { mutate: login, isPending, error: apiError } = useLoginMutation();
 
   const {
@@ -35,10 +37,10 @@ export const LoginForm = () => {
         name="phone"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Phone number"
+            placeholder={t('auth.phone')}
             leftIcon="call-outline"
             keyboardType="phone-pad"
-            label='Phone number'
+            label={t('auth.phone')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -52,10 +54,10 @@ export const LoginForm = () => {
         name="password"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Password"
+            placeholder={t('auth.password')}
             leftIcon="lock-closed-outline"
             isPassword
-            label='Password'
+            label={t('auth.password')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -68,7 +70,7 @@ export const LoginForm = () => {
         onPress={() => router.push('/(auth)/forgot-password')}
         className="mb-6 self-end"
       >
-        <Text className="text-primary font-semibold">Forgot password?</Text>
+        <Text className="text-primary font-semibold">{t('auth.forgot_password')}</Text>
       </TouchableOpacity>
       
       {apiError && (
@@ -76,7 +78,7 @@ export const LoginForm = () => {
       )}
       
       <Button 
-        title="Login"
+        title={t('auth.login')}
         onPress={handleSubmit(onSubmit)}
         className="mb-4 bg-primary"
         textClassName="text-white"
@@ -85,16 +87,16 @@ export const LoginForm = () => {
       />
 
       <Button 
-        title="Join as Guest"
+        title={t('auth.join_guest')}
         variant="outline"
         onPress={() => router.replace('/(main)')}
         className="mb-8"
       />
       
       <View className="flex-row justify-center items-center">
-        <Text className="text-content-secondary text-lg">Don't have an account? </Text>
+        <Text className="text-content-secondary text-lg">{t('auth.dont_have_account')}</Text>
         <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-          <Text className="text-primary text-lg font-bold">Signup</Text>
+          <Text className="text-primary text-lg font-bold">{t('auth.signup')}</Text>
         </TouchableOpacity>
       </View>
     </View>

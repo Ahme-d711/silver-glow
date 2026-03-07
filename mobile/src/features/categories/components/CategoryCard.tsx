@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { Feather } from '@expo/vector-icons';
 import { Category } from '../types/category.types';
 import { getImageUrl } from '../../../utils/image.utils';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface CategoryCardProps {
   category: Category;
@@ -11,7 +12,8 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress }) => {
-  const name = category.nameEn; // Default to English for now, can add localization later
+  const { currentLanguage } = useLanguage();
+  const name = currentLanguage === 'ar' ? category.nameAr : category.nameEn;
   const imageUrl = getImageUrl(category.image);
 
   return (
@@ -34,7 +36,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress })
           <Text className="text-[#0B1324] font-bold text-base flex-1 mr-2" numberOfLines={1}>
             {name}
           </Text>
-          <Feather name="chevron-right" size={20} color="#0B1324" />
+          <Feather name={currentLanguage === 'ar' ? "chevron-left" : "chevron-right"} size={20} color="#0B1324" />
         </View>
       </View>
     </TouchableOpacity>

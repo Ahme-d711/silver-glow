@@ -4,15 +4,18 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { PageHeader } from '../../../../components/ui/page-header';
 import { Button } from '../../../../components/ui/button';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface CartEmptyStateProps {
   onExplore: () => void;
 }
 
 export const CartEmptyState: React.FC<CartEmptyStateProps> = ({ onExplore }) => {
+  const { t } = useLanguage();
+
   return (
     <View className="flex-1 bg-white">
-      <PageHeader title="My Cart" />
+      <PageHeader title={t('cart.title')} />
       
       <View className="flex-1 justify-center items-center px-8 relative overflow-hidden">
         {/* Background Decorative Circles */}
@@ -33,23 +36,23 @@ export const CartEmptyState: React.FC<CartEmptyStateProps> = ({ onExplore }) => 
              >
                 {/* Inner Circle with Shadow */}
                 <View className="w-[130px] h-[130px] rounded-full bg-white justify-center items-center shadow-lg shadow-primary/10 elevation-8 relative">
-                  <Feather name="shopping-bag" size={64} color="#192C56" />
+                   <Feather name="shopping-bag" size={64} color="#192C56" />
                 </View>
              </LinearGradient>
           </View>
 
           {/* Text Content */}
           <Text className="text-3xl font-bold text-primary text-center mb-3">
-            Your Cart is Empty
+            {t('cart.empty_title')}
           </Text>
           <Text className="text-content-tertiary text-center px-6 leading-6 text-base">
-            It seems you haven't discovered your next favorite piece yet. Let's find something special for you.
+            {t('cart.empty_subtitle')}
           </Text>
 
           {/* Action Button */}
           <View className="mt-12 w-full px-4">
             <Button 
-              title="Discover Collection"
+              title={t('cart.explore_shop')}
               onPress={onExplore}
               className="h-16 rounded-2xl shadow-lg shadow-blue-900/20"
               textClassName="text-lg font-bold"

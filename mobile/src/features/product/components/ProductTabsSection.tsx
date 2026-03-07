@@ -8,9 +8,11 @@ import { useAuthStore } from '../../auth/store/authStore';
 import { useModalStore } from '../../../store/modalStore';
 import { Feather } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const ProductTabsSection = () => {
   const router = useRouter();
+  const { t, currentLanguage } = useLanguage();
   const [activeSectionId, setActiveSectionId] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isSectionsLoading } = useHomeSections();
@@ -39,7 +41,7 @@ export const ProductTabsSection = () => {
 
   return (
     <View className="px-6 py-10">
-      <SectionHeader title="Our Products" />
+      <SectionHeader title={t('home.our_products')} />
 
       {/* Tabs Layout */}
       <ScrollView 
@@ -50,6 +52,7 @@ export const ProductTabsSection = () => {
       >
         {tabs.map((tab) => {
           const isActive = activeSectionId === tab._id;
+          const tabName = currentLanguage === 'ar' ? tab.nameAr : tab.nameEn;
           
           return (
             <TouchableOpacity
@@ -57,14 +60,14 @@ export const ProductTabsSection = () => {
               onPress={() => setActiveSectionId(tab._id)}
               className={`px-8 py-3 rounded-2xl border-2 transition-all ${
                 isActive
-                  ? "bg-primary border-primary"
-                  : "bg-divider/5 border-divider/20"
+                   ? "bg-primary border-primary"
+                   : "bg-divider/5 border-divider/20"
               }`}
             >
               <Text className={`font-bold uppercase tracking-wider ${
                 isActive ? "text-white" : "text-content-tertiary"
               }`}>
-                {tab.nameEn}
+                {tabName}
               </Text>
             </TouchableOpacity>
           );
@@ -89,7 +92,7 @@ export const ProductTabsSection = () => {
           ))
         ) : (
           <View className="flex-1 items-center justify-center py-20">
-            <Text className="text-content-tertiary text-lg">No products found</Text>
+            <Text className="text-content-tertiary text-lg">{t('common.no_results')}</Text>
           </View>
         )}
       </View>
@@ -101,10 +104,10 @@ export const ProductTabsSection = () => {
           className="flex-row items-center justify-center bg-primary/5 border border-primary/10 py-4 rounded-[24px]"
         >
           <Text className="text-primary font-bold text-lg mr-3">
-            More Products
+            {t('home.more_products')}
           </Text>
           <View className="bg-primary/10 p-2 rounded-full">
-            <Feather name="arrow-right" size={16} color="#192C56" />
+            <Feather name={currentLanguage === 'ar' ? "arrow-left" : "arrow-right"} size={16} color="#192C56" />
           </View>
         </TouchableOpacity>
       </Link>

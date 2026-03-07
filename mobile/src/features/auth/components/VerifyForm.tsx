@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { verifySchema, VerifyFormData } from '../schemas/verifySchema';
 import { useVerifyMutation, useResendVerificationMutation } from '../hooks/useAuth';
 import { AuthSparkles } from './AuthSparkles';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 const { width } = Dimensions.get('window');
 const CODE_LENGTH = 6;
@@ -14,6 +15,7 @@ const BOX_SIZE = (width - 64 - (CODE_LENGTH - 1) * 10) / CODE_LENGTH;
 
 export const VerifyForm = () => {
   const router = useRouter();
+  const { t } = useLanguage();
   const { phone } = useLocalSearchParams<{ phone: string }>();
   const [timer, setTimer] = useState(44);
   
@@ -69,9 +71,9 @@ export const VerifyForm = () => {
       <View className="flex-1 justify-center py-10">
         {/* Header */}
         <View className="items-center mb-10">
-          <Text className="text-3xl font-bold text-slate-900 mb-2">Confirm your account</Text>
+          <Text className="text-3xl font-bold text-slate-900 mb-2">{t('auth.verify_title')}</Text>
           <Text className="text-slate-500 text-center text-lg leading-6">
-            Enter 6-digit code that send to your{'\n'}phone number
+            {t('auth.verify_subtitle')}
           </Text>
         </View>
 
@@ -128,7 +130,7 @@ export const VerifyForm = () => {
         )}
 
       <Button 
-        title="Confirm"
+        title={t('auth.confirm')}
         onPress={handleSubmit(onSubmit)}
         className={`h-14 rounded-2xl mb-6 ${codeValue.length === CODE_LENGTH ? 'bg-primary' : 'bg-slate-300'}`}
         textClassName="text-white font-bold text-lg"
@@ -137,10 +139,10 @@ export const VerifyForm = () => {
       />
 
       <View className="flex-row justify-center items-center">
-        <Text className="text-slate-500 text-base">Don’t received code? </Text>
+        <Text className="text-slate-500 text-base">{t('auth.resend_code_question')}</Text>
         <TouchableOpacity onPress={handleResend} disabled={timer > 0 || isResending}>
           <Text className={`text-base font-bold ${timer > 0 ? 'text-slate-400' : 'text-primary'}`}>
-            Resend {timer > 0 ? `in ${formatTime(timer)}` : ''}
+            {t('auth.resend')} {timer > 0 ? `${t('auth.resend_in')}${formatTime(timer)}` : ''}
           </Text>
         </TouchableOpacity>
       </View>
@@ -150,7 +152,7 @@ export const VerifyForm = () => {
           onPress={() => router.replace('/(auth)/login')}
           className="mt-8 self-center"
         >
-          <Text className="text-slate-400 text-base">Back to Login</Text>
+          <Text className="text-slate-400 text-base">{t('auth.back_to_login')}</Text>
         </TouchableOpacity>
       </View>
     </View>

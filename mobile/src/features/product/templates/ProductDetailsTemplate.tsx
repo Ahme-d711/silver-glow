@@ -13,6 +13,7 @@ import { useModalStore } from '../../../store/modalStore';
 import { useAddToCart } from '../../cart/hooks/useCart';
 import { Button } from '../../../../components/ui/button';
 import { ProductDetailsFooter } from '../components/ProductDetailsFooter';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ProductDetailsTemplateProps {
   id: string;
@@ -22,6 +23,7 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   const { data: product, isLoading, error } = useProductDetails(id);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const { t, currentLanguage } = useLanguage();
   
   const { user } = useAuthStore();
   const { openAuthModal } = useModalStore();
@@ -99,7 +101,7 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
         <View className='pb-24'>
         {/* Content Card */}
         <ProductMainInfo 
-          name={product.nameEn}
+          name={currentLanguage === 'ar' ? product.nameAr : product.nameEn}
           price={currentPrice}
           oldPrice={currentOldPrice}
           rating={product.averageRating}
@@ -107,7 +109,7 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
           onWishlistToggle={handleWishlistToggle}
           isInStock={isInStock}
           currentStock={currentStock}
-          description={product.descriptionEn}
+          description={currentLanguage === 'ar' ? product.descriptionAr : product.descriptionEn}
           sizes={normalizedSizes}
           selectedSize={selectedSize || undefined}
           onSizeSelect={setSelectedSize}

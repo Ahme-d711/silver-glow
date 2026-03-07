@@ -13,10 +13,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { EditProfileImagePicker } from '../components/EditProfileImagePicker';
 import { GenderPicker } from '../../auth/components/GenderPicker';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const EditProfileTemplate = () => {
   const { user } = useAuthStore();
   const { mutate: updateProfile, isPending } = useUpdateProfileMutation();
+  const { t } = useLanguage();
   
   const [imageUri, setImageUri] = useState<string | null>(user?.picture ? (getImageUrl(user.picture) as string) : null);
   const [newImagePick, setNewImagePick] = useState<ImagePicker.ImagePickerAsset | null>(null);
@@ -75,7 +77,7 @@ export const EditProfileTemplate = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <PageHeader title="Edit Profile" />
+      <PageHeader title={t('profile.edit_profile')} />
       
       <ScrollView 
         className="flex-1" 
@@ -87,14 +89,16 @@ export const EditProfileTemplate = () => {
         {/* Form Section */}
         <View className="px-6">
           <View className="">
-            <Text className="text-content-secondary text-base font-medium mb-6 ml-1 uppercase tracking-tighter">Profile Details</Text>
+            <Text className="text-content-secondary text-base font-medium mb-6 ml-1 uppercase tracking-tighter">
+              {t('profile.profile_details')}
+            </Text>
             
             <Controller
               control={control}
               name="name"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input 
-                  placeholder="Full Name"
+                  placeholder={t('auth.full_name')}
                   leftIcon="person-outline"
                   onBlur={onBlur}
                   onChangeText={onChange}
@@ -109,7 +113,7 @@ export const EditProfileTemplate = () => {
               name="phone"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input 
-                  placeholder="Phone Number"
+                  placeholder={t('auth.phone')}
                   leftIcon="call-outline"
                   keyboardType="phone-pad"
                   onBlur={onBlur}
@@ -125,7 +129,7 @@ export const EditProfileTemplate = () => {
               name="address"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input 
-                  placeholder="Address"
+                  placeholder={t('checkout.shipping_address')}
                   leftIcon="map-outline"
                   onBlur={onBlur}
                   onChangeText={onChange}
@@ -138,7 +142,7 @@ export const EditProfileTemplate = () => {
             <GenderPicker control={control} errors={errors} />
 
             <Button 
-              title="Save Changes"
+              title={t('profile.save_changes')}
               onPress={handleSubmit(onSubmit)}
               className="mt-4 bg-primary rounded-2xl h-14"
               textClassName="text-white font-bold text-lg"

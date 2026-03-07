@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Feather } from '@expo/vector-icons';
 import { Input } from '../../../../components/ui/input';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface CheckoutShippingFormProps {
   control: any;
@@ -10,13 +11,15 @@ interface CheckoutShippingFormProps {
 }
 
 export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ control, errors }) => {
+  const { t } = useLanguage();
+
   return (
     <View className="mb-10">
       <View className="flex-row items-center mb-4">
         <View className="bg-primary/10 p-2 rounded-lg mr-3">
           <Feather name="map-pin" size={20} color="#192C56" />
         </View>
-        <Text className="text-xl font-bold text-primary">Shipping Details</Text>
+        <Text className="text-xl font-bold text-primary">{t('checkout.shipping_details')}</Text>
       </View>
       
       <Controller
@@ -24,9 +27,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
         name="recipientName"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Full Name"
+            label={t('checkout.recipient_name')}
             leftIcon="person-outline"
-            placeholder="Enter recipient name"
+            placeholder={t('checkout.recipient_name_placeholder')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -40,9 +43,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
         name="recipientPhone"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Phone Number"
+            label={t('checkout.recipient_phone')}
             leftIcon="call-outline"
-            placeholder="Enter phone number"
+            placeholder={t('checkout.recipient_phone_placeholder')}
             keyboardType="phone-pad"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -57,9 +60,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
         name="shippingAddress"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Address"
+            label={t('checkout.shipping_address')}
             leftIcon="home-outline"
-            placeholder="Street, building, apartment"
+            placeholder={t('checkout.shipping_address_placeholder')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -75,9 +78,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
             name="city"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="City"
+                label={t('checkout.city')}
                 leftIcon="map-outline"
-                placeholder="City"
+                placeholder={t('checkout.city')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -92,9 +95,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
             name="governorate"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Governorate"
+                label={t('checkout.governorate')}
                 leftIcon="flag-outline"
-                placeholder="Governorate"
+                placeholder={t('checkout.governorate')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -110,9 +113,9 @@ export const CheckoutShippingForm: React.FC<CheckoutShippingFormProps> = ({ cont
         name="customerNotes"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Notes"
+            label={t('checkout.notes')}
             leftIcon="create-outline"
-            placeholder="Any notes for delivery?"
+            placeholder={t('checkout.notes_placeholder')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 interface ShopToolbarProps {
   onOpenFilter: () => void;
@@ -15,6 +16,8 @@ export const ShopToolbar: React.FC<ShopToolbarProps> = ({
   sortLabel,
   totalItems,
 }) => {
+  const { t, currentLanguage } = useLanguage();
+
   return (
     <View className="px-6 py-4 flex-row items-center justify-between">
       <View className="flex-row items-center">
@@ -23,7 +26,9 @@ export const ShopToolbar: React.FC<ShopToolbarProps> = ({
           className="flex-row items-center bg-primary/5 px-4 py-2.5 rounded-xl border border-primary/10 mr-3"
         >
           <Feather name="filter" size={18} color="#192C56" />
-          <Text className="ml-2 text-primary font-bold">Filter</Text>
+          <Text className={`${currentLanguage === 'ar' ? 'mr-2' : 'ml-2'} text-primary font-bold`}>
+            {t('shop.filters')}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -31,12 +36,14 @@ export const ShopToolbar: React.FC<ShopToolbarProps> = ({
           className="flex-row items-center bg-white px-4 py-2.5 rounded-xl border border-divider"
         >
           <Feather name="list" size={18} color="#64748B" />
-          <Text className="ml-2 text-content-secondary font-semibold">{sortLabel}</Text>
+          <Text className={`${currentLanguage === 'ar' ? 'mr-2' : 'ml-2'} text-content-secondary font-semibold`}>
+            {sortLabel}
+          </Text>
         </TouchableOpacity>
       </View>
 
       <Text className="text-content-tertiary font-medium">
-        {totalItems} Items
+        {totalItems === 1 ? t('shop.items_found_one') : t('shop.items_found', { count: totalItems })}
       </Text>
     </View>
   );

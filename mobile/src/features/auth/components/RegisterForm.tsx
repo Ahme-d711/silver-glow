@@ -16,9 +16,11 @@ import { registerSchema, RegisterFormData } from '../schemas/registerSchema';
 import { useRegisterMutation } from '../hooks/useAuth';
 import { AuthSparkles } from './AuthSparkles';
 import { GenderPicker } from './GenderPicker';
+import { useLanguage } from '@/src/hooks/useLanguage';
 
 export const RegisterForm = () => {
   const router = useRouter();
+  const { t } = useLanguage();
   const { mutate: register, isPending, error: apiError } = useRegisterMutation();
 
   const {
@@ -72,9 +74,9 @@ export const RegisterForm = () => {
     >
       <AuthSparkles />
       <View className="items-center mb-10">
-        <Text className="text-3xl font-bold text-content-primary mb-2">Create account</Text>
+        <Text className="text-3xl font-bold text-content-primary mb-2">{t('auth.create_account')}</Text>
         <Text className="text-content-secondary text-center">
-          Please enter your information to create account.
+          {t('auth.register_subtitle')}
         </Text>
       </View>
 
@@ -115,7 +117,7 @@ export const RegisterForm = () => {
         name="name"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Full name"
+            placeholder={t('auth.full_name')}
             leftIcon="person-outline"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -146,7 +148,7 @@ export const RegisterForm = () => {
             name="phone"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input 
-                placeholder="Phone number"
+                placeholder={t('auth.phone')}
                 leftIcon="call-outline"
                 keyboardType="phone-pad"
                 onBlur={onBlur}
@@ -164,7 +166,7 @@ export const RegisterForm = () => {
         name="email"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Email"
+            placeholder={t('auth.email')}
             leftIcon="mail-outline"
             keyboardType="email-address"
             autoCapitalize="none"
@@ -184,7 +186,7 @@ export const RegisterForm = () => {
         name="password"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Password"
+            placeholder={t('auth.password')}
             leftIcon="lock-closed-outline"
             isPassword
             onBlur={onBlur}
@@ -200,7 +202,7 @@ export const RegisterForm = () => {
         name="confirmPassword"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input 
-            placeholder="Confirm password"
+            placeholder={t('auth.confirm_password')}
             leftIcon="lock-closed-outline"
             isPassword
             onBlur={onBlur}
@@ -216,7 +218,7 @@ export const RegisterForm = () => {
       )}
 
       <Button 
-        title="Create account"
+        title={t('auth.create_account')}
         onPress={handleSubmit(onSubmit)}
         className="bg-primary border-none mt-2 mb-6"
         textClassName="text-white"
@@ -225,9 +227,9 @@ export const RegisterForm = () => {
       />
       
       <View className="flex-row justify-center items-center">
-        <Text className="text-slate-500 text-base">Already have account? </Text>
+        <Text className="text-slate-500 text-base">{t('auth.already_have_account')}</Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-primary text-base font-bold">Login</Text>
+          <Text className="text-primary text-base font-bold">{t('auth.login')}</Text>
         </TouchableOpacity>
       </View>
 

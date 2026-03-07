@@ -19,9 +19,9 @@ export const ProfileTemplate = () => {
   const handleLogout = () => {
     openConfirmModal({
       title: t('profile.logout'),
-      message: t('Navigation.logout_confirm_desc'),
+      message: t('navigation.logout_confirm_desc'),
       type: 'danger',
-      label: t('Navigation.confirm_logout'),
+      label: t('navigation.confirm_logout'),
       onConfirm: async () => {
         await logout();
         router.replace('/login');

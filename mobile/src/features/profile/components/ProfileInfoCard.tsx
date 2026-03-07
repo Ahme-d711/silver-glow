@@ -13,10 +13,10 @@ interface ProfileInfoCardProps {
 }
 
 export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({ user }) => {
-  const { t } = useLanguage();
+  const { t, currentLanguage } = useLanguage();
 
   return (
-    <View className="bg-white rounded-[32px] p-6 flex-row items-center shadow-xl shadow-black/5 border border-slate-50 mb-8">
+    <View className={`bg-white rounded-[32px] p-6 flex-row items-center shadow-xl shadow-black/5 border border-slate-50 mb-8 ${currentLanguage === 'ar' ? 'flex-row-reverse' : ''}`}>
       <View className="w-20 h-20 rounded-full overflow-hidden border-2 border-slate-100">
         {user?.picture ? (
           <Image 
@@ -30,9 +30,13 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({ user }) => {
           </View>
         )}
       </View>
-      <View className="ml-5">
-        <Text className="text-content-primary text-xl font-bold">{user?.name || t('Auth.user_fallback')}</Text>
-        <Text className="text-content-tertiary text-sm mt-1">{user?.email || t('Auth.email_placeholder')}</Text>
+      <View className={`${currentLanguage === 'ar' ? 'mr-5' : 'ml-5'} flex-1`}>
+        <Text className={`text-content-primary text-xl font-bold ${currentLanguage === 'ar' ? 'text-right' : ''}`}>
+          {user?.name || t('auth.user_fallback')}
+        </Text>
+        <Text className={`text-content-tertiary text-sm mt-1 ${currentLanguage === 'ar' ? 'text-right' : ''}`}>
+          {user?.email || t('auth.email_placeholder')}
+        </Text>
       </View>
     </View>
   );
