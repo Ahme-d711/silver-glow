@@ -5,16 +5,16 @@ import {
   User, 
   Smartphone, 
   FileText,
-  LucideIcon
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Order } from "../types"
 import { useTranslations, useLocale } from "next-intl"
+import type { IconType } from "@/types";
 
 interface InfoRowProps {
-  icon: LucideIcon;
+  icon: IconType;
   label: string;
   value: React.ReactNode;
 }

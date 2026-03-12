@@ -1,11 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { LucideIcon, User, MapPin, Phone, ShoppingCart, Clock } from "lucide-react"
+import { User, MapPin, Phone, ShoppingCart, Clock } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { IconType } from "@/types"
 
 interface UserInfoSidebarProps {
   user: {
@@ -95,7 +96,7 @@ export function UserInfoSidebar({
   )
 }
 
-function DetailItem({ icon: Icon, label, value }: { icon: LucideIcon, label: string, value: string }) {
+function DetailItem({ icon: Icon, label, value }: { icon: IconType, label: string, value: string }) {
   return (
     <div className="flex gap-4 items-start">
       <div className="h-10 w-10 shrink-0 rounded-full bg-divider flex items-center justify-center text-content-tertiary">
