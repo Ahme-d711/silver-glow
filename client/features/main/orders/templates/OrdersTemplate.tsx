@@ -4,9 +4,8 @@ import React from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useMyOrders } from "../hooks/useOrders";
 import { OrderCard } from "../components/OrderCard";
-import { ChevronRight, ShoppingBag, Loader2 } from "lucide-react";
+import { ShoppingBag, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
