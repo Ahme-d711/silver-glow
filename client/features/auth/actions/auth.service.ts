@@ -42,7 +42,8 @@ interface AuthActionResponse {
  */
 async function authAction(
   payload: FormData | Record<string, string | number | boolean>,
-  endPoint: string
+  endPoint: string,
+  options?: { skipCookie?: boolean }
 ): Promise<AuthActionResponse> {
   try {
     const headers: Record<string, string> = {};
@@ -65,7 +66,7 @@ async function authAction(
     const accessToken = responseData?.data?.accessToken || responseData?.accessToken;
 
     // Set access token cookie
-    if (accessToken) {
+    if (accessToken && !options?.skipCookie) {
       (await cookies()).set(TOKEN_KEY, accessToken, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
@@ -106,7 +107,7 @@ export async function registerUser(payload: {
   picture?: string;
   role?: string;
 }): Promise<AuthActionResponse> {
-  return authAction(payload, "/auth/register");
+  return authAction(payload, "/auth/register", { skipCookie: true });
 }
 
 /**
@@ -314,8 +315,8 @@ export async function verifyPhone(payload: {
     );
 
     const user = response.data.data?.user;
-    const accessToken = (await cookies()).get(TOKEN_KEY)?.value || "";
-
+    // We don't want to set the token cookie here as we want to redirect to login
+    
     if (!user) {
       return {
         success: false,
@@ -328,7 +329,6 @@ export async function verifyPhone(payload: {
       message: response.data.message,
       data: {
         user,
-        accessToken,
       },
     };
   } catch (error) {

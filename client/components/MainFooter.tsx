@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { 
   Twitter, 
@@ -26,18 +26,18 @@ const MainFooter = () => {
     {
       title: t("company"),
       links: [
-        { label: t("about"), href: "/#" },
-        { label: t("features"), href: "/#" },
-        { label: t("works"), href: "/#" },
+        { label: t("about"), href: "/about" },
+        { label: t("features"), href: "/features" },
+        { label: t("works"), href: "/works" },
       ],
     },
     {
       title: t("help"),
       links: [
-        { label: t("customer_support"), href: "/#" },
-        { label: t("delivery_details"), href: "/#" },
-        { label: t("terms_conditions"), href: "/#" },
-        { label: t("privacy_policy"), href: "/#" },
+        { label: t("customer_support"), href: "/support" },
+        { label: t("delivery_details"), href: "/delivery" },
+        { label: t("terms_conditions"), href: "/terms" },
+        { label: t("privacy_policy"), href: "/privacy" },
       ],
     },
   ];

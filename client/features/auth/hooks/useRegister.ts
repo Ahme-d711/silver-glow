@@ -38,14 +38,6 @@ export function useRegister(): UseRegisterReturn {
         throw new Error(response.message || "Registration failed");
       }
 
-      // Update store with user and token if provided in response
-      if (response.data?.user) {
-        setUser(response.data.user);
-      }
-      if (response.data?.accessToken || response.accessToken) {
-        setToken(response.data?.accessToken || response.accessToken || "");
-      }
-
       // After registration, redirect to verification page
       router.push(`/verify?phone=${values.phone}`);
     } catch (err) {

@@ -47,10 +47,6 @@ export function useVerify(): UseVerifyReturn {
         throw new Error(response.message || "Verification failed");
       }
 
-      // Update store with final authenticated data
-      if (response.data?.user) setUser(response.data.user);
-      if (response.data?.accessToken) setToken(response.data.accessToken);
-
       toast.success(t("verify_success") || "Phone verified successfully!");
       
       // Redirect to login page after successful verification
