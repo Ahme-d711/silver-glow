@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { 
@@ -8,19 +7,75 @@ import {
   Facebook, 
   Instagram, 
   Github,
+  Youtube,
+  Linkedin,
+  MessageCircle,
+  Globe,
+  Ghost
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { usePathname } from "@/i18n/routing";
+import { useSettings } from "@/features/dashboard/settings/hooks/useSettings";
+
+const TiktokIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 const MainFooter = () => {
   const t = useTranslations("Footer");
   const locale = useLocale();
   const pathname = usePathname();
+  const { settings } = useSettings();
   const isRtl = locale === "ar";
 
   const isAuthPage = pathname.includes("/login") || pathname.includes("/register") || pathname.includes("/verify");
 
   if (isAuthPage) return null;
+
+  const getSocialIcon = (platform: string, link: string) => {
+    const p = platform.toLowerCase();
+    const l = link.toLowerCase();
+    
+    if (p.includes('facebook') || l.includes('facebook.com') || l.includes('fb.watch')) {
+      return { Icon: Facebook };
+    }
+    if (p.includes('whatsapp') || l.includes('wa.me') || l.includes('whatsapp.com')) {
+      return { Icon: MessageCircle };
+    }
+    if (p.includes('instagram') || l.includes('instagram.com')) {
+      return { Icon: Instagram };
+    }
+    if (p.includes('youtube') || l.includes('youtube.com') || l.includes('youtu.be')) {
+      return { Icon: Youtube };
+    }
+    if (p.includes('twitter') || p.includes('x') || l.includes('twitter.com') || l.includes('x.com')) {
+      return { Icon: Twitter };
+    }
+    if (p.includes('linkedin') || l.includes('linkedin.com')) {
+      return { Icon: Linkedin };
+    }
+    if (p.includes('github') || l.includes('github.com')) {
+      return { Icon: Github };
+    }
+    if (p.includes('snapchat') || l.includes('snapchat.com')) {
+      return { Icon: Ghost };
+    }
+    if (p.includes('tiktok') || l.includes('tiktok.com')) {
+      return { Icon: TiktokIcon };
+    }
+    
+    return { Icon: Globe };
+  };
 
   const sections = [
     {
@@ -65,7 +120,22 @@ const MainFooter = () => {
             </p>
             {/* Social Icons */}
             <div className="flex gap-4">
-              {[Twitter, Facebook, Instagram, Github].map((Icon, index) => (
+              {settings?.socialLinks?.map((social: any, index: number) => {
+                const { Icon } = getSocialIcon(social.platform, social.link);
+                return (
+                  <Link
+                    key={index}
+                    href={social.link.startsWith('http') ? social.link : `https://${social.link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 flex items-center justify-center rounded-full border border-divider text-primary hover:bg-primary hover:text-white transition-all duration-300"
+                    title={social.platform}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </Link>
+                );
+              })}
+              {!settings?.socialLinks && [Twitter, Facebook, Instagram, Github].map((Icon, index) => (
                 <Link
                   key={index}
                   href="#"
