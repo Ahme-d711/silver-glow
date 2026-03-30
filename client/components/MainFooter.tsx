@@ -8,7 +8,6 @@ import {
   Facebook, 
   Instagram, 
   Github,
-  CreditCard
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { usePathname } from "@/i18n/routing";
@@ -40,24 +39,6 @@ const MainFooter = () => {
         { label: t("delivery_details"), href: "/#" },
         { label: t("terms_conditions"), href: "/#" },
         { label: t("privacy_policy"), href: "/#" },
-      ],
-    },
-    {
-      title: t("faq"),
-      links: [
-        { label: t("account"), href: "/#" },
-        { label: t("manage_deliveries"), href: "/#" },
-        { label: t("orders"), href: "/#" },
-        { label: t("payments"), href: "/#" },
-      ],
-    },
-    {
-      title: t("resources"),
-      links: [
-        { label: t("free_ebooks"), href: "/#" },
-        { label: t("development_tutorial"), href: "/#" },
-        { label: t("how_to_blog"), href: "/#" },
-        { label: t("youtube_playlist"), href: "/#" },
       ],
     },
   ];
