@@ -731,5 +731,13 @@
     "customer_required": "Customer is required",
     "product_required": "Product is required",
     "governorate_required": "Governorate is required"
+  },
+  "Pagination": {
+    "previous": "Pre",
+    "next": "Next",
+    "showing": "Showing",
+    "from": "from",
+    "of": "of",
+    "results": "results"
   }
 }

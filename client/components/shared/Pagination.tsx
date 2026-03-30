@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 import {
   Pagination as UiPagination,
   PaginationContent,
@@ -79,12 +80,15 @@ export function Pagination({
   const pageNumbers = getPageNumbers()
   const startItem = (currentPage - 1) * pageSize + 1
   const endItem = Math.min(currentPage * pageSize, totalItems)
+  const t = useTranslations("Pagination")
+
+  const displayLabel = itemLabel === "items" ? t("results") : itemLabel
 
   return (
     <div className="flex items-center justify-between w-full p-6 bg-white rounded-none shadow-sm">
       {/* Page Info */}
       <div className="text-sm font-medium text-content-secondary whitespace-nowrap">
-        Showing {startItem}-{endItem} from {totalItems} {itemLabel}
+        {t("showing")} {startItem}-{endItem} {t("from")} {totalItems} {displayLabel}
       </div>
 
       <UiPagination className="justify-end mx-0 w-auto">

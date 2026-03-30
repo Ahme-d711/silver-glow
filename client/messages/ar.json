@@ -731,5 +731,13 @@
     "customer_required": "العميل مطلوب",
     "product_required": "المنتج مطلوب",
     "governorate_required": "المحافظة مطلوبة"
+  },
+  "Pagination": {
+    "previous": "السابق",
+    "next": "التالي",
+    "showing": "عرض",
+    "from": "من",
+    "of": "من",
+    "results": "نتائج"
   }
 }
