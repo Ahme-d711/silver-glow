@@ -1,4 +1,4 @@
-import { BASE_URL } from "../services/api/axios";
+import { BASE_URL } from "./constants";
 
 export function getImageUrl(path: string | null | undefined): string | null {
   if (!path) return null;

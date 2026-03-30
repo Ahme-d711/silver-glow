@@ -29,7 +29,6 @@ const MainFooter = () => {
         { label: t("about"), href: "/#" },
         { label: t("features"), href: "/#" },
         { label: t("works"), href: "/#" },
-        { label: t("career"), href: "/#" },
       ],
     },
     {
