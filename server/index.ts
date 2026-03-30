@@ -1,4 +1,5 @@
 import express, { type Application } from "express";
+import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
@@ -64,7 +65,7 @@ app.use(
   })
 );
 
-const uploadsPath = env.nodeEnv === "production"
+const uploadsPath = (env.nodeEnv === "production" && !process.env.VERCEL)
   ? path.resolve("/var/www/projects/silver-glow/server/uploads")
   : path.join(process.cwd(), "uploads");
 
@@ -112,4 +113,13 @@ async function start() {
   }
 }
 
-start();
+// For Vercel, we need to export the app and ensure DB is connected
+if (process.env.VERCEL) {
+  // Database connection for serverless functions
+  connectDatabase();
+  initDefaultAdmin();
+} else {
+  start();
+}
+
+export default app;
