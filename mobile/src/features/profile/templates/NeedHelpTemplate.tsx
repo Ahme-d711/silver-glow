@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { PageHeader } from '../../../../components/ui/page-header';
 import { useSettings } from '../../settings/hooks/useSettings';
 import { useLanguage } from '@/src/hooks/useLanguage';
@@ -99,7 +99,7 @@ export const NeedHelpTemplate = () => {
                   return <FontAwesome name="instagram" size={24} color="#E4405F" />;
                 }
                 if (platform.includes('tiktok') || link.includes('tiktok.com')) {
-                  return <FontAwesome name="music" size={24} color="#000000" />;
+                  return <FontAwesome5 name="tiktok" size={24} color="#000000" />;
                 }
                 if (platform.includes('youtube') || link.includes('youtube.com') || link.includes('youtu.be')) {
                   return <FontAwesome name="youtube-play" size={24} color="#FF0000" />;
