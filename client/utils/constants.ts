@@ -2,7 +2,7 @@
 // Client-side (browser) uses NEXT_PUBLIC_API_URL or falls back to localhost
 const isServer = typeof window === 'undefined';
 
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = "https://silver-glow-api-e51h.vercel.app";
 
 // Use server URL if on server and available, otherwise use client URL or fallback
 export const API_URL =
