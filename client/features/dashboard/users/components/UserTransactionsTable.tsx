@@ -10,19 +10,10 @@ import { TableFilters } from "@/components/shared/TableFilters"
 import { cn } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
-
-interface Transaction {
-  id: string
-  product: string
-  sub: string
-  total: string
-  status: string
-  date: string
-  image?: string
-}
+import type { UserTransaction } from "../types"
 
 interface UserTransactionsTableProps {
-  transactions: Transaction[]
+  transactions: UserTransaction[]
   isLoading?: boolean
   filterValue?: string
   onFilterChange?: (value: string) => void
@@ -61,12 +52,12 @@ export function UserTransactionsTable({
     {
       id: "orderId",
       header: t("order_id"),
-      cell: (_: unknown, row: Transaction) => <span className="text-primary font-semibold">{row.id}</span>
+      cell: (_: unknown, row: UserTransaction) => <span className="text-primary font-semibold">{row.id}</span>
     },
     {
       id: "product",
       header: t("product"),
-      cell: (_: unknown, row: Transaction) => (
+      cell: (_: unknown, row: UserTransaction) => (
         <ProductCell 
           title={row.product}
           subtitle={row.sub}
@@ -83,7 +74,7 @@ export function UserTransactionsTable({
     {
       id: "status",
       header: t("status"),
-      cell: (_: unknown, row: Transaction) => {
+      cell: (_: unknown, row: UserTransaction) => {
         const statusColors: Record<string, string> = {
           PENDING: "bg-yellow-100/50 text-yellow-600 border-yellow-200",
           CONFIRMED: "bg-blue-100/50 text-blue-600 border-blue-200",

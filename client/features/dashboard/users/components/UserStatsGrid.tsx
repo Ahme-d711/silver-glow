@@ -3,12 +3,13 @@
 import { ShoppingCart, Wallet } from "lucide-react"
 import { UserStatCard } from "./UserStatCard"
 import { useTranslations } from "next-intl"
+import type { UserStatTrend } from "../types"
 
 interface UserStatsGridProps {
   totalOrders: string
   totalBalance: string
-  orderTrend: { value: string; isUp: boolean; sub: string }
-  balanceTrend: { value: string; isUp: boolean; sub: string }
+  orderTrend: UserStatTrend
+  balanceTrend: UserStatTrend
 }
 
 export function UserStatsGrid({

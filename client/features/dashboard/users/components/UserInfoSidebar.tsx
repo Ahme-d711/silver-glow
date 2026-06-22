@@ -7,19 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { IconType } from "@/types"
+import type { UserSidebarData } from "../types"
 
 interface UserInfoSidebarProps {
-  user: {
-    id: string
-    name: string
-    status: string
-    address: string
-    phone: string
-    lastTransaction: string
-    lastOnline: string
-    profileImage?: string
-    isActive?: boolean
-  }
+  user: UserSidebarData
   onDelete?: () => void
   disableActions?: boolean
 }
@@ -93,7 +84,7 @@ function DetailItem({ icon: Icon, label, value }: { icon: IconType, label: strin
       </div>
       <div className="space-y-0.5">
         <p className="text-base text-content-secondary opacity-60">{label}</p>
-        <p className="text-base text-content-primary font-medium leading-snug">{value}</p>
+        <p className="text-base text-content-primary font-medium leading-snug line-clamp-2">{value}</p>
       </div>
     </div>
   )

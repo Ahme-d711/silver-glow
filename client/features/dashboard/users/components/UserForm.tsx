@@ -8,9 +8,9 @@ import { UniSelect } from "@/components/shared/uni-form/UniSelect";
 import { UniSwitch } from "@/components/shared/uni-form/UniSwitch";
 import { Button } from "@/components/ui/button";
 import { Loader, Camera, X } from "lucide-react";
-import { getCreateUserSchema, getUpdateUserSchema, UserFormValues } from "../schemas/user.schema";
+import { getCreateUserSchema, getEditUserSchema, UserFormValues, EditUserFormValues } from "../schemas/user.schema";
 import { z } from "zod";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageUrl } from "@/utils/image.utils";
 import { useTranslations } from "next-intl";
@@ -18,8 +18,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 interface UserFormProps {
-  defaultValues?: Partial<UserFormValues>;
-  onSubmit: (values: UserFormValues | FormData) => void;
+  defaultValues?: Partial<UserFormValues | EditUserFormValues>;
+  onSubmit: (values: UserFormValues | EditUserFormValues | FormData) => void;
   isLoading?: boolean;
   onCancel?: () => void;
   submitLabel?: string;
@@ -57,21 +57,36 @@ export function UserForm({
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<UserFormValues>({
-    resolver: zodResolver(isEdit ? getUpdateUserSchema(tValidation) : getCreateUserSchema(tValidation)) as unknown as Resolver<UserFormValues>,
-    defaultValues: {
-      name: defaultValues?.name || "",
-      email: defaultValues?.email || "",
-      password: defaultValues?.password || "",
-      phone: defaultValues?.phone || "",
-      picture: defaultValues?.picture || "",
-      role: (defaultValues?.role as UserFormValues["role"]) || "user",
-      isActive: defaultValues?.isActive ?? true,
-      isVerified: defaultValues?.isVerified ?? false,
-      address: defaultValues?.address || "",
-      totalOrders: defaultValues?.totalOrders ?? 0,
-      totalBalance: defaultValues?.totalBalance ?? 0,
-    },
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(getImageUrl(defaultValues?.picture));
+    }
+  }, [defaultValues?.picture, selectedFile]);
+
+  const form = useForm<UserFormValues | EditUserFormValues>({
+    resolver: zodResolver(isEdit ? getEditUserSchema(tValidation) : getCreateUserSchema(tValidation)) as unknown as Resolver<UserFormValues>,
+    defaultValues: isEdit
+      ? {
+          name: defaultValues?.name || "",
+          picture: defaultValues?.picture || "",
+          role: (defaultValues?.role as UserFormValues["role"]) || "user",
+          isActive: defaultValues?.isActive ?? true,
+          isVerified: defaultValues?.isVerified ?? false,
+          address: defaultValues?.address || "",
+        }
+      : {
+          name: defaultValues?.name || "",
+          email: (defaultValues as Partial<UserFormValues>)?.email || "",
+          password: (defaultValues as Partial<UserFormValues>)?.password || "",
+          phone: (defaultValues as Partial<UserFormValues>)?.phone || "",
+          picture: defaultValues?.picture || "",
+          role: (defaultValues?.role as UserFormValues["role"]) || "user",
+          isActive: defaultValues?.isActive ?? true,
+          isVerified: defaultValues?.isVerified ?? false,
+          address: defaultValues?.address || "",
+          totalOrders: (defaultValues as Partial<UserFormValues>)?.totalOrders ?? 0,
+          totalBalance: (defaultValues as Partial<UserFormValues>)?.totalBalance ?? 0,
+        },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +110,7 @@ export function UserForm({
     form.setValue("picture", "");
   };
 
-  const handleSubmit = (values: UserFormValues) => {
+  const handleSubmit = (values: UserFormValues | EditUserFormValues) => {
     if (selectedFile) {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
@@ -124,7 +139,9 @@ export function UserForm({
         <div className="flex flex-col items-center justify-center space-y-4 pb-4">
           <div className="relative">
             <Avatar className="h-32 w-32 border-4 border-divider shadow-sm">
-              <AvatarImage src={preview || ""} alt="Profile preview" className="object-cover" />
+              {preview && (
+                <AvatarImage src={preview} alt="Profile preview" className="object-cover" />
+              )}
               <AvatarFallback className="bg-secondary text-primary">
                 <Camera className="h-10 w-10 text-muted-foreground" />
               </AvatarFallback>
@@ -200,30 +217,18 @@ export function UserForm({
             </>
           )}
 
-          {isEdit && (
+          {!isEdit && (
             <motion.div variants={item}>
               <UniInput
                 control={form.control}
-                name="password"
-                label={t("password_edit_hint")}
-                placeholder="••••••"
-                type="password"
+                name="phone"
+                label={t("phone")}
+                placeholder={t("phone")}
+                type="tel"
+                required
               />
             </motion.div>
           )}
-
-
-
-          <motion.div variants={item}>
-            <UniInput
-              control={form.control}
-              name="phone"
-              label={t("phone")}
-              placeholder={t("phone")}
-              type="tel"
-              required
-            />
-          </motion.div>
 
           <motion.div variants={item}>
             <UniSelect

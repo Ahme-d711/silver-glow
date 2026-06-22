@@ -34,13 +34,10 @@ export const createUserSchema = z.object({
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 
 /**
- * Update User Schema
+ * Update User Schema (admin edit — no phone/password)
  */
 export const updateUserSchema = z.object({
   name: nameSchema.optional(),
-  email: emailSchema.optional(),
-  password: passwordSchema.optional().or(z.literal("")),
-  phone: phoneSchema.optional(),
   picture: z.preprocess(
     (val) => val === undefined || val === "" ? undefined : val,
     z.union([

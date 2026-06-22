@@ -200,23 +200,6 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("User not found", 404);
     }
 
-  // Check if email is being changed
-  if (validatedData.email && validatedData.email.toLowerCase() !== user.email) {
-    const userId = Array.isArray(id) ? id[0] : id;
-    await checkEmailExists(validatedData.email, userId);
-    }
-
-  // Check if phone is being changed
-  if (validatedData.phone && validatedData.phone !== user.phone) {
-    const userId = Array.isArray(id) ? id[0] : id;
-    await checkPhoneExists(validatedData.phone, userId);
-    }
-
-    // Hash password if provided
-    if (validatedData.password) {
-      validatedData.password = await bcrypt.hash(validatedData.password, 10);
-    }
-
   // Handle picture update
   let picturePath = user.picture;
     if (file) {
@@ -236,7 +219,6 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   // Update user fields
     Object.assign(user, {
       ...validatedData,
-      ...(validatedData.email && { email: validatedData.email.toLowerCase() }),
     ...(file && { picture: picturePath }),
     ...(validatedData.picture && !file && { picture: picturePath }),
     });

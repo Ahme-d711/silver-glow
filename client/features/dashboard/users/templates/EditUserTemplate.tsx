@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { UserForm } from "../components/UserForm";
 import { useUpdateUser } from "../hooks/useUser";
-import { UserFormValues } from "../schemas/user.schema";
+import { UserFormValues, EditUserFormValues } from "../schemas/user.schema";
 import type { User } from "@/features/auth/types";
 import { useTranslations } from "next-intl";
 
@@ -24,16 +24,14 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
   const tCommon = useTranslations("Common");
   const { mutate: updateUser, isPending } = useUpdateUser();
 
-  const handleSubmit = (payload: UserFormValues | FormData) => {
+  const handleSubmit = (payload: UserFormValues | EditUserFormValues | FormData) => {
     const userId = (user._id || user.id) as string;
     if (!userId) return;
 
     let finalPayload = payload;
 
-    // If it's not FormData, clean values before sending
     if (!(payload instanceof FormData)) {
       const cleanPayload = { ...payload };
-      if (!cleanPayload.password) delete cleanPayload.password;
       if (!cleanPayload.address) delete cleanPayload.address;
       finalPayload = cleanPayload;
     }
@@ -48,18 +46,13 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
     );
   };
 
-  // Convert User to UserFormValues format
-  const defaultValues: Partial<UserFormValues> = {
+  const defaultValues: Partial<EditUserFormValues> = {
     name: user.name || "",
-    email: user.email || "",
-    phone: user.phone || "",
-    role: (user.role as UserFormValues["role"]) || "user",
+    role: (user.role as EditUserFormValues["role"]) || "user",
     isActive: user.isActive !== false,
     isVerified: user.isVerified as boolean || false,
     address: user.address || "",
-    totalOrders: user.totalOrders || 0,
-    totalBalance: user.totalBalance || 0,
-    picture: user.profileImage || "",
+    picture: user.picture || user.profileImage || user.photo || "",
   };
 
   return (
@@ -72,6 +65,7 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
         </DialogHeader>
 
         <UserForm
+          key={(user._id || user.id) as string}
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
           isLoading={isPending}

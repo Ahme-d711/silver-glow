@@ -20,6 +20,7 @@ import type {
   UpdateUserPayload,
 } from "../types";
 import { toast } from "sonner";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 
 // Query keys
 export const usersKeys = {
@@ -165,10 +166,12 @@ export function useUpdateUser() {
     }) => updateUser(id, payload),
     onSuccess: (response, variables) => {
       if (response.success && response.data) {
+        const updatedUser = response.data.user;
+
         // Update user detail cache
         queryClient.setQueryData<User>(
           usersKeys.detail(variables.id),
-          response.data.user
+          updatedUser
         );
 
         // Update users list cache if it exists
@@ -180,12 +183,22 @@ export function useUpdateUser() {
           ...old,
               users: old.users.map((user) =>
                 user._id === variables.id || user.id === variables.id
-                  ? response.data!.user
+                  ? updatedUser
                   : user
               ),
             };
           }
         );
+
+        // Sync navbar/auth state when the logged-in user edits their own profile
+        const currentUser = useAuthStore.getState().user;
+        const currentUserId = currentUser?._id || currentUser?.id;
+        const updatedUserId = updatedUser._id || updatedUser.id;
+
+        if (currentUserId && updatedUserId && currentUserId === updatedUserId) {
+          useAuthStore.getState().setUser(updatedUser);
+          queryClient.setQueryData(usersKeys.current(), updatedUser);
+        }
 
       // Invalidate to refetch in background
         queryClient.invalidateQueries({ queryKey: usersKeys.detail(variables.id) });

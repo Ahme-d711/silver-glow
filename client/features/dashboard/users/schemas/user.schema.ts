@@ -70,13 +70,10 @@ export const getCreateUserSchema = (t: (key: string) => string) => z.object({
 });
 
 /**
- * Update User Schema (Exactly like server)
+ * Edit User Schema (admin edit — no phone/password)
  */
-export const getUpdateUserSchema = (t: (key: string) => string) => z.object({
-  name: nameSchema(t).optional(),
-  email: emailSchema(t).optional(),
-  password: passwordSchema(t).optional().or(z.literal("")),
-  phone: phoneSchema(t).optional(),
+export const getEditUserSchema = (t: (key: string) => string) => z.object({
+  name: nameSchema(t),
   picture: pictureSchema(t).optional(),
   role: roleSchema(t).optional(),
   isActive: z.boolean().optional(),
@@ -85,10 +82,6 @@ export const getUpdateUserSchema = (t: (key: string) => string) => z.object({
     .string()
     .max(500, t("address_too_long"))
     .optional(),
-  totalOrders: z.coerce.number().int().min(0).optional(),
-  totalBalance: z.coerce.number().min(0).optional(),
-  lastLoginAt: z.coerce.date().optional(),
-  lastTransactionAt: z.coerce.date().optional(),
 });
 
 /**
@@ -97,7 +90,9 @@ export const getUpdateUserSchema = (t: (key: string) => string) => z.object({
  */
 const staticT = (key: string) => key;
 export const createUserSchema = getCreateUserSchema(staticT);
+export const editUserSchema = getEditUserSchema(staticT);
 export type UserFormValues = z.infer<typeof createUserSchema>;
+export type EditUserFormValues = z.infer<typeof editUserSchema>;
 
 /**
  * Get Users Query Schema

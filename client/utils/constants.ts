@@ -3,15 +3,24 @@
 const isServer = typeof window === 'undefined';
 const isDevelopment = process.env.NODE_ENV === "development";
 
-export const BASE_URL = "https://silver-glow-api-e51h.vercel.app";
+const PRODUCTION_SERVER_ORIGIN = "https://silver-glow-api-e51h.vercel.app";
+const LOCAL_SERVER_ORIGIN = "http://localhost:3131";
+const LOCAL_API_URL = `${LOCAL_SERVER_ORIGIN}/api`;
 
-const LOCAL_API_URL = "http://localhost:3131/api";
+function originFromApiUrl(apiUrl: string): string {
+  return apiUrl.replace(/\/api\/?$/, "");
+}
 
 // Use server URL if on server and available, otherwise use client URL or fallback
 export const API_URL =
-    (isServer && process.env.NEXT_PUBLIC_SERVER_API_URL) ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    (isDevelopment ? LOCAL_API_URL : `${BASE_URL}/api`);
+  (isServer && process.env.NEXT_PUBLIC_SERVER_API_URL) ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  (isDevelopment ? LOCAL_API_URL : `${PRODUCTION_SERVER_ORIGIN}/api`);
 
+/** Origin for uploaded static assets — must match the API server, not always production */
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_SERVER_ORIGIN ||
+  originFromApiUrl(API_URL) ||
+  (isDevelopment ? LOCAL_SERVER_ORIGIN : PRODUCTION_SERVER_ORIGIN);
 
 export const TOKEN_KEY = "silverglow-token";

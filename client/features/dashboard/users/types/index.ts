@@ -61,16 +61,11 @@ export interface CreateUserPayload {
  */
 export interface UpdateUserPayload {
   name?: string;
-  email?: string;
-  password?: string;
-  phone?: string;
   picture?: string;
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
   address?: string;
-  totalOrders?: number;
-  totalBalance?: number;
 }
 
 /**
@@ -81,5 +76,42 @@ export interface ServiceResponse<T> {
   message?: string;
   data?: T;
   error?: string;
+}
+
+export type UserAccountStatus = "active" | "deactivated";
+
+export interface UserSidebarData {
+  id: string;
+  name: string;
+  status: UserAccountStatus;
+  address: string;
+  phone: string;
+  lastTransaction: string;
+  lastOnline: string;
+  profileImage?: string;
+  isActive?: boolean;
+}
+
+export interface UserStatTrend {
+  value: string;
+  isUp: boolean;
+  sub: string;
+}
+
+export interface UserStatsData {
+  totalOrders: string;
+  totalBalance: string;
+  orderTrend: UserStatTrend;
+  balanceTrend: UserStatTrend;
+}
+
+export interface UserTransaction {
+  id: string;
+  product: string;
+  sub: string;
+  total: string;
+  status: string;
+  date: string;
+  image?: string;
 }
 

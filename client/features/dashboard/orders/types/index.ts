@@ -9,6 +9,25 @@ export type OrderStatus =
   | "CANCELLED"
   | "RETURNED"
 
+export const ORDER_STATUSES: OrderStatus[] = [
+  "PENDING",
+  "CONFIRMED",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+  "RETURNED",
+];
+
+export function isOrderStatus(value: string): value is OrderStatus {
+  return ORDER_STATUSES.includes(value as OrderStatus);
+}
+
+export function getMappedOrderStatus(filter: string): OrderStatus | undefined {
+  if (filter === "all") return undefined;
+  return isOrderStatus(filter) ? filter : undefined;
+}
+
 export type PaymentMethod = "COD" | "CARD" | "PAYPAL"
 export type PaymentStatus = "PENDING" | "PAID" | "FAILED"
 

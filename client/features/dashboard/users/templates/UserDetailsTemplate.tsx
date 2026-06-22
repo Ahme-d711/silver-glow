@@ -8,17 +8,17 @@ import { UserStatsGrid } from "../components/UserStatsGrid";
 import { UserInfoSidebar } from "../components/UserInfoSidebar";
 import { UserTransactionsTable } from "../components/UserTransactionsTable";
 import { useUser, useDeleteUser, useAddUserBalance, useActivateUser, useUserOrders } from "../hooks/useUser";
-import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { AddBalanceModal } from "../components/AddBalanceModal";
 import { UserDetailsSkeleton } from "../components/UserDetailsSkeleton";
 import EditUserTemplate from "./EditUserTemplate";
 import { format } from "date-fns";
-import type { User } from "@/features/auth/types";
 import { Wallet, Pencil } from "lucide-react";
 import { getImageUrl } from "@/utils/image.utils";
-
+import type { Order } from "../../orders/types";
+import { getMappedOrderStatus } from "../../orders/types";
+import type { UserAccountStatus, UserSidebarData, UserStatsData, UserTransaction } from "../types";
 
 export default function UserDetailsTemplate() {
   const t = useTranslations("Users");
@@ -35,15 +35,9 @@ export default function UserDetailsTemplate() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState<Date | undefined>();
 
-  // Map UI filter status to API OrderStatus
-  const getMappedStatus = (filter: string) => {
-    if (filter === "all") return undefined;
-    return filter.toUpperCase() as any;
-  };
-
   const { data: ordersData, isLoading: isLoadingOrders } = useUserOrders(userId, { 
     limit: 5,
-    status: getMappedStatus(statusFilter) as any,
+    status: getMappedOrderStatus(statusFilter),
     startDate: dateFilter ? dateFilter.toISOString() : undefined,
   });
 
@@ -86,11 +80,13 @@ export default function UserDetailsTemplate() {
     ? format(new Date(lastLoginAt), "dd MMM yyyy")
     : t("na");
 
-  const transactions = ordersData?.orders.map((order: any) => ({
+  const currency = typeof user.currency === "string" ? user.currency : "EGP";
+
+  const transactions: UserTransaction[] = ordersData?.orders.map((order: Order) => ({
     id: order.trackingNumber || order._id,
     product: order.items[0]?.name || t("na"),
     sub: order.items.length > 1 ? `+${order.items.length - 1} ${t("other_products")}` : "",
-    total: `${order.totalAmount} ${user.currency || "EGP"}`,
+    total: `${order.totalAmount} ${currency}`,
     status: order.status,
     date: format(new Date(order.createdAt), "dd MMM yyyy"),
     image: order.items[0]?.image || "",
@@ -98,10 +94,10 @@ export default function UserDetailsTemplate() {
 
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   const totalOrders = user.totalOrders ?? 0;
-  const status = user.isActive === false ? "deactivated" : "active";
-  const idValue = (user.id || (user as any)._id || "") as string;
+  const status: UserAccountStatus = user.isActive === false ? "deactivated" : "active";
+  const idValue = user.id || user._id || "";
 
-  const userSidebarData = {
+  const userSidebarData: UserSidebarData = {
     id: idValue,
     name: user.name ?? t("unknown"),
     status,
@@ -113,7 +109,7 @@ export default function UserDetailsTemplate() {
     isActive: user.isActive !== false,
   };
 
-  const statsData = {
+  const statsData: UserStatsData = {
     totalOrders: totalOrders.toLocaleString(),
     totalBalance: walletBalance.toFixed(2),
     orderTrend: {

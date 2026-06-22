@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "@/i18n/routing";
 import { LogOut, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,10 @@ export function DashboardNavbar() {
   const userRole = user?.role === "admin" ? t("admin_status") : t("user_fallback"); 
   const [imageError, setImageError] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [userPhoto, userName]);
 
   const userId = (user && (user._id || user.id)) as string | undefined;
 
