@@ -28,7 +28,7 @@ export const registerSchema = z
       .max(255)
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain uppercase, lowercase, and number"),
     confirmPassword: z.string().min(1, "Password confirmation is required"),
-    gender: z.enum(["male", "female"]).optional(),
+    gender: z.enum(["male", "female"]).default("male"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

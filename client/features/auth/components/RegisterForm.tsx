@@ -84,7 +84,10 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
           <FormField
             control={form.control}
             name="gender"
-            render={({ field }) => (
+            render={({ field }) => {
+              const selectedGender = field.value ?? "male";
+
+              return (
               <FormItem className="space-y-">
                 <FormLabel className="text-content-secondary text-base font-medium">Gender</FormLabel>
                 <FormControl>
@@ -94,8 +97,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
                       onClick={() => field.onChange("male")}
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 h-12 rounded-2xl border transition-all",
-                        field.value === "male" 
-                          ? "border-primary bg-primary/5 text-primary" 
+                        selectedGender === "male"
+                          ? "border-primary bg-primary/5 text-primary"
                           : "border-divider bg-transparent text-primary/60 hover:border-primary/50"
                       )}
                     >
@@ -107,8 +110,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
                       onClick={() => field.onChange("female")}
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 h-12 rounded-2xl border transition-all",
-                        field.value === "female" 
-                          ? "border-primary bg-primary/5 text-primary" 
+                        selectedGender === "female"
+                          ? "border-primary bg-primary/5 text-primary"
                           : "border-divider bg-transparent text-primary/60 hover:border-primary/50"
                       )}
                     >
@@ -119,7 +122,8 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
                 </FormControl>
                 <FormMessage />
               </FormItem>
-            )}
+              );
+            }}
           />
 
           <div className="relative">
