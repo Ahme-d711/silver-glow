@@ -10,6 +10,7 @@ import {
   verifyPhone,
   resendVerification,
   forgotPassword,
+  verifyResetPasswordCode,
   resetPassword,
   deleteUser,
 } from "../controllers/auth.controller.js";
@@ -189,6 +190,34 @@ router.post("/resend-verification", resendVerification);
  *         description: Verification code sent if account exists
  */
 router.post("/forgot-password", forgotPassword);
+
+/**
+ * @swagger
+ * /auth/verify-reset-code:
+ *   post:
+ *     summary: Verify reset password OTP before setting a new password
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *               - code
+ *             properties:
+ *               phone:
+ *                 type: string
+ *               code:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Verification code is valid
+ *       400:
+ *         description: Invalid or expired verification code
+ */
+router.post("/verify-reset-code", verifyResetPasswordCode);
 
 /**
  * @swagger

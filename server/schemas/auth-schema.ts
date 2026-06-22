@@ -33,9 +33,26 @@ export const nameSchema = z
 export const phoneSchema = z
   .string()
   .min(1, "Phone number is required")
-  .max(20, "Phone number must be less than 20 characters")
-  .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format")
-  .trim();
+  .max(25, "Phone number must be less than 25 characters")
+  .transform((value) => {
+    let normalized = value.trim();
+    try {
+      if (normalized.includes("%")) {
+        normalized = decodeURIComponent(normalized);
+      }
+    } catch {
+      // Keep original value when decoding fails.
+    }
+
+    let digits = normalized.replace(/\D/g, "");
+    if (digits.startsWith("00")) {
+      digits = digits.slice(2);
+    }
+    return digits;
+  })
+  .refine((digits) => digits.length >= 8 && digits.length <= 15, {
+    message: "Invalid phone number format",
+  });
 
 export const pictureSchema = z
   .url("Picture must be a valid URL")
@@ -51,12 +68,7 @@ export const roleSchema = z.enum(USER_ROLES as unknown as [string, ...string[]],
  * Login Schema
  */
 export const loginSchema = z.object({
-  phone: z
-    .string()
-    .min(1, "Phone number is required")
-    .max(20, "Phone number must be less than 20 characters")
-    .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format")
-    .trim(),
+  phone: phoneSchema,
   password: z.string().min(1, "Password is required"),
 });
 
@@ -70,12 +82,7 @@ export const registerSchema = z
     name: nameSchema,
     email: emailSchema,
     password: passwordSchema,
-    phone: z
-      .string()
-      .min(1, "Phone number is required")
-      .max(20, "Phone number must be less than 20 characters")
-      .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, "Invalid phone number format")
-      .trim(), // Phone is required for verification
+    phone: phoneSchema,
     gender: z.enum(["male", "female"]).optional(),
     picture: pictureSchema,
     role: roleSchema.default("user"),
@@ -151,6 +158,19 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+
+/**
+ * Verify Reset Password Code Schema
+ */
+export const verifyResetPasswordCodeSchema = z.object({
+  phone: phoneSchema.refine((val) => val && val.length > 0, "Phone number is required"),
+  code: z
+    .string()
+    .length(6, "Verification code must be 6 digits")
+    .regex(/^\d+$/, "Verification code must be numeric"),
+});
+
+export type VerifyResetPasswordCodeInput = z.infer<typeof verifyResetPasswordCodeSchema>;
 
 /**
  * Verify Phone Schema

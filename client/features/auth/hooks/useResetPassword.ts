@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { ResetPasswordValues } from "../schemas/authSchemas";
+import { toApiPhone } from "@/utils/phone";
 
 interface UseResetPasswordReturn {
   submitResetPassword: (data: ResetPasswordValues) => Promise<void>;
@@ -24,7 +25,10 @@ export function useResetPassword(): UseResetPasswordReturn {
     setError(null);
 
     try {
-      const response = await resetPassword(data);
+      const response = await resetPassword({
+        ...data,
+        phone: toApiPhone(data.phone),
+      });
 
       if (!response.success) {
         throw new Error(response.message || "Failed to reset password");
@@ -37,6 +41,7 @@ export function useResetPassword(): UseResetPasswordReturn {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
       toast.error(errorMessage);
+      throw err;
     } finally {
       setLoading(false);
     }

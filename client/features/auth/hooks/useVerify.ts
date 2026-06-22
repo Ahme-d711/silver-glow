@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { verifyPhone, resendVerification } from "../actions/auth.service";
+import { toApiPhone } from "@/utils/phone";
 import { useAuthStore } from "../stores/authStore";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -41,7 +42,7 @@ export function useVerify(): UseVerifyReturn {
   const verify = async (phone: string, code: string) => {
     setLoading(true);
     try {
-      const response = await verifyPhone({ phone, code });
+      const response = await verifyPhone({ phone: toApiPhone(phone), code });
       
       if (!response.success) {
         throw new Error(response.message || "Verification failed");
@@ -65,7 +66,7 @@ export function useVerify(): UseVerifyReturn {
 
     setResendLoading(true);
     try {
-      const response = await resendVerification({ phone });
+      const response = await resendVerification({ phone: toApiPhone(phone) });
       
       if (!response.success) {
         throw new Error(response.message || "Failed to resend code");

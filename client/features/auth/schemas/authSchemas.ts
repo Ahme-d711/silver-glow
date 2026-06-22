@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  phone: z.string().min(1, { message: "Phone number is required" }),
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^\+\d{8,15}$/, "Phone number must include country code"),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters long" }),
@@ -46,7 +49,10 @@ export const verifyPhoneSchema = z.object({
 export type VerifyPhoneFormValues = z.infer<typeof verifyPhoneSchema>;
 
 export const forgotPasswordSchema = z.object({
-  phone: z.string().min(1, "Phone number is required"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\+\d{8,15}$/, "Phone number must include country code"),
 });
 
 export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
@@ -55,7 +61,14 @@ export const resetPasswordSchema = z
   .object({
     phone: z.string().min(1, "Phone number is required"),
     code: z.string().length(6, "Code must be 6 digits"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(255)
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Password must contain uppercase, lowercase, and number"
+      ),
     confirmPassword: z.string().min(1, "Password confirmation is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -64,3 +77,13 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
+
+export const verifyResetCodeSchema = z.object({
+  phone: z.string().min(1, "Phone number is required"),
+  code: z
+    .string()
+    .length(6, "Code must be 6 digits")
+    .regex(/^\d+$/, "Verification code must be numeric"),
+});
+
+export type VerifyResetCodeValues = z.infer<typeof verifyResetCodeSchema>;

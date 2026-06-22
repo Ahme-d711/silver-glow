@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 import { useRouter } from "next/navigation";
+import { toApiPhone } from "@/utils/phone";
 
 interface RegisterFormProps {
   register: (values: RegisterFormValues) => Promise<void>;
@@ -39,7 +40,7 @@ export function RegisterForm({ register, loading }: RegisterFormProps) {
       await register(data);
       toast.success("Account created successfully!");
       // Redirect to verification page
-      router.push(`/verify?phone=${encodeURIComponent(data.phone)}`);
+      router.push(`/verify?phone=${encodeURIComponent(toApiPhone(data.phone))}`);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "An error occurred during registration";
       toast.error(errorMessage);

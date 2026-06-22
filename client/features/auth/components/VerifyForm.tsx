@@ -13,10 +13,11 @@ import { OTPInput } from "./OTPInput";
 import { useVerify } from "../hooks/useVerify";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { normalizePhoneNumber } from "@/utils/phone";
 
 export function VerifyForm() {
   const searchParams = useSearchParams();
-  const phone = searchParams.get("phone") || "";
+  const phone = normalizePhoneNumber(searchParams.get("phone") || "");
   
   const { verify, resend, loading, resendLoading, countdown, canResend } = useVerify();
 
@@ -62,7 +63,7 @@ export function VerifyForm() {
         </h2>
         <p className="font-medium text-primary/60 max-w-md">
           Please enter the 6-digit verification code sent to your phone.
-          {phone && <span className="block mt-1 font-bold text-primary">{phone}</span>}
+          {phone && <span className="block mt-1 font-bold text-primary">+{phone}</span>}
         </p>
       </div>
 

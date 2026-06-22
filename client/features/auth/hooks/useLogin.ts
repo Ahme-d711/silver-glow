@@ -4,6 +4,7 @@ import { useState } from "react";
 import { loginUser } from "../actions/auth.service";
 import { useAuthStore } from "../stores/authStore";
 import { useRouter } from "next/navigation";
+import { toApiPhone } from "@/utils/phone";
 
 interface UseLoginReturn {
   login: (phone: string, password: string) => Promise<void>;
@@ -22,7 +23,7 @@ export function useLogin(): UseLoginReturn {
     setError(null);
 
     try {
-      const response = await loginUser({ phone, password });
+      const response = await loginUser({ phone: toApiPhone(phone), password });
 
       if (!response.success) {
         throw new Error(response.message || "Login failed");

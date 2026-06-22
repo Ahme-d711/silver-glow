@@ -1,42 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { forgotPassword } from "../actions/auth.service";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { resendVerification } from "../actions/auth.service";
 import { toApiPhone } from "@/utils/phone";
 
-interface UseForgotPasswordReturn {
-  submitForgotPassword: (phone: string) => Promise<void>;
+interface UseRequestPhoneVerificationReturn {
+  requestVerification: (phone: string) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
 
-export function useForgotPassword(): UseForgotPasswordReturn {
+export function useRequestPhoneVerification(): UseRequestPhoneVerificationReturn {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submitForgotPassword = async (phone: string) => {
+  const requestVerification = async (phone: string) => {
     setLoading(true);
     setError(null);
 
     try {
       const normalizedPhone = toApiPhone(phone);
-      const response = await forgotPassword({ phone: normalizedPhone });
+      const response = await resendVerification({ phone: normalizedPhone });
 
       if (!response.success) {
-        throw new Error(response.message || "Failed to send reset code");
+        throw new Error(response.message || "Failed to send verification code");
       }
 
-      router.push(`/forgot-password?phone=${encodeURIComponent(normalizedPhone)}`);
+      router.push(`/verify?phone=${encodeURIComponent(normalizedPhone)}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
+      toast.error(errorMessage);
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { submitForgotPassword, loading, error };
+  return { requestVerification, loading, error };
 }

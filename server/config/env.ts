@@ -4,7 +4,7 @@ export const env = {
   port: Number(process.env.PORT) || 3131,
   mongodbUri: process.env.MONGODB_URI || "mongodb://localhost:27017/silver-glow",
   nodeEnv: process.env.NODE_ENV || "development",
-  jwtSecret: process.env.JWT_SECRET || "",
+  jwtSecret: process.env.JWT_SECRET || (process.env.NODE_ENV === "production" ? "" : "dev-jwt-secret"),
   googleApiKey: process.env.GOOGLE_API_KEY || "AIzaSyA-_aCHOdvzoO2YDMNeqoRhX-onbv2hRVM",
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,

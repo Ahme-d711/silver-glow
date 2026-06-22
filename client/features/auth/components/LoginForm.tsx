@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
+import { UniPhoneInput } from "@/components/shared/uni-form/UniPhoneInput";
 import { loginSchema, type LoginFormValues } from "../schemas/authSchemas";
 
 interface LoginFormProps {
@@ -50,13 +51,11 @@ export function LoginForm({ login, loading }: LoginFormProps) {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <UniInput
+          <UniPhoneInput
             control={form.control}
             name="phone"
             label={t("phone")}
-            placeholder=""
-            type="tel"
-            autoComplete="tel"
+            placeholder={t("phone_placeholder")}
           />
 
           <UniInput
@@ -69,10 +68,7 @@ export function LoginForm({ login, loading }: LoginFormProps) {
           />
 
           <div className="">
-            <Link
-              href="/forgot-password"
-              className="text-sm font-medium text-primary"
-            >
+            <Link href="/forgot-password" className="text-sm font-medium text-primary">
               {t("forgot_password")}
             </Link>
           </div>
@@ -82,11 +78,17 @@ export function LoginForm({ login, loading }: LoginFormProps) {
             {loading && <Loader className="mr-2 h-4 w-4 animate-spin" /> } 
           </Button>
 
-          <div className="text-center pt-2">
+          <div className="text-center pt-2 space-y-2">
             <p className="text-sm font-medium text-primary/60">
               {t("dont_have_account")}{" "}
               <Link href="/register" className="text-primary font-bold hover:underline">
                 {t("sign_up")}
+              </Link>
+            </p>
+            <p className="text-sm font-medium text-primary/60">
+              {t("verify_phone_prompt")}{" "}
+              <Link href="/verify-phone" className="text-primary font-bold hover:underline">
+                {t("verify_phone_link")}
               </Link>
             </p>
           </div>

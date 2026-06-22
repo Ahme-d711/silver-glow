@@ -14,6 +14,7 @@ import {
   resendVerificationSchema,
   resetPasswordRequestSchema,
   resetPasswordSchema,
+  verifyResetPasswordCodeSchema,
   validateAuthData,
   safeValidateAuthData,
 } from "../schemas/auth-schema.js";
@@ -512,6 +513,33 @@ export const forgotPassword = asyncHandler(async (req: Request, res: Response) =
   sendResponse(res, 200, {
     success: true,
     message: "If an account exists with this number, a verification code has been sent via WhatsApp",
+  });
+});
+
+/**
+ * Verify reset password code before allowing password change
+ */
+export const verifyResetPasswordCode = asyncHandler(async (req: Request, res: Response) => {
+  let { phone, code } = validateAuthData(verifyResetPasswordCodeSchema, req.body);
+
+  if (phone) {
+    phone = phone.replace(/^\+/, "");
+  }
+
+  const user = await UserModel.findOne({
+    phone,
+    isActive: true,
+    resetPasswordCode: code,
+    resetPasswordCodeExpires: { $gt: new Date() },
+  });
+
+  if (!user) {
+    throw new AppError("Invalid or expired verification code", 400);
+  }
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Verification code is valid",
   });
 });
 

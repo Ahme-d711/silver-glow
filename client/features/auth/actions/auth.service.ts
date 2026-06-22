@@ -451,6 +451,31 @@ export async function forgotPassword(payload: {
 }
 
 /**
+ * Verify reset password code
+ */
+export async function verifyResetPasswordCode(payload: {
+  phone: string;
+  code: string;
+}): Promise<AuthActionResponse> {
+  try {
+    const response = await serverAxios.post<ApiResponse>("/auth/verify-reset-code", payload);
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
+    const message = err.response?.data?.message || "Failed to verify reset code";
+
+    return {
+      success: false,
+      message,
+    };
+  }
+}
+
+/**
  * Reset password
  */
 export async function resetPassword(payload: {

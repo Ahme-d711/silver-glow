@@ -14,6 +14,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { ChevronDown, Search } from "lucide-react";
 import { ORDERED_COUNTRIES, Country } from "@/utils/countries";
+import {
+  formatPhoneWithCountryCode,
+  getCountryFromPhoneValue,
+  getLocalPhoneDigits,
+  parsePhoneInput,
+} from "@/utils/phone";
 
 interface UniPhoneInputProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>;
@@ -49,18 +55,16 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       name={name}
       render={({ field }) => {
-        // Safe split: find which country code the string starts with
-        // For registration initialized with "", it will use selectedCountry.
-        // If it has a value like "+2010...", we should ideally match it to EG.
-        
+        const countryFromValue = getCountryFromPhoneValue(field.value);
+        const activeCountry = countryFromValue ?? selectedCountry;
+
         const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const rawValue = e.target.value.replace(/\D/g, ""); // Only numbers
-            // We store the FULL code + number
-            field.onChange(`${selectedCountry.dialCode}${rawValue}`);
+          const parsed = parsePhoneInput(e.target.value, activeCountry);
+          setSelectedCountry(parsed.country);
+          field.onChange(`${parsed.country.dialCode}${parsed.localDigits}`);
         };
 
-        // Extract the "local" part for the input display
-        const displayValue = field.value?.replace(selectedCountry.dialCode, "") || "";
+        const displayValue = getLocalPhoneDigits(field.value, activeCountry);
 
         return (
           <FormItem className={cn(className)} id={name}>
@@ -72,7 +76,6 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
             )}
             <FormControl>
               <div className="flex h-12.5 w-full items-stretch rounded-xl border border-divider/50 bg-white ring-offset-background focus-within:border-primary transition-all">
-                {/* Country Picker */}
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <button
@@ -80,8 +83,10 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
                       disabled={disabled}
                       className="flex items-center gap-1.5 px-3 border-r border-divider/50 hover:bg-black/5 transition-colors rounded-l-xl focus:outline-none"
                     >
-                      <span className="text-lg leading-none">{selectedCountry.flag}</span>
-                      <span className="text-sm font-semibold text-content-primary leading-none">{selectedCountry.dialCode}</span>
+                      <span className="text-lg leading-none">{activeCountry.flag}</span>
+                      <span className="text-sm font-semibold text-content-primary leading-none">
+                        {activeCountry.dialCode}
+                      </span>
                       <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     </button>
                   </PopoverTrigger>
@@ -107,15 +112,14 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
                             type="button"
                             className={cn(
                               "flex items-center w-full gap-2 px-4 py-3 text-sm hover:bg-black/5 transition-colors text-left",
-                              selectedCountry.code === country.code && "bg-black/5 font-semibold"
+                              activeCountry.code === country.code && "bg-black/5 font-semibold"
                             )}
                             onClick={() => {
-                              const oldLocal = field.value?.replace(selectedCountry.dialCode, "") || "";
+                              const localDigits = getLocalPhoneDigits(field.value, activeCountry);
                               setSelectedCountry(country);
                               setOpen(false);
                               setSearchQuery("");
-                              // Update full phone string with new code
-                              field.onChange(`${country.dialCode}${oldLocal}`);
+                              field.onChange(formatPhoneWithCountryCode(localDigits, country));
                             }}
                           >
                             <span className="text-lg">{country.flag}</span>
@@ -128,7 +132,6 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
                   </PopoverContent>
                 </Popover>
 
-                {/* Phone Input */}
                 <Input
                   type="tel"
                   placeholder={placeholder}
