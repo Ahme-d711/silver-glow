@@ -163,11 +163,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new AppError("Your account has been deactivated", 403);
   }
 
-  // Check if user is blocked
-  if (user.isBlocked === true) {
-    throw new AppError("Your account has been blocked", 403);
-  }
-
   // Check if phone is verified
   if (user.isVerified === false) {
     throw new AppError("Please verify your phone number before logging in", 403);

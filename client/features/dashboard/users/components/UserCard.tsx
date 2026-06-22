@@ -14,7 +14,7 @@ interface UserCardProps {
   id: string
   name: string
   avatar?: string
-  status: "active" | "blocked" | "deactivated"
+  status: "active" | "deactivated"
   orders: string
   balance: string
   selected?: boolean

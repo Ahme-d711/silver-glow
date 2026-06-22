@@ -18,17 +18,14 @@ interface UserInfoSidebarProps {
     lastTransaction: string
     lastOnline: string
     profileImage?: string
-    isBlocked?: boolean
     isActive?: boolean
   }
-  onBlockToggle?: () => void
   onDelete?: () => void
   disableActions?: boolean
 }
 
 export function UserInfoSidebar({
   user,
-  onBlockToggle,
   onDelete,
   disableActions,
 }: UserInfoSidebarProps) {
@@ -75,14 +72,6 @@ export function UserInfoSidebar({
       </div>
  
       <div className="w-full pt-8 space-y-3">
-        <Button
-          variant="destructive"
-          className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none"
-          onClick={onBlockToggle}
-          disabled={disableActions}
-        >
-          {user.isBlocked ? t("unblock_user") : t("block_user")}
-        </Button>
         <Button
           variant="destructive"
           className="w-full bg-error hover:bg-error/80 cursor-pointer text-white rounded-xl h-12 font-semibold shadow-none"

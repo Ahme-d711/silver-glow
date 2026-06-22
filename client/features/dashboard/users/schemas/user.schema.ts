@@ -59,7 +59,6 @@ export const getCreateUserSchema = (t: (key: string) => string) => z.object({
   role: roleSchema(t).default("user"),
   isActive: z.boolean().optional().default(true),
   isVerified: z.boolean().optional().default(false),
-  isBlocked: z.boolean().optional().default(false),
   address: z
     .string()
     .max(500, t("address_too_long"))
@@ -82,7 +81,6 @@ export const getUpdateUserSchema = (t: (key: string) => string) => z.object({
   role: roleSchema(t).optional(),
   isActive: z.boolean().optional(),
   isVerified: z.boolean().optional(),
-  isBlocked: z.boolean().optional(),
   address: z
     .string()
     .max(500, t("address_too_long"))
@@ -110,14 +108,6 @@ export const getUsersQuerySchema = z.object({
   search: z.string().optional(),
   role: z.enum(USER_ROLES as unknown as [string, ...string[]]).optional(),
   isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
-  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
-});
-
-/**
- * Update User Block Status Schema
- */
-export const updateUserBlockSchema = z.object({
-  isBlocked: z.boolean(),
 });
 
 /**

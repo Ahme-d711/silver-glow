@@ -13,7 +13,6 @@ export interface IUser extends Document {
   gender?: "male" | "female";
   isActive?: boolean;
   isVerified?: boolean;
-  isBlocked?: boolean;
   phone?: string;
   address?: string;
   totalOrders?: number;

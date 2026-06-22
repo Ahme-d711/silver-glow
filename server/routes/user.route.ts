@@ -6,7 +6,6 @@ import {
   updateUser,
   deleteUser,
   getCurrentUser,
-  updateUserBlockStatus,
   updateUserBalance,
   activateUser,
 } from "../controllers/user.controller.js";
@@ -121,26 +120,6 @@ router.get("/", authorize("admin"), getAllUsers);
  */
 router.get("/:id", authorize("admin"), getUserById);
 router.post("/", authorize("admin"), uploadUser.single("picture"), createUser);
-
-/**
- * @swagger
- * /users/{id}/block:
- *   patch:
- *     summary: Toggle user block status (Admin only)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Block status updated
- */
-router.patch("/:id/block", authorize("admin"), updateUserBlockStatus);
 
 /**
  * @swagger

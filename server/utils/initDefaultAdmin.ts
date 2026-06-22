@@ -29,7 +29,6 @@ export async function initDefaultAdmin(): Promise<void> {
           address: env.defaultAdminAddress,
           isVerified: true,
           isActive: true,
-          isBlocked:false,
           password: hashedPassword,
           role: "admin",
         });

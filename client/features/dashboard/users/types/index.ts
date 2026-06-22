@@ -37,7 +37,6 @@ export interface GetAllUsersParams {
   search?: string;
   role?: "admin" | "user";
   isActive?: boolean;
-  isBlocked?: boolean;
 }
 
 /**
@@ -52,7 +51,6 @@ export interface CreateUserPayload {
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
-  isBlocked?: boolean;
   address?: string;
   totalOrders?: number;
   totalBalance?: number;
@@ -70,7 +68,6 @@ export interface UpdateUserPayload {
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
-  isBlocked?: boolean;
   address?: string;
   totalOrders?: number;
   totalBalance?: number;

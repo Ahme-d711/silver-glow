@@ -21,7 +21,6 @@ export const createUserSchema = z.object({
   role: roleSchema.default("user"),
   isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(true)),
   isVerified: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(false)),
-  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(false)),
   address: z
     .string()
     .max(500, "Address must be less than 500 characters")
@@ -52,7 +51,6 @@ export const updateUserSchema = z.object({
   role: roleSchema.optional(),
   isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
   isVerified: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
-  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
   address: z
     .string()
     .max(500, "Address must be less than 500 characters")
@@ -74,19 +72,9 @@ export const getUsersQuerySchema = z.object({
   search: z.string().optional(),
   role: z.enum(USER_ROLES as unknown as [string, ...string[]]).optional(),
   isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
-  isBlocked: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional()),
 });
 
 export type GetUsersQueryInput = z.infer<typeof getUsersQuerySchema>;
-
-/**
- * Update User Block Status Schema
- */
-export const updateUserBlockSchema = z.object({
-  isBlocked: z.boolean(),
-});
-
-export type UpdateUserBlockInput = z.infer<typeof updateUserBlockSchema>;
 
 /**
  * Update User Balance Schema

@@ -68,7 +68,6 @@ export function UserForm({
       role: (defaultValues?.role as UserFormValues["role"]) || "user",
       isActive: defaultValues?.isActive ?? true,
       isVerified: defaultValues?.isVerified ?? false,
-      isBlocked: defaultValues?.isBlocked ?? false,
       address: defaultValues?.address || "",
       totalOrders: defaultValues?.totalOrders ?? 0,
       totalBalance: defaultValues?.totalBalance ?? 0,

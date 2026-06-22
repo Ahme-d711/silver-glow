@@ -10,7 +10,6 @@ import {
   createUserSchema,
   updateUserSchema,
   getUsersQuerySchema,
-  updateUserBlockSchema,
   updateUserBalanceSchema,
   validateUserData,
 } from "../schemas/user.schema.js";
@@ -312,30 +311,6 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
       success: true,
     message: "User data retrieved successfully",
       data: { user },
-    });
-});
-
-/**
- * Update user block status (isBlocked: true/false)
- */
-export const updateUserBlockStatus = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { isBlocked } = validateUserData(updateUserBlockSchema, req.body);
-
-  const user = await UserModel.findByIdAndUpdate(
-    id,
-    { isBlocked },
-    { new: true }
-  ).select("-password");
-
-  if (!user) {
-    throw new AppError("User not found", 404);
-  }
-
-    sendResponse(res, 200, {
-      success: true,
-    message: isBlocked ? "User blocked successfully" : "User unblocked successfully",
-    data: { user },
     });
 });
 

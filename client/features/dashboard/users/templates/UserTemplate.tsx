@@ -20,13 +20,11 @@ import { AnimatePresence } from "framer-motion";
 import { Pagination } from "@/components/shared/Pagination";
 
 const getCategoryTabs = (t: { [key: string]: string }) => {
-  const { all_status, active, not_active, blocked, not_blocked } = t;
+  const { all_status, active, not_active } = t;
   return [
     { label: all_status, value: "all" },
     { label: active, value: "active" },
     { label: not_active, value: "deactivated" },
-    { label: blocked, value: "blocked" },
-    { label: not_blocked, value: "not_blocked" },
   ];
 };
 
@@ -41,17 +39,13 @@ function convertUserToCardFormat(user: User) {
   const id = (user.id || mongoId) as string;
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   
-  const status = user.isBlocked === true
-    ? "blocked"
-    : user.isActive === false
-    ? "deactivated"
-    : "active";
+  const status = user.isActive === false ? "deactivated" : "active";
 
   return {
     id,
     name: user.name ?? "Unknown",
     avatar: profileImageUrl,
-    status: status as "active" | "blocked" | "deactivated",
+    status: status as "active" | "deactivated",
     orders: `${user.totalOrders ?? 0}`,
     balance: `${walletBalance.toFixed(2)}`, // Format wallet balance
   };
@@ -68,8 +62,6 @@ export default function UserTemplate() {
     all_status: t("all_status"),
     active: t("active"),
     not_active: t("not_active"),
-    blocked: t("blocked"),
-    not_blocked: t("not_blocked"),
   });
 
   const [activeTab, setActiveTab] = useState("all");
@@ -85,7 +77,6 @@ export default function UserTemplate() {
     page,
     limit,
     isActive: activeTab === "active" ? true : activeTab === "deactivated" ? false : undefined,
-    isBlocked: activeTab === "blocked" ? true : activeTab === "not_blocked" ? false : undefined,
   });
 
   // Reset page when filters or search change

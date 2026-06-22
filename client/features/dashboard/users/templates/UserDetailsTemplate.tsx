@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { UserStatsGrid } from "../components/UserStatsGrid";
 import { UserInfoSidebar } from "../components/UserInfoSidebar";
 import { UserTransactionsTable } from "../components/UserTransactionsTable";
-import { useUser, useDeleteUser, useUpdateUserBlockStatus, useAddUserBalance, useActivateUser, useUserOrders } from "../hooks/useUser";
+import { useUser, useDeleteUser, useAddUserBalance, useActivateUser, useUserOrders } from "../hooks/useUser";
 import UniLoading from "@/components/shared/UniLoading";
 import NoDataMsg from "@/components/shared/NoDataMsg";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
@@ -29,7 +29,6 @@ export default function UserDetailsTemplate() {
 
   const { data: user, isLoading, error } = useUser(userId);
   const { mutate: deleteUserMutation, isPending: isDeleting } = useDeleteUser();
-  const { mutate: updateBlockStatus, isPending: isBlocking } = useUpdateUserBlockStatus();
   const { mutate: addBalance, isPending: isAddingBalance } = useAddUserBalance();
   const { mutate: activateUserMutation, isPending: isActivating } = useActivateUser();
   
@@ -48,7 +47,6 @@ export default function UserDetailsTemplate() {
     startDate: dateFilter ? dateFilter.toISOString() : undefined,
   });
 
-  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [activateDialogOpen, setActivateDialogOpen] = useState(false);
   const [balanceModalOpen, setBalanceModalOpen] = useState(false);
@@ -100,11 +98,7 @@ export default function UserDetailsTemplate() {
 
   const walletBalance = user.totalBalance ?? user.walletBalance ?? 0;
   const totalOrders = user.totalOrders ?? 0;
-  const status = user.isBlocked
-    ? "blocked"
-    : user.isActive === false
-    ? "deactivated"
-    : "active";
+  const status = user.isActive === false ? "deactivated" : "active";
   const idValue = (user.id || (user as any)._id || "") as string;
 
   const userSidebarData = {
@@ -116,7 +110,6 @@ export default function UserDetailsTemplate() {
     lastTransaction: formattedLastTransaction,
     lastOnline: formattedLastOnline,
     profileImage: profileImageUrl,
-    isBlocked: user.isBlocked === true,
     isActive: user.isActive !== false,
   };
 
@@ -133,19 +126,6 @@ export default function UserDetailsTemplate() {
       isUp: walletBalance >= 0,
       sub: t("balance_desc", { balance: walletBalance.toFixed(2) }),
     },
-  };
-
-  const handleBlockToggle = () => {
-    setBlockDialogOpen(true);
-  };
-
-  const handleConfirmBlock = () => {
-    if (!userId) return;
-    updateBlockStatus({
-      id: userId,
-      isBlocked: !user.isBlocked,
-    });
-    setBlockDialogOpen(false);
   };
 
   const handleDelete = () => {
@@ -211,9 +191,8 @@ export default function UserDetailsTemplate() {
         <div className="lg:col-span-4 xl:col-span-3">
           <UserInfoSidebar
             user={userSidebarData}
-            onBlockToggle={handleBlockToggle}
             onDelete={handleDelete}
-            disableActions={isDeleting || isBlocking || isActivating}
+            disableActions={isDeleting || isActivating}
           />
         </div>
 
@@ -237,22 +216,6 @@ export default function UserDetailsTemplate() {
           />
         </div>
       </div>
-
-      {/* Block Confirmation Dialog */}
-      <ConfirmationDialog
-        open={blockDialogOpen}
-        onOpenChange={setBlockDialogOpen}
-        title={user.isBlocked ? t("unblock_user_title") : t("block_user_title")}
-        description={
-          user.isBlocked
-            ? t("unblock_user_desc")
-            : t("block_user_desc")
-        }
-        confirmText={user.isBlocked ? t("unblock_user") : t("block_user")}
-        variant="destructive"
-        onConfirm={handleConfirmBlock}
-        isLoading={isBlocking}
-      />
 
       {/* Delete Confirmation Dialog */}
       <ConfirmationDialog

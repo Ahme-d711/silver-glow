@@ -121,11 +121,6 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       required: false,
     },
-    isBlocked: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isActive: {
       type: Boolean,
       required: false,

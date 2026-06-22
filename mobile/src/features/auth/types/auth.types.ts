@@ -11,7 +11,6 @@ export interface User {
   gender?: "male" | "female";
   isActive?: boolean;
   isVerified?: boolean;
-  isBlocked?: boolean;
   phone?: string;
   address?: string;
   totalOrders?: number;
