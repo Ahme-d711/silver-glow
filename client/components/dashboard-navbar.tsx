@@ -123,7 +123,7 @@ export function DashboardNavbar() {
         title={t("logout")}
         description={tAuth("sign_in_text")}
         confirmText={t("logout")}
-        variant="default"
+        variant="destructive"
         onConfirm={handleConfirmLogout}
         isLoading={isLoggingOut}
       />

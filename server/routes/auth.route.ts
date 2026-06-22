@@ -7,6 +7,8 @@ import {
   getCurrentUser,
   updateProfile,
   changePassword,
+  requestPhoneChange,
+  confirmPhoneChange,
   verifyPhone,
   resendVerification,
   forgotPassword,
@@ -326,6 +328,34 @@ router.put("/profile", authenticate, uploadUser.single("picture"), updateProfile
  *         description: Password changed
  */
 router.post("/change-password", authenticate, changePassword);
+
+/**
+ * @swagger
+ * /auth/request-phone-change:
+ *   post:
+ *     summary: Request phone number change (sends OTP to new number)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Verification code sent
+ */
+router.post("/request-phone-change", authenticate, requestPhoneChange);
+
+/**
+ * @swagger
+ * /auth/confirm-phone-change:
+ *   post:
+ *     summary: Confirm phone number change with verification code
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Phone number updated
+ */
+router.post("/confirm-phone-change", authenticate, confirmPhoneChange);
 
 /**
  * @swagger

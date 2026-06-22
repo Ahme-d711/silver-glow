@@ -192,6 +192,28 @@ export const resendVerificationSchema = z.object({
 export type ResendVerificationInput = z.infer<typeof resendVerificationSchema>;
 
 /**
+ * Request Phone Change Schema (authenticated)
+ */
+export const requestPhoneChangeSchema = z.object({
+  newPhone: phoneSchema.refine((val) => val && val.length > 0, "Phone number is required"),
+});
+
+export type RequestPhoneChangeInput = z.infer<typeof requestPhoneChangeSchema>;
+
+/**
+ * Confirm Phone Change Schema (authenticated)
+ */
+export const confirmPhoneChangeSchema = z.object({
+  newPhone: phoneSchema.refine((val) => val && val.length > 0, "Phone number is required"),
+  code: z
+    .string()
+    .length(6, "Verification code must be 6 digits")
+    .regex(/^\d+$/, "Verification code must be numeric"),
+});
+
+export type ConfirmPhoneChangeInput = z.infer<typeof confirmPhoneChangeSchema>;
+
+/**
  * Update User Role Schema (Admin only)
  */
 export const updateUserRoleSchema = z.object({

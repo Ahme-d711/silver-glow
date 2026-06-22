@@ -168,7 +168,21 @@
     "contact_email": "البريد الإلكتروني للتواصل",
     "contact_phone": "رقم الهاتف للتواصل",
     "facebook_link": "رابط الفيسبوك",
-    "new_users_30d": "المستخدمين الجدد (30 يوم)"
+    "new_users_30d": "المستخدمين الجدد (30 يوم)",
+    "phone_settings": "رقم الهاتف",
+    "phone_settings_title": "إعدادات الهاتف",
+    "phone_settings_desc": "غيّر رقم هاتف حسابك. سيتم إرسال رمز تحقق إلى الرقم الجديد عبر واتساب.",
+    "current_phone": "رقم الهاتف الحالي",
+    "new_phone": "رقم الهاتف الجديد",
+    "send_verification_code": "إرسال رمز التحقق",
+    "confirm_phone_change": "تأكيد تغيير الهاتف",
+    "phone_change_code_sent": "تم إرسال رمز التحقق إلى رقمك الجديد",
+    "phone_change_success": "تم تحديث رقم الهاتف بنجاح",
+    "phone_change_request_failed": "فشل إرسال رمز التحقق",
+    "phone_change_confirm_failed": "فشل تحديث رقم الهاتف",
+    "phone_change_same_number": "يجب أن يكون الرقم الجديد مختلفًا عن رقمك الحالي",
+    "phone_change_code_hint": "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى {phone}",
+    "change_phone_number": "استخدام رقم مختلف"
   },
   "Common": {
     "loading": "جاري التحميل...",

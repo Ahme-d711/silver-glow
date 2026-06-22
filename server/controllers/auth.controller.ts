@@ -15,6 +15,8 @@ import {
   resetPasswordRequestSchema,
   resetPasswordSchema,
   verifyResetPasswordCodeSchema,
+  requestPhoneChangeSchema,
+  confirmPhoneChangeSchema,
   validateAuthData,
   safeValidateAuthData,
 } from "../schemas/auth-schema.js";
@@ -348,6 +350,108 @@ export const changePassword = asyncHandler(async (req: Request, res: Response) =
   sendResponse(res, 200, {
     success: true,
     message: "Password changed successfully",
+  });
+});
+
+/**
+ * Request phone number change — sends OTP to the new number
+ */
+export const requestPhoneChange = asyncHandler(async (req: Request, res: Response) => {
+  requireAuth(req);
+
+  let { newPhone } = validateAuthData(requestPhoneChangeSchema, req.body);
+  newPhone = newPhone.replace(/^\+/, "");
+
+  const user = await UserModel.findOne({
+    _id: req.user!._id,
+    isActive: true,
+  });
+
+  if (!user) {
+    throw new AppError("User not found or account is deactivated", 404);
+  }
+
+  if (user.phone === newPhone) {
+    throw new AppError("New phone number must be different from your current number", 400);
+  }
+
+  const existingPhone = await UserModel.findOne({
+    phone: newPhone,
+    _id: { $ne: user._id },
+  });
+
+  if (existingPhone) {
+    throw new AppError("This phone number is already in use", 409);
+  }
+
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+  user.pendingPhone = newPhone;
+  user.verificationCode = verificationCode;
+  user.verificationCodeExpires = verificationCodeExpires;
+  await user.save();
+
+  await sendVerificationWhatsApp(newPhone, verificationCode);
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Verification code has been sent to your new phone number via WhatsApp",
+  });
+});
+
+/**
+ * Confirm phone number change with verification code
+ */
+export const confirmPhoneChange = asyncHandler(async (req: Request, res: Response) => {
+  requireAuth(req);
+
+  let { newPhone, code } = validateAuthData(confirmPhoneChangeSchema, req.body);
+  newPhone = newPhone.replace(/^\+/, "");
+
+  const user = await UserModel.findOne({
+    _id: req.user!._id,
+    isActive: true,
+  });
+
+  if (!user) {
+    throw new AppError("User not found or account is deactivated", 404);
+  }
+
+  if (!user.pendingPhone || user.pendingPhone !== newPhone) {
+    throw new AppError("No pending phone change for this number. Please request a new code.", 400);
+  }
+
+  if (!user.verificationCode || user.verificationCode !== code) {
+    throw new AppError("Invalid verification code", 400);
+  }
+
+  if (!user.verificationCodeExpires || user.verificationCodeExpires < new Date()) {
+    throw new AppError("Verification code has expired", 400);
+  }
+
+  const existingPhone = await UserModel.findOne({
+    phone: newPhone,
+    _id: { $ne: user._id },
+  });
+
+  if (existingPhone) {
+    throw new AppError("This phone number is already in use", 409);
+  }
+
+  user.phone = newPhone;
+  user.pendingPhone = undefined;
+  user.verificationCode = undefined;
+  user.verificationCodeExpires = undefined;
+  user.isVerified = true;
+  await user.save();
+
+  const { password: _, ...userResponse } = user.toObject();
+
+  sendResponse(res, 200, {
+    success: true,
+    message: "Phone number updated successfully",
+    data: { user: userResponse },
   });
 });
 

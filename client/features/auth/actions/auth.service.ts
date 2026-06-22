@@ -302,6 +302,57 @@ export async function changePassword(payload: {
 }
 
 /**
+ * Request phone number change (sends OTP to new number)
+ */
+export async function requestPhoneChange(payload: {
+  newPhone: string;
+}): Promise<AuthActionResponse> {
+  try {
+    const response = await serverAxios.post<ApiResponse>("/auth/request-phone-change", payload);
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to send verification code",
+    };
+  }
+}
+
+/**
+ * Confirm phone number change with verification code
+ */
+export async function confirmPhoneChange(payload: {
+  newPhone: string;
+  code: string;
+}): Promise<AuthActionResponse> {
+  try {
+    const response = await serverAxios.post<ApiResponse<{ user: User }>>(
+      "/auth/confirm-phone-change",
+      payload
+    );
+
+    const user = response.data.data?.user;
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: user ? { user, accessToken: "" } : undefined,
+    };
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to update phone number",
+    };
+  }
+}
+
+/**
  * Verify phone number with verification code
  */
 export async function verifyPhone(payload: {

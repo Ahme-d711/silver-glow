@@ -168,7 +168,21 @@
     "contact_email": "Contact Email",
     "contact_phone": "Contact Phone",
     "facebook_link": "Facebook Link",
-    "new_users_30d": "New Users (30d)"
+    "new_users_30d": "New Users (30d)",
+    "phone_settings": "Phone Number",
+    "phone_settings_title": "Phone Settings",
+    "phone_settings_desc": "Change your account phone number. A verification code will be sent to the new number via WhatsApp.",
+    "current_phone": "Current Phone Number",
+    "new_phone": "New Phone Number",
+    "send_verification_code": "Send Verification Code",
+    "confirm_phone_change": "Confirm Phone Change",
+    "phone_change_code_sent": "Verification code sent to your new phone number",
+    "phone_change_success": "Phone number updated successfully",
+    "phone_change_request_failed": "Failed to send verification code",
+    "phone_change_confirm_failed": "Failed to update phone number",
+    "phone_change_same_number": "New phone number must be different from your current number",
+    "phone_change_code_hint": "Enter the 6-digit code sent to {phone}",
+    "change_phone_number": "Use a different number"
   },
   "Common": {
     "loading": "Loading...",

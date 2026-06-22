@@ -139,6 +139,12 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       required: false,
     },
+    pendingPhone: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 20,
+    },
     resetPasswordCode: {
       type: String,
       required: false,

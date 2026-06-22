@@ -12,13 +12,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { settingsSchema, SettingsFormValues } from "../schemas/settingsSchema";
 import { useSettings } from "../hooks/useSettings";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UniLoading from "@/components/shared/UniLoading";
 import { SecuritySettings } from "./SecuritySettings";
+import { PhoneSettings } from "./PhoneSettings";
 
 export function SettingsForm() {
   const t = useTranslations("Dashboard");
   const { settings, updateSettings, isUpdating, isLoading } = useSettings();
+  const [activeTab, setActiveTab] = useState("shipping");
+
+  const showGlobalSave = ["shipping", "contact", "links"].includes(activeTab);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema) as any,
@@ -63,7 +67,7 @@ export function SettingsForm() {
 
   return (
     <Form {...form}>
-      <Tabs defaultValue="shipping" className="w-full space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
           <TabsList className="bg-secondary py-2! h-12 rounded-xl mb-6">
             <TabsTrigger value="shipping" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               {t("shipping_and_tax")}
@@ -76,6 +80,9 @@ export function SettingsForm() {
             </TabsTrigger>
             <TabsTrigger value="security" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               Security
+            </TabsTrigger>
+            <TabsTrigger value="phone" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("phone_settings")}
             </TabsTrigger>
           </TabsList>
 
@@ -157,6 +164,10 @@ export function SettingsForm() {
             <SecuritySettings />
           </TabsContent>
 
+          <TabsContent value="phone" className="space-y-6 outline-none">
+            <PhoneSettings />
+          </TabsContent>
+
           <TabsContent value="links" className="space-y-6 outline-none">
             <div className="bg-white p-8 rounded-[24px] border border-divider shadow-sm">
               <div className="flex justify-between items-center mb-6">
@@ -220,26 +231,28 @@ export function SettingsForm() {
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end mt-6">
-          <Button 
-            type="button" 
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={isUpdating}
-            className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
-          >
-            {isUpdating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("saving")}...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                {t("save_changes")}
-              </>
-            )}
-          </Button>
-        </div>
+        {showGlobalSave && (
+          <div className="flex justify-end mt-6">
+            <Button 
+              type="button" 
+              onClick={form.handleSubmit(onSubmit)}
+              disabled={isUpdating}
+              className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
+            >
+              {isUpdating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("saving")}...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  {t("save_changes")}
+                </>
+              )}
+            </Button>
+          </div>
+        )}
     </Form>
   );
 }

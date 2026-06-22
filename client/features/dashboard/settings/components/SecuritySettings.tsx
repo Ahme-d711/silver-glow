@@ -2,9 +2,10 @@ import { forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Loader2, Save } from "lucide-react";
 
 import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { UniInput } from "@/components/shared/uni-form/UniInput";
 import { securitySchema, SecurityFormValues } from "../schemas/securitySchema";
 import { useChangePassword } from "@/features/auth/hooks/useChangePassword";
@@ -15,7 +16,7 @@ export interface SecuritySettingsHandle {
 
 export const SecuritySettings = forwardRef<SecuritySettingsHandle>((_, ref) => {
   const t = useTranslations("Dashboard");
-  const { submitChangePassword } = useChangePassword();
+  const { submitChangePassword, loading } = useChangePassword();
 
   const form = useForm<SecurityFormValues>({
     resolver: zodResolver(securitySchema) as any,
@@ -81,6 +82,21 @@ export const SecuritySettings = forwardRef<SecuritySettingsHandle>((_, ref) => {
               type="password"
             />
           </div>
+        </div>
+
+        <div className="flex justify-end mt-6">
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
+          >
+            {loading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            {t("save_changes")}
+          </Button>
         </div>
       </form>
     </Form>
