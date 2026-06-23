@@ -1,42 +1,39 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { useShopProducts, useHomeCategories } from "@/features/main/home/hooks/useHome";
+import { useTranslations } from "next-intl";
+import { useShopProducts, useHomeSections } from "@/features/main/home/hooks/useHome";
 import { ShopProductCard } from "../cards/ShopProductCard";
 import { ShopPagination } from "../ShopPagination";
+import { ShopProductToolbar } from "./ShopProductToolbar";
 import { Product } from "@/features/dashboard/products/types";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { StorefrontError } from "@/components/shared/StorefrontError";
 
 export const ShopProductSection = () => {
   const t = useTranslations("Shop");
-  const locale = useLocale();
-  const isRtl = locale === "ar";
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // URL State
   const categorySlug = searchParams.get("category");
+  const sectionSlug = searchParams.get("section");
   const searchQuery = searchParams.get("search") || "";
   const initialSort = searchParams.get("sort") || "popularity";
   const initialPage = Number(searchParams.get("page")) || 1;
 
   // Data Fetching
-  const { data: categories = [] } = useHomeCategories();
+  const { data: sections = [] } = useHomeSections();
+  const activeSection = sectionSlug
+    ? sections.find((section) => section.slug === sectionSlug)
+    : undefined;
+  const sectionIds = activeSection ? [activeSection._id] : undefined;
 
   // Local State
   const [sortValue, setSortValue] = useState(initialSort);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const filterKey = `${searchQuery}|${sortValue}|${categorySlug ?? ""}`;
+  const filterKey = `${searchQuery}|${sortValue}|${categorySlug ?? ""}|${sectionSlug ?? ""}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
 
   if (filterKey !== prevFilterKey) {
@@ -72,14 +69,14 @@ export const ShopProductSection = () => {
     }
   }, [sortValue, currentPage, pathname, router, searchParams]);
 
-  const handleCategoryChange = (slug: string) => {
+  const handleSectionChange = (slug: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (slug === "all") {
-      params.delete("category");
+      params.delete("section");
     } else {
-      params.set("category", slug);
+      params.set("section", slug);
     }
-    params.delete("page"); // Reset pagination
+    params.delete("page");
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -89,6 +86,7 @@ export const ShopProductSection = () => {
     page: currentPage,
     limit: 12,
     categorySlug: categorySlug || undefined,
+    sectionIds,
   });
 
   const { products = [], pagination = undefined } = (data as { products: Product[]; pagination: { total: number; pages: number } } | undefined) || {};
@@ -112,49 +110,14 @@ export const ShopProductSection = () => {
 
   return (
     <div className="space-y-10">
-      {/* Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-divider">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 lg:gap-8">
-          <div className="text-content-tertiary font-medium whitespace-nowrap">
-            {t("showingResults", { count: pagination?.total || 0 })}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between sm:justify-end gap-4 md:gap-8">
-          <div className="flex items-center gap-3">
-             {/* Category Filter Select */}
-             <Select 
-              value={categorySlug || "all"} 
-              onValueChange={handleCategoryChange}
-            >
-              <SelectTrigger className="h-11 min-w-[180px] border-2 border-primary/15 bg-primary/[0.06] font-bold text-primary hover:border-primary/40 hover:bg-primary/10">
-                <SelectValue placeholder={t("categoriesTitle")} />
-              </SelectTrigger>
-              <SelectContent align="end" position="popper" className="max-h-[320px]">
-                <SelectItem value="all">{t("all")}</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category._id} value={category.slug}>
-                    {isRtl ? category.nameAr : category.nameEn}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Sort Select */}
-            <Select value={sortValue} onValueChange={setSortValue}>
-              <SelectTrigger className="h-11 min-w-[170px] font-semibold">
-                <SelectValue placeholder={t("popularity")} />
-              </SelectTrigger>
-              <SelectContent align="end" position="popper">
-                <SelectItem value="popularity">{t("popularity")}</SelectItem>
-                <SelectItem value="newest">{t("newest")}</SelectItem>
-                <SelectItem value="priceLowHigh">{t("priceLowHigh")}</SelectItem>
-                <SelectItem value="priceHighLow">{t("priceHighLow")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
+      <ShopProductToolbar
+        sections={sections}
+        sectionSlug={sectionSlug}
+        sortValue={sortValue}
+        totalResults={pagination?.total || 0}
+        onSectionChange={handleSectionChange}
+        onSortChange={setSortValue}
+      />
 
       {/* Grid */}
       <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>

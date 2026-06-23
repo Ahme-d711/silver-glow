@@ -689,6 +689,7 @@
     "all": "All",
     "items": "Items",
     "categoriesTitle": "Shop by Category",
+    "sectionsTitle": "Shop by Section",
     "searchProducts": "Search for products...",
     "showingResults": "Showing all {count} results",
     "popularity": "Popularity",
