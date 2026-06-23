@@ -4,8 +4,10 @@ import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Category } from "@/features/dashboard/categories/services/category.service";
 import { getImageUrl } from "@/utils/image.utils";
+import { cn } from "@/lib/utils";
 
 interface ShopCategoryCardProps {
   category: Category;
@@ -14,16 +16,21 @@ interface ShopCategoryCardProps {
 export const ShopCategoryCard: React.FC<ShopCategoryCardProps> = ({ category }) => {
   const t = useTranslations("Shop");
   const locale = useLocale();
+  const searchParams = useSearchParams();
   const isAr = locale === "ar";
-  
+  const isActive = searchParams.get("category") === category.slug;
+
   const name = isAr ? category.nameAr : category.nameEn;
   const imageUrl = getImageUrl(category.image) || "/images/placeholder-category.jpg";
   const productCount = category.productsCount || 0;
 
   return (
-    <Link 
+    <Link
       href={`/shop?category=${category.slug}`}
-      className="group relative overflow-hidden rounded-2xl aspect-4/5 block bg-secondary"
+      className={cn(
+        "group relative overflow-hidden rounded-2xl aspect-4/5 block bg-secondary shadow-md transition-all duration-500 hover:shadow-xl hover:-translate-y-1",
+        isActive && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
     >
       {/* Background Image */}
       <Image
@@ -33,8 +40,7 @@ export const ShopCategoryCard: React.FC<ShopCategoryCardProps> = ({ category }) 
         className="object-cover transition-transform duration-700 group-hover:scale-110"
       />
       
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-300" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/35 to-black/15 transition-colors duration-300 group-hover:from-black/80 group-hover:via-black/45" />
       
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
