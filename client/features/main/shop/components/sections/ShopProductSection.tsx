@@ -36,7 +36,14 @@ export const ShopProductSection = () => {
   // Local State
   const [sortValue, setSortValue] = useState(initialSort);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  
+  const filterKey = `${searchQuery}|${sortValue}|${categorySlug ?? ""}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
+    setCurrentPage(1);
+  }
+
   // Sync state with URL (excluding search as it's handled by Navbar)
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -64,11 +71,6 @@ export const ShopProductSection = () => {
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [sortValue, currentPage, pathname, router, searchParams]);
-
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, sortValue, categorySlug]);
 
   const handleCategoryChange = (slug: string) => {
     const params = new URLSearchParams(searchParams.toString());

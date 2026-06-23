@@ -1,8 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProductReviews, addReview, updateReview, deleteReview } from "../services/review.service";
 import { CreateReviewPayload, UpdateReviewPayload } from "../types/review.types";
+import { homeKeys } from "@/features/main/home/hooks/useHome";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+
+function invalidateReviewRelatedQueries(queryClient: ReturnType<typeof useQueryClient>, productId: string) {
+  queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
+  queryClient.invalidateQueries({ queryKey: [...homeKeys.all, "product"] });
+  queryClient.invalidateQueries({ queryKey: [...homeKeys.all, "products"] });
+  queryClient.invalidateQueries({ queryKey: homeKeys.reviews() });
+}
 
 export const useProductReviews = (productId: string) => {
   return useQuery({
@@ -19,7 +27,7 @@ export const useAddReview = () => {
     mutationFn: (payload: CreateReviewPayload) => addReview(payload),
     onSuccess: (data) => {
       toast.success(data.message || "Review added successfully");
-      queryClient.invalidateQueries({ queryKey: ["reviews", data.data.review.productId] });
+      invalidateReviewRelatedQueries(queryClient, data.data.review.productId);
     },
     onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(error.response?.data?.message || "Failed to add review");
@@ -34,7 +42,7 @@ export const useUpdateReview = () => {
     mutationFn: ({ id, payload }: { id: string; payload: UpdateReviewPayload }) => updateReview(id, payload),
     onSuccess: (data) => {
       toast.success(data.message || "Review updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["reviews", data.data.review.productId] });
+      invalidateReviewRelatedQueries(queryClient, data.data.review.productId);
     },
     onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(error.response?.data?.message || "Failed to update review");
@@ -49,7 +57,7 @@ export const useDeleteReview = () => {
     mutationFn: ({ id, productId }: { id: string; productId: string }) => deleteReview(id),
     onSuccess: (data, variables) => {
       toast.success(data.message || "Review deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["reviews", variables.productId] });
+      invalidateReviewRelatedQueries(queryClient, variables.productId);
     },
     onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(error.response?.data?.message || "Failed to delete review");

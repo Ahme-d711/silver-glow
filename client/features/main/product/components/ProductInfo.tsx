@@ -93,6 +93,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     toggleWishlist(product._id);
   };
 
+  const hasReviews = (product.numReviews ?? 0) > 0;
+  const displayRating = hasReviews ? Math.round(product.averageRating ?? 0) : 0;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="space-y-4">
@@ -107,7 +110,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                 key={star}
                 className={cn(
                   "w-5 h-5",
-                  star <= Math.round(product.averageRating || 5)
+                  star <= displayRating
                     ? "fill-amber-400 text-amber-400"
                     : "fill-secondary/20 text-secondary/40"
                 )}
@@ -115,7 +118,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             ))}
           </div>
           <span className="text-secondary font-medium text-sm">
-            {product.numReviews} {t("Reviews")}
+            {hasReviews ? `${product.numReviews} ${t("Reviews")}` : t("no_reviews")}
           </span>
         </div>
       </div>
