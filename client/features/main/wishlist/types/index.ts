@@ -27,3 +27,10 @@ export interface ToggleWishlistResponse {
     };
   };
 }
+
+export type {
+  WishlistHeaderProps,
+  WishlistLoadingProps,
+  WishlistEmptyProps,
+  WishlistGridProps,
+} from "./wishlist-template.types";

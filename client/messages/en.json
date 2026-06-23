@@ -759,6 +759,15 @@
     "coming_soon": "Coming Soon",
     "topup_unavailable": "Wallet top-up is currently under maintenance and will be available soon."
   },
+  "Wishlist": {
+    "title": "Wishlist",
+    "description": "Saved items you love and want to keep an eye on.",
+    "clear_all": "Clear All Favorites",
+    "loading": "Loading your favorites...",
+    "empty_title": "Your wishlist is empty",
+    "empty_description": "Looks like you haven't saved any items yet. Start exploring our premium collection.",
+    "explore_collection": "Explore Collection"
+  },
   "Errors": {
     "server_error_title": "Connection Interrupted",
     "server_error_desc": "We're having trouble connecting to our servers. Please check your internet connection and try again.",
