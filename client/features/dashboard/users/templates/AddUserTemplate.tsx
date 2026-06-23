@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { UserForm } from "../components/UserForm";
 import { useCreateUser } from "../hooks/useUser";
-import { UserFormValues } from "../schemas/user.schema";
+import { UserFormValues, EditUserFormValues } from "../schemas/user.schema";
 import { useTranslations } from "next-intl";
 
 interface AddUserDialogProps {
@@ -22,18 +22,19 @@ export default function AddUserTemplate({ open, onOpenChange }: AddUserDialogPro
   const tCommon = useTranslations("Common");
   const { mutate: createUser, isPending } = useCreateUser();
 
-  const handleSubmit = (payload: UserFormValues | FormData) => {
-    let finalPayload = payload;
-
-    // If it's not FormData, clean values before sending
-    if (!(payload instanceof FormData)) {
-      const cleanPayload = { ...payload };
-      if (!cleanPayload.password) delete cleanPayload.password;
-      if (!cleanPayload.address) delete cleanPayload.address;
-      finalPayload = cleanPayload;
+  const handleSubmit = (payload: UserFormValues | EditUserFormValues | FormData) => {
+    if (payload instanceof FormData) {
+      createUser({ payload }, {
+        onSuccess: () => onOpenChange(false),
+      });
+      return;
     }
 
-    createUser({ payload: finalPayload }, {
+    const cleanPayload = { ...payload } as UserFormValues;
+    if (!cleanPayload.password) delete cleanPayload.password;
+    if (!cleanPayload.address) delete cleanPayload.address;
+
+    createUser({ payload: cleanPayload }, {
       onSuccess: () => {
         onOpenChange(false);
       },

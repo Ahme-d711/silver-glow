@@ -117,3 +117,13 @@ export interface UserTransaction {
   image?: string;
 }
 
+export type {
+  UserFormProps,
+  SharedUserFormProps,
+  UserFormTranslations,
+  UserFormLayoutProps,
+  UserFormAvatarProps,
+  UserFormActionsProps,
+  CreateUserFormFieldsProps,
+} from "./user-form.types";
+
