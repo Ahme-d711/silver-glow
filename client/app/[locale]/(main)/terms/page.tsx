@@ -7,7 +7,7 @@ import {
   DEFAULT_TERMS_AR,
   DEFAULT_TERMS_EN,
 } from "@/features/main/legal/constants/defaultTerms";
-import UniLoading from "@/components/shared/UniLoading";
+import { PageLoadingState } from "@/components/shared/PageLoadingState";
 
 function formatTermsContent(content: string) {
   return content.split("\n\n").map((block, index) => {
@@ -52,7 +52,7 @@ export default function TermsPage() {
       description={t("terms_description")}
     >
       {isLoading ? (
-        <UniLoading />
+        <PageLoadingState minHeight="min-h-[280px]" />
       ) : (
         <div className="space-y-6">{formatTermsContent(content)}</div>
       )}

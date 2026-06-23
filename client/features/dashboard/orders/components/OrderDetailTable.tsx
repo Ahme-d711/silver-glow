@@ -1,15 +1,18 @@
 "use client"
 
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import UniTable, { ProductCell } from "@/components/shared/UniTable"
 
-import { useParams } from "next/navigation"
-import { OrderStatus, OrderItem } from "../types"
-import { exportToExcel } from "@/utils/excelExport"
-import { useOrder } from "../hooks/useOrders"
 import { useTranslations } from "next-intl"
-import { format } from "date-fns"
+import { OrderItem } from "../types";
+
+function getProductId(productId: OrderItem["productId"] | { _id: string }): string {
+  if (typeof productId === "object" && productId !== null && "_id" in productId) {
+    return String(productId._id);
+  }
+
+  return String(productId ?? "");
+}
 
 interface OrderDetailTableProps {
   items: OrderItem[]
@@ -34,8 +37,15 @@ export function OrderDetailTable({ items }: OrderDetailTableProps) {
     {
       id: "id",
       header: t("id"),
-      accessorKey: "id",
-      className: "font-semibold text-primary"
+      cell: (_: unknown, row: OrderItem & { productId?: string | { _id: string } }) => {
+        const productId = getProductId(row.productId);
+
+        return (
+          <span className="font-semibold text-primary" title={productId}>
+            {productId.slice(0, 8)}
+          </span>
+        );
+      },
     },
     {
       id: "quantity",

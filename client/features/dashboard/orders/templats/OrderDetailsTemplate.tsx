@@ -10,6 +10,8 @@ import { useParams } from "next/navigation"
 import { exportToExcel } from "@/utils/excelExport"
 import { useOrder } from "../hooks/useOrders"
 import { useTranslations } from "next-intl"
+import { PageLoadingState } from "@/components/shared/PageLoadingState"
+import { PageErrorState } from "@/components/shared/PageErrorState"
 
 export default function OrderDetailsTemplate() {
   const params = useParams()
@@ -22,19 +24,19 @@ export default function OrderDetailsTemplate() {
   const { data: order, isLoading, error } = useOrder(orderId);
 
   if (isLoading) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoadingState message={tCommon("page_loading")} className="p-8" />;
   }
 
   if (error || !order) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <p className="text-destructive font-semibold">{t("error_loading")}</p>
-        <p className="text-content-tertiary">{(error as Error)?.message || t("order_not_found")}</p>
-      </div>
+      <PageErrorState
+        className="p-8"
+        title={t("error_loading")}
+        description={(error as Error)?.message || t("order_not_found")}
+        variant={error ? "error" : "not-found"}
+        backHref="/dashboard/orders"
+        backLabel={t("title")}
+      />
     );
   }
 

@@ -7,8 +7,7 @@ import { useCategoryBySlug, useUpdateCategory } from "../hooks/useCategory";
 import { CategoryFormValues } from "../schemas/category.schema";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
-import UniLoading from "@/components/shared/UniLoading";
-import NoDataMsg from "@/components/shared/NoDataMsg";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditCategoryTemplate() {
@@ -64,9 +63,11 @@ export default function EditCategoryTemplate() {
             { label: t("edit_category") },
           ]}
         />
-        <NoDataMsg 
-          title={tCommon("error_loading")} 
+        <PageErrorState
+          title={tCommon("error_loading")}
           description={tCommon("try_again_later")}
+          backHref="/dashboard/categories"
+          backLabel={t("title")}
         />
       </div>
     );

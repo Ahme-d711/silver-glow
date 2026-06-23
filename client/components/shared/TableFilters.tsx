@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useSyncExternalStore } from "react"
+import { useLocale } from "next-intl"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { DatePicker } from "./DatePicker"
@@ -70,6 +71,9 @@ export function TableFilters({
   className,
 }: TableFiltersProps) {
   const mounted = useIsClient()
+  const locale = useLocale()
+  const isRtl = locale === "ar"
+  const displayTabs = tabs ? (isRtl ? [...tabs].reverse() : tabs) : []
 
   return (
     <div className={cn("p-6 flex flex-wrap items-center justify-between gap-4", className)}>
@@ -80,13 +84,16 @@ export function TableFilters({
           onValueChange={setActiveTab} 
           className="w-fit"
         >
-          <TabsList className="bg-background p-1.5 rounded-2xl border border-divider h-auto gap-1">
-            {tabs.map((tab) => (
+          <TabsList
+            dir="ltr"
+            className="bg-background p-1.5 rounded-2xl border border-divider h-auto gap-1"
+          >
+            {displayTabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
                 className={cn(
-                  "px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border-none shadow-none data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-content-tertiary hover:text-content-secondary cursor-pointer"
+                  "px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border-none shadow-none data-[state=active]:bg-secondary data-[state=active]:text-primary data-[state=active]:shadow-sm text-content-tertiary hover:text-content-secondary cursor-pointer"
                 )}
               >
                 {tab.label}

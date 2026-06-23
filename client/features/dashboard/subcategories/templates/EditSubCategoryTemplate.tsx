@@ -7,8 +7,7 @@ import { useSubcategoryBySlug, useUpdateSubcategory } from "../hooks/useSubCateg
 import { SubcategoryFormValues } from "../schemas/subcategory.schema";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/shared/PageHeader";
-import UniLoading from "@/components/shared/UniLoading";
-import NoDataMsg from "@/components/shared/NoDataMsg";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
 
 export default function EditSubCategoryTemplate() {
@@ -65,9 +64,11 @@ export default function EditSubCategoryTemplate() {
             { label: t("edit_subcategory") },
           ]}
         />
-        <NoDataMsg 
-          title={tCommon("error_loading")} 
+        <PageErrorState
+          title={tCommon("error_loading")}
           description={tCommon("try_again_later")}
+          backHref="/dashboard/subcategories"
+          backLabel={t("title")}
         />
       </div>
     );

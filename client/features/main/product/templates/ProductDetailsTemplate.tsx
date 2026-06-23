@@ -5,9 +5,10 @@ import { ProductGallery } from "../components/ProductGallery";
 import { ProductInfo } from "../components/ProductInfo";
 import { ReviewsTab } from "../components/ReviewsTab";
 import { BestsellerProductsSection } from "../components/BestsellerProductsSection";
-import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
+import { PageLoadingState } from "@/components/shared/PageLoadingState";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 import MainNavbar from "@/components/MainNavbar";
 
 interface ProductDetailsTemplateProps {
@@ -22,25 +23,18 @@ export const ProductDetailsTemplate: React.FC<ProductDetailsTemplateProps> = ({ 
   const { data: product, isLoading, isError } = useProduct(slug);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex gap-2">
-            <div className="h-4 w-4 rounded-full bg-primary animate-bounce decoration-75"></div>
-            <div className="h-4 w-4 rounded-full bg-primary animate-bounce decoration-100"></div>
-            <div className="h-4 w-4 rounded-full bg-primary animate-bounce decoration-150"></div>
-        </div>
-      </div>
-    );
+    return <PageLoadingState minHeight="min-h-screen" />;
   }
 
   if (isError || !product) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold text-primary">{t("product_not_found")}</h1>
-        <Link href="/shop" className="text-primary underline hover:text-primary/80">
-          {t("return_to_shop")}
-        </Link>
-      </div>
+      <PageErrorState
+        title={t("product_not_found")}
+        variant="not-found"
+        backHref="/shop"
+        backLabel={t("return_to_shop")}
+        minHeight="min-h-screen"
+      />
     );
   }
 

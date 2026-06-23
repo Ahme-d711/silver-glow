@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { AdsTable } from "../components/AdsTable"
 import { AdsMobileMockup } from "../components/AdsMobileMockup"
-import NoDataMsg from "@/components/shared/NoDataMsg"
+import { PageErrorState } from "@/components/shared/PageErrorState"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal"
 import { useAds, useUpdateAd, useDeleteAd, useToggleAdStatus } from "../hooks/useAds"
 import { useTranslations, useLocale } from "next-intl"
@@ -108,7 +108,16 @@ export default function AdsTemplate() {
   }
 
   if (isLoading) return <AdsSkeleton />
-  if (error) return <NoDataMsg title={tCommon("error_loading_ads") || "Error loading ads"} />
+  if (error) {
+    return (
+      <PageErrorState
+        title={tCommon("error_loading_ads")}
+        description={tCommon("try_again_later")}
+        backHref="/dashboard"
+        backLabel={tNav("dashboard")}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">

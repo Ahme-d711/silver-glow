@@ -7,6 +7,7 @@ import { useUpdateProduct, useProductBySlug } from "../hooks/useProduct";
 import { useTranslations } from "next-intl";
 import { ProductFormData } from "../schemas/products.schema";
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 
 export default function EditProductTemplate() {
   const router = useRouter();
@@ -35,9 +36,12 @@ export default function EditProductTemplate() {
 
   if (!product) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-content-tertiary">{t("product_not_found")}</p>
-      </div>
+      <PageErrorState
+        title={t("product_not_found")}
+        variant="not-found"
+        backHref="/dashboard/products"
+        backLabel={t("title")}
+      />
     );
   }
 

@@ -6,7 +6,7 @@ import { useOrdersState, useOrders, useOrdersByStatus } from "../hooks/useOrders
 import { TableFilters } from "@/components/shared/TableFilters"
 import { OrdersTable } from "../components/OrdersTable"
 import { Order, OrderStatus } from "../types"
-import NoDataMsg from "@/components/shared/NoDataMsg"
+import { PageErrorState } from "@/components/shared/PageErrorState"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton"
 import { useSearchParams } from "next/navigation"
 import { format } from "date-fns";
@@ -135,12 +135,11 @@ export default function OrdersTemplate() {
              <UniTableSkeleton columnCount={9} rowCount={10} />
           </div>
         ) : error ? (
-          <div className="p-8">
-            <NoDataMsg 
-              title={t("title")}
-              description={error?.message || tCommon("no_data_desc")} 
-            />
-          </div>
+          <PageErrorState
+            title={tCommon("error_loading")}
+            description={error?.message || tCommon("no_data_desc")}
+            minHeight="min-h-[320px]"
+          />
         ) : (
           <OrdersTable 
             orders={filteredOrders} 

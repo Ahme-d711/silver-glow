@@ -8,7 +8,7 @@ import { UserStatsGrid } from "../components/UserStatsGrid";
 import { UserInfoSidebar } from "../components/UserInfoSidebar";
 import { UserTransactionsTable } from "../components/UserTransactionsTable";
 import { useUser, useDeleteUser, useAddUserBalance, useActivateUser, useUserOrders } from "../hooks/useUser";
-import NoDataMsg from "@/components/shared/NoDataMsg";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { AddBalanceModal } from "../components/AddBalanceModal";
 import { UserDetailsSkeleton } from "../components/UserDetailsSkeleton";
@@ -59,9 +59,12 @@ export default function UserDetailsTemplate() {
             { label: t("user_details") },
           ]}
         />
-        <NoDataMsg
+        <PageErrorState
           title={t("failed_load_user")}
           description={error instanceof Error ? error.message : t("user_not_found")}
+          variant={error ? "error" : "not-found"}
+          backHref="/dashboard/users"
+          backLabel={t("title")}
         />
       </div>
     );

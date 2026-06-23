@@ -7,6 +7,7 @@ import { useUpdateBrand, useBrandBySlug } from "../hooks/useBrand";
 import { useTranslations } from "next-intl";
 import { BrandFormData } from "../types";
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton";
+import { PageErrorState } from "@/components/shared/PageErrorState";
 
 export default function EditBrandTemplate() {
   const router = useRouter();
@@ -35,9 +36,11 @@ export default function EditBrandTemplate() {
 
   if (!brand) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-content-tertiary">Brand not found</p>
-      </div>
+      <PageErrorState
+        variant="not-found"
+        backHref="/dashboard/brands"
+        backLabel={t("title")}
+      />
     );
   }
 

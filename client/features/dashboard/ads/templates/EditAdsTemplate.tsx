@@ -5,11 +5,9 @@ import { useRouter, useParams } from "next/navigation"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { AdForm } from "../components/AdForm"
 import { useAd, useUpdateAd } from "../hooks/useAds"
-import UniLoading from "@/components/shared/UniLoading"
-import NoDataMsg from "@/components/shared/NoDataMsg"
+import { PageErrorState } from "@/components/shared/PageErrorState"
 import { FormPageSkeleton } from "@/components/shared/FormPageSkeleton"
 import { useTranslations } from "next-intl"
-import { toast } from "sonner"
 
 export default function EditAdsTemplate() {
   const router = useRouter()
@@ -38,7 +36,16 @@ export default function EditAdsTemplate() {
   const tCommon = useTranslations("Common")
 
   if (isLoadingAd) return <FormPageSkeleton />;
-  if (error || !ad) return <NoDataMsg title={t("error_loading_ad") || "Error loading ad"} />
+  if (error || !ad) {
+    return (
+      <PageErrorState
+        title={t("error_loading_ad")}
+        description={tCommon("try_again_later")}
+        backHref="/dashboard/ads"
+        backLabel={t("title")}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
