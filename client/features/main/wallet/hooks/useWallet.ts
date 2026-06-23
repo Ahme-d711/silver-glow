@@ -1,6 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { walletService, GetTransactionsParams } from "../services/wallet.service";
+import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toast } from "sonner";
+
+export async function refreshWalletState(queryClient: QueryClient) {
+  await queryClient.invalidateQueries({ queryKey: ["transactions"] });
+  await useAuthStore.getState().refreshUser();
+}
 
 export const useMyTransactions = (params?: GetTransactionsParams) => {
   return useQuery({
@@ -15,9 +21,8 @@ export const useTopup = () => {
   return useMutation({
     mutationFn: ({ amount, description }: { amount: number; description?: string }) =>
       walletService.topup(amount, description),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["auth-user"] }); // Invalidating user to refresh balance
+    onSuccess: async () => {
+      await refreshWalletState(queryClient);
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || "Failed to top up balance");

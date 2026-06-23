@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { Link } from "@/i18n/routing";
-import { ShoppingCart, Heart, Wallet, Menu } from "lucide-react";
+import { ShoppingCart, Heart, Wallet, Menu, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCartStore, getTotalItems } from "@/features/main/cart/stores/useCartStore";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
@@ -11,19 +11,26 @@ import { UserMenu } from "./UserMenu";
 
 export function NavbarActions() {
   const t = useTranslations("Navigation");
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const { items } = useCartStore();
   const { wishlist } = useWishlist();
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   const totalItems = getTotalItems(items);
   const wishlistCount = wishlist?.products?.length || 0;
 
   return (
     <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">
+      <Link href="/shop" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <Store className="h-5 w-5" />
+        <span className="hidden lg:inline">{t("shop")}</span>
+      </Link>
+
+      <div className="h-6 w-px bg-white/20 hidden md:block" />
+
       <Link href="/cart" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
         <div className="relative">
           <ShoppingCart className="h-5 w-5" />

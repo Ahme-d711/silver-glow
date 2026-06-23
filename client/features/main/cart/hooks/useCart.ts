@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cartService } from "../services/cart.service";
+import { refreshWalletState } from "@/features/main/wallet/hooks/useWallet";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { AxiosError } from "axios";
@@ -78,9 +79,10 @@ export const useCheckout = () => {
 
   return useMutation({
     mutationFn: cartService.checkout,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+      await refreshWalletState(queryClient);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(error?.response?.data?.message || "Checkout failed");

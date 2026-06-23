@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useWishlist } from "../hooks/useWishlist";
 import { ShopProductCard } from "@/features/main/shop/components/cards/ShopProductCard";
-import { Heart, ShoppingBag, Trash2, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { Heart, Trash2, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -72,7 +72,7 @@ export const WishlistTemplate: React.FC = () => {
               titleClassName="text-2xl font-black"
             />
             <p className="text-content-tertiary max-w-sm mx-auto mb-10 font-medium leading-relaxed">
-              Looks like you haven't saved any items yet. Start exploring our premium collection.
+              Looks like you haven{"'"}t saved any items yet. Start exploring our premium collection.
             </p>
             <Link href="/shop">
               <Button className="h-16 px-10 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/10 group active:scale-95">
