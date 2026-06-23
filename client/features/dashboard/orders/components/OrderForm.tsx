@@ -55,6 +55,23 @@ export function OrderForm({
     ? (defaultValues.userId as UserReference)._id 
     : (defaultValues?.userId as string) || "";
 
+  const initialCustomerLabel =
+    typeof defaultValues?.userId === "object" && defaultValues?.userId !== null
+      ? (() => {
+          const user = defaultValues.userId as UserReference;
+          return user.phone ? `${user.name} (${user.phone})` : user.name;
+        })()
+      : "";
+
+  const initialProductLabels = (defaultValues?.items || []).map((item) => {
+    if (typeof item.productId === "object" && item.productId !== null) {
+      const product = item.productId as { nameAr?: string; nameEn?: string };
+      return product.nameAr || product.nameEn || item.name || "";
+    }
+
+    return item.name || "";
+  });
+
   const form = useForm<OrderFormData>({
     resolver: zodResolver(getOrderFormSchema(tValidation)) as Resolver<OrderFormData>,
     defaultValues: {
@@ -187,6 +204,7 @@ export function OrderForm({
           onUserSelect={handleUserSelect}
           fetchUsers={fetchUsers}
           isEdit={isEdit}
+          customerLabel={initialCustomerLabel}
         />
 
         <ItemsSection
@@ -201,6 +219,7 @@ export function OrderForm({
           handleSizeSelect={handleSizeSelect}
           fetchProducts={fetchProducts}
           isEdit={isEdit}
+          initialProductLabels={initialProductLabels}
         />
 
         <ShippingSection

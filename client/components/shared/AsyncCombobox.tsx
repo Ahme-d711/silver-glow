@@ -25,6 +25,7 @@ interface AsyncComboboxProps<TItem = object> {
   getItemValue?: (item: TItem) => string;
   className?: string;
   disabled?: boolean;
+  initialLabel?: string;
 }
 
 export function AsyncCombobox<TItem = object>({
@@ -40,6 +41,7 @@ export function AsyncCombobox<TItem = object>({
   getItemValue = (item) => (item as { _id?: string; id?: string })._id || (item as { _id?: string; id?: string }).id || "",
   className,
   disabled,
+  initialLabel,
 }: AsyncComboboxProps<TItem>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -83,7 +85,11 @@ export function AsyncCombobox<TItem = object>({
           disabled={disabled}
         >
           <span className="truncate">
-            {selectedItem ? getItemLabel(selectedItem) : placeholder}
+            {selectedItem
+              ? getItemLabel(selectedItem)
+              : value && initialLabel
+                ? initialLabel
+                : placeholder}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

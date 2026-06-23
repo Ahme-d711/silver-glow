@@ -11,6 +11,7 @@ interface CustomerSectionProps {
   onUserSelect: (user: User) => void;
   fetchUsers: (search: string) => Promise<User[]>;
   isEdit?: boolean;
+  customerLabel?: string;
 }
 
 export function CustomerSection({
@@ -20,6 +21,7 @@ export function CustomerSection({
   onUserSelect,
   fetchUsers,
   isEdit,
+  customerLabel,
 }: CustomerSectionProps) {
   return (
     <div className="space-y-4">
@@ -35,6 +37,7 @@ export function CustomerSection({
         emptyMessage={tCommon("no_data")}
         getItemLabel={(user: User) => `${user.name} (${user.phone})`}
         disabled={isEdit}
+        initialLabel={customerLabel}
         required
       />
     </div>

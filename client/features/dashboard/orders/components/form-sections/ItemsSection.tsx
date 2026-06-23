@@ -20,6 +20,7 @@ interface ItemsSectionProps {
   handleSizeSelect: (index: number, size: string) => void;
   fetchProducts: (search: string) => Promise<Product[]>;
   isEdit?: boolean;
+  initialProductLabels?: string[];
 }
 
 export function ItemsSection({
@@ -34,6 +35,7 @@ export function ItemsSection({
   handleSizeSelect,
   fetchProducts,
   isEdit,
+  initialProductLabels = [],
 }: ItemsSectionProps) {
   const watchItems = form.watch("items");
 
@@ -88,6 +90,12 @@ export function ItemsSection({
                   searchPlaceholder={tCommon("search")}
                   emptyMessage={tCommon("no_data")}
                   getItemLabel={(product: Product) => product.nameAr || product.nameEn}
+                  initialLabel={
+                    initialProductLabels[index] ||
+                    watchItems[index]?.name ||
+                    selectedProduct?.nameAr ||
+                    selectedProduct?.nameEn
+                  }
                   disabled={isEdit}
                   required
                 />

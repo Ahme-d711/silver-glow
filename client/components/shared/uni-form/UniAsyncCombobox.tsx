@@ -28,6 +28,7 @@ interface UniAsyncComboboxProps<TItem = object, TFieldValues extends FieldValues
   disabled?: boolean;
   required?: boolean;
   helperText?: string;
+  initialLabel?: string;
 }
 
 export function UniAsyncCombobox<TItem = object, TFieldValues extends FieldValues = FieldValues>({
@@ -47,6 +48,7 @@ export function UniAsyncCombobox<TItem = object, TFieldValues extends FieldValue
   disabled = false,
   required = false,
   helperText,
+  initialLabel,
 }: UniAsyncComboboxProps<TItem, TFieldValues>) {
   return (
     <FormField
@@ -73,6 +75,7 @@ export function UniAsyncCombobox<TItem = object, TFieldValues extends FieldValue
               getItemValue={getItemValue}
               className={cn("h-12 border-divider/50 focus:border-primary shadow-none bg-white", cbClassName)}
               disabled={disabled}
+              initialLabel={initialLabel}
             />
           </FormControl>
           {helperText && (

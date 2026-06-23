@@ -61,7 +61,7 @@ export function UniSelect<TFieldValues extends FieldValues = FieldValues>({
           {label && (
             <FormLabel className={cn("text-base text-content-secondary cursor-pointer", labelClassName)}>
               {label}
-              {required && <span className="text-destructive ml-1">*</span>}
+              {required && <span className="text-destructive ms-1">*</span>}
             </FormLabel>
           )}
           <Select 

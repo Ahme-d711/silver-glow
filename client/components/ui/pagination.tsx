@@ -6,7 +6,7 @@ import {
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants, type Button } from "@/components/ui/button"
@@ -76,15 +76,30 @@ function PaginationPrevious({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
   const t = useTranslations("Pagination")
+  const isRtl = useLocale() === "ar"
+
   return (
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      dir={isRtl ? "ltr" : undefined}
+      className={cn(
+        "inline-flex flex-row items-center gap-1 px-2.5 sm:ps-2.5",
+        className,
+      )}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="hidden sm:block">{t("previous")}</span>
+      {isRtl ? (
+        <>
+          <span className="hidden sm:block">{t("previous")}</span>
+          <ChevronRightIcon className="size-4 shrink-0" />
+        </>
+      ) : (
+        <>
+          <ChevronLeftIcon className="size-4 shrink-0" />
+          <span className="hidden sm:block">{t("previous")}</span>
+        </>
+      )}
     </PaginationLink>
   )
 }
@@ -94,15 +109,30 @@ function PaginationNext({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
   const t = useTranslations("Pagination")
+  const isRtl = useLocale() === "ar"
+
   return (
     <PaginationLink
       aria-label="Go to next page"
       size="default"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      dir={isRtl ? "ltr" : undefined}
+      className={cn(
+        "inline-flex flex-row items-center gap-1 px-2.5 sm:pe-2.5",
+        className,
+      )}
       {...props}
     >
-      <span className="hidden sm:block">{t("next")}</span>
-      <ChevronRightIcon />
+      {isRtl ? (
+        <>
+          <ChevronLeftIcon className="size-4 shrink-0" />
+          <span className="hidden sm:block">{t("next")}</span>
+        </>
+      ) : (
+        <>
+          <span className="hidden sm:block">{t("next")}</span>
+          <ChevronRightIcon className="size-4 shrink-0" />
+        </>
+      )}
     </PaginationLink>
   )
 }
