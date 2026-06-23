@@ -17,7 +17,6 @@ export function useUpdateProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [name, setName] = useState(user?.name || "");
-  const [phone, setPhone] = useState(user?.phone || "");
   const [imageError, setImageError] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -31,7 +30,6 @@ export function useUpdateProfile() {
   useEffect(() => {
     if (user && !isInitialized) {
       setName(user.name || "");
-      setPhone(user.phone || "");
       setIsInitialized(true);
     }
   }, [user, isInitialized]);
@@ -70,7 +68,6 @@ export function useUpdateProfile() {
     try {
       const formData = new FormData();
       formData.append("name", name);
-      if (phone) formData.append("phone", phone);
       if (selectedImage) formData.append("picture", selectedImage);
 
       const res = await updateProfile(formData);
@@ -95,7 +92,6 @@ export function useUpdateProfile() {
     user,
     fileInputRef,
     name,
-    phone,
     email: user?.email || "",
     userName,
     userPhoto,
@@ -105,7 +101,6 @@ export function useUpdateProfile() {
     imageError,
     isLoading,
     setName,
-    setPhone,
     setImageError,
     handleImageChange,
     openFilePicker,

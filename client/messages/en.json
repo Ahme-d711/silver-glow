@@ -35,6 +35,7 @@
     "email": "Email",
     "email_address_readonly": "Email Address (Read-only)",
     "phone": "Phone Number",
+    "phone_readonly": "Phone Number (Read-only)",
     "profile": "Profile",
     "password": "Password",
     "welcome_back": "Welcome Back",

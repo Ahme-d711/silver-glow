@@ -10,9 +10,9 @@ import { ProfileEditForm } from "./ProfileEditForm";
 export function ProfileContent() {
   const tNav = useTranslations("Navigation");
   const {
+    user,
     fileInputRef,
     name,
-    phone,
     email,
     userName,
     userPhoto,
@@ -22,7 +22,6 @@ export function ProfileContent() {
     imageError,
     isLoading,
     setName,
-    setPhone,
     setImageError,
     handleImageChange,
     openFilePicker,
@@ -65,11 +64,10 @@ export function ProfileContent() {
         <div className="lg:col-span-2">
           <ProfileEditForm
             name={name}
-            phone={phone}
+            phone={user?.phone || ""}
             email={email}
             isLoading={isLoading}
             onNameChange={setName}
-            onPhoneChange={setPhone}
             onSubmit={handleSave}
           />
         </div>

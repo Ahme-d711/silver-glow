@@ -105,7 +105,6 @@ export type RegisterInput = z.infer<typeof registerSchema>;
  */
 export const updateProfileSchema = z.object({
   name: nameSchema.optional(),
-  phone: phoneSchema,
   picture: pictureSchema,
   gender: z.enum(["male", "female"]).optional(),
   address: z.string().max(500, "Address must be less than 500 characters").optional(),

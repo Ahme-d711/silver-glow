@@ -295,7 +295,6 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
     { _id: req.user!._id, isActive: true },
     {
       ...validatedData,
-      phone: validatedData.phone ? validatedData.phone.replace(/^\+/, "") : undefined,
       picture: req.file ? getRelativePath(req.file.path) : validatedData.picture,
     },
     { new: true, runValidators: true }
