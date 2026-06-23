@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { Heart, ShoppingBag, Eye } from "lucide-react";
+import { Heart, ShoppingBag, Eye, Star } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Product } from "@/features/dashboard/products/types";
@@ -50,6 +50,9 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   const displayPrice = firstSize?.price || product.price;
   const displayOldPrice = firstSize?.oldPrice || product.oldPrice;
   const sizeLabel = firstSize?.size ? `${t("Size") || "Size"}: ${firstSize.size}` : null;
+  const hasReviews = (product.numReviews ?? 0) > 0;
+  const averageRating = product.averageRating ?? 0;
+  const filledStars = hasReviews ? Math.round(averageRating) : 0;
 
   return (
     <div 
@@ -96,16 +99,48 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
             {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
           </div>
         )}
+
       </Link>
 
       {/* Content */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           <Link href={`/products/${product.slug}`}>
-            <h3 className="text-primary font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors duration-300">
+            <h3 className="text-primary font-bold text-lg mb-2 line-clamp-1 group-hover:text-primary transition-colors duration-300">
               {name}
             </h3>
           </Link>
+
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={cn(
+                    "size-3.5 transition-colors",
+                    star <= filledStars
+                      ? "fill-amber-400 text-amber-400"
+                      : "fill-secondary/15 text-secondary/25"
+                  )}
+                />
+              ))}
+            </div>
+
+            {hasReviews ? (
+              <>
+                <span className="inline-flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-[11px] font-bold text-amber-700 border border-amber-100">
+                  {averageRating.toFixed(1)}
+                </span>
+                <span className="text-[11px] font-medium text-content-tertiary">
+                  ({product.numReviews})
+                </span>
+              </>
+            ) : (
+              <span className="text-[11px] font-medium text-content-tertiary">
+                {t("no_reviews")}
+              </span>
+            )}
+          </div>
         </div>
 
         <p className="text-sm text-content-tertiary mb-6 line-clamp-3 leading-relaxed font-medium max-w-[90%]">
