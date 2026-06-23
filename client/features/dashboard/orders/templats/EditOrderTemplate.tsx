@@ -76,7 +76,7 @@ export default function EditOrderTemplate({ isOpen, onClose, orderData }: EditOr
         <PageHeader
           title={t("edit_order")}
           breadcrumbs={[
-            { label: tNav("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/dashboard" },
             { label: t("title"), href: "/dashboard/orders" },
             { label: t("edit_order") },
           ]}

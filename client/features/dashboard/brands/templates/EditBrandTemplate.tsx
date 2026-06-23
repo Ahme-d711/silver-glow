@@ -49,7 +49,7 @@ export default function EditBrandTemplate() {
       <PageHeader
         title={t("edit_brand")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/brands" },
           { label: t("edit_brand") },
         ]}

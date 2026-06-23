@@ -30,7 +30,7 @@ export default function AddBrandTemplate() {
       <PageHeader
         title={t("add_brand")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/brands" },
           { label: t("add_brand") },
         ]}

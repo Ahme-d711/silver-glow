@@ -83,7 +83,7 @@ export default function BrandsTemplate() {
       <PageHeader
         title={t("title")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" }, 
+          { label: tNav("dashboard"), href: "/dashboard" }, 
           { label: t("title") }
         ]}
         actionButtons={actionButtons}

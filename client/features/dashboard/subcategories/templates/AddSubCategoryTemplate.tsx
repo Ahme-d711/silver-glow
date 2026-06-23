@@ -32,7 +32,7 @@ export default function AddSubCategoryTemplate() {
       <PageHeader
         title={t("add_subcategory")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/subcategories" },
           { label: t("add_subcategory") },
         ]}

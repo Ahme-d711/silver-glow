@@ -30,7 +30,7 @@ export default function AddProductTemplate() {
       <PageHeader
         title={t("add_product")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/products" },
           { label: t("add_product") },
         ]}

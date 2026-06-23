@@ -49,7 +49,7 @@ export default function EditSectionTemplate() {
       <PageHeader
         title={t("edit_section")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/sections" },
           { label: t("edit_section") },
         ]}

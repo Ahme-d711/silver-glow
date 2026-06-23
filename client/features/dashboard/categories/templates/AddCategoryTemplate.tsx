@@ -31,7 +31,7 @@ export default function AddCategoryTemplate() {
       <PageHeader
         title={t("add_category")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/categories" },
           { label: t("add_category") },
         ]}

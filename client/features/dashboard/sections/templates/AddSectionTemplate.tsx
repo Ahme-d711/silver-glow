@@ -30,7 +30,7 @@ export default function AddSectionTemplate() {
       <PageHeader
         title={t("add_section")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/sections" },
           { label: t("add_section") },
         ]}

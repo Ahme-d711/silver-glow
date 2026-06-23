@@ -58,7 +58,7 @@ export default function EditCategoryTemplate() {
         <PageHeader
           title={t("edit_category")}
           breadcrumbs={[
-            { label: tNav("dashboard"), href: "/" },
+            { label: tNav("dashboard"), href: "/dashboard" },
             { label: t("title"), href: "/dashboard/categories" },
             { label: t("edit_category") },
           ]}
@@ -78,7 +78,7 @@ export default function EditCategoryTemplate() {
       <PageHeader
         title={t("edit_category")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/categories" },
           { label: t("edit_category") },
         ]}

@@ -50,7 +50,7 @@ export default function EditProductTemplate() {
       <PageHeader
         title={t("edit_product")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/products" },
           { label: t("edit_product") },
         ]}

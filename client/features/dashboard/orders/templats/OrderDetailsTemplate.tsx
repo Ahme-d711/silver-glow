@@ -51,7 +51,7 @@ export default function OrderDetailsTemplate() {
       <PageHeader
         title={t("details")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/orders" },
           { label: t("details") },
         ]}

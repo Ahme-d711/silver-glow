@@ -54,7 +54,7 @@ export default function AddOrderTemplate() {
       <PageHeader
         title={t("add_order")}
         breadcrumbs={[
-          { label: tNav("dashboard"), href: "/" },
+          { label: tNav("dashboard"), href: "/dashboard" },
           { label: t("title"), href: "/dashboard/orders" },
           { label: t("add_order") },
         ]}
