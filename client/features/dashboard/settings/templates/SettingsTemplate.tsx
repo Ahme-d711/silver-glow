@@ -14,7 +14,7 @@ export default function SettingsTemplate() {
       <div className="space-y-8">
         <PageHeader
           title={t("settings")}
-          description="Manage site-wide configuration and preferences."
+          description={t("settings_desc")}
         />
 
         <SettingsForm />

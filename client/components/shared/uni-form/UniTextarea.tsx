@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useLocale } from "next-intl";
 
 interface UniTextareaProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>;
@@ -41,16 +42,24 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
   rows = 4,
   readOnly,
 }: UniTextareaProps<TFieldValues>) {
+  const isRtl = useLocale() === "ar";
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("space-y-1.5", className)} id={name}>
+        <FormItem className={cn("space-y-1.5", isRtl && "text-right", className)} id={name}>
           {label && (
-            <FormLabel className={cn("text-base text-content-secondary cursor-pointer", labelClassName)}>
+            <FormLabel
+              className={cn(
+                "text-base text-content-secondary cursor-pointer",
+                isRtl && "block w-full text-right",
+                labelClassName,
+              )}
+            >
               {label}
-              {required && <span className="text-destructive ml-1">*</span>}
+              {required && <span className="text-destructive ms-1">*</span>}
             </FormLabel>
           )}
           <FormControl>
@@ -59,8 +68,10 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
               disabled={disabled}
               rows={rows}
               readOnly={readOnly}
+              dir={isRtl ? "rtl" : undefined}
                 className={cn(
                   "min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white resize-none",
+                  isRtl && "text-right",
                   textareaClassName
                 )}
                 {...field}
@@ -68,11 +79,11 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
               />
           </FormControl>
           {helperText && (
-            <p className="text-xs text-content-tertiary">
+            <p className={cn("text-xs text-content-tertiary", isRtl && "text-right")}>
               {helperText}
             </p>
           )}
-          <FormMessage className="text-xs" />
+          <FormMessage className={cn("text-xs", isRtl && "text-right")} />
         </FormItem>
       )}
     />

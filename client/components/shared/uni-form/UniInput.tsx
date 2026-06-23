@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface UniInputProps<TFieldValues extends FieldValues = FieldValues> {
   control: Control<TFieldValues>;
@@ -50,17 +51,25 @@ export function UniInput<TFieldValues extends FieldValues = FieldValues>({
 }: UniInputProps<TFieldValues>) {
   const [showPassword, setShowPassword] = React.useState(false);
   const isPassword = type === "password";
+  const isRtl = useLocale() === "ar";
+  const isNumeric = type === "number";
 
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn(className)} id={name}>
+        <FormItem className={cn(isRtl && "text-right", className)} id={name}>
           {label && (
-            <FormLabel className={cn("text-base text-content-secondary font-medium cursor-pointer", labelClassName)}>
+            <FormLabel
+              className={cn(
+                "text-base text-content-secondary font-medium cursor-pointer",
+                isRtl && "block w-full text-right",
+                labelClassName,
+              )}
+            >
               {label}
-              {required && <span className="text-destructive ml-1">*</span>}
+              {required && <span className="text-destructive ms-1">*</span>}
             </FormLabel>
           )}
           <FormControl>
@@ -71,19 +80,23 @@ export function UniInput<TFieldValues extends FieldValues = FieldValues>({
                 disabled={disabled}
                 autoComplete={autoComplete}
                 readOnly={readOnly}
+                dir={isRtl && !isNumeric ? "rtl" : undefined}
                 className={cn(
                   "h-12 rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white",
-                  isPassword ? "pr-12" : "",
+                  isRtl && "text-right",
+                  isPassword ? "pe-12" : "",
                   inputClassName
                 )}
                 {...field}
                 value={field.value ?? ""}
+                min={min}
+                step={step}
               />
               {isPassword && (
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 right-0 px-4 flex items-center text-muted-foreground hover:text-primary transition-colors focus:outline-none"
+                  className="absolute inset-y-0 end-0 px-4 flex items-center text-muted-foreground hover:text-primary transition-colors focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -96,11 +109,11 @@ export function UniInput<TFieldValues extends FieldValues = FieldValues>({
             </div>
           </FormControl>
           {helperText && (
-            <p className="text-xs text-content-tertiary">
+            <p className={cn("text-xs text-content-tertiary", isRtl && "text-right")}>
               {helperText}
             </p>
           )}
-          <FormMessage className="text-xs" />
+          <FormMessage className={cn("text-xs", isRtl && "text-right")} />
         </FormItem>
       )}
     />

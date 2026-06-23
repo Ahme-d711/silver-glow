@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Phone, Loader2, Save } from "lucide-react";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -13,6 +13,7 @@ import { UniPhoneInput } from "@/components/shared/uni-form/UniPhoneInput";
 import { OTPInput } from "@/features/auth/components/OTPInput";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toApiPhone } from "@/utils/phone";
+import { cn } from "@/lib/utils";
 import {
   phoneChangeConfirmSchema,
   type PhoneChangeConfirmValues,
@@ -23,6 +24,7 @@ export function PhoneSettings() {
   const t = useTranslations("Dashboard");
   const tAuth = useTranslations("Auth");
   const tValidation = useTranslations("Validation");
+  const isRtl = useLocale() === "ar";
   const { user } = useAuthStore();
   const {
     requestCode,
@@ -83,25 +85,31 @@ export function PhoneSettings() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="bg-white p-8 rounded-[24px] border border-divider shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-primary/5 rounded-2xl">
-              <Phone className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-primary">{t("phone_settings_title")}</h3>
-              <p className="text-sm text-content-secondary">{t("phone_settings_desc")}</p>
+          <div className={cn("mb-6 flex w-full", isRtl ? "justify-end" : "justify-start")}>
+            <div className={cn("flex items-center gap-3", isRtl && "flex-row-reverse text-right")}>
+              <div className="p-3 bg-primary/5 rounded-2xl">
+                <Phone className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-primary">{t("phone_settings_title")}</h3>
+                <p className="text-sm text-content-secondary">{t("phone_settings_desc")}</p>
+              </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="space-y-2">
-              <FormLabel className="text-slate-600 font-medium ml-1">
+            <div className={cn("space-y-2", isRtl && "text-right")}>
+              <FormLabel className="text-slate-600 font-medium ms-1 block w-full">
                 {t("current_phone")}
               </FormLabel>
               <Input
                 value={currentPhone}
                 readOnly
-                className="h-12 bg-slate-100/50 border-slate-200 cursor-not-allowed rounded-xl"
+                dir="ltr"
+                className={cn(
+                  "h-12 bg-slate-100/50 border-slate-200 cursor-not-allowed rounded-xl",
+                  isRtl && "text-right",
+                )}
               />
             </div>
 
@@ -115,7 +123,7 @@ export function PhoneSettings() {
             />
 
             {codeSent && (
-              <div className="space-y-4 pt-2 border-t border-divider">
+              <div className={cn("space-y-4 pt-2 border-t border-divider", isRtl && "text-right")}>
                 <p className="text-sm text-content-secondary">
                   {t("phone_change_code_hint", {
                     phone: `+${pendingPhone}`,
@@ -127,7 +135,12 @@ export function PhoneSettings() {
                   name="code"
                   render={({ field }) => (
                     <FormItem className="flex flex-col items-center">
-                      <FormLabel className="self-start text-slate-600 font-medium ml-1">
+                      <FormLabel
+                        className={cn(
+                          "text-slate-600 font-medium ms-1 w-full",
+                          isRtl ? "self-end text-right" : "self-start",
+                        )}
+                      >
                         {tAuth("verification_code")}
                       </FormLabel>
                       <FormControl>
@@ -138,7 +151,12 @@ export function PhoneSettings() {
                   )}
                 />
 
-                <div className="flex items-center justify-between gap-3">
+                <div
+                  className={cn(
+                    "flex items-center justify-between gap-3",
+                    isRtl && "flex-row-reverse",
+                  )}
+                >
                   <Button
                     type="button"
                     variant="ghost"
@@ -164,7 +182,10 @@ export function PhoneSettings() {
           </div>
         </div>
 
-        <div className="flex justify-end mt-6">
+        <div
+          className={cn("flex mt-6 w-full", isRtl ? "justify-start" : "justify-end")}
+          dir="ltr"
+        >
           {!codeSent ? (
             <Button
               type="button"
@@ -173,7 +194,7 @@ export function PhoneSettings() {
               className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
             >
               {isRequesting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="me-2 h-4 w-4 animate-spin" />
               ) : null}
               {t("send_verification_code")}
             </Button>
@@ -184,9 +205,9 @@ export function PhoneSettings() {
               className="h-12 px-8 min-w-[140px] rounded-xl font-bold bg-[#1B254B] hover:bg-[#1B254B]/90"
             >
               {isConfirming ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="me-2 h-4 w-4 animate-spin" />
               ) : (
-                <Save className="mr-2 h-4 w-4" />
+                <Save className="me-2 h-4 w-4" />
               )}
               {t("confirm_phone_change")}
             </Button>

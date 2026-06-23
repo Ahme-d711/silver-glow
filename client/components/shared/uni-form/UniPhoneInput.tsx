@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Search } from "lucide-react";
+import { useLocale } from "next-intl";
 import { ORDERED_COUNTRIES, Country } from "@/utils/countries";
 import {
   formatPhoneWithCountryCode,
@@ -43,6 +44,7 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
   const [selectedCountry, setSelectedCountry] = React.useState<Country>(ORDERED_COUNTRIES[0]);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const isRtl = useLocale() === "ar";
 
   const filteredCountries = ORDERED_COUNTRIES.filter(
     (c) =>
@@ -67,21 +69,34 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
         const displayValue = getLocalPhoneDigits(field.value, activeCountry);
 
         return (
-          <FormItem className={cn(className)} id={name}>
+          <FormItem className={cn(isRtl && "text-right", className)} id={name}>
             {label && (
-              <FormLabel className="text-base text-content-secondary font-medium cursor-pointer">
+              <FormLabel
+                className={cn(
+                  "text-base text-content-secondary font-medium cursor-pointer",
+                  isRtl && "block w-full text-right",
+                )}
+              >
                 {label}
-                {required && <span className="text-destructive ml-1">*</span>}
+                {required && <span className="text-destructive ms-1">*</span>}
               </FormLabel>
             )}
             <FormControl>
-              <div className="flex h-12.5 w-full items-stretch rounded-xl border border-divider/50 bg-white ring-offset-background focus-within:border-primary transition-all">
+              <div
+                className={cn(
+                  "flex h-12.5 w-full items-stretch rounded-xl border border-divider/50 bg-white ring-offset-background focus-within:border-primary transition-all",
+                  isRtl && "flex-row-reverse",
+                )}
+              >
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <button
                       type="button"
                       disabled={disabled}
-                      className="flex items-center gap-1.5 px-3 border-r border-divider/50 hover:bg-black/5 transition-colors rounded-l-xl focus:outline-none"
+                      className={cn(
+                        "flex items-center gap-1.5 px-3 border-divider/50 hover:bg-black/5 transition-colors focus:outline-none",
+                        isRtl ? "border-s rounded-e-xl" : "border-e rounded-s-xl",
+                      )}
                     >
                       <span className="text-lg leading-none">{activeCountry.flag}</span>
                       <span className="text-sm font-semibold text-content-primary leading-none">
@@ -136,7 +151,11 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
                   type="tel"
                   placeholder={placeholder}
                   disabled={disabled}
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full rounded-none rounded-r-xl px-4 flex-1 shadow-none"
+                  dir={isRtl ? "rtl" : "ltr"}
+                  className={cn(
+                    "border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full px-4 flex-1 shadow-none",
+                    isRtl ? "rounded-s-xl text-right" : "rounded-e-xl",
+                  )}
                   value={displayValue}
                   onChange={handlePhoneChange}
                   onBlur={field.onBlur}
@@ -145,7 +164,7 @@ export function UniPhoneInput<TFieldValues extends FieldValues = FieldValues>({
                 />
               </div>
             </FormControl>
-            <FormMessage className="text-xs" />
+            <FormMessage className={cn("text-xs", isRtl && "text-right")} />
           </FormItem>
         );
       }}
