@@ -37,6 +37,8 @@ export const updateSettings = asyncHandler(async (req: Request, res: Response) =
     if (req.body.currency !== undefined) settings.currency = req.body.currency;
     if (req.body.contactEmail !== undefined) settings.contactEmail = req.body.contactEmail;
     if (req.body.contactPhone !== undefined) settings.contactPhone = req.body.contactPhone;
+    if (req.body.termsConditionsAr !== undefined) settings.termsConditionsAr = req.body.termsConditionsAr;
+    if (req.body.termsConditionsEn !== undefined) settings.termsConditionsEn = req.body.termsConditionsEn;
     if (req.body.socialLinks !== undefined) settings.socialLinks = req.body.socialLinks;
     
     await settings.save();

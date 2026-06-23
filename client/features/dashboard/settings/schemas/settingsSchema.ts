@@ -14,6 +14,8 @@ export const settingsSchema = z.object({
   currency: z.string().min(1, { message: "Currency is required" }),
   contactEmail: z.string().email({ message: "Invalid email format" }).optional().or(z.literal("")),
   contactPhone: z.string().optional().or(z.literal("")),
+  termsConditionsAr: z.string().optional().or(z.literal("")),
+  termsConditionsEn: z.string().optional().or(z.literal("")),
   socialLinks: z
     .array(
       z.object({

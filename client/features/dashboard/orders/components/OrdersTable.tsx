@@ -15,9 +15,9 @@ import UniTable, {
 } from "@/components/shared/UniTable"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton";
 import { cn } from "@/lib/utils"
-import { Order, OrderStatus } from "../types"
+import { Order, OrderStatus, PaymentStatus } from "../types"
 import { format } from "date-fns"
-import { useCancelOrder, useUpdateOrderStatus } from "../hooks/useOrders"
+import { useCancelOrder, useUpdateOrderStatus, useUpdatePaymentStatus } from "../hooks/useOrders"
 import React, { useState } from "react"
 import { useTranslations } from "next-intl"
 import { ConfirmationModal } from "@/components/shared/ConfirmationModal";
@@ -37,6 +37,7 @@ interface TableRowData extends Record<string, unknown> {
   customer: string
   total: string
   payment: string
+  paymentStatus: string
   status: string
   selected: boolean
   originalOrder: Order
@@ -49,6 +50,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   const router = useRouter()
   const { mutate: cancelOrder } = useCancelOrder()
   const { mutate: updateStatus } = useUpdateOrderStatus()
+  const { mutate: updatePaymentStatus } = useUpdatePaymentStatus()
 
   const [modalConfig, setModalConfig] = useState<{
     open: boolean;
@@ -67,6 +69,8 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
     "CANCELLED",
     "RETURNED",
   ]
+
+  const paymentStatusOptions: PaymentStatus[] = ["PENDING", "PAID", "FAILED"]
 
   const handleEdit = (orderId: string) => {
     router.push(`/dashboard/orders/${orderId}/edit`)
@@ -105,6 +109,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
         customer: order.recipientName || "-",
         total: `${order.totalAmount?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
         payment: t(`payment_${order.paymentMethod?.toLowerCase()}` as Parameters<typeof t>[0]) || order.paymentMethod,
+        paymentStatus: order.paymentStatus,
         status: order.status,
         selected: false,
         originalOrder: order,
@@ -167,6 +172,32 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
       className: "text-content-secondary",
     },
     {
+      id: "paymentStatus",
+      header: t("payment_status"),
+      cell: (_: unknown, row: TableRowData) => {
+        const paymentStatusColors: Record<PaymentStatus, string> = {
+          PENDING: "bg-yellow-100/50 text-yellow-600 border-yellow-200",
+          PAID: "bg-green-100/50 text-green-600 border-green-200",
+          FAILED: "bg-red-100/50 text-red-600 border-red-200",
+        }
+
+        return (
+          <StatusSelectCell
+            value={row.paymentStatus}
+            onValueChange={(newStatus) =>
+              updatePaymentStatus({
+                id: row.id,
+                paymentStatus: newStatus as PaymentStatus,
+              })
+            }
+            options={paymentStatusOptions}
+            colorMap={paymentStatusColors}
+            t={t}
+          />
+        )
+      },
+    },
+    {
       id: "status",
       header: t("status"),
       cell: (_: unknown, row: TableRowData) => {
@@ -219,7 +250,7 @@ export function OrdersTable({ orders = [], isLoading, onSelectionChange }: Order
   ]
 
   if (isLoading) {
-    return <UniTableSkeleton columnCount={9} rowCount={10} />;
+    return <UniTableSkeleton columnCount={10} rowCount={10} />;
   }
 
   return (

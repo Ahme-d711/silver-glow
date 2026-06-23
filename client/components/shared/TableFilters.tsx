@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useSyncExternalStore } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { DatePicker } from "./DatePicker"
@@ -45,6 +45,14 @@ interface TableFiltersProps {
   className?: string
 }
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
+}
+
 export function TableFilters({
   tabs,
   activeTab,
@@ -61,11 +69,7 @@ export function TableFilters({
   children,
   className,
 }: TableFiltersProps) {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useIsClient()
 
   return (
     <div className={cn("p-6 flex flex-wrap items-center justify-between gap-4", className)}>

@@ -2,11 +2,10 @@
 
 import { Download, Plus } from "lucide-react"
 import { PageHeader } from "@/components/shared/PageHeader"
-import { useOrdersState, useOrders, useOrdersByStatus, useCancelOrder } from "../hooks/useOrders"
+import { useOrdersState, useOrders, useOrdersByStatus } from "../hooks/useOrders"
 import { TableFilters } from "@/components/shared/TableFilters"
 import { OrdersTable } from "../components/OrdersTable"
 import { Order, OrderStatus } from "../types"
-import UniLoading from "@/components/shared/UniLoading"
 import NoDataMsg from "@/components/shared/NoDataMsg"
 import { UniTableSkeleton } from "@/components/shared/UniTableSkeleton"
 import { useSearchParams } from "next/navigation"
@@ -36,6 +35,7 @@ export default function OrdersTemplate() {
       [t("date")]: order.createdAt ? format(new Date(order.createdAt), "dd MMM yyyy") : "-",
       [t("total")]: `${order.totalAmount?.toFixed(2) || "0.00"} ${tCommon("currency")}`,
       [t("payment")]: t(`payment_${order.paymentMethod?.toLowerCase()}` as Parameters<typeof t>[0]) || order.paymentMethod,
+      [t("payment_status")]: t(order.paymentStatus.toLowerCase() as Parameters<typeof t>[0]),
       [t("status")]: t(order.status.toLowerCase() as Parameters<typeof t>[0]),
       [tNav("contact")]: order.recipientPhone,
       [t("shipping_address")]: `${order.shippingAddress}, ${order.city}, ${order.governorate}`,
@@ -132,7 +132,7 @@ export default function OrdersTemplate() {
 
         {isLoading ? (
           <div className="p-0">
-             <UniTableSkeleton columnCount={8} rowCount={10} />
+             <UniTableSkeleton columnCount={9} rowCount={10} />
           </div>
         ) : error ? (
           <div className="p-8">

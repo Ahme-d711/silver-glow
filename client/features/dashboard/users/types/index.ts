@@ -106,11 +106,13 @@ export interface UserStatsData {
 }
 
 export interface UserTransaction {
+  orderId: string;
   id: string;
   product: string;
   sub: string;
   total: string;
   status: string;
+  paymentStatus: string;
   date: string;
   image?: string;
 }

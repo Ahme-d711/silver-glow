@@ -5,6 +5,8 @@ export interface AppSettings {
   currency: string;
   contactEmail: string;
   contactPhone: string;
+  termsConditionsAr?: string;
+  termsConditionsEn?: string;
   socialLinks: {
     platform: string;
     link: string;

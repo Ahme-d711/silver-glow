@@ -2,7 +2,7 @@
 
 import { AxiosError } from "axios";
 import clientAxios from "@/lib/axios/clientAxios";
-import type { Order, OrderStatus, CreateOrderPayload, UpdateOrderPayload } from "../types";
+import type { Order, OrderStatus, PaymentStatus, CreateOrderPayload, UpdateOrderPayload } from "../types";
 import { Pagination } from "@/types";
 
 export interface ApiResponse<T> {
@@ -184,4 +184,14 @@ export async function updateOrderStatus(
       error: err.message,
     };
   }
+}
+
+/**
+ * Update payment status
+ */
+export async function updatePaymentStatus(
+  id: string,
+  paymentStatus: PaymentStatus
+): Promise<ServiceResponse<{ order: Order }>> {
+  return updateOrder(id, { paymentStatus });
 }

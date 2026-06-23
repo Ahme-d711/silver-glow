@@ -16,13 +16,14 @@ import { useEffect, useState } from "react";
 import UniLoading from "@/components/shared/UniLoading";
 import { SecuritySettings } from "./SecuritySettings";
 import { PhoneSettings } from "./PhoneSettings";
+import { TermsSettings } from "./TermsSettings";
 
 export function SettingsForm() {
   const t = useTranslations("Dashboard");
   const { settings, updateSettings, isUpdating, isLoading } = useSettings();
   const [activeTab, setActiveTab] = useState("shipping");
 
-  const showGlobalSave = ["shipping", "contact", "links"].includes(activeTab);
+  const showGlobalSave = ["shipping", "contact", "links", "terms"].includes(activeTab);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema) as any,
@@ -33,6 +34,8 @@ export function SettingsForm() {
       currency: "EGP",
       contactEmail: "",
       contactPhone: "",
+      termsConditionsAr: "",
+      termsConditionsEn: "",
       socialLinks: [],
     },
   });
@@ -52,6 +55,8 @@ export function SettingsForm() {
         currency: settings.currency,
         contactEmail: settings.contactEmail || "",
         contactPhone: settings.contactPhone || "",
+        termsConditionsAr: settings.termsConditionsAr || "",
+        termsConditionsEn: settings.termsConditionsEn || "",
         socialLinks: settings.socialLinks || [],
       });
     }
@@ -77,6 +82,9 @@ export function SettingsForm() {
             </TabsTrigger>
             <TabsTrigger value="links" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               Social Links
+            </TabsTrigger>
+            <TabsTrigger value="terms" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              {t("terms_conditions")}
             </TabsTrigger>
             <TabsTrigger value="security" className="rounded-lg px-6 text-base h-11 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               Security
@@ -166,6 +174,10 @@ export function SettingsForm() {
 
           <TabsContent value="phone" className="space-y-6 outline-none">
             <PhoneSettings />
+          </TabsContent>
+
+          <TabsContent value="terms" className="space-y-6 outline-none">
+            <TermsSettings control={form.control} />
           </TabsContent>
 
           <TabsContent value="links" className="space-y-6 outline-none">

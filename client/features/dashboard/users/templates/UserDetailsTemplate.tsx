@@ -83,11 +83,13 @@ export default function UserDetailsTemplate() {
   const currency = typeof user.currency === "string" ? user.currency : "EGP";
 
   const transactions: UserTransaction[] = ordersData?.orders.map((order: Order) => ({
+    orderId: order._id,
     id: order.trackingNumber || order._id,
     product: order.items[0]?.name || t("na"),
     sub: order.items.length > 1 ? `+${order.items.length - 1} ${t("other_products")}` : "",
     total: `${order.totalAmount} ${currency}`,
     status: order.status,
+    paymentStatus: order.paymentStatus,
     date: format(new Date(order.createdAt), "dd MMM yyyy"),
     image: order.items[0]?.image || "",
   })) || [];

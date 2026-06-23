@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getOrders, getOrdersByStatus, getOrderById, createOrder, updateOrder, cancelOrder, updateOrderStatus } from "../services/orders.services"
-import type { Order, OrderStatus, UpdateOrderPayload } from "../types"
+import { getOrders, getOrdersByStatus, getOrderById, createOrder, updateOrder, cancelOrder, updateOrderStatus, updatePaymentStatus } from "../services/orders.services"
+import type { Order, OrderStatus, PaymentStatus, UpdateOrderPayload } from "../types"
 import { toast } from "sonner"
 import { getErrorMessage } from "@/types"
 
@@ -145,6 +145,7 @@ export function useUpdateOrderStatus() {
     onSuccess: (response) => {
       if (response.success) {
         queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+        queryClient.invalidateQueries({ queryKey: ["users"] });
         if (response.data?.order?._id) {
           queryClient.invalidateQueries({ queryKey: ordersKeys.detail(response.data.order._id) });
         }
@@ -155,6 +156,31 @@ export function useUpdateOrderStatus() {
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error) || "Failed to update order status");
+    },
+  });
+}
+
+// Update Payment Status Mutation
+export function useUpdatePaymentStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, paymentStatus }: { id: string; paymentStatus: PaymentStatus }) =>
+      updatePaymentStatus(id, paymentStatus),
+    onSuccess: (response) => {
+      if (response.success) {
+        queryClient.invalidateQueries({ queryKey: ordersKeys.all });
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        if (response.data?.order?._id) {
+          queryClient.invalidateQueries({ queryKey: ordersKeys.detail(response.data.order._id) });
+        }
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error) || "Failed to update payment status");
     },
   });
 }
