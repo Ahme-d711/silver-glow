@@ -47,8 +47,3 @@ export interface UserFormActionsProps {
   submitLabel: string;
   cancelLabel: string;
 }
-
-export interface CreateUserFormFieldsProps {
-  control: UseFormReturn<UserFormValues>["control"];
-  t: UserFormTranslations;
-}

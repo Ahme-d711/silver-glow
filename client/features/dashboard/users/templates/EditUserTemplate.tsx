@@ -58,7 +58,7 @@ export default function EditUserTemplate({ open, onOpenChange, user }: EditUserD
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white rounded-[24px]">
-        <DialogHeader>
+        <DialogHeader className="text-start">
           <DialogTitle className="text-2xl font-bold text-content-primary">
             {t("edit_user")}
           </DialogTitle>

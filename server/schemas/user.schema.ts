@@ -9,6 +9,8 @@ import {
   roleSchema,
 } from "./auth-schema.js";
 
+const genderSchema = z.enum(["male", "female"]);
+
 /**
  * Create User Schema
  */
@@ -18,6 +20,7 @@ export const createUserSchema = z.object({
   password: passwordSchema.optional(),
   phone: phoneSchema,
   picture: pictureSchema,
+  gender: genderSchema.optional(),
   role: roleSchema.default("user"),
   isActive: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(true)),
   isVerified: z.preprocess((val) => val === "true" ? true : val === "false" ? false : val, z.boolean().optional().default(false)),

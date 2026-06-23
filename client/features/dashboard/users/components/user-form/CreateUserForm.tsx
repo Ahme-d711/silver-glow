@@ -1,18 +1,13 @@
 "use client";
 
-import { useForm, Resolver, UseFormReturn } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import {
-  getCreateUserSchema,
-  UserFormValues,
-  EditUserFormValues,
-} from "../../schemas/user.schema";
+import { getCreateUserSchema, UserFormValues } from "../../schemas/user.schema";
 import type { SharedUserFormProps } from "../../types/user-form.types";
 import { useUserPictureUpload } from "./useUserPictureUpload";
 import { submitUserFormWithOptionalFile } from "./userForm.utils";
-import { UserFormLayout } from "./UserFormLayout";
-import { CreateUserFormFields } from "./CreateUserFormFields";
+import { CreateUserFormLayout } from "./CreateUserFormLayout";
 
 export function CreateUserForm({
   defaultValues,
@@ -33,6 +28,7 @@ export function CreateUserForm({
       password: (defaultValues as Partial<UserFormValues>)?.password || "",
       phone: (defaultValues as Partial<UserFormValues>)?.phone || "",
       picture: defaultValues?.picture || "",
+      gender: (defaultValues as Partial<UserFormValues>)?.gender || "male",
       role: (defaultValues?.role as UserFormValues["role"]) || "user",
       isActive: defaultValues?.isActive ?? true,
       isVerified: defaultValues?.isVerified ?? false,
@@ -50,20 +46,18 @@ export function CreateUserForm({
   };
 
   return (
-    <UserFormLayout
-      form={form as unknown as UseFormReturn<EditUserFormValues>}
+    <CreateUserFormLayout
+      form={form}
       preview={preview}
       fileInputRef={fileInputRef}
       onImageChange={handleImageChange}
       onRemoveImage={removeImage}
-      onSubmit={handleSubmit as (values: EditUserFormValues) => void}
+      onSubmit={handleSubmit}
       isLoading={isLoading}
       onCancel={onCancel}
       submitLabel={submitLabel}
       t={t}
       tCommon={tCommon}
-    >
-      <CreateUserFormFields control={form.control} t={t} />
-    </UserFormLayout>
+    />
   );
 }

@@ -4,6 +4,7 @@ import { z } from "zod";
  * Common validation patterns (mirrored from server)
  */
 export const USER_ROLES = ["admin", "user"] as const;
+export const USER_GENDERS = ["male", "female"] as const;
 
 export const emailSchema = (t: (key: string) => string) => z
   .string()
@@ -47,6 +48,10 @@ export const roleSchema = (t: (key: string) => string) => z.enum(USER_ROLES, {
   message: t("role_invalid"),
 });
 
+export const genderSchema = (t: (key: string) => string) => z.enum(USER_GENDERS, {
+  message: t("gender_invalid"),
+});
+
 /**
  * Create User Schema (Exactly like server)
  */
@@ -56,6 +61,7 @@ export const getCreateUserSchema = (t: (key: string) => string) => z.object({
   password: passwordSchema(t).optional().or(z.literal("")),
   phone: phoneSchema(t),
   picture: pictureSchema(t),
+  gender: genderSchema(t).default("male"),
   role: roleSchema(t).default("user"),
   isActive: z.boolean().optional().default(true),
   isVerified: z.boolean().optional().default(false),

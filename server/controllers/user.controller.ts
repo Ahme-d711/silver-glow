@@ -155,6 +155,7 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
       password: hashedPassword,
       phone: validatedData.phone,
       picture: picturePath,
+      gender: validatedData.gender,
       role: validatedData.role,
       isActive: validatedData.isActive,
       isVerified: validatedData.isVerified,

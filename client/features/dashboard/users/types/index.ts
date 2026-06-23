@@ -48,6 +48,7 @@ export interface CreateUserPayload {
   password?: string;
   phone: string;
   picture?: string;
+  gender?: "male" | "female";
   role?: "admin" | "user";
   isActive?: boolean;
   isVerified?: boolean;
@@ -124,6 +125,5 @@ export type {
   UserFormLayoutProps,
   UserFormAvatarProps,
   UserFormActionsProps,
-  CreateUserFormFieldsProps,
 } from "./user-form.types";
 
