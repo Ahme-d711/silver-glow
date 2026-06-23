@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { getImageUrl } from "@/utils/image.utils";
 import { Ad } from "@/features/dashboard/ads/types";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
+import { getAdProductSlug, hasAdCtaTarget } from "../../utils/ad.utils";
 
 // Import Swiper styles
 import "swiper/css";
@@ -106,19 +108,51 @@ export function HeroSection({ ads, isLoading }: { ads: Ad[]; isLoading?: boolean
 
                 {/* Content Overlay */}
                 <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-8 max-w-5xl">
-                  <h1 className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter transition-all duration-1000 delay-100 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+                  <h1
+                    className={cn(
+                      "text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] line-clamp-3",
+                      "transition-all duration-1000 delay-100",
+                      isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                    )}
+                  >
                     {isAr ? ad.nameAr : ad.nameEn}
                   </h1>
-                  
-                  <p className={`text-lg md:text-2xl font-medium opacity-90 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+
+                  <p
+                    className={cn(
+                      "text-sm sm:text-base md:text-lg lg:text-xl font-normal opacity-90 max-w-2xl mx-auto leading-relaxed line-clamp-3",
+                      "transition-all duration-1000 delay-300",
+                      isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                    )}
+                  >
                     {isAr ? ad.descriptionAr : ad.descriptionEn}
                   </p>
 
-                  <div className={`pt-6 transition-all duration-1000 delay-500 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-                    <Button className="h-16 px-14 rounded-2xl bg-white text-primary hover:bg-white/90 text-xl font-black shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-none transform hover:scale-105 transition-all active:scale-95 cursor-pointer">
-                      {t("start_now")}
-                    </Button>
-                  </div>
+                  {hasAdCtaTarget(ad) && (
+                    <div
+                      className={`pt-6 transition-all duration-1000 delay-500 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+                    >
+                      {ad.link ? (
+                        <Button
+                          asChild
+                          className="h-16 px-14 rounded-2xl bg-white text-primary hover:bg-white/90 text-xl font-black shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-none transform hover:scale-105 transition-all active:scale-95 cursor-pointer"
+                        >
+                          <a href={ad.link} target="_blank" rel="noopener noreferrer">
+                            {t("start_now")}
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button
+                          asChild
+                          className="h-16 px-14 rounded-2xl bg-white text-primary hover:bg-white/90 text-xl font-black shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-none transform hover:scale-105 transition-all active:scale-95 cursor-pointer"
+                        >
+                          <Link href={`/products/${getAdProductSlug(ad)}`}>
+                            {t("start_now")}
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

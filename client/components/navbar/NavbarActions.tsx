@@ -59,7 +59,7 @@ export function NavbarActions() {
 
       <div className="h-6 w-px bg-white/20 hidden md:block" />
 
-      <LanguageSelector showLabel={true} />
+      <LanguageSelector />
       
       <div className="h-6 w-px bg-white/20 hidden md:block" />
 

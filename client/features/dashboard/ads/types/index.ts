@@ -1,3 +1,11 @@
+export interface AdProductRef {
+  _id: string;
+  id?: string;
+  nameAr?: string;
+  nameEn?: string;
+  slug?: string;
+}
+
 export interface Ad {
   _id: string;
   id: string; // Legacy field often added by virtuals or toJSON
@@ -10,7 +18,7 @@ export interface Ad {
   isShown: boolean;
   priority: number;
   link?: string;
-  productId?: string;
+  productId?: string | AdProductRef;
   createdAt: string;
   updatedAt: string;
 }

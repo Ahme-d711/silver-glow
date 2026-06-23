@@ -141,6 +141,10 @@ export function ProductForm({
         };
         reader.readAsDataURL(file);
       });
+
+      if (imagesRef.current) {
+        imagesRef.current.value = "";
+      }
     }
   };
 
@@ -151,7 +155,25 @@ export function ProductForm({
   };
 
   const onFormSubmit = (values: ProductFormData) => {
+    const images = values.images || [];
+    if (images.length > 4) {
+      toast.error(t("max_images_reached"));
+      return;
+    }
+
     const formData = new FormData();
+
+    if (isEdit && Array.isArray(values.images)) {
+      const existingImages = values.images.filter(
+        (img): img is string => typeof img === "string"
+      );
+
+      if (existingImages.length > 0) {
+        existingImages.forEach((img) => formData.append("existingImages", img));
+      } else {
+        formData.append("existingImages", "");
+      }
+    }
     
     // Iterate over all keys in values
     (Object.keys(values) as Array<keyof ProductFormData>).forEach((key) => {
@@ -163,8 +185,6 @@ export function ProductForm({
         value.forEach((img) => {
           if (img instanceof File) {
             formData.append("images", img);
-          } else if (typeof img === "string") {
-            formData.append("existingImages", img);
           }
         });
       } else if (key === "sectionIds" && Array.isArray(value)) {

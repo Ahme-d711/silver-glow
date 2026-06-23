@@ -40,9 +40,13 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = createProductSchema.partial().extend({
   existingImages: z.preprocess((val) => {
-    if (typeof val === "string") return [val];
-    return val;
-  }, z.array(z.string()).max(4, "Maximum 4 additional images allowed")).optional().default([]),
+    if (val === undefined || val === null) return undefined;
+    if (typeof val === "string") return val === "" ? [] : [val];
+    if (Array.isArray(val)) {
+      return val.filter((item) => typeof item === "string" && item.length > 0);
+    }
+    return undefined;
+  }, z.array(z.string()).max(4, "Maximum 4 additional images allowed")).optional(),
 });
 
 export const queryProductSchema = z.preprocess(

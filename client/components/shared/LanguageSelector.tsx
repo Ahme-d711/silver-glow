@@ -2,82 +2,41 @@
 
 import { useState, useEffect } from "react"
 import { usePathname, useRouter } from "@/i18n/routing"
-import { Globe, Check } from "lucide-react"
 import { useLocale } from "next-intl"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
 
-const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'ar', name: 'العربية', flag: '🇪🇬' },
-]
-
-export default function LanguageSelector({ showLabel = false }: { showLabel?: boolean }) {
+export default function LanguageSelector() {
   const [mounted, setMounted] = useState(false);
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
+  const nextLocale = locale === "en" ? "ar" : "en";
+  const toggleLabel = nextLocale.toUpperCase();
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleLanguageChange = (newLocale: string) => {
-    router.replace(pathname, { locale: newLocale });
+  const handleToggle = () => {
+    router.replace(pathname, { locale: nextLocale });
   };
 
   if (!mounted) {
     return (
-      <div className="flex items-center gap-2 opacity-0">
-        <Globe className="h-5 w-5" />
-        {showLabel && (
-          <span className="hidden lg:inline uppercase text-sm font-medium">
-            {locale}
-          </span>
-        )}
-      </div>
+      <span className="uppercase text-sm font-semibold opacity-0">
+        {toggleLabel}
+      </span>
     );
   }
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button 
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity outline-none cursor-pointer"
-          aria-label="Select Language"
-        >
-          <Globe className="h-5 w-5" />
-          {showLabel && (
-            <span className="hidden lg:inline uppercase text-sm font-medium">
-              {locale}
-            </span>
-          )}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-48 p-2">
-        <div className="flex flex-col gap-1">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => handleLanguageChange(lang.code)}
-              className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm font-medium">{lang.name}</span>
-              </div>
-              {locale === lang.code && (
-                <Check className="w-4 h-4 text-primary" />
-              )}
-            </button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
+    <button
+      type="button"
+      onClick={handleToggle}
+      className="uppercase text-sm font-semibold hover:opacity-80 transition-opacity outline-none cursor-pointer min-w-[2ch]"
+      aria-label={nextLocale === "en" ? "Switch to English" : "Switch to Arabic"}
+    >
+      {toggleLabel}
+    </button>
+  );
 }
-

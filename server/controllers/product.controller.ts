@@ -153,6 +153,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   const validatedBody = updateProductSchema.parse(req.body);
+  const { existingImages, ...productFields } = validatedBody;
   
   const product = await ProductModel.findById(id);
   if (!product) {
@@ -160,38 +161,22 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-  const updateData: Partial<IProduct> = { ...validatedBody } as unknown as Partial<IProduct>;
+  const updateData: Partial<IProduct> = { ...productFields } as unknown as Partial<IProduct>;
 
-  if (files) {
-    if (files.mainImage && files.mainImage.length > 0) {
-      // Delete old main image
-      if (product.mainImage) {
-        const oldImagePath = path.join(process.cwd(), product.mainImage);
-        if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
-      }
-      updateData.mainImage = `/uploads/products/${files.mainImage[0].filename}`;
+  if (files?.mainImage?.length) {
+    if (product.mainImage) {
+      const oldImagePath = path.join(process.cwd(), product.mainImage);
+      if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
     }
+    updateData.mainImage = `/uploads/products/${files.mainImage[0].filename}`;
+  }
 
-    }
+  if (existingImages !== undefined || files?.images?.length) {
+    let imagesToKeep: string[] =
+      existingImages !== undefined ? [...existingImages] : [...(product.images || [])];
 
-  // Handle images deletion and new uploads
-  if (req.body.existingImages !== undefined || (files && files.images)) {
-    let imagesToKeep: string[] = [];
-    
-    // 1. Determine base images (existing ones to keep)
-    if (req.body.existingImages !== undefined) {
-      // Use what frontend sent
-      imagesToKeep = Array.isArray(req.body.existingImages) 
-        ? req.body.existingImages 
-        : [req.body.existingImages];
-    } else {
-      // If NOT sent, keep current images as base
-      imagesToKeep = [...(product.images || [])];
-    }
-
-    // 2. Append new uploads if any
-    if (files && files.images && files.images.length > 0) {
-      const newImages = files.images.map(file => `/uploads/products/${file.filename}`);
+    if (files?.images?.length) {
+      const newImages = files.images.map((file) => `/uploads/products/${file.filename}`);
       imagesToKeep = [...imagesToKeep, ...newImages];
     }
 

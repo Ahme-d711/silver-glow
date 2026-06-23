@@ -41,7 +41,7 @@ export const getAllAds = async (req: Request, res: Response) => {
       .sort({ priority: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("productId", "nameAr nameEn"),
+      .populate("productId", "nameAr nameEn slug"),
     AdModel.countDocuments(query),
   ]);
 
