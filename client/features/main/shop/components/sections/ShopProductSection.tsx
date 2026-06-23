@@ -125,19 +125,13 @@ export const ShopProductSection = () => {
               value={categorySlug || "all"} 
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="h-11 px-4 rounded-xl border-2 border-primary/10 bg-primary/5 text-primary gap-2 font-bold min-w-[180px] hover:border-primary hover:bg-primary/10 transition-all duration-300 shadow-sm">
+              <SelectTrigger className="h-11 min-w-[180px] border-2 border-primary/15 bg-primary/[0.06] font-bold text-primary hover:border-primary/40 hover:bg-primary/10">
                 <SelectValue placeholder={t("categoriesTitle")} />
               </SelectTrigger>
-              <SelectContent align="end" className="w-56 rounded-xl p-2 max-h-[300px]">
-                <SelectItem value="all" className="rounded-lg cursor-pointer font-bold mb-1">
-                  {t("all")}
-                </SelectItem>
+              <SelectContent align="end" position="popper" className="max-h-[320px]">
+                <SelectItem value="all">{t("all")}</SelectItem>
                 {categories.map((category) => (
-                  <SelectItem 
-                    key={category._id} 
-                    value={category.slug} 
-                    className="rounded-lg cursor-pointer font-medium"
-                  >
+                  <SelectItem key={category._id} value={category.slug}>
                     {isRtl ? category.nameAr : category.nameEn}
                   </SelectItem>
                 ))}
@@ -146,14 +140,14 @@ export const ShopProductSection = () => {
 
             {/* Sort Select */}
             <Select value={sortValue} onValueChange={setSortValue}>
-              <SelectTrigger className="h-11 px-4 rounded-xl border-2 border-divider bg-white gap-2 font-semibold min-w-[160px] hover:border-primary/50 hover:text-primary transition-all duration-300 shadow-sm">
+              <SelectTrigger className="h-11 min-w-[170px] font-semibold">
                 <SelectValue placeholder={t("popularity")} />
               </SelectTrigger>
-              <SelectContent align="end" className="w-48 rounded-xl p-2">
-                <SelectItem value="popularity" className="rounded-lg cursor-pointer">{t("popularity")}</SelectItem>
-                <SelectItem value="newest" className="rounded-lg cursor-pointer">{t("newest")}</SelectItem>
-                <SelectItem value="priceLowHigh" className="rounded-lg cursor-pointer">{t("priceLowHigh")}</SelectItem>
-                <SelectItem value="priceHighLow" className="rounded-lg cursor-pointer">{t("priceHighLow")}</SelectItem>
+              <SelectContent align="end" position="popper">
+                <SelectItem value="popularity">{t("popularity")}</SelectItem>
+                <SelectItem value="newest">{t("newest")}</SelectItem>
+                <SelectItem value="priceLowHigh">{t("priceLowHigh")}</SelectItem>
+                <SelectItem value="priceHighLow">{t("priceHighLow")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
