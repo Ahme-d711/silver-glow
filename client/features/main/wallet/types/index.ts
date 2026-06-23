@@ -22,3 +22,9 @@ export interface WalletData {
     pages: number;
   };
 }
+
+export type {
+  WalletBalanceCardProps,
+  WalletTopupCardProps,
+  WalletTransactionsSectionProps,
+} from "./wallet-template.types";
