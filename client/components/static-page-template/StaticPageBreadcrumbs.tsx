@@ -11,17 +11,17 @@ export function StaticPageBreadcrumbs({ title }: StaticPageBreadcrumbsProps) {
   const isRtl = locale === "ar";
 
   return (
-    <div className="border-b border-divider bg-white">
-      <div className="container max-w-[1440px] mx-auto py-4 flex items-center gap-2 text-sm text-content-secondary">
+    <div className="pb-6 mb-6 border-b border-white/10">
+      <div className="container max-w-[1440px] mx-auto flex items-center gap-2 text-sm text-white/70">
         <Link
           href="/"
-          className="hover:text-primary transition-colors flex items-center gap-1"
+          className="hover:text-white transition-colors flex items-center gap-1"
         >
           <Home size={16} />
           <span>{t("home")}</span>
         </Link>
         <ChevronRight size={14} className={isRtl ? "rotate-180" : ""} />
-        <span className="text-primary font-medium">{title}</span>
+        <span className="text-white font-medium">{title}</span>
       </div>
     </div>
   );

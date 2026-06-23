@@ -12,8 +12,11 @@ export function StaticPageTemplate({
 }: StaticPageTemplateProps) {
   return (
     <div className="min-h-screen bg-background">
-      <StaticPageBreadcrumbs title={title} />
-      <StaticPageHero title={title} description={description} />
+      <StaticPageHero
+        title={title}
+        description={description}
+        breadcrumbs={<StaticPageBreadcrumbs title={title} />}
+      />
       <StaticPageContent>{children}</StaticPageContent>
     </div>
   );
