@@ -191,5 +191,5 @@ html.home-hero-boot body {
 }
 
 html.home-hero-boot [data-site-chrome] {
-  visibility: hidden;
+  display: none !important;
 }

@@ -2,7 +2,7 @@
 
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface HeroLoadingScreenProps {
@@ -18,11 +18,11 @@ export function HeroLoadingScreen({
   const [shouldRender, setShouldRender] = useState(visible);
   const [isExiting, setIsExiting] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setPortalTarget(document.body);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (visible) {
       setShouldRender(true);
       setIsExiting(false);
@@ -43,7 +43,7 @@ export function HeroLoadingScreen({
     return () => window.clearTimeout(timer);
   }, [visible, shouldRender, onExitComplete]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!shouldRender) return;
 
     const previousOverflow = document.body.style.overflow;

@@ -4,7 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
@@ -37,17 +37,10 @@ export function HomeHeroLoadingProvider({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [overlayMounted, setOverlayMounted] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
+  useLayoutEffect(() => {
     if (!isHome) {
       setIsLoading(false);
       setOverlayMounted(false);
@@ -58,7 +51,7 @@ export function HomeHeroLoadingProvider({
     setIsLoading(true);
     setOverlayMounted(true);
     document.documentElement.classList.add("home-hero-boot");
-  }, [isClient, isHome]);
+  }, [isHome]);
 
   const setHomeHeroLoading = useCallback(
     (loading: boolean) => {
@@ -88,7 +81,7 @@ export function HomeHeroLoadingProvider({
 
   return (
     <HomeHeroLoadingContext.Provider value={value}>
-      {isClient && overlayMounted ? (
+      {overlayMounted ? (
         <HeroLoadingScreen
           visible={isLoading}
           onExitComplete={handleBootComplete}

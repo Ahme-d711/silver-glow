@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "../globals.css";
 import { CoreProviders, Providers } from "../providers";
-import { HomeHeroBootScript } from "@/components/HomeHeroBootScript";
+import {
+  HOME_HERO_BOOT_SCRIPT,
+  HOME_HERO_BOOT_STYLES,
+} from "@/lib/home-hero-boot";
 import { getProfile } from "@/features/auth/actions/auth.service";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -50,10 +53,13 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
-      <body
-        className={`${cairo.variable} font-sans antialiased`}
-      >
-        <HomeHeroBootScript />
+      <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: HOME_HERO_BOOT_SCRIPT }}
+        />
+        <style dangerouslySetInnerHTML={{ __html: HOME_HERO_BOOT_STYLES }} />
+      </head>
+      <body className={`${cairo.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <CoreProviders>
             <Providers data={profileData}>

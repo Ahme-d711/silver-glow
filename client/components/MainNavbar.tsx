@@ -11,11 +11,13 @@ import { useMergeCart } from "@/features/main/cart/hooks/useMergeCart";
 import { Logo } from "./navbar/Logo";
 import { SearchBar } from "./navbar/SearchBar";
 import { NavbarActions } from "./navbar/NavbarActions";
+import { useHomeHeroLoading } from "@/features/main/home/context/HomeHeroLoadingContext";
 
 export default function MainNavbar() {
   const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const { isHomeHeroLoading } = useHomeHeroLoading();
 
   const { setItems } = useCartStore();
   const { data: cartData } = useCart();
@@ -75,6 +77,7 @@ export default function MainNavbar() {
   const isAuthPage = pathname.includes("/login") || pathname.includes("/register") || pathname.includes("/verify");
 
   if (isAuthPage) return null;
+  if (isHomeHeroLoading) return null;
 
   return (
     <nav
