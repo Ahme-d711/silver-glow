@@ -30,3 +30,9 @@ export interface SupportFaqItemProps {
   question: string;
   answer: string;
 }
+
+export interface SupportStatItem {
+  id: string;
+  valueKey: string;
+  labelKey: string;
+}

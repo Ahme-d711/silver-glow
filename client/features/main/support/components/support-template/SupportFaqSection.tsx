@@ -8,11 +8,15 @@ export function SupportFaqSection() {
   const t = useTranslations("Support");
 
   return (
-    <section className="bg-background p-10 rounded-3xl border border-divider">
-      <h2 className="text-2xl font-bold text-primary mb-6 text-start">
-        {t("faq_title")}
-      </h2>
-      <div className="space-y-6">
+    <section className="space-y-10">
+      <div className="text-center max-w-2xl mx-auto space-y-3">
+        <h2 className="text-2xl md:text-3xl font-bold text-primary">
+          {t("faq_title")}
+        </h2>
+        <p className="text-content-secondary leading-relaxed">{t("faq_desc")}</p>
+      </div>
+
+      <div className="space-y-4 max-w-4xl mx-auto">
         {SUPPORT_FAQ_ITEMS.map((item) => (
           <SupportFaqItem
             key={item.id}

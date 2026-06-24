@@ -5,12 +5,16 @@ import type { SupportFaqItemProps } from "../../types/support-template.types";
 
 export function SupportFaqItem({ question, answer }: SupportFaqItemProps) {
   return (
-    <details className="group border-b border-divider pb-4 cursor-pointer">
-      <summary className="text-lg font-medium text-primary list-none flex justify-between items-center gap-4 group-open:mb-2 transition-all text-start">
+    <details className="group bg-white rounded-2xl border border-divider px-6 py-5 cursor-pointer transition-shadow hover:shadow-sm open:shadow-md open:border-primary/15">
+      <summary className="text-lg font-semibold text-primary list-none flex justify-between items-center gap-4 transition-all text-start">
         <span>{question}</span>
-        <ChevronDown className="h-5 w-5 shrink-0 text-content-tertiary transition-transform group-open:rotate-180" />
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary group-open:bg-primary group-open:text-white transition-colors">
+          <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" />
+        </span>
       </summary>
-      <p className="text-content-secondary leading-relaxed text-start">{answer}</p>
+      <p className="text-content-secondary leading-relaxed text-start pt-4 mt-2 border-t border-divider/60">
+        {answer}
+      </p>
     </details>
   );
 }

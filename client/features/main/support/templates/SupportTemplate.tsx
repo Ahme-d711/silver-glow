@@ -1,19 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import StaticPageTemplate from "@/components/StaticPageTemplate";
-import { SupportContactSection } from "../components/support-template/SupportContactSection";
-import { SupportFaqSection } from "../components/support-template/SupportFaqSection";
+import { SupportHero } from "../components/support-template/SupportHero";
+import { SupportContent } from "../components/support-template/SupportContent";
 
 export function SupportTemplate() {
-  const t = useTranslations("Support");
-
   return (
-    <StaticPageTemplate title={t("title")} description={t("description")}>
-      <div className="space-y-12">
-        <SupportContactSection />
-        <SupportFaqSection />
+    <div className="min-h-screen bg-background">
+      <SupportHero />
+      <div className="container max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <SupportContent />
       </div>
-    </StaticPageTemplate>
+    </div>
   );
 }

@@ -27,7 +27,6 @@ server/dist/
 server/target/
 server/.idea/
 server/uploads/
-server/uploads/
 
 # =========================
 # Mobile (Expo)
