@@ -26,6 +26,8 @@ interface UniTextareaProps<TFieldValues extends FieldValues = FieldValues> {
   helperText?: string;
   rows?: number;
   readOnly?: boolean;
+  /** Fixed text direction for the textarea (independent of UI locale). */
+  dir?: "ltr" | "rtl";
 }
 
 export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
@@ -41,8 +43,11 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
   helperText,
   rows = 4,
   readOnly,
+  dir,
 }: UniTextareaProps<TFieldValues>) {
   const isRtl = useLocale() === "ar";
+  const textareaDir = dir ?? (isRtl ? "rtl" : "ltr");
+  const isTextareaRtl = textareaDir === "rtl";
 
   return (
     <FormField
@@ -68,15 +73,15 @@ export function UniTextarea<TFieldValues extends FieldValues = FieldValues>({
               disabled={disabled}
               rows={rows}
               readOnly={readOnly}
-              dir={isRtl ? "rtl" : undefined}
-                className={cn(
-                  "min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white resize-none",
-                  isRtl && "text-right",
-                  textareaClassName
-                )}
-                {...field}
-                value={field.value ?? ""}
-              />
+              dir={textareaDir}
+              className={cn(
+                "min-h-[100px] rounded-xl border-divider/50 focus:border-primary px-4 shadow-none bg-white resize-none",
+                isTextareaRtl ? "text-right" : "text-left",
+                textareaClassName
+              )}
+              {...field}
+              value={field.value ?? ""}
+            />
           </FormControl>
           {helperText && (
             <p className={cn("text-xs text-content-tertiary", isRtl && "text-right")}>

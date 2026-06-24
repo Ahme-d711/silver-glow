@@ -27,6 +27,7 @@ export function TermsSettings({ control }: TermsSettingsProps) {
         label={t("terms_conditions_en")}
         placeholder={t("terms_conditions_en_placeholder")}
         rows={16}
+        dir="ltr"
         className="md:col-span-1"
       />
 
@@ -36,6 +37,7 @@ export function TermsSettings({ control }: TermsSettingsProps) {
         label={t("terms_conditions_ar")}
         placeholder={t("terms_conditions_ar_placeholder")}
         rows={16}
+        dir="rtl"
         className="md:col-span-1"
       />
     </div>
