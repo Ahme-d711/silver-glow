@@ -4,7 +4,7 @@ import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { TERMS_SECTIONS } from "../../constants/terms.constants";
 import type { TermsResolvedSection } from "../../types/terms-template.types";
-import { parseTermsContent } from "../../utils/parseTermsContent";
+import { parseTermsContent, isValidParsedTermsContent } from "../../utils/parseTermsContent";
 import { TermsSection } from "./TermsSection";
 import { TermsTableOfContents } from "./TermsTableOfContents";
 
@@ -27,9 +27,16 @@ function resolveDefaultSections(
 export function TermsContent({ customContent }: TermsContentProps) {
   const t = useTranslations("Terms");
 
-  const sections = customContent
-    ? parseTermsContent(customContent)
-    : resolveDefaultSections(t);
+  const sections = (() => {
+    if (!customContent) return resolveDefaultSections(t);
+
+    const parsed = parseTermsContent(customContent);
+    if (!isValidParsedTermsContent(parsed)) {
+      return resolveDefaultSections(t);
+    }
+
+    return parsed;
+  })();
 
   const tocSections = sections.map((section) => ({
     id: section.id,
