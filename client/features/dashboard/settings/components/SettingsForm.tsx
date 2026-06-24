@@ -38,6 +38,8 @@ export function SettingsForm() {
       contactPhone: "",
       termsConditionsAr: "",
       termsConditionsEn: "",
+      privacyPolicyAr: "",
+      privacyPolicyEn: "",
       socialLinks: [],
     },
   });
@@ -58,6 +60,8 @@ export function SettingsForm() {
         contactPhone: settings.contactPhone || "",
         termsConditionsAr: settings.termsConditionsAr || "",
         termsConditionsEn: settings.termsConditionsEn || "",
+        privacyPolicyAr: settings.privacyPolicyAr || "",
+        privacyPolicyEn: settings.privacyPolicyEn || "",
         socialLinks: settings.socialLinks || [],
       });
     }

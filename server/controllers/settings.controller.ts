@@ -39,6 +39,8 @@ export const updateSettings = asyncHandler(async (req: Request, res: Response) =
     if (req.body.contactPhone !== undefined) settings.contactPhone = req.body.contactPhone;
     if (req.body.termsConditionsAr !== undefined) settings.termsConditionsAr = req.body.termsConditionsAr;
     if (req.body.termsConditionsEn !== undefined) settings.termsConditionsEn = req.body.termsConditionsEn;
+    if (req.body.privacyPolicyAr !== undefined) settings.privacyPolicyAr = req.body.privacyPolicyAr;
+    if (req.body.privacyPolicyEn !== undefined) settings.privacyPolicyEn = req.body.privacyPolicyEn;
     if (req.body.socialLinks !== undefined) settings.socialLinks = req.body.socialLinks;
     
     await settings.save();

@@ -22,7 +22,7 @@ export function PrivacyTableOfContents({ sections }: PrivacyTableOfContentsProps
               className="block text-start text-content-secondary hover:text-primary transition-colors leading-snug py-0.5"
             >
               <span className="text-content-tertiary me-1.5">{index + 1}.</span>
-              {section.title}
+              {section.title.replace(/^\d+\.\s*/, "")}
             </a>
           </li>
         ))}

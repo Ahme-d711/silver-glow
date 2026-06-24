@@ -3,6 +3,7 @@ export const SETTINGS_TABS = [
   { value: "contact", labelKey: "contact_info" as const },
   { value: "links", labelKey: "social_links" as const },
   { value: "terms", labelKey: "terms_conditions" as const },
+  { value: "privacy", labelKey: "privacy_policy" as const },
   { value: "security", labelKey: "security" as const },
   { value: "phone", labelKey: "phone_settings" as const },
 ] as const;
@@ -14,4 +15,5 @@ export const SETTINGS_TABS_WITH_GLOBAL_SAVE: SettingsTabValue[] = [
   "contact",
   "links",
   "terms",
+  "privacy",
 ];

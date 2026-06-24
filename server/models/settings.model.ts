@@ -23,6 +23,10 @@ import { Schema, model, Document } from "mongoose";
  *           type: string
  *         termsConditionsEn:
  *           type: string
+ *         privacyPolicyAr:
+ *           type: string
+ *         privacyPolicyEn:
+ *           type: string
  *         socialLinks:
  *           type: array
  *           items:
@@ -43,6 +47,8 @@ export interface ISettings extends Document {
   contactPhone?: string;
   termsConditionsAr?: string;
   termsConditionsEn?: string;
+  privacyPolicyAr?: string;
+  privacyPolicyEn?: string;
   socialLinks: {
     platform: string;
     link: string;
@@ -84,6 +90,14 @@ const SettingsSchema = new Schema<ISettings>(
        default: "",
      },
      termsConditionsEn: {
+       type: String,
+       default: "",
+     },
+     privacyPolicyAr: {
+       type: String,
+       default: "",
+     },
+     privacyPolicyEn: {
        type: String,
        default: "",
      },

@@ -4,6 +4,7 @@ import { SettingsFormValues } from "../../schemas/settingsSchema";
 import { SecuritySettings } from "../SecuritySettings";
 import { PhoneSettings } from "../PhoneSettings";
 import { TermsSettings } from "../TermsSettings";
+import { PrivacySettings } from "../PrivacySettings";
 import { SettingsTabsNav } from "./SettingsTabsNav";
 import { ShippingSettingsTab } from "./ShippingSettingsTab";
 import { ContactSettingsTab } from "./ContactSettingsTab";
@@ -44,6 +45,10 @@ export function SettingsFormTabs({
 
       <TabsContent value="terms" className="space-y-6 outline-none">
         <TermsSettings control={control} />
+      </TabsContent>
+
+      <TabsContent value="privacy" className="space-y-6 outline-none">
+        <PrivacySettings control={control} />
       </TabsContent>
 
       <TabsContent value="security" className="space-y-6 outline-none">

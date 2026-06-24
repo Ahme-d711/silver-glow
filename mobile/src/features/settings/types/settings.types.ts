@@ -7,6 +7,8 @@ export interface AppSettings {
   contactPhone: string;
   termsConditionsAr?: string;
   termsConditionsEn?: string;
+  privacyPolicyAr?: string;
+  privacyPolicyEn?: string;
   socialLinks: {
     platform: string;
     link: string;

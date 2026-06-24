@@ -16,6 +16,8 @@ export const settingsSchema = z.object({
   contactPhone: z.string().optional().or(z.literal("")),
   termsConditionsAr: z.string().optional().or(z.literal("")),
   termsConditionsEn: z.string().optional().or(z.literal("")),
+  privacyPolicyAr: z.string().optional().or(z.literal("")),
+  privacyPolicyEn: z.string().optional().or(z.literal("")),
   socialLinks: z
     .array(
       z.object({
