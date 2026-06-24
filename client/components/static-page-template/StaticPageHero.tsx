@@ -10,7 +10,6 @@ interface StaticPageHeroComponentProps extends StaticPageHeroProps {
 export function StaticPageHero({
   title,
   description,
-  breadcrumbs,
 }: StaticPageHeroComponentProps) {
   return (
     <div className="bg-primary text-white pt-34 pb-20 px-4 relative overflow-hidden">
@@ -20,7 +19,6 @@ export function StaticPageHero({
       </div>
 
       <div className="container max-w-[1440px] mx-auto relative z-10">
-        {breadcrumbs}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
             {title}
