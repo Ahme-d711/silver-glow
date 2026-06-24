@@ -31,7 +31,7 @@ export function DeliveryRatesTable() {
                 <tr
                   key={row.id}
                   className={cn(
-                    "border-b border-divider/50 hover:bg-primary/[0.03] transition-colors",
+                    "border-b border-divider/50 hover:bg-primary/3 transition-colors",
                     row.id === "free" && "border-b-0 bg-success/5",
                   )}
                 >
