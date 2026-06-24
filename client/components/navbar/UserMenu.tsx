@@ -89,15 +89,20 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <Link
-        href="/login"
-        className="flex items-center gap-2 rounded-full px-2 py-1.5 hover:bg-white/10 transition-all"
-      >
-        <User className="h-5 w-5" />
+      <div className="flex items-center gap-2 rounded-full px-2 py-1.5 hover:bg-white/10 transition-all">
+        <Link href="/login" className="hover:opacity-80 transition-opacity">
+          <User className="h-5 w-5" />
+        </Link>
         <span className="hidden lg:inline">
-          {t("log_in")} / {t("create_account")}
+          <Link href="/login" className="hover:opacity-80 transition-opacity">
+            {t("log_in")}
+          </Link>
+          <span aria-hidden="true"> / </span>
+          <Link href="/register" className="hover:opacity-80 transition-opacity">
+            {t("create_account")}
+          </Link>
         </span>
-      </Link>
+      </div>
     );
   }
 
