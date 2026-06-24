@@ -16,7 +16,9 @@ export interface WishlistLoadingProps {
 export interface WishlistEmptyProps {
   title: string;
   description: string;
-  exploreLabel: string;
+  actionLabel: string;
+  actionHref?: string;
+  onAction?: () => void;
 }
 
 export interface WishlistGridProps {

@@ -2,11 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { wishlistService } from "../services/wishlist.service";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/stores/authStore";
+import { useLoginRequiredModal } from "@/features/auth/stores/loginRequiredModalStore";
 import { AxiosError } from "axios";
 
 export const useWishlist = () => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
+  const openLoginRequired = useLoginRequiredModal((s) => s.openLoginRequired);
 
   const { data, isLoading } = useQuery({
     queryKey: ["wishlist"],
@@ -34,18 +36,36 @@ export const useWishlist = () => {
   });
 
   const isInWishlist = (productId: string) => {
-    return data?.data?.wishlist?.products?.some((p: string | { _id: string }) => {
-      if (typeof p === 'string') return p === productId;
-      return p._id === productId;
-    }) || false;
+    return (
+      data?.data?.wishlist?.products?.some((p: string | { _id: string }) => {
+        if (typeof p === "string") return p === productId;
+        return p._id === productId;
+      }) || false
+    );
+  };
+
+  const toggleWishlist = (productId: string) => {
+    if (!user) {
+      openLoginRequired("wishlist");
+      return;
+    }
+    toggleMutation.mutate(productId);
+  };
+
+  const clearWishlist = () => {
+    if (!user) {
+      openLoginRequired("wishlist");
+      return;
+    }
+    clearMutation.mutate();
   };
 
   return {
     wishlist: data?.data?.wishlist,
     isLoading,
-    toggleWishlist: toggleMutation.mutate,
+    toggleWishlist,
     isToggling: toggleMutation.isPending,
-    clearWishlist: clearMutation.mutate,
+    clearWishlist,
     isInWishlist,
   };
 };

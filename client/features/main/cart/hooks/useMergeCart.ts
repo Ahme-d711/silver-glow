@@ -1,46 +1,53 @@
 import { useEffect, useRef } from "react";
-import { useCartStore } from "../stores/useCartStore";
-import { useAddToCart } from "./useCart";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { useGuestCartStore } from "../stores/useGuestCartStore";
+import { cartService } from "../services/cart.service";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
 export const useMergeCart = () => {
   const { user } = useAuthStore();
-  const { items, clearCart } = useCartStore();
-  const { mutateAsync: addToCartServer } = useAddToCart();
+  const guestItems = useGuestCartStore((s) => s.items);
+  const clearGuestCart = useGuestCartStore((s) => s.clearCart);
+  const queryClient = useQueryClient();
+  const t = useTranslations("Shop");
   const isMerging = useRef(false);
+  const mergedForUser = useRef<string | null>(null);
 
   useEffect(() => {
     const mergeCart = async () => {
-      const unsyncedItems = items.filter(item => !item.isSynced);
-      
-      // Only merge if we have a user and local guest items (unsynced)
-      if (user && unsyncedItems.length > 0 && !isMerging.current) {
-        isMerging.current = true;
-        
-        try {
-          // Send all unsynced local items to server
-          for (const item of unsyncedItems) {
-            await addToCartServer({
-              productId: item.productId,
-              quantity: item.quantity,
-              size: item.size === "N/A" ? undefined : item.size,
-            });
-          }
-          
-          // These items have been sent to server, but we don't need to clear the whole cart
-          // because setItems will soon bring the synced versions.
-          // However, to stop the loop immediately, we can mark them as synced locally 
-          // or just wait for MainNavbar to call setItems(isSynced: true).
-          // To be safe, let's keep the clearCart() but it will only clear what was there.
-          clearCart();
-        } catch (error) {
-          console.error("Failed to merge cart:", error);
-        } finally {
-          isMerging.current = false;
+      if (!user || guestItems.length === 0 || isMerging.current) return;
+      if (mergedForUser.current === user._id) return;
+
+      isMerging.current = true;
+
+      try {
+        for (const item of guestItems) {
+          await cartService.addItem({
+            productId: item.productId,
+            quantity: item.quantity,
+            size: item.size === "N/A" ? undefined : item.size,
+          });
         }
+
+        clearGuestCart();
+        mergedForUser.current = user._id;
+        await queryClient.invalidateQueries({ queryKey: ["cart"] });
+        toast.success(t("cart_merged"));
+      } catch (error) {
+        console.error("Failed to merge cart:", error);
+      } finally {
+        isMerging.current = false;
       }
     };
 
     mergeCart();
-  }, [user, items, addToCartServer, clearCart]);
+  }, [user, guestItems, clearGuestCart, queryClient, t]);
+
+  useEffect(() => {
+    if (!user) {
+      mergedForUser.current = null;
+    }
+  }, [user]);
 };

@@ -5,12 +5,9 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Heart, ShoppingBag, Eye, Star } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { Product } from "@/features/dashboard/products/types";
 import { getImageUrl } from "@/utils/image.utils";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
-import { useRouter } from "@/i18n/routing";
-import { useAuthStore } from "@/features/auth/stores/authStore";
 import { cn } from "@/lib/utils";
 
 interface ShopProductCardProps {
@@ -20,8 +17,6 @@ interface ShopProductCardProps {
 export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => {
   const t = useTranslations("Shop");
   const locale = useLocale();
-  const router = useRouter();
-  const { user } = useAuthStore();
   const { isInWishlist, toggleWishlist, isToggling } = useWishlist();
   
   const isAr = locale === "ar";
@@ -37,11 +32,6 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   const handleHeartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) {
-      toast.error(t("login_required") || "Please login first");
-      router.push("/login");
-      return;
-    }
     toggleWishlist(product._id);
   };
 

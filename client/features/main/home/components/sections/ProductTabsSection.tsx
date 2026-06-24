@@ -7,15 +7,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 import { useHomeProducts, useHomeSections } from "../../hooks/useHome";
 import { ProductCard } from "../cards/ProductCard";
 
-interface ProductTabsSectionProps {
-  onToggleWishlist?: (productId: string) => void;
-  isInWishlist?: (productId: string) => boolean;
-}
-
-export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
-  onToggleWishlist,
-  isInWishlist,
-}) => {
+export const ProductTabsSection: React.FC = () => {
   const t = useTranslations("Home");
   const locale = useLocale();
   const isRtl = locale === "ar";
@@ -74,12 +66,7 @@ export const ProductTabsSection: React.FC<ProductTabsSectionProps> = ({
             ))
         ) : products.length > 0 ? (
           products.slice(0, 8).map((product) => (
-            <ProductCard 
-              key={product._id} 
-              product={product} 
-              onToggleWishlist={onToggleWishlist}
-              isInWishlist={isInWishlist?.(product._id)}
-            />
+            <ProductCard key={product._id} product={product} />
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 text-content-tertiary">

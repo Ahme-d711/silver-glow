@@ -7,8 +7,8 @@ import { Product } from "@/features/dashboard/products/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SizeGuideModal } from "./SizeGuideModal";
-import { useCartStore } from "@/features/main/cart/stores/useCartStore";
 import { useAddToCart } from "@/features/main/cart/hooks/useCart";
+import { useGuestCartStore } from "@/features/main/cart/stores/useGuestCartStore";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toast } from "sonner";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
@@ -22,6 +22,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const locale = useLocale();
   const isRtl = locale === "ar";
   const { user } = useAuthStore();
+  const addGuestItem = useGuestCartStore((s) => s.addItem);
   
   const [selectedSize, setSelectedSize] = useState<string | null>(
     product.sizes && product.sizes.length > 0 
@@ -30,7 +31,6 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   );
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-  const { addItem } = useCartStore();
   const { mutate: addToCartServer, isPending } = useAddToCart();
 
   const name = isRtl ? product.nameAr : product.nameEn;
@@ -55,41 +55,32 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       return;
     }
 
-    const payload = {
-      productId: product._id,
-      quantity: quantity,
-      size: selectedSize || undefined,
-    };
-
     if (user) {
-      addToCartServer(payload);
-    } else {
-      const cartItem = {
-        id: `${product._id}-${selectedSize || "nosize"}`,
+      addToCartServer({
         productId: product._id,
-        nameEn: product.nameEn,
-        nameAr: product.nameAr,
-        price: currentPrice, // Use size-specific price
-        mainImage: product.mainImage,
-        size: selectedSize || "N/A",
-        quantity: quantity,
-        stock: sizes.length > 0 
-          ? sizes.find((s) => s.size === selectedSize)?.stock || 0
-          : product.stock
-      };
-
-      addItem(cartItem);
-      toast.success(t("item_added"));
+        quantity,
+        size: selectedSize || undefined,
+      });
+      return;
     }
+
+    addGuestItem({
+      id: `${product._id}-${selectedSize || "nosize"}`,
+      productId: product._id,
+      nameEn: product.nameEn,
+      nameAr: product.nameAr,
+      price: currentPrice,
+      mainImage: product.mainImage,
+      size: selectedSize || "N/A",
+      quantity,
+      stock: currentStock,
+    });
+    toast.success(t("item_added"));
   };
   const { toggleWishlist, isInWishlist, isToggling } = useWishlist();
   const isFavorite = isInWishlist(product._id);
 
   const handleToggleWishlist = () => {
-    if (!user) {
-      toast.error(t("login_required_wishlist"));
-      return;
-    }
     toggleWishlist(product._id);
   };
 

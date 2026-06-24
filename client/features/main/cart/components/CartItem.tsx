@@ -4,12 +4,10 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { CartItem as CartItemType } from "../types/cart.types";
-import { useCartStore } from "../stores/useCartStore";
 import { useUpdateCartQuantity, useRemoveFromCart } from "../hooks/useCart";
+import { useGuestCartStore } from "../stores/useGuestCartStore";
 import { useAuthStore } from "@/features/auth/stores/authStore";
-import { Button } from "@/components/ui/button";
 import { getImageUrl } from "@/utils/image.utils";
-import { cn } from "@/lib/utils";
 
 interface CartItemProps {
   item: CartItemType;
@@ -20,23 +18,21 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const t = useTranslations("Shop");
   const isRtl = locale === "ar";
   const { user } = useAuthStore();
-  const { updateQuantity: updateLocalQuantity, removeItem: removeLocalItem } = useCartStore();
-  
+  const updateGuestQuantity = useGuestCartStore((s) => s.updateQuantity);
+  const removeGuestItem = useGuestCartStore((s) => s.removeItem);
+
   const { mutate: updateServerQuantity, isPending: isUpdating } = useUpdateCartQuantity();
   const { mutate: removeFromServer, isPending: isRemoving } = useRemoveFromCart();
 
   const isLoading = isUpdating || isRemoving;
+  const size = item.size === "N/A" ? undefined : item.size;
 
   const handleIncrement = () => {
     const newQuantity = item.quantity + 1;
     if (user) {
-      updateServerQuantity({ 
-        productId: item.productId, 
-        quantity: newQuantity, 
-        size: item.size === "N/A" ? undefined : item.size 
-      });
+      updateServerQuantity({ productId: item.productId, quantity: newQuantity, size });
     } else {
-      updateLocalQuantity(item.id, newQuantity);
+      updateGuestQuantity(item.id, newQuantity);
     }
   };
 
@@ -44,31 +40,23 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
     if (item.quantity > 1) {
       const newQuantity = item.quantity - 1;
       if (user) {
-        updateServerQuantity({ 
-          productId: item.productId, 
-          quantity: newQuantity, 
-          size: item.size === "N/A" ? undefined : item.size 
-        });
+        updateServerQuantity({ productId: item.productId, quantity: newQuantity, size });
       } else {
-        updateLocalQuantity(item.id, newQuantity);
+        updateGuestQuantity(item.id, newQuantity);
       }
     }
   };
 
   const handleRemove = () => {
     if (user) {
-      removeFromServer({ 
-        productId: item.productId, 
-        size: item.size === "N/A" ? undefined : item.size 
-      });
+      removeFromServer({ productId: item.productId, size });
     } else {
-      removeLocalItem(item.id);
+      removeGuestItem(item.id);
     }
   };
 
   return (
     <div className="flex items-center gap-4 py-4 px-2 hover:bg-neutral-50 rounded-2xl transition-colors group">
-      {/* Product Image */}
       <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-divider">
         <Image
           src={getImageUrl(item.mainImage) || ""}
@@ -78,7 +66,6 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
         />
       </div>
 
-      {/* Item Details */}
       <div className="flex flex-1 flex-col">
         <div className="flex justify-between items-start">
           <div>
@@ -103,7 +90,6 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             {item.price.toFixed(2)} {t("currency")}
           </p>
 
-          {/* Quantity Controls */}
           <div className="flex items-center bg-neutral-100 rounded-xl px-2 py-1 gap-4">
             <button
               onClick={handleDecrement}

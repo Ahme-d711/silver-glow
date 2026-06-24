@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { ShoppingBag } from "lucide-react";
+import { Loader2, ShoppingBag } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import MainNavbar from "@/components/MainNavbar";
-import { useCartStore } from "../stores/useCartStore";
+import { useCartItems } from "../hooks/useCart";
 import { CartItem } from "../components/CartItem";
 import { CartSummary } from "../components/CartSummary";
 import { BestsellerProductsSection } from "../../product/components/BestsellerProductsSection";
@@ -13,7 +13,7 @@ import { StorefrontPageHeader } from "@/components/shared/StorefrontPageHeader";
 
 export const CartTemplate: React.FC = () => {
   const t = useTranslations("Shop");
-  const items = useCartStore((state) => state.items);
+  const { items, isLoading } = useCartItems();
 
   return (
     <>
@@ -29,16 +29,19 @@ export const CartTemplate: React.FC = () => {
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-            {/* Cart Items List */}
             <div className="lg:col-span-2 space-y-4">
-              {items.length === 0 ? (
+              {isLoading ? (
+                <div className="flex justify-center py-20">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                </div>
+              ) : items.length === 0 ? (
                 <div className="text-center py-20 border-2 border-dashed border-divider rounded-3xl bg-neutral-50/50">
                   <div className="bg-white p-6 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-sm">
                     <ShoppingBag className="h-10 w-10 text-neutral-300" />
                   </div>
-                  <SectionHeader 
-                    title={t("empty_cart_title") || "Your cart is empty"} 
-                    centered 
+                  <SectionHeader
+                    title={t("empty_cart_title") || "Your cart is empty"}
+                    centered
                     className="mb-2"
                     titleClassName="text-2xl"
                   />
@@ -61,14 +64,12 @@ export const CartTemplate: React.FC = () => {
               )}
             </div>
 
-            {/* Order Summary */}
             <div className="lg:sticky lg:top-28">
-              <CartSummary />
+              {items.length > 0 && <CartSummary />}
             </div>
           </div>
         </div>
-        
-        {/* Bestseller Products Section */}
+
         <BestsellerProductsSection />
       </div>
     </>

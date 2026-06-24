@@ -4,29 +4,19 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Product } from "@/features/dashboard/products/types";
 import { getImageUrl } from "@/utils/image.utils";
-import { useAuthStore } from "@/features/auth/stores/authStore";
-import { useRouter } from "@/i18n/routing";
-import { toast } from "sonner";
+import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
 import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
-  onToggleWishlist?: (productId: string) => void;
-  isInWishlist?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onToggleWishlist,
-  isInWishlist = false,
-}) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const locale = useLocale();
-  const t = useTranslations("Shop");
-  const router = useRouter();
-  const { user } = useAuthStore();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const isRtl = locale === "ar";
   const name = isRtl ? product.nameAr : product.nameEn;
   const description = isRtl ? product.descriptionAr : product.descriptionEn;
@@ -34,20 +24,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const hasReviews = (product.numReviews ?? 0) > 0;
   const averageRating = product.averageRating ?? 0;
   const filledStars = hasReviews ? Math.round(averageRating) : 0;
+  const isInWishlistItem = isInWishlist(product._id);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (!user) {
-      toast.error(t("login_required") || "Please login first");
-      router.push("/login");
-      return;
-    }
-
-    if (onToggleWishlist) {
-      onToggleWishlist(product._id);
-    }
+    toggleWishlist(product._id);
   };
 
   return (
@@ -64,10 +46,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
         />
 
-        {/* Dark Overlay */}
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-        {/* Product Info */}
         <div className="absolute bottom-0 left-0 right-0 p-5 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <h3 className="text-lg font-bold mb-1 line-clamp-1">{name}</h3>
           <p className="text-sm text-secondary line-clamp-1">
@@ -76,7 +56,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </Link>
 
-      {/* Rating Badge */}
       {hasReviews && (
         <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-2.5 py-1.5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
           <div className="flex items-center gap-0.5">
@@ -99,15 +78,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       )}
 
-      {/* Wishlist Heart Icon */}
       <button
         onClick={handleWishlistClick}
         className="absolute top-4 right-4 z-10 rounded-full bg-white/20 backdrop-blur-sm p-2 opacity-0 transition-all duration-300 group-hover:opacity-100 hover:bg-white/40 cursor-pointer"
-        aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+        aria-label={isInWishlistItem ? "Remove from wishlist" : "Add to wishlist"}
       >
         <Heart
           className={`h-5 w-5 transition-colors ${
-            isInWishlist ? "fill-red-500 text-red-500" : "text-white"
+            isInWishlistItem ? "fill-red-500 text-red-500" : "text-white"
           }`}
         />
       </button>

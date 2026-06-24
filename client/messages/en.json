@@ -1045,7 +1045,26 @@
     "empty_cart_desc": "Looks like you haven't added anything yet.",
     "continue_shopping": "Continue Shopping",
     "add_to_cart": "Add to Cart",
-    "adding_to_cart": "Adding..."
+    "adding_to_cart": "Adding...",
+    "cart_merged": "Your cart items have been saved to your account",
+    "guest_checkout_hint": "Sign in to complete your order. Your cart items will be saved to your account automatically.",
+    "sign_in_to_checkout": "Sign in to checkout"
+  },
+  "LoginRequired": {
+    "title_checkout": "Sign in to checkout",
+    "desc_checkout": "Sign in or create an account to complete your purchase. Your cart items will be saved automatically.",
+    "title_wishlist": "Sign in to save favorites",
+    "desc_wishlist": "Create an account to add items to your wishlist and access them from any device.",
+    "title_wallet": "Sign in to access your wallet",
+    "desc_wallet": "Sign in to view your balance, top up, and manage your transactions.",
+    "title_review": "Sign in to leave a review",
+    "desc_review": "Create an account or sign in to share your experience with this product.",
+    "title_default": "Sign in required",
+    "desc_default": "Please sign in or create an account to continue.",
+    "login": "Sign in",
+    "register": "Create account",
+    "continue_browsing": "Continue browsing",
+    "close": "Close"
   },
   "Wallet": {
     "title": "My Wallet",
@@ -1074,7 +1093,10 @@
     "loading": "Loading your favorites...",
     "empty_title": "Your wishlist is empty",
     "empty_description": "Looks like you haven't saved any items yet. Start exploring our premium collection.",
-    "explore_collection": "Explore Collection"
+    "explore_collection": "Explore Collection",
+    "guest_title": "Sign in to view your wishlist",
+    "guest_description": "Save your favorite pieces and access them anytime by signing in to your account.",
+    "sign_in": "Sign in"
   },
   "Errors": {
     "server_error_title": "Connection Interrupted",

@@ -4,7 +4,10 @@ import { useSyncExternalStore } from "react";
 import { Link } from "@/i18n/routing";
 import { ShoppingCart, Heart, Wallet, Menu, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCartStore, getTotalItems } from "@/features/main/cart/stores/useCartStore";
+import { useCartItems } from "@/features/main/cart/hooks/useCart";
+import { getTotalItems } from "@/features/main/cart/utils/cart.utils";
+import { useAuthStore } from "@/features/auth/stores/authStore";
+import { useLoginRequiredModal } from "@/features/auth/stores/loginRequiredModalStore";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
 import LanguageSelector from "../shared/LanguageSelector";
 import { UserMenu } from "./UserMenu";
@@ -16,14 +19,16 @@ export function NavbarActions() {
     () => true,
     () => false
   );
-  const { items } = useCartStore();
-  const { wishlist } = useWishlist();
+  const { user } = useAuthStore();
+  const openLoginRequired = useLoginRequiredModal((s) => s.openLoginRequired);
+  const { items } = useCartItems();
 
   const totalItems = getTotalItems(items);
+  const { wishlist } = useWishlist();
   const wishlistCount = wishlist?.products?.length || 0;
 
   return (
-    <div className="flex items-center gap-2 md:gap-6 text-secondary font-medium">
+    <div className="flex items-center gap-2 md:gap-4 text-secondary font-medium">
       <Link href="/shop" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <Store className="h-5 w-5" />
         <span className="hidden lg:inline">{t("shop")}</span>
@@ -45,7 +50,16 @@ export function NavbarActions() {
       
       <div className="h-6 w-px bg-white/20 hidden md:block" />
 
-      <Link href="/wishlist" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group">
+      <Link
+        href="/wishlist"
+        onClick={(e) => {
+          if (!user) {
+            e.preventDefault();
+            openLoginRequired("wishlist");
+          }
+        }}
+        className="flex items-center gap-2 hover:opacity-80 transition-opacity relative group"
+      >
         <div className="relative">
           <Heart className="h-5 w-5" />
           {isHydrated && wishlistCount > 0 && (
@@ -57,12 +71,14 @@ export function NavbarActions() {
         <span className="hidden lg:inline">{t("wishlist")}</span>
       </Link>
       
-      <div className="h-6 w-px bg-white/20 hidden md:block" />
 
+      <div className="flex gap-2 md:gap-4">
+      <div className="h-6 w-px bg-white/20 hidden md:block" />
       <Link href="/wallet" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <Wallet className="h-5 w-5" />
         <span className="hidden lg:inline">{t("wallet")}</span>
       </Link>
+      </div>
 
       <div className="h-6 w-px bg-white/20 hidden md:block" />
 

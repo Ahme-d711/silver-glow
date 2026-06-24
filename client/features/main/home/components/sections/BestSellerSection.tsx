@@ -10,15 +10,11 @@ import { ProductCard } from "../cards/ProductCard";
 interface BestSellerSectionProps {
   products: Product[];
   isLoading?: boolean;
-  onToggleWishlist?: (productId: string) => void;
-  isInWishlist?: (productId: string) => boolean;
 }
 
 export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
   products,
   isLoading,
-  onToggleWishlist,
-  isInWishlist,
 }) => {
   const t = useTranslations("Home");
 
@@ -45,12 +41,7 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
       {/* Products Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.slice(0, 8).map((product) => (
-          <ProductCard
-            key={product._id}
-            product={product}
-            onToggleWishlist={onToggleWishlist}
-            isInWishlist={isInWishlist?.(product._id)}
-          />
+          <ProductCard key={product._id} product={product} />
         ))}
       </div>
 

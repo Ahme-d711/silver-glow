@@ -8,9 +8,30 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 import { cn } from "@/lib/utils";
 import type { WishlistEmptyProps } from "../../types/wishlist-template.types";
 
-export function WishlistEmpty({ title, description, exploreLabel }: WishlistEmptyProps) {
+export function WishlistEmpty({
+  title,
+  description,
+  actionLabel,
+  actionHref,
+  onAction,
+}: WishlistEmptyProps) {
   const locale = useLocale();
   const isRtl = locale === "ar";
+
+  const actionButton = (
+    <Button
+      className="h-16 px-10 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/10 group active:scale-95"
+      onClick={onAction}
+    >
+      {actionLabel}
+      <ArrowRight
+        className={cn(
+          "w-5 h-5 ms-2 transition-transform",
+          isRtl ? "rotate-180" : "group-hover:translate-x-1"
+        )}
+      />
+    </Button>
+  );
 
   return (
     <div className="text-center py-32 bg-white rounded-[48px] border border-divider shadow-sm">
@@ -26,17 +47,7 @@ export function WishlistEmpty({ title, description, exploreLabel }: WishlistEmpt
       <p className="text-content-tertiary max-w-sm mx-auto mb-10 font-medium leading-relaxed">
         {description}
       </p>
-      <Link href="/shop">
-        <Button className="h-16 px-10 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/10 group active:scale-95">
-          {exploreLabel}
-          <ArrowRight
-            className={cn(
-              "w-5 h-5 ms-2 transition-transform",
-              isRtl ? "rotate-180" : "group-hover:translate-x-1"
-            )}
-          />
-        </Button>
-      </Link>
+      {actionHref ? <Link href={actionHref}>{actionButton}</Link> : actionButton}
     </div>
   );
 }
