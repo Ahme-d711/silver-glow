@@ -1,16 +1,24 @@
 export interface WorksShowcaseItemData {
   id: string;
+  image: string;
+  imageAltKey: string;
   labelKey: string;
   titleKey: string;
   descriptionKey: string;
-  imageKey: string;
   reverse?: boolean;
 }
 
 export interface WorksShowcaseItemProps {
+  image: string;
+  imageAlt: string;
   label: string;
   title: string;
   description: string;
-  imagePlaceholder: string;
   reverse?: boolean;
+}
+
+export interface WorksStatItem {
+  id: string;
+  valueKey: string;
+  labelKey: string;
 }
