@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Product } from "@/features/dashboard/products/types";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ProductCard } from "../cards/ProductCard";
@@ -21,8 +21,6 @@ export const BestSellerSection: React.FC<BestSellerSectionProps> = ({
   isInWishlist,
 }) => {
   const t = useTranslations("Home");
-  const locale = useLocale();
-  const isRtl = locale === "ar";
 
   if (isLoading) {
     return (

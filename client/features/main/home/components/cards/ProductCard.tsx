@@ -3,13 +3,14 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Product } from "@/features/dashboard/products/types";
 import { getImageUrl } from "@/utils/image.utils";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -30,6 +31,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const name = isRtl ? product.nameAr : product.nameEn;
   const description = isRtl ? product.descriptionAr : product.descriptionEn;
   const imageUrl = getImageUrl(product.mainImage);
+  const hasReviews = (product.numReviews ?? 0) > 0;
+  const averageRating = product.averageRating ?? 0;
+  const filledStars = hasReviews ? Math.round(averageRating) : 0;
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,6 +75,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </p>
         </div>
       </Link>
+
+      {/* Rating Badge */}
+      {hasReviews && (
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-2.5 py-1.5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
+          <div className="flex items-center gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={cn(
+                  "size-3",
+                  star <= filledStars
+                    ? "fill-amber-400 text-amber-400"
+                    : "fill-white/15 text-white/25"
+                )}
+              />
+            ))}
+          </div>
+          <span className="text-xs font-bold text-amber-300">
+            {averageRating.toFixed(1)}
+          </span>
+          <span className="text-xs text-white/70">({product.numReviews})</span>
+        </div>
+      )}
 
       {/* Wishlist Heart Icon */}
       <button
