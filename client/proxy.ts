@@ -26,35 +26,30 @@ export default async function middleware(request: NextRequest) {
     ? pathSegments[1] 
     : routing.defaultLocale;
   
-  // Normalize checking for auth pages
-  const isAuthPage = pathSegments.includes('login') || pathSegments.includes('register') || pathSegments.includes('forgot-password') || pathSegments.includes('reset-password') || pathSegments.includes('verify-phone') || pathSegments.includes('verify');
-  
-  // 1. Unauthenticated users
+  // Auth-related pages
+  const isLoginOrRegister =
+    pathSegments.includes('login') || pathSegments.includes('register');
+
+  // Allow everyone to browse the site without authentication
   if (!token) {
-    if (!isAuthPage) {
-      // Redirect to login if trying to access page while unauthenticated
-      const url = new URL(`/${detectedLocale}/login`, request.url);
-      return NextResponse.redirect(url);
-    }
     return handleI18nRouting(request);
   }
 
-  // 2. Authenticated users
+  // Authenticated users
   let isAdmin = false;
   try {
     const payload = decodeJwt(token);
     isAdmin = payload.role === 'admin';
-  } catch (error) {
-    // If token is invalid, treat as unauthenticated
-    if (!isAuthPage) {
-        return NextResponse.redirect(new URL(`/${detectedLocale}/login`, request.url));
-    }
+  } catch {
+    // Invalid token — treat as guest for browsing
     return handleI18nRouting(request);
   }
 
-  // Prevent authenticated users from accessing login/register
-  if (isAuthPage) {
-    return NextResponse.redirect(new URL(isAdmin ? `/${detectedLocale}/dashboard` : `/${detectedLocale}`, request.url));
+  // Logged-in users cannot access login/register again
+  if (isLoginOrRegister) {
+    return NextResponse.redirect(
+      new URL(isAdmin ? `/${detectedLocale}/dashboard` : `/${detectedLocale}`, request.url)
+    );
   }
 
   // Protect Dashboard specifically for admins/employees
