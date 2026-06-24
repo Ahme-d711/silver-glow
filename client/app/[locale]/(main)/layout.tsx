@@ -1,19 +1,10 @@
-import MainNavbar from "@/components/MainNavbar";
-import MainFooter from "@/components/MainFooter";
+import { MainLayoutClient } from "@/components/MainLayoutClient";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <MainNavbar />
-      <main className="grow">
-        {children}
-      </main>
-      <MainFooter />
-    </div>
-  );
+  return <MainLayoutClient>{children}</MainLayoutClient>;
 }
 

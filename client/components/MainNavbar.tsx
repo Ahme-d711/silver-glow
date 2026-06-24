@@ -78,6 +78,7 @@ export default function MainNavbar() {
 
   return (
     <nav
+      data-site-chrome
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-10 flex items-center",
         isHome && !isScrolled ? "bg-transparent" : "bg-primary",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "../globals.css";
 import { CoreProviders, Providers } from "../providers";
+import { HomeHeroBootScript } from "@/components/HomeHeroBootScript";
 import { getProfile } from "@/features/auth/actions/auth.service";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -52,6 +53,7 @@ export default async function LocaleLayout({
       <body
         className={`${cairo.variable} font-sans antialiased`}
       >
+        <HomeHeroBootScript />
         <NextIntlClientProvider messages={messages}>
           <CoreProviders>
             <Providers data={profileData}>
