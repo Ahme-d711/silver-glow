@@ -1,15 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import StaticPageTemplate from "@/components/StaticPageTemplate";
+import { AboutHero } from "../components/about-template/AboutHero";
 import { AboutContent } from "../components/about-template/AboutContent";
 
 export function AboutTemplate() {
-  const t = useTranslations("About");
-
   return (
-    <StaticPageTemplate title={t("title")} description={t("description")}>
-      <AboutContent />
-    </StaticPageTemplate>
+    <div className="min-h-screen bg-background">
+      <AboutHero />
+      <div className="container max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <AboutContent />
+      </div>
+    </div>
   );
 }

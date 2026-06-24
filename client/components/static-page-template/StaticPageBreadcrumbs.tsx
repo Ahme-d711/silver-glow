@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/routing";
 import { ChevronRight, Home } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import type { StaticPageBreadcrumbsProps } from "../types/static-page-template.types";
+import { StaticPageBreadcrumbsProps } from "../StaticPageTemplate";
 
 export function StaticPageBreadcrumbs({ title }: StaticPageBreadcrumbsProps) {
   const locale = useLocale();
