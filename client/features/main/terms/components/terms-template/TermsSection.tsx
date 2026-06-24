@@ -1,14 +1,14 @@
 "use client";
 
-import type { PrivacySectionProps } from "../../types/privacy-template.types";
+import type { TermsSectionProps } from "../../types/terms-template.types";
 
-export function PrivacySection({
+export function TermsSection({
   id,
   title,
   intro,
   body,
   listItems,
-}: PrivacySectionProps) {
+}: TermsSectionProps) {
   return (
     <section
       id={id}

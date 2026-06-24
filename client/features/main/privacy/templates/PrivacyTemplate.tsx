@@ -1,15 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import StaticPageTemplate from "@/components/StaticPageTemplate";
+import { PrivacyHeader } from "../components/privacy-template/PrivacyHeader";
 import { PrivacyContent } from "../components/privacy-template/PrivacyContent";
 
 export function PrivacyTemplate() {
-  const t = useTranslations("Privacy");
-
   return (
-    <StaticPageTemplate title={t("title")} description={t("description")}>
-      <PrivacyContent />
-    </StaticPageTemplate>
+    <div className="min-h-screen bg-background">
+      <PrivacyHeader />
+      <div className="container max-w-5xl mx-auto px-4 py-12 md:py-16">
+        <PrivacyContent />
+      </div>
+    </div>
   );
 }

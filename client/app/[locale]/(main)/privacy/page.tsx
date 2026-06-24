@@ -3,7 +3,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Silver Glow",
-  description: "How we collect, use, and protect your personal data.",
+  description:
+    "How Silver Glow collects, uses, retains, and protects your personal data under applicable Egyptian law.",
 };
 
 export default function PrivacyPage() {
