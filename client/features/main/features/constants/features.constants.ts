@@ -1,10 +1,10 @@
 import {
-  BookOpen,
   Clock,
   MessageCircle,
   Search,
   Shield,
   ShoppingBag,
+  Sparkles,
 } from "lucide-react";
 import type { FeatureItem } from "../types/features-template.types";
 
@@ -40,9 +40,9 @@ export const FEATURE_ITEMS: FeatureItem[] = [
     descriptionKey: "smart_search_desc",
   },
   {
-    id: "fashion-blog",
-    icon: BookOpen,
-    titleKey: "fashion_blog_title",
-    descriptionKey: "fashion_blog_desc",
+    id: "jewelry-guide",
+    icon: Sparkles,
+    titleKey: "jewelry_guide_title",
+    descriptionKey: "jewelry_guide_desc",
   },
 ];

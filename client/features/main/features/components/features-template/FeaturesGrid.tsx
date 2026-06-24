@@ -8,15 +8,24 @@ export function FeaturesGrid() {
   const t = useTranslations("Features");
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {FEATURE_ITEMS.map((item) => (
-        <FeatureCard
-          key={item.id}
-          icon={item.icon}
-          title={t(item.titleKey)}
-          description={t(item.descriptionKey)}
-        />
-      ))}
-    </div>
+    <section className="space-y-10">
+      <div className="text-center max-w-2xl mx-auto space-y-3">
+        <h2 className="text-2xl md:text-3xl font-bold text-primary">
+          {t("grid_title")}
+        </h2>
+        <p className="text-content-secondary leading-relaxed">{t("grid_desc")}</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {FEATURE_ITEMS.map((item) => (
+          <FeatureCard
+            key={item.id}
+            icon={item.icon}
+            title={t(item.titleKey)}
+            description={t(item.descriptionKey)}
+          />
+        ))}
+      </div>
+    </section>
   );
 }

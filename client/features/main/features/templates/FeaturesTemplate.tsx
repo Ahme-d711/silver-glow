@@ -1,15 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import StaticPageTemplate from "@/components/StaticPageTemplate";
-import { FeaturesGrid } from "../components/features-template/FeaturesGrid";
+import { FeaturesHero } from "../components/features-template/FeaturesHero";
+import { FeaturesContent } from "../components/features-template/FeaturesContent";
 
 export function FeaturesTemplate() {
-  const t = useTranslations("Features");
-
   return (
-    <StaticPageTemplate title={t("title")} description={t("description")}>
-      <FeaturesGrid />
-    </StaticPageTemplate>
+    <div className="min-h-screen bg-background">
+      <FeaturesHero />
+      <div className="container max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <FeaturesContent />
+      </div>
+    </div>
   );
 }

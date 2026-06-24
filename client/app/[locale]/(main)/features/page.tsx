@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Features | Silver Glow",
-  description: "Discover what makes Silver Glow the ultimate shopping destination.",
+  description: "Discover the Silver Glow experience — authentic sterling silver, fast delivery, and premium shopping.",
 };
 
 export default function FeaturesPage() {

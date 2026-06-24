@@ -12,3 +12,9 @@ export interface FeatureCardProps {
   title: string;
   description: string;
 }
+
+export interface FeatureStatItem {
+  id: string;
+  valueKey: string;
+  labelKey: string;
+}
