@@ -1048,7 +1048,9 @@
     "adding_to_cart": "Adding...",
     "cart_merged": "Your cart items have been saved to your account",
     "guest_checkout_hint": "Sign in to complete your order. Your cart items will be saved to your account automatically.",
-    "sign_in_to_checkout": "Sign in to checkout"
+    "sign_in_to_checkout": "Sign in to checkout",
+    "from_price": "From",
+    "multiple_sizes": "Multiple sizes"
   },
   "LoginRequired": {
     "title_checkout": "Sign in to checkout",

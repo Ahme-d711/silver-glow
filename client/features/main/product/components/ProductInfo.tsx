@@ -12,6 +12,7 @@ import { useGuestCartStore } from "@/features/main/cart/stores/useGuestCartStore
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { toast } from "sonner";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
+import { getProductDetailPricing, getSizePriceDisplay } from "../utils/productPricing";
 import { Loader2 } from "lucide-react";
 interface ProductInfoProps {
   product: Product;
@@ -42,8 +43,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
   // Get currently selected size object if any
   const selectedSizeData = selectedSize ? sizes.find((s) => s.size === selectedSize) : null;
-  const currentPrice = selectedSizeData?.price || product.price;
-  const currentOldPrice = selectedSizeData?.oldPrice || product.oldPrice;
+  const pricing = getProductDetailPricing(product, sizes, selectedSize);
+  const currentPrice = pricing.currentPrice;
   const currentStock = selectedSizeData ? selectedSizeData.stock : product.stock;
 
   // Check availability
@@ -114,14 +115,19 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </div>
       </div>
 
-      <div className="flex items-end gap-4 py-2">
+      <div key={selectedSize ?? "default"} className="flex flex-wrap items-end gap-3 py-2">
+        {pricing.hasDiscount && pricing.originalPrice != null && (
+          <span className="text-xl text-content-tertiary line-through font-medium opacity-60 mb-1">
+            {currency} {pricing.originalPrice.toFixed(2)}
+          </span>
+        )}
         <div className="text-4xl font-extrabold text-primary animate-in fade-in slide-in-from-bottom-1 duration-300">
           {currency} {currentPrice.toFixed(2)}
         </div>
-        {currentOldPrice && currentOldPrice > currentPrice && (
-          <div className="text-xl text-content-tertiary line-through font-medium mb-1 opacity-60">
-            {currency} {currentOldPrice.toFixed(2)}
-          </div>
+        {pricing.hasDiscount && (
+          <span className="mb-2 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+            -{pricing.discountPercent}%
+          </span>
         )}
       </div>
 
@@ -158,6 +164,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
               const sizeName = sizeObj.size;
               const stock = sizeObj.stock;
               const isAvailable = stock > 0;
+              const sizeHasDiscount = getSizePriceDisplay(sizeObj).hasDiscount;
 
               return (
                 <button
@@ -174,6 +181,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                   )}
                 >
                   {sizeName}
+                  {sizeHasDiscount && (
+                    <span className="absolute -top-1.5 -end-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                  )}
                   {!isAvailable && (
                     <span className="absolute -top-1 -right-1 flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

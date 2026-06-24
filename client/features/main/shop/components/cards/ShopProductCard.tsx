@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Product } from "@/features/dashboard/products/types";
 import { getImageUrl } from "@/utils/image.utils";
 import { useWishlist } from "@/features/main/wishlist/hooks/useWishlist";
+import { getProductCardPricing } from "@/features/main/product/utils/productPricing";
 import { cn } from "@/lib/utils";
 
 interface ShopProductCardProps {
@@ -36,10 +37,13 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
   };
 
   const hasSizes = product.sizes && product.sizes.length > 0;
-  const firstSize = hasSizes ? product.sizes![0] : null;
-  const displayPrice = firstSize?.price || product.price;
-  const displayOldPrice = firstSize?.oldPrice || product.oldPrice;
-  const sizeLabel = firstSize?.size ? `${t("Size") || "Size"}: ${firstSize.size}` : null;
+  const pricing = getProductCardPricing(product, product.sizes);
+  const sizeLabel =
+    hasSizes && product.sizes!.length === 1
+      ? `${t("Size")}: ${product.sizes![0].size}`
+      : hasSizes
+        ? t("multiple_sizes")
+        : null;
   const hasReviews = (product.numReviews ?? 0) > 0;
   const averageRating = product.averageRating ?? 0;
   const filledStars = hasReviews ? Math.round(averageRating) : 0;
@@ -84,9 +88,9 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
         </div>
         
         {/* Badges */}
-        {product.oldPrice && product.oldPrice > product.price && (
+        {pricing.hasAnyDiscount && (
           <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-            {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
+            {pricing.maxDiscountPercent}% OFF
           </div>
         )}
 
@@ -146,14 +150,19 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
               </span>
             </div>
           )}
-          <div className="flex items-center justify-center gap-3">
-            {displayOldPrice && displayOldPrice > displayPrice && (
-              <span className="text-content-tertiary line-through text-sm font-medium opacity-50">
-                {currency} {displayOldPrice.toFixed(2)}
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            {pricing.hasDiscount && pricing.originalPrice != null && (
+              <span className="text-content-tertiary line-through text-sm font-medium opacity-60">
+                {currency} {pricing.originalPrice.toFixed(2)}
               </span>
             )}
             <span className="text-primary text-xl font-extrabold tracking-tight">
-              {currency} {displayPrice.toFixed(2)}
+              {pricing.showFrom && (
+                <span className="text-sm font-semibold text-content-tertiary me-1">
+                  {t("from_price")}
+                </span>
+              )}
+              {currency} {pricing.currentPrice.toFixed(2)}
             </span>
           </div>
         </div>

@@ -1048,7 +1048,9 @@
     "adding_to_cart": "جاري الإضافة...",
     "cart_merged": "تم حفظ عناصر سلتك في حسابك",
     "guest_checkout_hint": "سجّل الدخول لإتمام طلبك. سيتم حفظ عناصر سلتك تلقائياً في حسابك.",
-    "sign_in_to_checkout": "سجّل الدخول للدفع"
+    "sign_in_to_checkout": "سجّل الدخول للدفع",
+    "from_price": "من",
+    "multiple_sizes": "مقاسات متعددة"
   },
   "LoginRequired": {
     "title_checkout": "سجّل الدخول لإتمام الطلب",
