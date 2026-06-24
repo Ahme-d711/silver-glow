@@ -36,14 +36,10 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
     toggleWishlist(product._id);
   };
 
-  const hasSizes = product.sizes && product.sizes.length > 0;
   const pricing = getProductCardPricing(product, product.sizes);
-  const sizeLabel =
-    hasSizes && product.sizes!.length === 1
-      ? `${t("Size")}: ${product.sizes![0].size}`
-      : hasSizes
-        ? t("multiple_sizes")
-        : null;
+  const sizeLabel = pricing.displaySize
+    ? `${t("Size")}: ${pricing.displaySize}`
+    : null;
   const hasReviews = (product.numReviews ?? 0) > 0;
   const averageRating = product.averageRating ?? 0;
   const filledStars = hasReviews ? Math.round(averageRating) : 0;
@@ -151,17 +147,12 @@ export const ShopProductCard: React.FC<ShopProductCardProps> = ({ product }) => 
             </div>
           )}
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            {pricing.hasDiscount && pricing.originalPrice != null && (
+            {pricing.showStrikethrough && pricing.displayOriginalPrice != null && (
               <span className="text-content-tertiary line-through text-sm font-medium opacity-60">
-                {currency} {pricing.originalPrice.toFixed(2)}
+                {currency} {pricing.displayOriginalPrice.toFixed(2)}
               </span>
             )}
             <span className="text-primary text-xl font-extrabold tracking-tight">
-              {pricing.showFrom && (
-                <span className="text-sm font-semibold text-content-tertiary me-1">
-                  {t("from_price")}
-                </span>
-              )}
               {currency} {pricing.currentPrice.toFixed(2)}
             </span>
           </div>

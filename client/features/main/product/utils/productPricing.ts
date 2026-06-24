@@ -17,8 +17,11 @@ export interface ProductCardPriceDisplay extends ProductPriceDisplay {
   hasAnyDiscount: boolean;
   /** Highest discount % among variants that have a sale */
   maxDiscountPercent: number;
-  /** Prefix price with "From" when variants differ */
-  showFrom: boolean;
+  /** Strikethrough original to show on listing cards */
+  displayOriginalPrice: number | null;
+  showStrikethrough: boolean;
+  /** Smallest size label when product has variants */
+  displaySize: string | null;
 }
 
 /**
@@ -73,7 +76,22 @@ export function getProductDetailPricing(
   return getProductPriceDisplay(product.price, product.oldPrice);
 }
 
-/** Shop card: lowest sale price; badge if any size has a discount. */
+function compareSizeLabel(a: string, b: string): number {
+  const numA = Number(a);
+  const numB = Number(b);
+  if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+    return numA - numB;
+  }
+  return a.localeCompare(b, undefined, { numeric: true });
+}
+
+export function getSmallestSizeVariant(
+  sizes: ProductSizePricing[]
+): ProductSizePricing {
+  return [...sizes].sort((a, b) => compareSizeLabel(a.size, b.size))[0];
+}
+
+/** Shop card: smallest size price; badge if any size has a discount. */
 export function getProductCardPricing(
   product: { price: number; oldPrice?: number },
   sizes?: ProductSizePricing[]
@@ -84,19 +102,16 @@ export function getProductCardPricing(
       ...base,
       hasAnyDiscount: base.hasDiscount,
       maxDiscountPercent: base.discountPercent,
-      showFrom: false,
+      displayOriginalPrice: base.originalPrice,
+      showStrikethrough: base.hasDiscount,
+      displaySize: null,
     };
   }
 
-  const variantPricings = sizes.map((s) => ({
-    ...getSizePriceDisplay(s),
-    size: s.size,
-  }));
+  const smallest = getSmallestSizeVariant(sizes);
+  const smallestPricing = getSizePriceDisplay(smallest);
 
-  const lowest = variantPricings.reduce((min, current) =>
-    current.currentPrice < min.currentPrice ? current : min
-  );
-
+  const variantPricings = sizes.map((s) => getSizePriceDisplay(s));
   const discounted = variantPricings.filter((p) => p.hasDiscount);
   const hasAnyDiscount = discounted.length > 0;
   const maxDiscountPercent = discounted.reduce(
@@ -104,15 +119,15 @@ export function getProductCardPricing(
     0
   );
 
-  const uniquePrices = new Set(variantPricings.map((p) => p.currentPrice));
-
   return {
-    currentPrice: lowest.currentPrice,
-    originalPrice: lowest.originalPrice,
-    hasDiscount: lowest.hasDiscount,
-    discountPercent: lowest.discountPercent,
+    currentPrice: smallestPricing.currentPrice,
+    originalPrice: smallestPricing.originalPrice,
+    hasDiscount: smallestPricing.hasDiscount,
+    discountPercent: smallestPricing.discountPercent,
     hasAnyDiscount,
     maxDiscountPercent,
-    showFrom: uniquePrices.size > 1,
+    displayOriginalPrice: smallestPricing.originalPrice,
+    showStrikethrough: smallestPricing.hasDiscount,
+    displaySize: smallest.size,
   };
 }
