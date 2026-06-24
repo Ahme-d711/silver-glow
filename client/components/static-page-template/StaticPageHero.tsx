@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { HeroAmbientGlow } from "@/components/shared/HeroAmbientGlow";
 import type { StaticPageHeroProps } from "./types/static-page-template.types";
 
 interface StaticPageHeroComponentProps extends StaticPageHeroProps {
@@ -13,10 +14,7 @@ export function StaticPageHero({
 }: StaticPageHeroComponentProps) {
   return (
     <div className="bg-primary text-white pt-34 pb-20 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 start-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-        <div className="absolute bottom-0 end-0 w-96 h-96 bg-secondary rounded-full translate-x-1/4 translate-y-1/4 blur-3xl" />
-      </div>
+      <HeroAmbientGlow />
 
       <div className="container max-w-[1440px] mx-auto relative z-10">
         <div className="text-center space-y-4">

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Gem } from "lucide-react";
+import { HeroAmbientGlow } from "@/components/shared/HeroAmbientGlow";
 import { FEATURES_IMAGES } from "../../constants/features.images";
 import { FeaturesHeroStats } from "./FeaturesHeroStats";
 
@@ -10,11 +11,8 @@ export function FeaturesHero() {
   const t = useTranslations("Features");
 
   return (
-    <section className="relative bg-primary text-white overflow-hidden pt-24 pb-16 md:pb-24">
-      <div className="absolute inset-0 opacity-[0.12]">
-        <div className="absolute top-0 start-0 w-72 h-72 bg-white rounded-full -translate-x-1/3 -translate-y-1/3 blur-3xl" />
-        <div className="absolute bottom-0 end-0 w-md h-md bg-secondary rounded-full translate-x-1/4 translate-y-1/4 blur-3xl" />
-      </div>
+    <section className="relative bg-primary text-white overflow-hidden pt-34 pb-16 md:pb-24">
+      <HeroAmbientGlow />
 
       <div className="container max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mt-8">
