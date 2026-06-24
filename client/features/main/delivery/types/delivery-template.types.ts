@@ -12,3 +12,9 @@ export interface DeliveryInfoItem {
   titleKey: string;
   descriptionKey: string;
 }
+
+export interface DeliveryStatItem {
+  id: string;
+  valueKey: string;
+  labelKey: string;
+}
